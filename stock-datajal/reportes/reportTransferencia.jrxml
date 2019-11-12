@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportTransferencia" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="afd32a08-70e0-4caa-a985-9564748ebd65">
+	<property name="ireport.zoom" value="1.0000000000000007"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<parameter name="numero" class="java.lang.Integer" isForPrompting="false"/>
+	<parameter name="depositoOrigen" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="depositoDestino" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="lista" class="java.lang.Object"/>
+	<background>
+		<band height="802" splitType="Stretch">
+			<rectangle radius="3">
+				<reportElement uuid="4fd684bd-e363-41ad-8df3-69553da5bf7b" key="rectangle" x="0" y="0" width="553" height="801"/>
+			</rectangle>
+		</band>
+	</background>
+	<title>
+		<band height="87" splitType="Stretch">
+			<rectangle radius="3">
+				<reportElement uuid="720fda36-3357-4a1c-ac97-1ac0a0b72dd2" key="rectangle" x="3" y="1" width="547" height="80"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="0bc49ca7-7bd0-4c45-8f08-bb4a92bc3fb9" key="staticText" x="6" y="0" width="421" height="42"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="30"/>
+				</textElement>
+				<text><![CDATA[TRANSFERENCIA]]></text>
+			</staticText>
+			<rectangle radius="3">
+				<reportElement uuid="c5289602-cbb8-4279-89b0-58c47ff936f2" key="rectangle" x="448" y="6" width="100" height="56"/>
+			</rectangle>
+			<staticText>
+				<reportElement uuid="e0763829-ba1a-4413-ab3b-79cca5cefbf8" key="staticText" x="452" y="7" width="98" height="18"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSFERENCIA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="df391553-9a5b-4694-8bb9-ec4ffea11c89" key="staticText" x="452" y="24" width="16" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e4a31efb-eb4c-4e73-8866-2c03051765d9" key="staticText" x="452" y="46" width="30" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="836e9e4d-c5b1-4dd9-bef0-f8e69fe49bc8" key="textField" x="482" y="46" width="66" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0" isBlankWhenNull="false">
+				<reportElement uuid="971e82a2-aa64-4942-817e-48a64e71a071" key="textField" x="468" y="24" width="80" height="15"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement>
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{numero}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="a6a8370c-8e65-4a2a-aacf-a3a216dbcd2e" key="line" x="468" y="38" width="70" height="1"/>
+			</line>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="56" splitType="Stretch">
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="c26b638e-9305-4a84-9fe5-3c167412cfa8" key="textField" x="112" y="3" width="340" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{depositoOrigen}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="0f83ed27-fbe5-4d9a-8acc-913d15a62ecc" key="staticText" x="6" y="3" width="83" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<text><![CDATA[Deposito Origen]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1f76223a-7d6a-4574-af83-4661fa47fea2" key="staticText" x="6" y="26" width="83" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<text><![CDATA[Deposito Destino]]></text>
+			</staticText>
+			<textField isBlankWhenNull="false">
+				<reportElement uuid="7dc1a1c8-1f0f-468b-b3e7-d74b257e80c0" key="textField" x="112" y="26" width="340" height="20"/>
+				<box>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Times New Roman" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{depositoDestino}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="166" splitType="Stretch">
+			<subreport isUsingCache="true">
+				<reportElement uuid="28b5dda9-caf1-43c9-a487-9d3928076537" key="subreport-2" x="1" y="1" width="550" height="164"/>
+				<dataSourceExpression><![CDATA[$F{lista}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[new File("reportes/subReportTransferencia.jasper").getAbsolutePath()]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="129" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

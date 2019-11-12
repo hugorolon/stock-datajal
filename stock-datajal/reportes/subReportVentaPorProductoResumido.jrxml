@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReportVenta" pageWidth="535" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c643917c-16e1-430a-8ea2-aafed1a77979">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<field name="costo" class="java.lang.String"/>
+	<field name="rubroDescripcion" class="java.lang.String"/>
+	<field name="categoriaDescripcion" class="java.lang.String"/>
+	<field name="totalTitulo" class="java.lang.String"/>
+	<field name="rubroCabecera" class="java.lang.String"/>
+	<field name="total" class="java.lang.String"/>
+	<field name="utilidad" class="java.lang.String"/>
+	<field name="utilidadPorcentaje" class="java.lang.String"/>
+	<field name="rubroTitulo" class="java.lang.String"/>
+	<field name="categoriaTitulo" class="java.lang.String"/>
+	<field name="producto.categoriaProducto.descripcion" class="java.lang.String"/>
+	<field name="producto.categoriaProducto.codigo" class="java.lang.Integer"/>
+	<field name="cantidad" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="2159ee04-ca8a-4c45-bc1b-b3ba9a11b0ec" x="283" y="21" width="50" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Costo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c97f664d-107c-441d-bb2b-9650e2b64ee9" x="335" y="21" width="55" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Venta]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0a17429c-e81c-430c-a6dd-1c4cdaf3175e" x="-1" y="34" width="535" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="60310528-d519-46dd-b556-af8f25ac34f3" x="20" y="36" width="169" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}>1 && $F{categoriaDescripcion}.equals( "" )&&$F{rubroDescripcion}.equals( "" )?"RUBRO: "+$F{rubroCabecera}:""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="043f9587-6220-40c8-a35a-fe2b59bbc5c8" x="392" y="21" width="50" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Utilidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8561729-dcd1-4824-9dea-5f3c822b4467" x="448" y="21" width="22" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[%]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="03006081-c504-41f6-ade0-0c6e74cdbc61" x="176" y="21" width="73" height="13"/>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Categoria]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ddd72ed6-3d50-47aa-b75e-eb05b5c684fa" x="252" y="21" width="29" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cant.]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4b4e8227-7aae-4e69-9171-937ac760659b" x="448" y="2" width="22" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{utilidadPorcentaje}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4320640b-2249-4c60-9265-5ec0c095315d" x="392" y="2" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{utilidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ece03fd3-00b0-4ce7-933f-28957b102682" x="0" y="2" width="33" height="12" isRemoveLineWhenBlank="true"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rubroTitulo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ffb605f0-2f27-4990-a120-614631003876" x="60" y="2" width="92" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rubroDescripcion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="14258546-69e6-4ee9-9ad4-263d7e3f8f2c" x="335" y="2" width="55" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="90dcb58c-9b3e-4534-bcbf-c0ee592f87c9" x="283" y="2" width="50" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{costo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c205c4c6-1b16-4018-9e72-c7ed572addd9" x="136" y="2" width="61" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{totalTitulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="01e08e5e-6656-4316-a530-8c26e391def6" x="176" y="2" width="73" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{producto.categoriaProducto.descripcion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3595b14f-f4c7-4879-a8ae-54e83b1d89f1" x="149" y="2" width="26" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rubroDescripcion}.equals("") && !$F{producto.categoriaProducto.descripcion}.equals("")?"Total:":""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c0706b6c-ee6f-460c-ab89-aace35e3e017" x="252" y="2" width="29" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

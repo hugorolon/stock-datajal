@@ -1,0 +1,44 @@
+package py.com.prestosoftware.data.repository;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+import py.com.prestosoftware.data.models.Caja;
+import py.com.prestosoftware.data.models.Cliente;
+import py.com.prestosoftware.data.models.Venta;
+import py.com.prestosoftware.ui.viewmodel.ConsultaNota;
+
+@Repository
+public interface VentaRepository extends JpaRepository<Venta, Long> {
+	
+	List<Venta> findByCajaAndFechaAndSituacionOrderByIdAsc(Caja caja, Date fecha, String situacion);
+	
+	List<Venta> findByFechaAndSituacionOrderByIdAsc(Date fecha, String situacion);
+
+	List<Venta> findBySituacionOrderByVencimientoDesc(String situacion);
+	
+	List<Venta> findByClienteAndSituacionOrderByVencimientoDesc(Cliente c, String situacion);
+	
+	List<Venta> findByClienteNombre(String filter);
+	
+	List<Venta> findByCliente(Cliente cliente);
+	
+	List<Venta> findByClienteAndFechaBetween(Cliente cliente, Date fechaIni, Date fechaFin);
+	
+	List<Venta> findByFechaBetween(Date fechaIni, Date fechaFin);
+	
+	Optional<Venta> findByIdAndSituacion(Long id, String situacion);
+
+	Optional<Venta> findByIdAndCliente(Long id, Cliente cliente);
+	
+	@Query("SELECT coalesce(max(id), 0) FROM Venta e")
+	Long getMaxId();
+	
+	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, vd.precio"
+			+ " FROM ventas v JOIN venta_detalles vd ON v.id = vd.venta_id WHERE vd.producto_id = ?1 ORDER BY v.fecha DESC", nativeQuery = true)
+	List<ConsultaNota> getVentasByProductoId(Long productoId);
+
+}
