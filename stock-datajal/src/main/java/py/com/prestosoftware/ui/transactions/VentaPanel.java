@@ -205,6 +205,10 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
+		tfPrecio.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		tfPrecio.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfPrecio.addFocusListener(new FocusAdapter() {
 			@Override
@@ -1205,7 +1209,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 			for (VentaDetalle item : itemTableModel.getEntities()) {
 				item.setPrecioFob(item.getPrecio());
-				item.setPrecio(item.getPrecio() + costoCif);
+				//item.setPrecio(item.getPrecio() + costoCif);
 
 				detalles.add(item);
 			}
@@ -1956,8 +1960,17 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	}
 
 	private void calculateItem() {
-		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
-		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+//		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
+//		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+		Double cantItem=0d;
+		Double total=0d;
+		List<VentaDetalle> listVentaDetalle =itemTableModel.getEntities();
+		for (VentaDetalle ventaDetalle : listVentaDetalle) {
+			ventaDetalle.setSubtotal(ventaDetalle.getCantidad()*ventaDetalle.getPrecio());
+			cantItem += ventaDetalle.getCantidad();
+			total +=ventaDetalle.getSubtotal();
+		}
+		
 		setTotals(cantItem, total);
 	}
 

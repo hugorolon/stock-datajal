@@ -22,8 +22,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	List<Producto> findByGrupo(Grupo grupo); 
 	
 	Optional<Producto> findByReferencia(String referencia);
-	
-	@Query(value = "SELECT * FROM productos p WHERE p.id = :filter OR p.description LIKE :filter% OR p.referencia LIKE :filter% ORDER BY p.id", nativeQuery = true)
+	//p.id = :filter OR
+	@Query(value = "SELECT * FROM productos p WHERE p.description LIKE :filter% OR p.referencia LIKE :filter% ORDER BY p.id", nativeQuery = true)
 	List<Producto> findProductsByFilter(String filter);
 	
 	@Query(value = "SELECT stock FROM producto_depositos WHERE deposito_id = ?1 AND producto_id = ?2 ORDER BY id DESC LIMIT 1", nativeQuery = true)

@@ -19,12 +19,14 @@ public class FormatearValor {
 	
 	public static Double stringToDouble(String valor) {
 		try {
-			DecimalFormatSymbols simbolo=new DecimalFormatSymbols();
-			simbolo.setDecimalSeparator(',');
-			simbolo.setGroupingSeparator('.');
-			DecimalFormat formateador = new DecimalFormat("###,###.##",simbolo); 
-			Number numero = formateador.parse(valor);
-			return numero.doubleValue();
+			if(valor!="" && valor.length()>0) {
+				DecimalFormatSymbols simbolo=new DecimalFormatSymbols();
+				simbolo.setDecimalSeparator(',');
+				simbolo.setGroupingSeparator('.');
+				DecimalFormat formateador = new DecimalFormat("###,###.##",simbolo); 
+				Number numero = formateador.parse(valor);
+				return numero.doubleValue();				
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

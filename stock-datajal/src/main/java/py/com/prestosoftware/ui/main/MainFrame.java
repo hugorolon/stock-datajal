@@ -56,6 +56,7 @@ public class MainFrame extends JFrame {
 	private JMenu mnConfiguracion;
 	private JMenuItem mnuEmpresa;
 	private JMenuItem mnuUsuario;
+	private JMenuItem mnuUsuarioRol;
 	private JMenuItem mnuRol;
 	private JMenuItem mnuPermisos;
 	private JMenuItem mnuCaja;
@@ -372,6 +373,10 @@ public class MainFrame extends JFrame {
 		mnuUsuario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuUsuario);
 		mnConfiguracion.addSeparator();
+		mnuUsuarioRol = new JMenuItem("USUARIO ROLES");
+		mnuUsuarioRol.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+		mnConfiguracion.add(mnuUsuarioRol);
+		mnConfiguracion.addSeparator();
 		mnuRol = new JMenuItem("ROLES");
 		mnuRol.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuRol);
@@ -400,7 +405,7 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel, BorderLayout.SOUTH);
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
-		lblEmpresaNombre = new JLabel("EMRESA NOMBRE");
+		lblEmpresaNombre = new JLabel("EMPRESA NOMBRE");
 		panel.add(lblEmpresaNombre);
 		
 		label = new JLabel(" - ");
@@ -560,6 +565,10 @@ public class MainFrame extends JFrame {
 		return mnuUsuario;
 	}
 
+	public JMenuItem getMnuUsuarioRol() {
+		return mnuUsuarioRol;
+	}
+	
 	public JMenuItem getMnuRol() {
 		return mnuRol;
 	}

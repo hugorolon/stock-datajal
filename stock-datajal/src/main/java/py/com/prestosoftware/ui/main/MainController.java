@@ -2,6 +2,7 @@ package py.com.prestosoftware.ui.main;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import py.com.prestosoftware.ui.controllers.CajaController;
 import py.com.prestosoftware.ui.controllers.CategoriaController;
 import py.com.prestosoftware.ui.controllers.CiudadController;
@@ -28,6 +29,7 @@ import py.com.prestosoftware.ui.controllers.SubgrupoController;
 import py.com.prestosoftware.ui.controllers.TamanhoController;
 import py.com.prestosoftware.ui.controllers.UnidadMedidaController;
 import py.com.prestosoftware.ui.controllers.UsuarioController;
+import py.com.prestosoftware.ui.controllers.UsuarioRolController;
 import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
@@ -38,13 +40,13 @@ import py.com.prestosoftware.ui.shared.CompraPanel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaCreditoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaDebitoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
+import py.com.prestosoftware.ui.transactions.AnulacionBoletaPanel;
+import py.com.prestosoftware.ui.transactions.AperturaCierrePanel;
+import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
 import py.com.prestosoftware.ui.transactions.DevolucionPanel;
 import py.com.prestosoftware.ui.transactions.EntregaBoletaPanel;
 import py.com.prestosoftware.ui.transactions.LanzamientoCaja;
 import py.com.prestosoftware.ui.transactions.PDV;
-import py.com.prestosoftware.ui.transactions.AperturaCierrePanel;
-import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
-import py.com.prestosoftware.ui.transactions.AnulacionBoletaPanel;
 import py.com.prestosoftware.ui.transactions.PresupuestoPanel;
 import py.com.prestosoftware.ui.transactions.TransferenciaPanel;
 import py.com.prestosoftware.ui.transactions.VentaPanel;
@@ -72,6 +74,7 @@ public class MainController extends AbstractFrameController {
     @Autowired private TamanhoController tamanhoController;
     @Autowired private DepositoController depositoController;
     @Autowired private UsuarioController usuarioController;
+    @Autowired private UsuarioRolController usuarioRolController;
     @Autowired private CajaController cajaController;
     @Autowired private MonedaController monedaController;
     @Autowired private CotizacionController cotizacionController;
@@ -140,6 +143,7 @@ public class MainController extends AbstractFrameController {
     	registerOpenMenu(mainMenuFrame.getMnuEmpresa(), (e) -> openEmpresa());
     	registerOpenMenu(mainMenuFrame.getMnuDeposito(), (e) -> openDeposito());
     	registerOpenMenu(mainMenuFrame.getMnuUsuario(), (e) -> openUsuario());
+    	registerOpenMenu(mainMenuFrame.getMnuUsuarioRol(), (e) -> openUsuarioRol());
     	registerOpenMenu(mainMenuFrame.getMnuCaja(), (e) -> openCaja());
     	registerOpenMenu(mainMenuFrame.getMnuAperturaCaja(), (e) -> openAperturaCierreCaja(1));
     	registerOpenMenu(mainMenuFrame.getMnuCierreCaja(), (e) -> openAperturaCierreCaja(2));
@@ -334,6 +338,10 @@ public class MainController extends AbstractFrameController {
     
     private void openUsuario() {
     	usuarioController.prepareAndOpenFrame();
+    }
+    
+    private void openUsuarioRol() {
+    	usuarioRolController.prepareAndOpenFrame();
     }
     
     private void openCaja() {
