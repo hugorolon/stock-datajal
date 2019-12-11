@@ -17,13 +17,12 @@ public class UsuarioRolFrame extends JDialog {
 	private static final int DEFAULT_WIDTH = 500;
     private static final int DEFAULT_HEIGHT = 400;
 
-    private TableSearchPanel searchPanel;
     private UsuarioRolTablePanel tablePanel;
     private UsuarioRolPanel formPanel;
     
     @Autowired
-    public UsuarioRolFrame(TableSearchPanel searchPanel, UsuarioRolTablePanel tablePanel, UsuarioRolPanel formPanel) {
-    	this.searchPanel = searchPanel;
+    public UsuarioRolFrame(UsuarioRolTablePanel tablePanel, UsuarioRolPanel formPanel) {
+    	//this.searchPanel = searchPanel;
     	this.tablePanel = tablePanel;
         this.formPanel = formPanel;
         setFrameUp();
@@ -39,17 +38,12 @@ public class UsuarioRolFrame extends JDialog {
     }
 
     private void initComponents() {
-    	add(searchPanel, BorderLayout.NORTH);
     	add(tablePanel, BorderLayout.CENTER);
     	add(formPanel, BorderLayout.SOUTH); 
     }
     
     public UsuarioRolTablePanel getTablePanel() {
 		return tablePanel;
-	}
-    
-    public TableSearchPanel getSearchPanel() {
-		return searchPanel;
 	}
     
     public UsuarioRolPanel getFormPanel() {

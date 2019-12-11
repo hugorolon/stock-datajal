@@ -26,7 +26,7 @@ public class TableSearchPanel extends JPanel {
 
     private void initComponents() {  
         GridBagLayout gridBagLayout = new GridBagLayout();
-        gridBagLayout.columnWidths = new int[]{69, 370, 85, 0};
+        gridBagLayout.columnWidths = new int[]{180, 223, 85, 0};
         gridBagLayout.rowHeights = new int[]{29, 0};
         gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
         gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE};

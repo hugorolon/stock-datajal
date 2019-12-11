@@ -24,6 +24,7 @@ import py.com.prestosoftware.util.Notifications;
 import java.awt.BorderLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import javax.swing.text.AbstractDocument;
@@ -37,6 +38,8 @@ import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @Component
 public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
@@ -54,15 +57,16 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
     private JComboBox<Rol> cbRol;
     private JTextField tfUsuarioID, tfUsuario;
     private RolComboBoxModel rolComboBoxModel;
-    private UsuarioComboBoxModel usuComboBoxModel;
+    private Optional<Usuario> usuario;
     private VendedorDialog vendedorDialog;
     private UsuarioService usuarioService;
     
     @Autowired
-    public UsuarioRolPanel(RolComboBoxModel rolComboBoxModel, UsuarioComboBoxModel usuComboBoxModel, UsuarioService usuarioService) {
+    public UsuarioRolPanel(RolComboBoxModel rolComboBoxModel, UsuarioService usuarioService, VendedorDialog vendedorDialog) {
     	this.rolComboBoxModel = rolComboBoxModel;
     	this.usuarioService = usuarioService;
-    	this.setSize(400, 329);
+    	this.vendedorDialog =vendedorDialog;
+    	this.setSize(400, 410);
         
         setPanelUp();
         initComponents();
@@ -114,18 +118,6 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
         gbc_cbUsuario.gridx = 1;
         gbc_cbUsuario.gridy = 2;
         
-        
-//        cbUsu= new JComboBox<Usuario>(usuComboBoxModel);
-//        cbUsu.addKeyListener(new KeyAdapter() {
-//        	@Override
-//        	public void keyPressed(KeyEvent e) {
-//        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-//					cbRol.requestFocus();
-//				}
-//        	}
-//        });
- //       panel.add(tfUsuarioID, gbc_cbUsuario);
-        
         JPanel pnlCliente = new JPanel();
         pnlCliente.setBounds(6, 18, 876, 79);
         GridBagConstraints gbc_pnlCliente = new GridBagConstraints();
@@ -142,6 +134,10 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
         lblUsuario = new JLabel("Usuario:");
         pnlCliente.add(lblUsuario);
         tfUsuarioID = new JTextField();
+        tfUsuarioID.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent arg0) {
+        	}
+        });
         tfUsuarioID.setColumns(5);
         pnlCliente.add(tfUsuarioID);
         tfUsuarioID.addFocusListener(new FocusAdapter() {
@@ -209,9 +205,17 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
         add(pnlBotonera, BorderLayout.SOUTH);
         
         btnGuardar = new JButton("Guardar");
+        btnGuardar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
         pnlBotonera.add(btnGuardar);
         
         btnCancelar = new JButton("Cancelar");
+        btnCancelar.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
         pnlBotonera.add(btnCancelar);
         
         btnCerrar = new JButton("Cerrar");
@@ -232,7 +236,11 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
         if (!tfId.getText().isEmpty()) {
         	userRol.setId(Long.parseLong(tfId.getText()));
 		}
-        userRol.setUsuario(usuComboBoxModel.getSelectedItem());
+        if(!tfUsuarioID.getText().isEmpty())
+        	userRol.getUsuario().setId(Long.parseLong(tfUsuarioID.getText()));
+        if(!tfUsuario.getText().isEmpty())
+        	userRol.getUsuario().setUsuario(tfUsuario.getText());
+        
         userRol.setRol(rolComboBoxModel.getSelectedItem());
         
         return userRol;
@@ -242,6 +250,7 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
     	tfId.setText("");
         cbRol.setSelectedIndex(0);
         tfUsuarioID.setText("");
+        tfUsuario.setText("");
     }
     
     
@@ -287,12 +296,12 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
 	}
 	
 	private void findUsuarioById(Long id) {
-		Optional<Usuario> usuario = usuarioService.findById(id);
-
+		usuario = usuarioService.findById(id);
 		if (usuario.isPresent()) {
 			String nombre = usuario.get().getUsuario();
 			tfUsuario.setText(nombre);				
 		} else {
+			tfUsuario.setText("");
 			Notifications.showAlert("No existe Usuario con este codigo.!");
 		}
 	}
@@ -310,7 +319,20 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
 
 	@Override
 	public void getEntity(Usuario usuario) {
-		// TODO Auto-generated method stub
-		
+		if (usuario != null) {
+			tfUsuarioID.setText(String.valueOf(usuario.getId()));
+			tfUsuario.setText(usuario.getUsuario());
+			cbRol.requestFocus();
+		}
 	}
+	
+	public Optional<Usuario> getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Optional<Usuario> usuario) {
+		this.usuario = usuario;
+	}
+
+	
 }

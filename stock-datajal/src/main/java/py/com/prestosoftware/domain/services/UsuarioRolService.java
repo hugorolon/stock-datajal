@@ -39,6 +39,10 @@ public class UsuarioRolService {
 		return repository.findByUsuarioRol(name);
 	}
 
+	public Boolean hasRole(Long idUsuario, String name) {
+		return repository.hasRole(idUsuario, name);
+	}
+	
 	public long getRowCount() {
 		return repository.getMaxId();
 	}

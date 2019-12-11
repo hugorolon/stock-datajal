@@ -40,11 +40,10 @@ public class UsuarioRolController extends AbstractFrameController {
     private RolService rolService;
     private UsuarioService usuarioService;
     private RolComboBoxModel rolComboBoxModel;
-    private UsuarioComboBoxModel usuComboBoxModel;
    
     @Autowired
     public UsuarioRolController(UsuarioRolFrame frame, UsuarioRolTableModel tableModel, UsuarioRolService service, 
-    		UsuarioRolValidator validator, RolService rolService,  UsuarioService usuarioService, RolComboBoxModel rolComboBoxModel, UsuarioComboBoxModel usuComboBoxModel) {
+    		UsuarioRolValidator validator, RolService rolService,  UsuarioService usuarioService, RolComboBoxModel rolComboBoxModel) {
         this.frame = frame;
         this.tableModel = tableModel;
         this.service = service;
@@ -52,33 +51,17 @@ public class UsuarioRolController extends AbstractFrameController {
         this.rolService = rolService;
         this.usuarioService = usuarioService;
         this.rolComboBoxModel = rolComboBoxModel;
-        this.usuComboBoxModel= usuComboBoxModel;
     }
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     @PostConstruct
     private void prepareListeners() {
-        TableSearchPanel searchPanel = frame.getSearchPanel();
         
         registerAction(frame.getFormPanel().getBtnGuardar(), (e) -> save());
         registerAction(frame.getFormPanel().getBtnCancelar(), (e) -> cleanInputs());
         registerAction(frame.getFormPanel().getBtnCerrar(), (e) -> closeWindow());
-        registerAction(searchPanel.getSearchBtn(), (e) -> findAll(searchPanel.getTfSearchField().getText()));
-        
-        registerKeyEvent(searchPanel.getTfSearchField(), new KeyListener() {
-        	@Override
-			public void keyTyped(KeyEvent e) {}
-			
-			@Override
-			public void keyReleased(KeyEvent e) {}
-			
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if(e.getKeyCode()==KeyEvent.VK_ENTER) {
-					String name = searchPanel.getTfSearchField().getText();
-					findAll(name);
-				}
-			}
-		});
         
         registerSelectRow(frame.getTablePanel().getTable().getSelectionModel(), new ListSelectionListener() {
 			@Override
@@ -88,6 +71,9 @@ public class UsuarioRolController extends AbstractFrameController {
 		});
     }
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     @Override
     public void prepareAndOpenFrame() {
         loadUsuarioRoles();
@@ -111,7 +97,6 @@ public class UsuarioRolController extends AbstractFrameController {
     
     private void loadUsuarios() {
         List<Usuario> usuarios = usuarioService.findAll();
-        usuComboBoxModel.clear();
        // usuComboBoxModel.addElements(usuarios);
     }
     private void getMax() {

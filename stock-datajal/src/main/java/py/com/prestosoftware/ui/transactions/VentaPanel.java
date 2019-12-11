@@ -1,20 +1,36 @@
 package py.com.prestosoftware.ui.transactions;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
-import javax.swing.JFrame;
-import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
 
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.CondicionPago;
 import py.com.prestosoftware.data.models.Configuracion;
@@ -29,6 +45,7 @@ import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ProductoService;
+import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.domain.validations.ValidationError;
@@ -57,21 +74,6 @@ import py.com.prestosoftware.ui.search.VentaInterfaz;
 import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.util.Notifications;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-
 @Component
 public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInterfaz, DepositoInterfaz, ProductoInterfaz,
 		VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz {
@@ -85,8 +87,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	private static final int SALDO_PRODUCTO_CODE = 5;
 	private static final int CONDICION_PAGO_CODE = 6;
 
-	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas;
-	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
+	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc, lblDescItem;
+	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId, tfDescuentoItem;
 	private JTextField tfClienteID, tfPrecioTotal, tfPrecio, tfVendedorID;
 	private JTextField tfCantidad, tfTotalItems, tfVence, tfDescuento, tfObs;
 	private JTextField tfSubtotal, tfTotal, tfDepositoID, tfDeposito, tfClienteRuc;
@@ -112,6 +114,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	private ConsultaSaldoDeposito saldoDeposito;
 
 	private VentaService ventaService;
+	private UsuarioRolService usuarioRolService;
 	private VentaValidator ventaValidator;
 	private VentaItemTableModel itemTableModel;
 
@@ -128,9 +131,9 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
 			DepositoDialog depositoDialog, ProductoDialog productoDialog, VentaValidator ventaValidator,
 			VentaService ventaService, ClienteService clienteService, UsuarioService vendedorService,
-			DepositoService depositoService, ProductoService productoService, CondicionPagoDialog condicionDialog,
-			ConsultaSaldoDeposito saldoDeposito, CondicionPagoService condicionPagoService,
-			ConfiguracionService configService) {
+			UsuarioRolService usuarioRolService, DepositoService depositoService, ProductoService productoService,
+			CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
+			CondicionPagoService condicionPagoService, ConfiguracionService configService) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
 		this.vendedorDialog = vendedorDialog;
@@ -146,6 +149,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		this.condicionPagoService = condicionPagoService;
 		this.condicionDialog = condicionDialog;
 		this.configService = configService;
+		this.usuarioRolService = usuarioRolService;
 
 		setSize(915, 640);
 		setTitle("REGISTRO DE VENTAS");
@@ -173,22 +177,22 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		pnlProducto.add(lblCodigo);
 
 		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
-		lblDescripcion.setBounds(164, 10, 337, 30);
+		lblDescripcion.setBounds(147, 10, 171, 30);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel("TOTAL");
-		lblSubtotal.setBounds(617, 10, 115, 30);
+		lblSubtotal.setBounds(559, 10, 100, 30);
 		pnlProducto.add(lblSubtotal);
 
 		JLabel lblPrecio = new JLabel("PRECIO");
-		lblPrecio.setBounds(502, 10, 91, 30);
+		lblPrecio.setBounds(460, 10, 100, 30);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(164, 39, 337, 30);
+		tfDescripcion.setBounds(147, 39, 312, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -201,7 +205,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		tfPrecioTotal.setEditable(false);
 		tfPrecioTotal.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfPrecioTotal.setColumns(10);
-		tfPrecioTotal.setBounds(617, 39, 146, 30);
+		tfPrecioTotal.setBounds(559, 39, 100, 30);
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
@@ -246,7 +250,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		});
 		tfPrecio.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(502, 39, 115, 30);
+		tfPrecio.setBounds(460, 39, 100, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -264,14 +268,14 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 				} else if (e.getKeyCode() == KeyEvent.VK_F5) {
 					showDialog(SALDO_PRODUCTO_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					
-					if (tfCondicionPago.isEnabled()) 
+
+					if (tfCondicionPago.isEnabled())
 						tfCondicionPago.requestFocus();
-					else if (tfFlete.isEnabled()) 
+					else if (tfFlete.isEnabled())
 						tfFlete.requestFocus();
 					else if (tfDescuento.isEnabled())
 						tfDescuento.requestFocus();
-					
+
 				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
 					abandonarNota();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -410,7 +414,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		});
 		tfCantidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfCantidad.setColumns(10);
-		tfCantidad.setBounds(77, 39, 86, 30);
+		tfCantidad.setBounds(77, 39, 71, 30);
 		pnlProducto.add(tfCantidad);
 
 		JLabel lblCantidad = new JLabel("CANT.");
@@ -443,6 +447,17 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		label_5.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_5.setBounds(40, 10, 14, 30);
 		pnlProducto.add(label_5);
+
+		lblDescItem = new JLabel("DESCUENTO %");
+		lblDescItem.setBounds(657, 10, 100, 30);
+		pnlProducto.add(lblDescItem);
+
+		tfDescuentoItem = new JTextField();
+		tfDescuentoItem.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfDescuentoItem.setFont(new Font("Arial", Font.PLAIN, 14));
+		tfDescuentoItem.setColumns(10);
+		tfDescuentoItem.setBounds(657, 39, 100, 30);
+		pnlProducto.add(tfDescuentoItem);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(12, 0, 891, 105);
@@ -869,7 +884,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		pnlTotales.add(tfVence);
 		tfVence.setColumns(10);
 
-		JLabel lblDesc = new JLabel("Desc.:");
+		lblDesc = new JLabel("Desc.:");
 		lblDesc.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblDesc.setBounds(311, 12, 51, 30);
 		pnlTotales.add(lblDesc);
@@ -977,6 +992,21 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		lblCamposObligatorios.setFont(new Font("Dialog", Font.BOLD, 20));
 		lblCamposObligatorios.setBounds(32, 443, 299, 25);
 		getContentPane().add(lblCamposObligatorios);
+		// vistaDescuentoTotal();
+	}
+
+	public void vistaDescuentoTotal() {
+		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESCUENTO TOTAL")) {
+			tfDescuento.setVisible(false);
+			lblDesc.setVisible(false);
+		}
+	}
+	
+	public void vistaDescuentoItem() {
+		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESC. ITEM")) {
+			tfDescuentoItem.setVisible(false);
+			lblDescItem.setVisible(false);
+		}
 	}
 
 	private void getItemSelected() {
@@ -1025,13 +1055,13 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 			if (conf.getPideDescuento() == 0)
 				tfDescuento.setEnabled(false);
-			
+
 			if (conf.getDefineDepositoVenta() != 0) {
 				configService.findByUserId(new Usuario(GlobalVars.USER_ID));
 				tfDepositoID.setEnabled(false);
 				findDepositoById(conf.getDefineDepositoVenta());
 			}
-				
+
 		}
 	}
 
@@ -1081,45 +1111,46 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			Notifications.showAlert("Debes ingresar deposito");
 			return false;
 		}
-			
+
 		Long productoId = Long.valueOf(tfProductoID.getText());
 		Double cantidad = FormatearValor.stringADouble(tfCantidad.getText());
-		
+
 		Producto p = productoService.getStockDepositoByProductoId(productoId);
 		int depositoId = Integer.parseInt(tfDepositoID.getText());
-		
+
 		Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
 
 		switch (depositoId) {
-			case 1:
-				Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
-				result = getStockDisp(dep01 - salPend, cantidad);
-				break;
-			case 2:
-				Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-				result = getStockDisp(dep02 - salPend, cantidad);
-				break;
-			case 3:
-				Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-				result = getStockDisp(dep03 - salPend, cantidad);
-				break;
-			case 4:
-				Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-				result = getStockDisp(dep04 - salPend, cantidad);
-				break;
-			case 5:
-				Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-				result = getStockDisp(dep05 - salPend, cantidad);
-				break;
-			default:
-				break;
+		case 1:
+			Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
+			result = getStockDisp(dep01 - salPend, cantidad);
+			break;
+		case 2:
+			Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
+			result = getStockDisp(dep02 - salPend, cantidad);
+			break;
+		case 3:
+			Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
+			result = getStockDisp(dep03 - salPend, cantidad);
+			break;
+		case 4:
+			Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
+			result = getStockDisp(dep04 - salPend, cantidad);
+			break;
+		case 5:
+			Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
+			result = getStockDisp(dep05 - salPend, cantidad);
+			break;
+		default:
+			break;
 		}
 
 		return result;
 	}
 
 	private void abandonarNota() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "ABANDONAR NOTA.?", "AVISO", JOptionPane.OK_CANCEL_OPTION);
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "ABANDONAR NOTA.?", "AVISO",
+				JOptionPane.OK_CANCEL_OPTION);
 
 		if (respuesta == 0) {
 			removeItemBloq();
@@ -1159,13 +1190,13 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		Venta venta = new Venta();
 		venta.setFecha(new Date());
 		venta.setHora(new Date());
-		
+
 		if (!tfVence.getText().isEmpty())
-			venta.setVencimiento(Fechas.sumarFecha(Integer.valueOf(tfCondicionPago.getText()), 
-					0, 0, Fechas.dateUtilAStringDDMMAAAA(new Date())));
+			venta.setVencimiento(Fechas.sumarFecha(Integer.valueOf(tfCondicionPago.getText()), 0, 0,
+					Fechas.dateUtilAStringDDMMAAAA(new Date())));
 		else
 			venta.setVencimiento(new Date());
-		
+
 		venta.setComprobante("SIN COMPROBANTE");
 		venta.setCondicion(Integer.valueOf(tfCondicionPago.getText()));
 
@@ -1209,7 +1240,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 			for (VentaDetalle item : itemTableModel.getEntities()) {
 				item.setPrecioFob(item.getPrecio());
-				//item.setPrecio(item.getPrecio() + costoCif);
+				// item.setPrecio(item.getPrecio() + costoCif);
 
 				detalles.add(item);
 			}
@@ -1279,7 +1310,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		tfCondicionPago.setText("0");
 		tfClienteNombre.setEnabled(false);
 		tfClienteRuc.setEnabled(false);
-		
+
 		tfClienteDireccion.setEnabled(false);
 
 		tfCondicionPago.setEnabled(true);
@@ -1372,33 +1403,33 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 	private void showDialog(int code) {
 		switch (code) {
-			case CLIENTE_CODE:
-				clientDialog.setInterfaz(this);
-				clientDialog.setVisible(true);
-				break;
-			case VENDEDOR_CODE:
-				vendedorDialog.setInterfaz(this);
-				vendedorDialog.setVisible(true);
-				break;
-			case DEPOSITO_CODE:
-				depositoDialog.setInterfaz(this);
-				depositoDialog.setVisible(true);
-				break;
-			case PRODUCTO_CODE:
-				productoDialog.setInterfaz(this);
-				productoDialog.getProductos();
-				productoDialog.setVisible(true);
-				break;
-			case SALDO_PRODUCTO_CODE:
-				saldoDeposito.loadProductos("");
-				saldoDeposito.setVisible(true);
-				break;
-			case CONDICION_PAGO_CODE:
-				condicionDialog.setInterfaz(this);
-				condicionDialog.setVisible(true);
-				break;
-			default:
-				break;
+		case CLIENTE_CODE:
+			clientDialog.setInterfaz(this);
+			clientDialog.setVisible(true);
+			break;
+		case VENDEDOR_CODE:
+			vendedorDialog.setInterfaz(this);
+			vendedorDialog.setVisible(true);
+			break;
+		case DEPOSITO_CODE:
+			depositoDialog.setInterfaz(this);
+			depositoDialog.setVisible(true);
+			break;
+		case PRODUCTO_CODE:
+			productoDialog.setInterfaz(this);
+			productoDialog.getProductos();
+			productoDialog.setVisible(true);
+			break;
+		case SALDO_PRODUCTO_CODE:
+			saldoDeposito.loadProductos("");
+			saldoDeposito.setVisible(true);
+			break;
+		case CONDICION_PAGO_CODE:
+			condicionDialog.setInterfaz(this);
+			condicionDialog.setVisible(true);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -1538,6 +1569,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	}
 
 	private ImpresionPanel panel = null;
+	
+	
 
 	private void imprimirDialogo() {
 		if (this.panel == null) {
@@ -1580,7 +1613,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		}
 
 		Optional<Usuario> usuairo;
-		
+
 		if (!tfVendedorID.getText().isEmpty())
 			usuairo = vendedorService.findById(Long.valueOf(tfVendedorID.getText()));
 		else
@@ -1598,7 +1631,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			deposito = depositoService.findById(Long.valueOf(tfDepositoID.getText()));
 		else
 			deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
-		
+
 		if (!deposito.isPresent()) {
 			Notifications.showAlert("El codigo del Deposito no existe.!");
 			tfDepositoID.requestFocus();
@@ -1699,7 +1732,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			} else {
 				tfDepositoID.requestFocus();
 			}
-				
+
 		} else {
 			Notifications.showAlert("No existe Vendedor con este codigo.!");
 		}
@@ -1738,7 +1771,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		if (producto != null) {
 			if (producto.getSubgrupo().getTipo().equals("S"))
 				isProductService = true;
-			
+
 			Double precioUnit = setPrecioByCliente(nivelPrecio, producto);
 
 			tfProductoID.setText(String.valueOf(producto.getId()));
@@ -1782,61 +1815,61 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			Producto producto = p.get();
 
 			switch (depositoId) {
-				case 1:
-					Double stockDep01 = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
-					Double stockDepBloq = p.get().getDepO1Bloq() != null ? p.get().getDepO1Bloq() : 0;
-	
-					if (stockDep01 >= cantidad) {
-						producto.setDepO1Bloq((stockDepBloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-	
-					break;
-				case 2:
-					Double stockDep02 = p.get().getDepO2() != null ? p.get().getDepO2() : 0;
-					Double stockDep02Bloq = p.get().getDepO2Bloq() != null ? p.get().getDepO2Bloq() : 0;
-	
-					if (stockDep02 >= cantidad) {
-						producto.setDepO2Bloq((stockDep02Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-	
-					break;
-				case 3:
-					Double stockDep03 = p.get().getDepO3() != null ? p.get().getDepO3() : 0;
-					Double stockDep03Bloq = p.get().getDepO3Bloq() != null ? p.get().getDepO3Bloq() : 0;
-	
-					if (stockDep03 >= cantidad) {
-						producto.setDepO3Bloq((stockDep03Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-	
-					break;
-				case 4:
-					Double stockDep04 = p.get().getDepO4() != null ? p.get().getDepO4() : 0;
-					Double stockDep04Bloq = p.get().getDepO4Bloq() != null ? p.get().getDepO4Bloq() : 0;
-	
-					if (stockDep04 >= cantidad) {
-						producto.setDepO4Bloq((stockDep04Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-	
-					break;
-				case 5:
-					Double stockDep05 = p.get().getDepO5() != null ? p.get().getDepO5() : 0;
-					Double stockDep05Bloq = p.get().getDepO5Bloq() != null ? p.get().getDepO5Bloq() : 0;
-	
-					if (stockDep05 >= cantidad) {
-						producto.setDepO5Bloq((stockDep05Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-	
-					break;
+			case 1:
+				Double stockDep01 = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
+				Double stockDepBloq = p.get().getDepO1Bloq() != null ? p.get().getDepO1Bloq() : 0;
+
+				if (stockDep01 >= cantidad) {
+					producto.setDepO1Bloq((stockDepBloq + cantidad) - cantAnterior);
+				} else {
+					Notifications.showAlert("No tiene suficiente Stock para el Item");
+				}
+
+				break;
+			case 2:
+				Double stockDep02 = p.get().getDepO2() != null ? p.get().getDepO2() : 0;
+				Double stockDep02Bloq = p.get().getDepO2Bloq() != null ? p.get().getDepO2Bloq() : 0;
+
+				if (stockDep02 >= cantidad) {
+					producto.setDepO2Bloq((stockDep02Bloq + cantidad) - cantAnterior);
+				} else {
+					Notifications.showAlert("No tiene suficiente Stock para el Item");
+				}
+
+				break;
+			case 3:
+				Double stockDep03 = p.get().getDepO3() != null ? p.get().getDepO3() : 0;
+				Double stockDep03Bloq = p.get().getDepO3Bloq() != null ? p.get().getDepO3Bloq() : 0;
+
+				if (stockDep03 >= cantidad) {
+					producto.setDepO3Bloq((stockDep03Bloq + cantidad) - cantAnterior);
+				} else {
+					Notifications.showAlert("No tiene suficiente Stock para el Item");
+				}
+
+				break;
+			case 4:
+				Double stockDep04 = p.get().getDepO4() != null ? p.get().getDepO4() : 0;
+				Double stockDep04Bloq = p.get().getDepO4Bloq() != null ? p.get().getDepO4Bloq() : 0;
+
+				if (stockDep04 >= cantidad) {
+					producto.setDepO4Bloq((stockDep04Bloq + cantidad) - cantAnterior);
+				} else {
+					Notifications.showAlert("No tiene suficiente Stock para el Item");
+				}
+
+				break;
+			case 5:
+				Double stockDep05 = p.get().getDepO5() != null ? p.get().getDepO5() : 0;
+				Double stockDep05Bloq = p.get().getDepO5Bloq() != null ? p.get().getDepO5Bloq() : 0;
+
+				if (stockDep05 >= cantidad) {
+					producto.setDepO5Bloq((stockDep05Bloq + cantidad) - cantAnterior);
+				} else {
+					Notifications.showAlert("No tiene suficiente Stock para el Item");
+				}
+
+				break;
 			default:
 				Notifications.showAlert("Verifique producto y deposito para agregar a la tabla.!");
 				break;
@@ -1863,7 +1896,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	}
 
 	private void addItem() {
-		if (isValidItem() && validateCantidad() ) {
+		if (isValidItem() && validateCantidad()) {
 			Long productoId = tfProductoID.getText().isEmpty() ? 1 : Long.valueOf(tfProductoID.getText());
 			int depositoId = tfDepositoID.getText().isEmpty() ? 1 : Integer.parseInt(tfDepositoID.getText());
 			Double cantidad = tfCantidad.getText().isEmpty() ? 0 : FormatearValor.stringADouble(tfCantidad.getText());
@@ -1878,7 +1911,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 				if (fila != -1) {
 					Integer respuesta = JOptionPane.showConfirmDialog(this,
-							"Registro ya existe en la grilla, desea actualizar los datos?", "AVISO", JOptionPane.OK_CANCEL_OPTION);
+							"Registro ya existe en la grilla, desea actualizar los datos?", "AVISO",
+							JOptionPane.OK_CANCEL_OPTION);
 
 					if (respuesta == 0) {
 						Double cantAnterior = Double.valueOf(String.valueOf(tbProductos.getValueAt(fila, 1)));
@@ -1962,15 +1996,15 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 	private void calculateItem() {
 //		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
 //		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
-		Double cantItem=0d;
-		Double total=0d;
-		List<VentaDetalle> listVentaDetalle =itemTableModel.getEntities();
+		Double cantItem = 0d;
+		Double total = 0d;
+		List<VentaDetalle> listVentaDetalle = itemTableModel.getEntities();
 		for (VentaDetalle ventaDetalle : listVentaDetalle) {
-			ventaDetalle.setSubtotal(ventaDetalle.getCantidad()*ventaDetalle.getPrecio());
+			ventaDetalle.setSubtotal(ventaDetalle.getCantidad() * ventaDetalle.getPrecio());
 			cantItem += ventaDetalle.getCantidad();
-			total +=ventaDetalle.getSubtotal();
+			total += ventaDetalle.getSubtotal();
 		}
-		
+
 		setTotals(cantItem, total);
 	}
 

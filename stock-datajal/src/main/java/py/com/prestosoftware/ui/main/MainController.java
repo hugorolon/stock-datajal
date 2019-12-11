@@ -416,6 +416,8 @@ public class MainController extends AbstractFrameController {
     	ventaPanel.setVisible(true);
     	ventaPanel.clearForm();
     	ventaPanel.newVenta();
+    	ventaPanel.vistaDescuentoTotal();
+    	ventaPanel.vistaDescuentoItem();
     }
     
     private void openAperturaCierreCaja(int tipo) {
