@@ -12,7 +12,7 @@ public class VentaItemTableModel extends DefaultTableModel<VentaDetalle> {
 	@Override
     public String[] getColumnLabels() {
         return new String[] { "COD.", "CANT.", "DESCRIP.", "PRECIO UNIT.", "PRECIO TOTAL",
-        		"PRECIO FOB", "PRECIO CIF", "COSTO FOB", "COSTO CIF", "MEDIO CIF", "MEDIO FOB" };
+        		"PRECIO FOB", "PRECIO CIF", "COSTO FOB", "COSTO CIF", "MEDIO CIF", "MEDIO FOB", "DESCUENTO" };
     }
 
     @Override
@@ -39,9 +39,11 @@ public class VentaItemTableModel extends DefaultTableModel<VentaDetalle> {
             case 8:
                 return item.getCostoCif();
             case 9:
-                return item.getMedioFob();
-            case 10:
                 return item.getMedioCif();
+            case 10:
+                return item.getMedioFob();
+            case 11:
+                return item.getDescuento();    
             default:
                 return "";
         }

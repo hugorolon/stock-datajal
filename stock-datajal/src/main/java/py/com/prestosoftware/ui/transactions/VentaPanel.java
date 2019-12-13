@@ -127,6 +127,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 	private boolean isProductService;
 	private String nivelPrecio;
+	private Producto productoSeleccionado;
+	private Double precioInicial;
 
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
 			DepositoDialog depositoDialog, ProductoDialog productoDialog, VentaValidator ventaValidator,
@@ -431,11 +433,11 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 				}
 			}
 		});
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addItem();
-			}
-		});
+//		btnAdd.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				addItem();
+//			}
+//		});
 		btnAdd.setBounds(767, 39, 57, 30);
 		pnlProducto.add(btnAdd);
 
@@ -453,6 +455,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		pnlProducto.add(lblDescItem);
 
 		tfDescuentoItem = new JTextField();
+		tfDescuentoItem.setEditable(false);
 		tfDescuentoItem.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfDescuentoItem.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescuentoItem.setColumns(10);
@@ -1020,6 +1023,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			tfDescripcion.setText(String.valueOf(item.getProducto()));
 			tfPrecio.setText(FormatearValor.doubleAString(item.getPrecio()));
 			tfPrecioTotal.setText(FormatearValor.doubleAString(item.getSubtotal()));
+			tfDescuentoItem.setText(item.getDescuento().toString());
 		}
 	}
 
@@ -1260,6 +1264,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		item.setCantidad(FormatearValor.stringToDouble(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
+		item.setDescuento(Integer.valueOf(tfDescuentoItem.getText()));
 
 		return item;
 	}
@@ -1270,6 +1275,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		tfCantidad.setText("");
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
+		tfDescuentoItem.setText("");
 		tfProductoID.requestFocus();
 	}
 
@@ -1304,6 +1310,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		tfTotal.setText("0");
 		tfTotalItems.setText("0");
 		tfDescuento.setText("0");
+		tfDescuentoItem.setText("0");
 		tfFlete.setText("0");
 		tfVence.setText("");
 		tfSubtotal.setText("0");
@@ -1398,6 +1405,11 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		Double precioTotal = cantidad * precioUnit;
 
 		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
+		if (usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESC. ITEM")) {
+			Double desc= (((precioUnit-this.getPrecioInicial())/this.getPrecioInicial())*100);
+			tfDescuentoItem.setText(FormatearValor.doubleAString(desc));	
+		}
+		
 		btnAdd.requestFocus();
 	}
 
@@ -1772,12 +1784,14 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 			if (producto.getSubgrupo().getTipo().equals("S"))
 				isProductService = true;
 
-			Double precioUnit = setPrecioByCliente(nivelPrecio, producto);
+			precioInicial = setPrecioByCliente(nivelPrecio, producto);
+			setProductoSeleccionado(producto);
 
 			tfProductoID.setText(String.valueOf(producto.getId()));
 			tfDescripcion.setText(producto.getDescripcion());
-			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
+			tfPrecio.setText(FormatearValor.doubleAString(precioInicial));
 			tfCantidad.setText("1");
+			tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
 			tfCantidad.requestFocus();
 		}
 	}
@@ -1991,6 +2005,22 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 			productoService.save(producto);
 		}
+	}
+
+	public Producto getProductoSeleccionado() {
+		return productoSeleccionado;
+	}
+
+	public void setProductoSeleccionado(Producto productoSeleccionado) {
+		this.productoSeleccionado = productoSeleccionado;
+	}
+	
+	public Double getPrecioInicial() {
+		return precioInicial;
+	}
+
+	public void setPrecioInicial(Double precioInicial) {
+		this.precioInicial = precioInicial;
 	}
 
 	private void calculateItem() {
