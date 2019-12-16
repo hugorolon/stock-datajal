@@ -1270,7 +1270,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		item.setCantidad(FormatearValor.stringToDouble(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
-		item.setDescuento(Integer.valueOf(tfDescuentoItem.getText()));
+		item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
 
 		return item;
 	}

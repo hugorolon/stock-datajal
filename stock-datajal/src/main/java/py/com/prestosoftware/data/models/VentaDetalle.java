@@ -12,7 +12,7 @@ public class VentaDetalle {
 	private Double cantidad;
 	private Double precio;
 	private Double subtotal;
-	private Integer descuento;
+	private Double descuento;
 	
 	@Column(name = "precio_fob")
 	private Double precioFob;
@@ -122,11 +122,11 @@ public class VentaDetalle {
 		this.medioCif = medioCif;
 	}
 
-	public Integer getDescuento() {
+	public Double getDescuento() {
 		return descuento;
 	}
 
-	public void setDescuento(Integer descuento) {
+	public void setDescuento(Double descuento) {
 		this.descuento = descuento;
 	}
 	

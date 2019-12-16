@@ -22,3 +22,10 @@ ALTER TABLE public.venta_detalles
   ADD COLUMN id serial NOT NULL;
 ALTER TABLE public.venta_detalles
   ADD CONSTRAINT ventadetallepkey PRIMARY KEY (id);
+
+INSERT INTO public.roles(
+             activo, nombre)
+    VALUES ( 1,"VENTAS CON DESC. ITEM");
+INSERT INTO public.roles(
+             activo, nombre)
+    VALUES ( 1,"VENTAS CON DESCUENTO TOTAL");
