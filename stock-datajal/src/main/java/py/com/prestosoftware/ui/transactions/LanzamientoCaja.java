@@ -1386,8 +1386,9 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		} else {
 			entPago.setCaja(new Caja(Long.parseLong(tfCajaID.getText())));
 		}
-
-		entPago.setPlanCuentaId(Integer.parseInt(tfOperacionID.getText()));
+		if(tfOperacionID.getText()!="")
+			entPago.setPlanCuentaId(Integer.parseInt(tfOperacionID.getText()));
+		
 		entPago.setTipoOperacion(lblTipoOperacion.getText());
 		entPago.setNotaNro(tfNotaNro.getText());
 		entPago.setNotaReferencia(tfNotaNombre.getText());

@@ -33,6 +33,7 @@ import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Configuracion;
 import py.com.prestosoftware.data.models.Cotizacion;
 import py.com.prestosoftware.data.models.Deposito;
+import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Usuario;
@@ -110,7 +111,13 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 	private CotizacionService cotizacionService;
 	private ConfiguracionService configService;
 	private VentaService ventaService;
-
+	
+	private Configuracion conf = null;
+	private boolean isProductService;
+	private String nivelPrecio;
+	private Producto productoSeleccionado;
+	private Double precioInicial;
+	
 	@Autowired
 	public PDV(PDVTableModel itemTableModel, ProductoDialog productoDialog, ProductoService productoService,
 			ConfiguracionService configService, MonedaService monedaService, CotizacionService cotizacionService,
@@ -259,7 +266,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 					abandonarNota();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfProductoID.getText().isEmpty()) {
-						findProductoByFilter(tfProductoID.getText());
+						findProducto(tfProductoID.getText());
 					} else {
 						showDialog(PRODUCTO_CODE);
 					}
@@ -341,15 +348,25 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfCantidad.getText().isEmpty()) {
 						if (!tfProductoID.getText().isEmpty()) {
+							if (!isProductService) {
+								if (validateCantidad()) {
+									tfPrecio.requestFocus();
+									if (isValidItem()) {
+										addItem();
+									}
+								}else {
+									tfProductoID.requestFocus();
+								}
+							} else {
+								tfPrecio.requestFocus();
+							}
 //							Long productoId = Long.valueOf(tfProductoID.getText());
 //							Double cantidad = FormatearValor.stringADouble(tfCantidad.getText());
 //							
 //							if (validateCantidad(productoId, cantidad)) {
 //								tfPrecio.requestFocus();
 //							}
-							if (isValidItem()) {
-								addItem();
-							}
+							
 						} else {
 							Notifications.showAlert("Debes informar el Código del Producto.!");
 						}
@@ -568,14 +585,46 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		});
 	}
 
-	private void getConfig() {
-		Optional<Configuracion> c = configService.findByUserId(new Usuario(GlobalVars.USER_ID));
+//	private void getConfig() {
+//		Optional<Configuracion> c = configService.findByUserId(new Usuario(GlobalVars.USER_ID));
+//
+//		if (c.isPresent()) {
+//			Configuracion config = c.get();
+//			tfCajaID.setText(String.valueOf(config.getCajaIdPDV()));
+//			depositoId = Long.valueOf(String.valueOf(config.getDepositoIdPDV()));
+//		} else {
+//			tfCajaID.setText("1");
+//			depositoId = 1L;
+//		}
+//	}
+	
+	
 
-		if (c.isPresent()) {
-			Configuracion config = c.get();
-			tfCajaID.setText(String.valueOf(config.getCajaIdPDV()));
-			depositoId = Long.valueOf(String.valueOf(config.getDepositoIdPDV()));
-		} else {
+	public void getConfig() {
+		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
+
+		if (config.isPresent()) {
+			this.conf = config.get();
+			tfCajaID.setText(String.valueOf(conf.getCajaIdPDV()));
+			depositoId = Long.valueOf(String.valueOf(conf.getDepositoIdPDV()));
+//			if (conf.getPideVendedor() == 0)
+//				tfVendedorID.setEnabled(false);
+//
+//			if (conf.getPideDeposito() == 0)
+//				tfDepositoID.setEnabled(false);
+//
+//			if (conf.getPideFlete() == 0)
+//				tfFlete.setEnabled(false);
+//
+//			if (conf.getPideDescuento() == 0)
+//				tfDescuento.setEnabled(false);
+//
+//			if (conf.getDefineDepositoVenta() != 0) {
+//				configService.findByUserId(new Usuario(GlobalVars.USER_ID));
+//				tfDepositoID.setEnabled(false);
+//				findDepositoById(conf.getDefineDepositoVenta());
+//			}
+		}else {
 			tfCajaID.setText("1");
 			depositoId = 1L;
 		}
@@ -622,23 +671,23 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 
 				valores.add(new MonedaValor(e.getId(), e.getSigla(), e.getOperacion()));
 
+				if (e.getEsBase() == 1) {
+					monedaBaseCodigo = e.getId();
+					mGs=1d;
+					// monedaBaseOperacion = e.getOperacion();
+					// monedaBaseValor = cot.get().getValorVenta();
+				}
+				
 				if (cot.isPresent()) {
 					cotizaciones.add(cot.get());
-
-					if (e.getEsBase() == 1) {
-						monedaBaseCodigo = e.getId();
-						// monedaBaseOperacion = e.getOperacion();
-						// monedaBaseValor = cot.get().getValorVenta();
-					}
-
-					if (e.getId() == 1) { // DS
-						mUs = cot.get().getValorVenta();
-					} else if (e.getId() == 2) { // RS
-						mRs = cot.get().getValorVenta();
-					} else if (e.getId() == 3) { // PS
-						mPs = cot.get().getValorVenta();
-					} else if (e.getId() == 4) { // GS
+					if (e.getId() == 1) { // GS
 						mGs = cot.get().getValorVenta();
+					} else if (e.getId() == 2) { // DS
+						mUs = cot.get().getValorVenta();
+					} else if (e.getId() == 3) { // RS
+						mRs = cot.get().getValorVenta();
+					} else if (e.getId() == 4) { // PS
+						mPs = cot.get().getValorVenta();
 					}
 				}
 			}
@@ -737,8 +786,8 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		if (monedaBaseCodigo == 1) { // Us
 			lblTotalGs.setText(FormatearValor.doubleAString(total * mGs));
 			lblTotalUs.setText(FormatearValor.doubleAString(total / mUs));
-			lblTotalRs.setText(FormatearValor.doubleAString(total * mRs));
-			lblTotalPs.setText(FormatearValor.doubleAString(total * mPs));
+			lblTotalRs.setText(FormatearValor.doubleAString(total / mRs));
+			lblTotalPs.setText(FormatearValor.doubleAString(total / mPs));
 		} else if (monedaBaseCodigo == 2) { // RS
 			lblTotalGs.setText(FormatearValor.doubleAString(total * mGs));
 			lblTotalUs.setText(FormatearValor.doubleAString(total * mUs));
@@ -853,6 +902,119 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 			tfProductoID.requestFocus();
 		}
 	}
+	
+	private void findProducto(String id) {
+		Optional<Producto> producto = null;
+
+		producto = productoService.findById(Long.valueOf(id));
+
+		if (!producto.isPresent()) {
+			if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
+				producto = productoService.findByReferencia(id);
+		}
+
+		if (producto.isPresent()) {
+			setProducto(producto.get());
+		} else {
+			Notifications.showAlert("No existe producto informado. Verifique por favor.!");
+		}
+	}
+	
+	private boolean validateCantidad() {
+		boolean result = false;
+		int depositoId=conf.getDefineDepositoVenta().intValue();
+
+		Long productoId = Long.valueOf(tfProductoID.getText());
+		Double cantidad = FormatearValor.stringADouble(tfCantidad.getText());
+
+		Producto p = productoService.getStockDepositoByProductoId(productoId);
+
+		Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
+
+		switch (depositoId) {
+		case 1:
+			Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
+			//Double depBlo = p.getDepO1Bloq()!=null?p.getDepO1Bloq():0;
+			result = getStockDisp(dep01 - salPend, cantidad);
+			break;
+		case 2:
+			
+			Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
+			//depBlo = p.getDepO2Bloq()!=null?p.getDepO2Bloq():0;
+			result = getStockDisp(dep02 - salPend, cantidad);
+			break;
+		case 3:
+			Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
+			//depBlo = p.getDepO3Bloq()!=null?p.getDepO3Bloq():0;
+			result = getStockDisp(dep03 - salPend, cantidad);
+			break;
+		case 4:
+			Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
+			//depBlo = p.getDepO4Bloq()!=null?p.getDepO4Bloq():0;
+			result = getStockDisp(dep04 - salPend, cantidad);
+			break;
+		case 5:
+			Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
+			//depBlo = p.getDepO5Bloq()!=null?p.getDepO5Bloq():0;
+			result = getStockDisp(dep05 - salPend, cantidad);
+			break;
+		default:
+			break;
+		}
+
+		return result;
+	}
+	
+	private void setProducto(Producto producto) {
+		if (producto != null) {
+			if (producto.getSubgrupo().getTipo().equals("S"))
+				isProductService = true;
+			
+			nivelPrecio ="A";
+			precioInicial = setPrecioByCliente(nivelPrecio, producto);
+			setProductoSeleccionado(producto);
+
+			tfProductoID.setText(String.valueOf(producto.getId()));
+			tfDescripcion.setText(producto.getDescripcion());
+			tfPrecio.setText(FormatearValor.doubleAString(precioInicial));
+			tfCantidad.setText("1");
+			tfCantidad.requestFocus();
+		}
+	}
+	
+	private Double setPrecioByCliente(String nivelPrecio, Producto producto) {
+		Double precio = 0D;
+		switch (nivelPrecio) {
+		case "A":
+			precio = producto.getPrecioVentaA();
+			break;
+		case "B":
+			precio = producto.getPrecioVentaB();
+			break;
+		case "C":
+			precio = producto.getPrecioVentaC();
+			break;
+		case "D":
+			precio = producto.getPrecioVentaD();
+			break;
+		case "E":
+			precio = producto.getPrecioVentaE();
+			break;
+
+		default:
+			break;
+		}
+
+		return precio;
+	}
+	
+	public Producto getProductoSeleccionado() {
+		return productoSeleccionado;
+	}
+
+	public void setProductoSeleccionado(Producto productoSeleccionado) {
+		this.productoSeleccionado = productoSeleccionado;
+	}
 
 	private int getDuplicateItemIndex() {
 		int fila = -1;
@@ -902,6 +1064,22 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		clearItem();
 	}
 
+	private boolean getStockDisp(Double cantDep, Double cant) {
+		boolean result = false;
+
+		if (cantDep != null) {
+			if (cantDep < cant) {
+				Notifications.showAlert(
+						"Disponibilidad de " + FormatearValor.doubleAString(cantDep) + " piezas en el stock");
+				result = false;
+			} else {
+				result = true;
+			}
+		}
+
+		return result;
+	}
+	
 	private void removeItem() {
 		int selectedRow = tbProductos.getSelectedRow();
 
@@ -919,8 +1097,16 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 	}
 
 	private void calculateItem() {
-		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
-		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+		Double cantItem = 0d;
+		Double total = 0d;
+		List<VentaDetalle> listVentaDetalle = itemTableModel.getEntities();
+		for (VentaDetalle ventaDetalle : listVentaDetalle) {
+			ventaDetalle.setSubtotal(ventaDetalle.getCantidad() * ventaDetalle.getPrecio());
+			cantItem += ventaDetalle.getCantidad();
+			total += ventaDetalle.getSubtotal();
+		}
+//		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
+//		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
 		setTotals(cantItem, total);
 	}
 }

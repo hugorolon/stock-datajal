@@ -32,6 +32,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
+import javax.swing.Action;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -107,6 +108,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 	private JLabel label_4;
 	private JLabel label_5;
 	private JLabel label_6;
+	protected Action addAction;
 	
 	private CompraService compraService;
 	private CompraValidator compraValidator;

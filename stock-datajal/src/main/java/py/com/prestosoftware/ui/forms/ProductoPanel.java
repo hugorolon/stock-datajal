@@ -1003,6 +1003,10 @@ public class ProductoPanel extends JDialog {
 
 		btnGuardar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ProductoPanel.btnGuardar.text")); //$NON-NLS-1$
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
 		btnGuardar.setMnemonic('G');
 		panelBotonera.add(btnGuardar);
 
