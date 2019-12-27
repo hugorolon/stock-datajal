@@ -28,6 +28,7 @@ import javax.swing.border.TitledBorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import py.com.prestosoftware.data.models.AperturaCierreCaja;
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Configuracion;
@@ -35,10 +36,12 @@ import py.com.prestosoftware.data.models.Cotizacion;
 import py.com.prestosoftware.data.models.Deposito;
 import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.Moneda;
+import py.com.prestosoftware.data.models.MovimientoCaja;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.data.models.Venta;
 import py.com.prestosoftware.data.models.VentaDetalle;
+import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.CotizacionService;
 import py.com.prestosoftware.domain.services.MonedaService;
@@ -46,6 +49,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.ui.controllers.ClienteController;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.Util;
@@ -111,6 +115,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 	private CotizacionService cotizacionService;
 	private ConfiguracionService configService;
 	private VentaService ventaService;
+	private AperturaCierreCajaService aperturaCierreCajaService;
 	
 	private Configuracion conf = null;
 	private boolean isProductService;
@@ -122,7 +127,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 	public PDV(PDVTableModel itemTableModel, ProductoDialog productoDialog, ProductoService productoService,
 			ConfiguracionService configService, MonedaService monedaService, CotizacionService cotizacionService,
 			ClienteController clientController, CotPDVTableModel cotizacionModel, PDVCliente pdvCliente,
-			VentaService ventaService) {
+			VentaService ventaService, AperturaCierreCajaService aperturaCCService) {
 		this.itemTableModel = itemTableModel;
 		this.productoDialog = productoDialog;
 		this.productoService = productoService;
@@ -132,6 +137,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		this.cotizacionModel = cotizacionModel;
 		this.pdvCliente = pdvCliente;
 		this.ventaService = ventaService;
+		this.aperturaCierreCajaService = aperturaCCService;
 
 		setSize(1009, 594);
 
@@ -142,7 +148,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		Util.setupScreen(this);
 
 		getConfig();
-
+		//getAperturaCaja();
 		getCotizaciones();
 
 		newVenta();
@@ -585,6 +591,8 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		});
 	}
 
+	
+	
 //	private void getConfig() {
 //		Optional<Configuracion> c = configService.findByUserId(new Usuario(GlobalVars.USER_ID));
 //
@@ -598,7 +606,34 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 //		}
 //	}
 	
-	
+	public AperturaCierreCajaService getAperturaCierreCajaService() {
+		return aperturaCierreCajaService;
+	}
+
+	public void setAperturaCierreCajaService(AperturaCierreCajaService aperturaCierreCajaService) {
+		this.aperturaCierreCajaService = aperturaCierreCajaService;
+	}
+
+	public void getAperturaCaja() {
+		Date fecha=new Date();
+		Optional<AperturaCierreCaja> aperturaCierreCaja = aperturaCierreCajaService.findOptionalByCajaAndFechaAperturaUsuario(new Caja(1l), fecha, Long.valueOf(GlobalVars.USER_ID));
+    	AperturaCierreCaja aperCierre = new AperturaCierreCaja();
+    		if (!aperturaCierreCaja.isPresent()) { 
+    			aperCierre.setMontoApertura(0.0D);
+    			aperCierre.setMontoAperturaM1(0.0D);
+    			aperCierre.setMontoAperturaM2(0.0D);
+    			aperCierre.setMontoAperturaM3(0.0D);
+    			aperCierre.setMontoAperturaM4(0.0D);
+    			aperCierre.setMontoAperturaM5(0.0D);
+				aperCierre.setUsuario(GlobalVars.USER_ID);
+        		aperCierre.setCaja(new Caja(1L));
+        		aperCierre.setHoraApertura(fecha);
+        		aperCierre.setFechaApertura(fecha);
+        		aperCierre.setActivo(1);
+        		aperturaCierreCajaService.save(aperCierre);
+        		Notifications.showAlert("Se abrio correctamente la CAJA");
+    		}
+	}
 
 	public void getConfig() {
 		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
@@ -832,7 +867,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		pdvCliente.setVisible(true);
 		pdvCliente.cargarCliente(getVentaFrom(), tfCajaID.getText(), lblTotalGs.getText(), lblTotalUs.getText(),
 				lblTotalRs.getText(), lblTotalRs.getText(), tfVentaId.getText(), mGs, mUs, mRs, mPs);
-
+		//pdvCliente.requestFocus();
 		// clearForm();
 	}
 

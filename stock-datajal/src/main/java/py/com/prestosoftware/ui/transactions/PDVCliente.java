@@ -167,12 +167,12 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 		tfClienteRuc.setBounds(86, 10, 100, 30);
 		pnlCliente.add(tfClienteRuc);
 		((AbstractDocument) tfClienteRuc.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfClienteRuc.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfClienteRuc.selectAll();
-			}
-		});
+//		tfClienteRuc.addFocusListener(new FocusAdapter() {
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				tfClienteRuc.selectAll();
+//			}
+//		});
 		tfClienteRuc.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -536,38 +536,38 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 //					Double value = !tfRecibidoGs.getText().isEmpty() ? 
 //							tfRecibidoGs.getText() : 0;
 					
-					calculateValue();
+					calculateValue(tfRecibidoGs.getText(), "GS");
 					
-					Double total = FormatearValor
-							.stringToDouble(!tfTotalGs.getText().isEmpty() ? tfTotalGs.getText() : "0");
-					Double recibido = FormatearValor
-							.stringToDouble(!tfRecibidoGs.getText().isEmpty() ? tfRecibidoGs.getText() : "0");
-					Double faltante = FormatearValor
-							.stringToDouble(!tfFaltanteGs.getText().isEmpty() ? tfFaltanteGs.getText() : "0");
-
-					if (recibido > 0) {
-						if (recibido >= faltante) {
-							tfVueltoGs.setText(FormatearValor.doubleAString(recibido - faltante));
-							tfVueltoGs.requestFocus();
-							
-							tfFaltanteUs.setText("0");
-							tfFaltanteRs.setText("0");
-							tfFaltantePs.setText("0");
-						} else {
-							Double saldo = total - recibido;
-							tfFaltanteGs.setText(FormatearValor.doubleAString(saldo));
-							// calcular saldos
-							tfFaltanteUs.setText(FormatearValor.doubleAString(saldo / cotUs));
-							tfFaltanteRs.setText(FormatearValor.doubleAString(saldo / cotRs));
-							tfFaltantePs.setText(FormatearValor.doubleAString(saldo / cotPs));
-
-							tfRecibidoUs.setText(FormatearValor.doubleAString(saldo / cotUs));
-							tfRecibidoUs.requestFocus();
-						}
-					} else {
-						tfRecibidoGs.setText("0");
-						tfRecibidoUs.requestFocus();
-					}
+//					Double total = FormatearValor
+//							.stringToDouble(!tfTotalGs.getText().isEmpty() ? tfTotalGs.getText() : "0");
+//					Double recibido = FormatearValor
+//							.stringToDouble(!tfRecibidoGs.getText().isEmpty() ? tfRecibidoGs.getText() : "0");
+//					Double faltante = FormatearValor
+//							.stringToDouble(!tfFaltanteGs.getText().isEmpty() ? tfFaltanteGs.getText() : "0");
+//
+//					if (recibido > 0) {
+//						if (recibido >= faltante) {
+//							tfVueltoGs.setText(FormatearValor.doubleAString(recibido - faltante));
+//							tfVueltoGs.requestFocus();
+//							
+//							tfFaltanteUs.setText("0");
+//							tfFaltanteRs.setText("0");
+//							tfFaltantePs.setText("0");
+//						} else {
+//							Double saldo = total - recibido;
+//							tfFaltanteGs.setText(FormatearValor.doubleAString(saldo));
+//							// calcular saldos
+//							tfFaltanteUs.setText(FormatearValor.doubleAString(saldo / cotUs));
+//							tfFaltanteRs.setText(FormatearValor.doubleAString(saldo / cotRs));
+//							tfFaltantePs.setText(FormatearValor.doubleAString(saldo / cotPs));
+//
+//							tfRecibidoUs.setText(FormatearValor.doubleAString(saldo / cotUs));
+//							tfRecibidoUs.requestFocus();
+//						}
+//					} else {
+//						tfRecibidoGs.setText("0");
+//						tfRecibidoUs.requestFocus();
+//					}
 				}
 			}
 
@@ -1144,7 +1144,7 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 		}
 	}
 
-	private void calculateValue() {
+	private void calculateValue(String valorIngresado, String tipoMoneda) {
 		Double faltaGs = FormatearValor
 				.stringToDouble(!tfFaltanteGs.getText().isEmpty() ? tfFaltanteGs.getText() : "0");
 		Double faltaUs = FormatearValor
@@ -1163,8 +1163,11 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 		Double recibidoPs = FormatearValor
 				.stringToDouble(!tfRecibidoPs.getText().isEmpty() ? tfRecibidoPs.getText() : "0");
 
-		Double vueltoGs, vueltoUs, vueltoRs, vueltoPs = 0d;
-		
+		Double vueltoGs = FormatearValor.stringToDouble(!tfVueltoGs.getText().isEmpty()?tfVueltoGs.getText():"0");
+		Double vueltoUs = FormatearValor.stringToDouble(!tfVueltoUs.getText().isEmpty()?tfVueltoUs.getText():"0");
+		Double vueltoRs = FormatearValor.stringToDouble(!tfVueltoRs.getText().isEmpty()?tfVueltoRs.getText():"0");
+		Double vueltoPs = FormatearValor.stringToDouble(!tfVueltoPs.getText().isEmpty()?tfVueltoPs.getText():"0");;
+		Double saldo=0d;
 		//convertir todos los valores recibido a moneda Gs.
 		
 		//Sumar los valores recibidos
@@ -1173,59 +1176,52 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 		
 		//Restar recibidos - faltantes
 		
-
-		if (recibidoGs >= faltaGs) {
-			vueltoGs = recibidoGs - faltaGs;
-			tfFaltanteGs.setText("");
-			tfFaltanteUs.setText("");
-			tfFaltanteRs.setText("");
-			tfFaltantePs.setText("");
-			tfVueltoGs.setText(FormatearValor.doubleAString(vueltoGs));
-
-			// calcular el vuelto en varias monedas
-
-			btnAceptar.requestFocus();
-		} else {
-
-			if (recibidoUs >= faltaUs) {
-				vueltoUs = recibidoUs - faltaUs;
-				tfFaltanteGs.setText("");
-				tfFaltanteUs.setText("");
-				tfFaltanteRs.setText("");
-				tfFaltantePs.setText("");
-				tfVueltoUs.setText(FormatearValor.doubleAString(vueltoUs));
+		if(tipoMoneda.equalsIgnoreCase("GS")) {
+			if (recibidoGs >= faltaGs) {
+				vueltoGs = recibidoGs - faltaGs;
+				tfFaltanteGs.setText(FormatearValor.doubleAString(0d));
+				tfVueltoGs.setText(FormatearValor.doubleAString(vueltoGs));
+				// calcular el vuelto en varias monedas
 				btnAceptar.requestFocus();
-
-				if (recibidoRs >= faltaRs) {
-					vueltoRs = recibidoRs - faltaRs;
-					tfFaltanteGs.setText("");
-					tfFaltanteUs.setText("");
-					tfFaltanteRs.setText("");
-					tfFaltantePs.setText("");
-					tfVueltoRs.setText(FormatearValor.doubleAString(vueltoRs));
-					btnAceptar.requestFocus();
-
-					if (recibidoPs >= faltaPs) {
-						vueltoPs = recibidoPs - faltaPs;
-						tfFaltanteGs.setText("");
-						tfFaltanteUs.setText("");
-						tfFaltanteRs.setText("");
-						tfFaltantePs.setText("");
-						tfVueltoRs.setText(FormatearValor.doubleAString(vueltoPs));
-						btnAceptar.requestFocus();
-					} else {
-						// recalcular
-					}
-
-				} else {
-					// recalcular
-				}
-
 			} else {
-				// recalcular
-				tfFaltanteGs.setText(FormatearValor.doubleAString(recibidoGs - faltaGs));
+				tfVueltoGs.setText(FormatearValor.doubleAString(0d));
+				saldo=recibidoGs-faltaGs;
+				tfFaltanteGs.setText(FormatearValor.doubleAString(saldo));
+				faltaUs=saldo/cotUs;
+				faltaRs=saldo/cotRs;
+				faltaPs=saldo/cotPs;
 			}
+		}else {
+			if(tipoMoneda.equalsIgnoreCase("US")) {
+				if (recibidoUs >= faltaUs) {
+					vueltoUs = recibidoUs - faltaUs;
+					tfFaltanteUs.setText(FormatearValor.doubleAString(0d));
+					tfVueltoUs.setText(FormatearValor.doubleAString(vueltoUs));
+					btnAceptar.requestFocus();
+				}else {
+					saldo=recibidoUs-faltaUs;
+					tfFaltanteUs.setText(FormatearValor.doubleAString(saldo));
+					faltaUs=saldo/cotUs;
+					faltaRs=saldo/cotRs;
+					faltaPs=saldo/cotPs;
+				}
+			}else {
+				if(tipoMoneda.equalsIgnoreCase("RS")) {
+					if (recibidoRs >= faltaRs) {
+						vueltoRs = recibidoRs - faltaRs;
+						tfFaltanteRs.setText(FormatearValor.doubleAString(0d));
+						tfFaltantePs.setText(FormatearValor.doubleAString(0d));
+						tfVueltoRs.setText(FormatearValor.doubleAString(vueltoRs));
+						btnAceptar.requestFocus();
 
+						if (recibidoPs >= faltaPs) {
+							vueltoPs = recibidoPs - faltaPs;
+							tfVueltoRs.setText(FormatearValor.doubleAString(vueltoPs));
+							btnAceptar.requestFocus();
+						} 
+					}
+				}
+			}
 		}
 	}
 

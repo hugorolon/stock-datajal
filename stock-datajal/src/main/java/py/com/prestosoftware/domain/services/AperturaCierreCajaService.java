@@ -27,6 +27,10 @@ public class AperturaCierreCajaService {
     	return repository.findOptionalByCajaAndFechaApertura(caja, fecha);
     }
     
+    public Optional<AperturaCierreCaja> findOptionalByCajaAndFechaAperturaUsuario(Caja caja, Date fecha, Long usuario) {
+    	return repository.findOptionalByCajaAndFechaAperturaAndUsuario(caja, fecha, usuario);
+    }
+    
     public Optional<AperturaCierreCaja> getInfoAperturaCierreCaja() {
     	return repository.getUltAperturaCierre();
     }

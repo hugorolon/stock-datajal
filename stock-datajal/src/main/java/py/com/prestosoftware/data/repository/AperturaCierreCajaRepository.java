@@ -15,6 +15,8 @@ public interface AperturaCierreCajaRepository extends JpaRepository<AperturaCier
 	
 	Optional<AperturaCierreCaja> findOptionalByCajaAndFechaApertura(Caja caja, Date fechaApertura);
 	
+	Optional<AperturaCierreCaja> findOptionalByCajaAndFechaAperturaAndUsuario(Caja caja, Date fechaApertura, Long usuario);
+	
 	@Query(value = "SELECT * FROM apertura_cierre_cajas ORDER BY id DESC LIMIT 1 ", nativeQuery = true)
 	Optional<AperturaCierreCaja> getUltAperturaCierre();
 	

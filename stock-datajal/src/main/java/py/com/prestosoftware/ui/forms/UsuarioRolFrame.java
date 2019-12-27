@@ -22,7 +22,6 @@ public class UsuarioRolFrame extends JDialog {
     
     @Autowired
     public UsuarioRolFrame(UsuarioRolTablePanel tablePanel, UsuarioRolPanel formPanel) {
-    	//this.searchPanel = searchPanel;
     	this.tablePanel = tablePanel;
         this.formPanel = formPanel;
         setFrameUp();

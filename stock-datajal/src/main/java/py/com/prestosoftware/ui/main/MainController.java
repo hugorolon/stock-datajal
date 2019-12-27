@@ -195,6 +195,7 @@ public class MainController extends AbstractFrameController {
     
     private void openPDV() {
     	pdv.setVisible(true);
+    	pdv.getAperturaCaja();
     }
     
     public void openEntregaBoletaPanel() {
