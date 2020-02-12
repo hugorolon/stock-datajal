@@ -153,7 +153,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 		this.configService = configService;
 		this.usuarioRolService = usuarioRolService;
 
-		setSize(915, 640);
+		setSize(915, 660);
 		setTitle("REGISTRO DE VENTAS");
 
 		initComponents();
@@ -554,6 +554,11 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 						findVendedorById(Long.valueOf(tfVendedorID.getText()));
 					} else {
 						showDialog(VENDEDOR_CODE);
+					}
+					if(tfVendedorID.getText().isEmpty()) {
+						tfVendedorID.requestFocus();
+					}else {
+						tfProductoID.requestFocus();
 					}
 				}
 			}
@@ -1761,6 +1766,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, VendedorInter
 
 		if (deposito.isPresent()) {
 			tfDepositoID.setEditable(false);
+			tfDepositoID.setText(deposito.get().getId().toString());
 			tfDeposito.setText(deposito.get().getNombre());
 			tfProductoID.requestFocus();
 		} else {

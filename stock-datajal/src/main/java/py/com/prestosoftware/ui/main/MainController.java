@@ -413,12 +413,12 @@ public class MainController extends AbstractFrameController {
     }
     
     private void openVenta() {
+    	ventaPanel.clearForm();
     	ventaPanel.getConfig();
     	ventaPanel.setVisible(true);
-    	ventaPanel.clearForm();
-    	ventaPanel.newVenta();
     	ventaPanel.vistaDescuentoTotal();
     	ventaPanel.vistaDescuentoItem();
+    	ventaPanel.newVenta();
     }
     
     private void openAperturaCierreCaja(int tipo) {

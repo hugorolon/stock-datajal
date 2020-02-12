@@ -29,3 +29,7 @@ INSERT INTO public.roles(
 INSERT INTO public.roles(
              activo, nombre)
     VALUES ( 1,"VENTAS CON DESCUENTO TOTAL");
+ALTER TABLE public.clientes
+    ALTER COLUMN nombre TYPE character varying (125) COLLATE pg_catalog."default";    
+ALTER TABLE public.clientes
+    ALTER COLUMN razon_social TYPE character varying (125) COLLATE pg_catalog."default";    

@@ -8,9 +8,13 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -920,8 +924,13 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 		c.setNombre(tfClienteNombre.getText());
 		c.setRazonSocial(tfClienteNombre.getText());
 		c.setDvruc(tfDvRuc.getText());
+		c.setCiruc(tfClienteRuc.getText());
 		c.setDireccion(tfClienteDireccion.getText());
 		c.setCelular(tfClienteCelular.getText());
+		c.setActivo(1);
+		c.setClase("A");
+		c.setFechaRegistro(new Date());
+		c.setTipo("FISICO");
 
 		if (tfDvRuc.getText().isEmpty()) {
 			c.setCiruc("44444401");
@@ -937,13 +946,13 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 
 	private void habilitarCampos(boolean isEditing) {
 		tfClienteNombre.requestFocus();
-		
 		tfClienteNombre.setEnabled(isEditing);
 		tfClienteCelular.setEnabled(isEditing);
 		tfClienteDireccion.setEnabled(isEditing);
 	}
 	
 	private void clearClientData() {
+		tfDvRuc.setText("");
 		tfClienteNombre.setText("");
 		tfClienteCelular.setText("");
 		tfClienteDireccion.setText("");
@@ -951,10 +960,32 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 
 	private void guardarVenta() {
 		save(ventaPDV);
+//		try {
+//		      File ruc0 = new File("C:\\Users\\hugor\\Downloads\\ruc0\\ruc9.txt");
+//		      Scanner myReader = new Scanner(ruc0);
+//		      while (myReader.hasNextLine()) {
+//		        String data = myReader.nextLine();
+//		        String[] registro=data.split("\\|");
+//		        Cliente cliente= new Cliente();
+//		        cliente.setCiruc(registro[0].toString());
+//		        cliente.setDvruc(registro[2].toString());
+//		        cliente.setNombre(registro[1].toString());
+//		        cliente.setRazonSocial(registro[1].toString());
+//		        cliente.setActivo(1);
+//		        cliente.setFechaRegistro(new Date());
+//		        cliente.setPlazo(0);
+//		        clienteService.save(cliente);
+//		      }
+//		      myReader.close();
+//		      System.out.println("exitoso 9");
+//		    } catch (FileNotFoundException e) {
+//		      System.out.println("An error occurred.");
+//		      e.printStackTrace();
+//		    }
 	}
 
 	private void calculateDV() {
-		if (!tfDvRuc.getText().isEmpty()) {
+		if (tfDvRuc.getText().isEmpty()) {
 			tfDvRuc.setText(String.valueOf(DigitoVerificador.calcular(tfClienteRuc.getText(), 11)));
 		} else {
 			Notifications.showAlert("Debes digitar RUC valido.!");
@@ -995,6 +1026,7 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 
 			txtTftotal.setText(totalGs);
 			tfClienteRuc.setText(venta.getClienteRuc());
+			tfDvRuc.setText("4");
 			tfClienteID.setText(String.valueOf(venta.getCliente().getId()));
 			tfClienteNombre.setText(venta.getClienteNombre());
 			tfClienteDireccion.setText(venta.getClienteDireccion());
@@ -1094,10 +1126,12 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 			Venta venta = ventaPDV;
 
 			if (isNewClient) {
-				venta.setCliente(new Cliente(newClientId));
-				venta.setClienteNombre(tfClienteNombre.getText());
-				venta.setClienteRuc(tfClienteRuc.getText() + tfDvRuc.getText());
-				venta.setClienteDireccion("SIN DIRECCION");
+				saveClient();
+				Cliente cliente = clienteService.findByRuc(tfClienteRuc.getText());
+				venta.setCliente(cliente);
+				venta.setClienteNombre(cliente.getNombre());
+				venta.setClienteRuc(cliente.getRazonSocial() + cliente.getDvruc());
+				venta.setClienteDireccion(cliente.getDireccion());
 
 				isNewClient = false;
 				newClientId = 0L;

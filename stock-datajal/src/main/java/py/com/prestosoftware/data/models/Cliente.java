@@ -27,10 +27,10 @@ public class Cliente {
 	private String tipo;
 	
 	@NotNull
-	@Column(name = "nombre", length = 60)
+	@Column(name = "nombre", length = 125)
 	private String nombre;
 	
-	@Column(name = "razon_social", length = 60)
+	@Column(name = "razon_social", length = 125)
 	private String razonSocial;
 	
 	private String ciruc;
