@@ -960,28 +960,6 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 
 	private void guardarVenta() {
 		save(ventaPDV);
-//		try {
-//		      File ruc0 = new File("C:\\Users\\hugor\\Downloads\\ruc0\\ruc9.txt");
-//		      Scanner myReader = new Scanner(ruc0);
-//		      while (myReader.hasNextLine()) {
-//		        String data = myReader.nextLine();
-//		        String[] registro=data.split("\\|");
-//		        Cliente cliente= new Cliente();
-//		        cliente.setCiruc(registro[0].toString());
-//		        cliente.setDvruc(registro[2].toString());
-//		        cliente.setNombre(registro[1].toString());
-//		        cliente.setRazonSocial(registro[1].toString());
-//		        cliente.setActivo(1);
-//		        cliente.setFechaRegistro(new Date());
-//		        cliente.setPlazo(0);
-//		        clienteService.save(cliente);
-//		      }
-//		      myReader.close();
-//		      System.out.println("exitoso 9");
-//		    } catch (FileNotFoundException e) {
-//		      System.out.println("An error occurred.");
-//		      e.printStackTrace();
-//		    }
 	}
 
 	private void calculateDV() {
