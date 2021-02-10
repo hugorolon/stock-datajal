@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sys_datajal_prod
+    username: datajal_sys
+    password: admin
