@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="subReportVenta" pageWidth="535" pageHeight="802" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="c643917c-16e1-430a-8ea2-aafed1a77979">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<field name="clasificacion" class="java.lang.String"/>
+	<field name="fechaBase" class="java.lang.String"/>
+	<field name="comprobanteBase" class="java.lang.String"/>
+	<field name="cuotaBase.cuotaNumero" class="java.lang.Integer"/>
+	<field name="montoBase" class="java.lang.String"/>
+	<field name="operacionTipoComplemento.grupo" class="java.lang.String"/>
+	<field name="fechaComplemento" class="java.lang.String"/>
+	<field name="comprobanteComplemento" class="java.lang.String"/>
+	<field name="saldoEtiqueta" class="java.lang.String"/>
+	<field name="cabeceraAnterior" class="java.lang.String"/>
+	<field name="montoComplemento" class="java.lang.String"/>
+	<field name="saldo" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="48" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="c38f13f2-7ae1-4f1d-948a-1ab22b303512" x="227" y="21" width="54" height="13"/>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Movimiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2159ee04-ca8a-4c45-bc1b-b3ba9a11b0ec" x="283" y="21" width="35" height="13"/>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5b6e56db-f7ad-476f-876d-00b7b294e50e" x="25" y="21" width="35" height="13"/>
+				<textElement>
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="108ee0fb-361b-4134-88af-c549b914d2e0" x="62" y="21" width="75" height="13"/>
+				<textElement>
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comprobante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c97f664d-107c-441d-bb2b-9650e2b64ee9" x="320" y="21" width="66" height="13"/>
+				<textElement textAlignment="Left">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Comprobante]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="11e1c48d-d670-46cf-bc58-3d1b34147029" x="137" y="21" width="40" height="13"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cuota Nº]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="46a36cb0-2001-463b-8d4d-7b1f2492e347" x="179" y="21" width="46" height="13"/>
+				<textElement>
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0a17429c-e81c-430c-a6dd-1c4cdaf3175e" x="0" y="34" width="535" height="1"/>
+				<graphicElement>
+					<pen lineWidth="0.25"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement uuid="60310528-d519-46dd-b556-af8f25ac34f3" x="20" y="36" width="169" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}>1 && !$F{fechaBase}.equals("")?$F{cabeceraAnterior}:""]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="043f9587-6220-40c8-a35a-fe2b59bbc5c8" x="388" y="21" width="46" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Monto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a8561729-dcd1-4824-9dea-5f3c822b4467" x="436" y="21" width="46" height="13"/>
+				<textElement textAlignment="Right">
+					<font fontName="Times New Roman" size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Saldo]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="15" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4b4e8227-7aae-4e69-9171-937ac760659b" x="436" y="2" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="4320640b-2249-4c60-9265-5ec0c095315d" x="375" y="2" width="59" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{saldoEtiqueta}.equals("")?$F{montoComplemento}:$F{saldoEtiqueta}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="5c936f88-2fe7-41d0-b8cb-5821c5b60717" x="25" y="2" width="35" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaBase}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="da1c0758-c25e-4e03-a9ff-9765814f34b4" x="0" y="2" width="189" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{clasificacion}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="14258546-69e6-4ee9-9ad4-263d7e3f8f2c" x="320" y="2" width="66" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comprobanteComplemento}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="02a03830-c824-4d35-86a0-fbee6bbaa557" x="137" y="2" width="40" height="12"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{cuotaBase.cuotaNumero}>0?$F{cuotaBase.cuotaNumero}:""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="35b4e20d-cd65-4b35-aec4-2dbf999de404" x="179" y="2" width="46" height="12"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{montoBase}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="90dcb58c-9b3e-4534-bcbf-c0ee592f87c9" x="283" y="2" width="35" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechaComplemento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c205c4c6-1b16-4018-9e72-c7ed572addd9" x="227" y="2" width="54" height="12"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{operacionTipoComplemento.grupo}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="dea79818-1390-4fbf-8537-934864db8996" x="62" y="2" width="75" height="12"/>
+				<textElement textAlignment="Left">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{comprobanteBase}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -116,7 +116,7 @@ public class MainFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 778, 393);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setTitle("DATAJAL - SOFTWARE DE GESTIÓN EMPRESARIAL");
+		setTitle("SOFTWARE DE GESTIÓN EMPRESARIAL");
 		
 		addWindowListener(new java.awt.event.WindowAdapter() {   
 			public void windowClosing(java.awt.event.WindowEvent e) {    

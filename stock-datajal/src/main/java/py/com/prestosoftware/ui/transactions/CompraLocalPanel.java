@@ -126,6 +126,8 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 	private ProductoDialog productoDialog;
 	private CondicionPagoService condicionPagoService;
 	private ConfiguracionService configService;
+	private Deposito depositoDef;
+	private Moneda monedaDef;
 	
 	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
 			DepositoDialog depositoDialog, MonedaDialog monedaDialog, ProductoDialog productoDialog,
@@ -148,7 +150,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 		this.condicionPagoService = condicionPagoService;
 		this.configService = configService;
 
-		setSize(920, 623);
+		setSize(920, 650);
 		setTitle("REGISTRO DE COMPRAS");
 		
 		initComponents();
@@ -157,7 +159,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 
 	@SuppressWarnings("serial")
 	private void initComponents() {
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(0);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(12, 122, 896, 322);
@@ -301,7 +303,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 				return false;
 			}
 		};
-		
+		Util.ocultarColumna(tbProductos, 5);
 		Util.ocultarColumna(tbProductos, 6);
 		Util.ocultarColumna(tbProductos, 7);
 		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -505,6 +507,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 				Util.validateNumero(e);
 			}
 		});
+		tfMonedaID.setText("");
 		tfMonedaID.setBounds(462, 39, 51, 30);
 		pnlCliente.add(tfMonedaID);
 		tfMonedaID.setToolTipText(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -512,7 +515,8 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 		tfMonedaID.setColumns(10);
 
 		tfMoneda = new JTextField();
-		tfMoneda.setEditable(false);
+		tfMoneda.setEditable(true);
+		tfMoneda.setEnabled(true);
 		tfMoneda.setBounds(515, 39, 117, 30);
 		pnlCliente.add(tfMoneda);
 		tfMoneda.setColumns(10);
@@ -583,19 +587,18 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfProveedorID.getText().isEmpty() && !tfFactura.getText().isEmpty()) {
 						if (validateFactura(tfProveedorID.getText(), tfFactura.getText())) {
-							Notifications.showAlert("Proveedor y Nro. de Factura ya han sido cargados.");
-						} else {
+							//Notifications.showAlert("Proveedor y Nro. de Factura ya han sido cargados.");
 							if (conf != null) {
-								if (conf.getPideMoneda() == 1) {
+								if (tfMonedaID.getText().isEmpty()&&conf.getPideMoneda() == 1) {
 									tfMonedaID.requestFocus();
-								} else if (conf.getPideDeposito() == 1) {
+									Notifications.showAlert("Moneda no ha sido cargado");
+								} else if (tfDepositoID.getText().isEmpty()&&conf.getPideDeposito() == 1) {
 									tfDepositoID.requestFocus();
+									Notifications.showAlert("Deposito no ha sido cargado");
 								} else {
 									tfProductoID.requestFocus();
 								}
-							} else {
-								tfMonedaID.requestFocus();
-							}
+							} 
 						}
 					} else {
 						Notifications.showAlert("Debes ingresar Proveedor y/o Factura Nro.");
@@ -1082,6 +1085,9 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 
 	private void updateStockProduct(List<CompraDetalle> items, Deposito deposito) {
 		List<Producto> productos = new ArrayList<>();
+		int habilitaLanzamientoCaja =0;
+		if(conf!=null&&conf.getHabilitaLanzamientoCaja()!=0)
+		    habilitaLanzamientoCaja = conf.getHabilitaLanzamientoCaja();
 		
 		for (CompraDetalle e : items) {
 			Optional<Producto> pOptional = productoService.findById(e.getProductoId());
@@ -1091,8 +1097,36 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 
 				Double cantCompra = e.getCantidad() != null ? e.getCantidad():0;
 				Double entPendiente = p.getEntPendiente() != null ? p.getEntPendiente():0;
-				
-				p.setEntPendiente(entPendiente + cantCompra);
+				if(habilitaLanzamientoCaja==1)
+					p.setEntPendiente(entPendiente + cantCompra);
+				else {
+					Double cantDep=0d;
+					switch(depositoDef.getId().intValue()) {
+						case 1:
+							cantDep=p.getDepO1();
+							p.setDepO1(cantDep+cantCompra);
+							break;
+						case 2:	
+							cantDep=p.getDepO2();
+							p.setDepO2(cantDep+cantCompra);
+							break;
+						case 3:
+							cantDep=p.getDepO3();
+							p.setDepO3(cantDep+cantCompra);
+							break;
+						case 4 :
+							cantDep=p.getDepO4();
+							p.setDepO4(cantDep+cantCompra);
+							break;
+						case 5 :
+							cantDep=p.getDepO5();
+							p.setDepO5(cantDep+cantCompra);
+							break;
+						default :
+							break;
+					}
+					
+				}
 
 				productos.add(p);
 			}			
@@ -1135,7 +1169,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 	}
 
 	private void save() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMA", "AVISO - DATAJAL", JOptionPane.OK_CANCEL_OPTION);
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMA", "AVISO ", JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (validateCabezera()) {
 				Compra compra = getCompra();
@@ -1172,23 +1206,24 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 		if (config.isPresent()) {
 			this.conf = config.get();
 			
-			if (conf.getPideMoneda() == 0)
+			if (conf.getPideMoneda() == 0) {
 				tfMonedaID.setEnabled(false);
-			
-			if (conf.getPideDepositoCompra() == 0)
+				tfMoneda.setEnabled(false);
+			}
+			if (conf.getPideDepositoCompra() == 0) {
 				tfDepositoID.setEnabled(false);
-			
+				tfDeposito.setEnabled(false);
+			}
 			if (conf.getPideFleteCompraLocal() == 0) 
 				tfFlete.setEnabled(false);
 			
 			if (conf.getPideGastoItemCompra() == 0)
 				tfGasto.setEnabled(false);
 			
-			if (conf.getDefineDepositoCompra() != 0) {
-				configService.findByUserId(new Usuario(GlobalVars.USER_ID));
-				tfDepositoID.setEnabled(false);
-				findDepositoById(String.valueOf(conf.getDefineDepositoCompra()));
-			}
+//			if (conf.getDefineDepositoCompra() != 0) {
+//				tfDepositoID.setEnabled(true);
+//				tfDeposito.setEnabled(true);
+//			}
 		}
 	}
 
@@ -1198,13 +1233,17 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 			Notifications.showAlert("El codigo del Proveedor es obligatorio");
 			tfProveedorID.requestFocus();
 			return false;
-		} else if (tfDepositoID.getText().isEmpty()) { //si esta vacio
+		} else if (tfDepositoID.getText().isEmpty() && (conf!=null && conf.getPideDeposito()==1)) { //si esta vacio
 			Notifications.showAlert("El codigo del Deposito es obligatorio");
 			tfDepositoID.requestFocus();
 			return false;
 		} else if (tfDepositoID.getText().isEmpty() && (conf != null && conf.getPideDepositoCompra() == 1)) {
 			Notifications.showAlert("El codigo del Deposito es obligatorio");
 			tfDepositoID.requestFocus();
+			return false;
+		} else if (tfMonedaID.getText().isEmpty() && (conf != null && conf.getPideMoneda() == 1)) {
+			Notifications.showAlert("El codigo de Moneda es obligatorio");
+			tfMonedaID.requestFocus();
 			return false;
 		}
 
@@ -1222,7 +1261,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 			deposito = depositoService.findById(Long.valueOf(tfDepositoID.getText()));
 		else
 			deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
-
+		
 		if (!deposito.isPresent()) {
 			Notifications.showAlert("El codigo del Deposito no existe.!");
 			tfDepositoID.requestFocus();
@@ -1428,7 +1467,6 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 		if (deposito.isPresent()) {
 			tfDepositoID.setText(String.valueOf(deposito.get().getId()));
 			tfDeposito.setText(deposito.get().getNombre());
-
 			tfProductoID.requestFocus();
 		} else {
 			Notifications.showAlert("No existe Deposito con ese codigo.!");
@@ -1617,6 +1655,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 			Notifications.showAlert("Este Producto es de tipo Servicio. No se puede comprar");
 		} else {
 			Double costoFob = producto.getCostoFob() != null ? producto.getCostoFob() : 0;
+			tfProductoID.setText(producto.getId().toString());
 			tfDescripcion.setText(producto.getDescripcion());
 			tfPrecio.setText(FormatearValor.doubleAString(costoFob));
 			tfCantidad.setText("1");
@@ -1661,6 +1700,22 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 		long newId = max + 1;
 		tfCompraId.setText(String.valueOf(newId));
 		tfProveedorID.requestFocus();
+		if (conf.getPideMoneda() == 0) {
+			Optional<Moneda> moneda = monedaService.findById(GlobalVars.BASE_MONEDA_ID);
+			setMonedaDef(moneda.get());
+			tfMonedaID.setText(moneda.get().getId().toString());
+			tfMoneda.setText(moneda.get().getNombre());
+		}
+		if (conf.getPideDepositoCompra() == 0) {
+			Optional<Deposito> deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
+			setDepositoDef(deposito.get());
+			tfDepositoID.setText(String.valueOf(deposito.get().getId()));
+			tfDeposito.setText(deposito.get().getNombre());
+		}
+		
+//		if (conf.getDefineDepositoCompra() != 0) {
+//			findDepositoById(String.valueOf(conf.getDefineDepositoCompra()));
+//		}
 	}
 
 	@Override
@@ -1670,4 +1725,22 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz, Depos
 			tfFlete.requestFocus();
 		}
 	}
+
+	public Deposito getDepositoDef() {
+		return depositoDef;
+	}
+
+	public void setDepositoDef(Deposito depositoDef) {
+		this.depositoDef = depositoDef;
+	}
+
+	public Moneda getMonedaDef() {
+		return monedaDef;
+	}
+
+	public void setMonedaDef(Moneda monedaDef) {
+		this.monedaDef = monedaDef;
+	}
+	
+	
 }

@@ -236,8 +236,10 @@ public class UsuarioRolPanel extends JPanel implements VendedorInterfaz {
         if (!tfId.getText().isEmpty()) {
         	userRol.setId(Long.parseLong(tfId.getText()));
 		}
-        if(!tfUsuarioID.getText().isEmpty())
+        if(!tfUsuarioID.getText().isEmpty()) {
+        	userRol.setUsuario(new Usuario());
         	userRol.getUsuario().setId(Long.parseLong(tfUsuarioID.getText()));
+        }
         if(!tfUsuario.getText().isEmpty())
         	userRol.getUsuario().setUsuario(tfUsuario.getText());
         

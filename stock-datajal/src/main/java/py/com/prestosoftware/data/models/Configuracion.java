@@ -288,6 +288,10 @@ public class Configuracion {
 	@Column(name = "puede_ver_costo_cif")
 	private int puedeVerCostoCif;
 	
+	@ColumnDefault(value = "0")
+	@Column(name = "habilita_lanzamiento_caja")
+	private int habilitaLanzamientoCaja;
+	
 	public Configuracion() {}
 	
 	public Configuracion(Long id) {
@@ -820,6 +824,14 @@ public class Configuracion {
 
 	public void setDepositoIdPDV(int depositoIdPDV) {
 		this.depositoIdPDV = depositoIdPDV;
+	}
+
+	public int getHabilitaLanzamientoCaja() {
+		return habilitaLanzamientoCaja;
+	}
+
+	public void setHabilitaLanzamientoCaja(int habilitaLanzamientoCaja) {
+		this.habilitaLanzamientoCaja = habilitaLanzamientoCaja;
 	}
 	
 	

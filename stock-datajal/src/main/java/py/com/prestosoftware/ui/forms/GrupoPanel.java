@@ -228,12 +228,19 @@ public class GrupoPanel extends JPanel {
         
         if (!tfPorcPrecioA.getText().isEmpty()) {
         	grupo.setPorcIncrementoPrecioA(FormatearValor.stringADouble(tfPorcPrecioA.getText()));
+        }
+        if (!tfPorcPrecioB.getText().isEmpty()) {
         	grupo.setPorcIncrementoPrecioB(FormatearValor.stringADouble(tfPorcPrecioB.getText()));
+        }
+        if (!tfPorcPrecioC.getText().isEmpty()) {
         	grupo.setPorcIncrementoPrecioC(FormatearValor.stringADouble(tfPorcPrecioC.getText()));
+        }
+        if (!tfPorcPrecioD.getText().isEmpty()) {
         	grupo.setPorcIncrementoPrecioD(FormatearValor.stringADouble(tfPorcPrecioD.getText()));
+        }
+        if (!tfPorcPrecioE.getText().isEmpty()) {
         	grupo.setPorcIncrementoPrecioE(FormatearValor.stringADouble(tfPorcPrecioE.getText()));
         }
-        
         return grupo;
     }
 
