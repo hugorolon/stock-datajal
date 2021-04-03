@@ -68,7 +68,7 @@ public class ProductoDialog extends JDialog {
 		this.consultaPrecioProducto = consultaPrecioProducto;
 		
 		setTitle("LISTA DE STOCK");
-		setSize(900, 500);
+		setSize(900, 600);
 		setModal(true);
 		getContentPane().setLayout(null);
 		

@@ -33,6 +33,7 @@ public class FormatearValor {
 		
 		return null;
 	}
+
 	
 	public static Double stringToDoubleFormat(String valor) {
 		try {
@@ -108,5 +109,11 @@ public class FormatearValor {
 		
 		return new Double(formatoValido);
 	}
+
+	public static String sinSeparadorDeMiles(String valor) {
+		String formatoValido = valor.replace(".", "");
+	    return formatoValido;
+	}
+
 	
 }

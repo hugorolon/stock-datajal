@@ -8,11 +8,16 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
+import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
+import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.MonedaService;
+import py.com.prestosoftware.domain.services.MovimientoCajaService;
 import py.com.prestosoftware.domain.services.PedidoService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
@@ -57,7 +62,10 @@ public class CompraPanel extends JDialog {
     private MonedaService monedaService;
     private DepositoService depositoService;
     private ProductoService productoService;
-    private CompraValidator compraValidator;
+	private AperturaCierreCajaService movCajaService;
+	private CajaService cajaService;
+	private MovimientoCajaService pagoService;
+	private CompraValidator compraValidator;
     
     private CompraLocalPanel compraLocal;
     private CompraImportacionPanel compraImportacion;
@@ -66,6 +74,8 @@ public class CompraPanel extends JDialog {
     private CondicionPagoDialog condicionPagoDialog;
     private CondicionPagoService condicionPagoService;
     private ConfiguracionService configService;
+    
+    private CuentaProveedorService cuentaProveedorService;
 
     @Autowired
 	public CompraPanel(PanelCompraInterfaz panelInterfaz, CompraItemTableModel itemTableModel,
@@ -77,7 +87,8 @@ public class CompraPanel extends JDialog {
 			CompraLocalPanel compraPanelLocal, PedidoItemTableModel pedidoItemModel,
 			CompraImportacionPanel compraImportacion, CondicionPagoDialog condicionPagoDialog,
 			CompraConsignadaPanel compraConsignada, CondicionPagoService condicionPagoService,
-			PedidoCompraPanel pedidoCompra, ConfiguracionService configService) {
+			PedidoCompraPanel pedidoCompra, ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
+			MovimientoCajaService pagoService, CuentaProveedorService cuentaProveedorService) {
 		this.panelInterfaz = panelInterfaz;
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
@@ -100,6 +111,10 @@ public class CompraPanel extends JDialog {
 		this.condicionPagoDialog = condicionPagoDialog;
 		this.condicionPagoService = condicionPagoService;
 		this.configService = configService;
+		this.movCajaService = movCajaService;
+		this.cajaService = cajaService;
+		this.pagoService = pagoService;
+		this.cuentaProveedorService= cuentaProveedorService;
 		
 		setTitle("OPCIONES DE COMPRA");
 		setModal(true);
@@ -205,7 +220,8 @@ public class CompraPanel extends JDialog {
 		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog,
 				depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, 
 				monedaService, depositoService, compraValidator, productoService, 
-				condicionPagoDialog, condicionPagoService, configService);
+				condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService,
+				pagoService, cuentaProveedorService);
 		 compraLocal.setVisible(true);
 		 compraLocal.getConfig();
 		 compraLocal.clearForm();

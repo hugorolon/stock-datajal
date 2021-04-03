@@ -1313,31 +1313,31 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	}
 
 	private void setTotalMoneda(Double total) {
-		if (monedaBaseCodigo == 1) { // dolares
-			mDolar = 1d;
-			tfTotalUs.setText(FormatearValor.doubleAString(total / mDolar));
-			tfTotalRs.setText(FormatearValor.doubleAString(total * mRs));
-			tfTotalPs.setText(FormatearValor.doubleAString(total * mPs));
-			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
-		} else if (monedaBaseCodigo == 2) { // real brasilero
-			mRs = 1d;
-			tfTotalRs.setText(FormatearValor.doubleAString(total / mRs));
-			tfTotalUs.setText(FormatearValor.doubleAString(total * mDolar));
-			tfTotalPs.setText(FormatearValor.doubleAString(total * mPs));
-			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
-		} else if (monedaBaseCodigo == 3) { // peso argentino
-			mPs = 1d;
-			tfTotalPs.setText(FormatearValor.doubleAString(total / mPs));
-			tfTotalRs.setText(FormatearValor.doubleAString(total * mRs));
-			tfTotalUs.setText(FormatearValor.doubleAString(total * mDolar));
-			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
-		} else if (monedaBaseCodigo == 4) { // guaranies
+		if (monedaBaseCodigo == 1) { // guaranies 
 			mGs = 1d;
 			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
 			tfTotalUs.setText(FormatearValor.doubleAString(total / mDolar));
 			tfTotalRs.setText(FormatearValor.doubleAString(total / mRs));
 			tfTotalPs.setText(FormatearValor.doubleAString(total / mPs));
-		}
+		} else if (monedaBaseCodigo == 2) { // dolares
+			mDolar = 1d;
+			tfTotalUs.setText(FormatearValor.doubleAString(total / mDolar));
+			tfTotalRs.setText(FormatearValor.doubleAString(total * mRs));
+			tfTotalPs.setText(FormatearValor.doubleAString(total * mPs));
+			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
+		} else if (monedaBaseCodigo == 3) { // real brasilero
+			mRs = 1d;
+			tfTotalRs.setText(FormatearValor.doubleAString(total / mRs));
+			tfTotalUs.setText(FormatearValor.doubleAString(total * mDolar));
+			tfTotalPs.setText(FormatearValor.doubleAString(total * mPs));
+			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
+		} else if (monedaBaseCodigo == 4) { // peso argentino
+			mPs = 1d;
+			tfTotalPs.setText(FormatearValor.doubleAString(total / mPs));
+			tfTotalRs.setText(FormatearValor.doubleAString(total * mRs));
+			tfTotalUs.setText(FormatearValor.doubleAString(total * mDolar));
+			tfTotalGs.setText(FormatearValor.doubleAString(total * mGs));
+		} 
 	}
 
 	private Caja cajaPdv;
@@ -1495,15 +1495,15 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 						// monedaBaseValor = cot.get().getValorVenta();
 					}
 
-					if (moneda.getId() == 1) { // DS
-						mDolar = cot.get().getValorVenta();
-					} else if (moneda.getId() == 2) { // RS
-						mRs = cot.get().getValorVenta();
-					} else if (moneda.getId() == 3) { // PS
-						mPs = cot.get().getValorVenta();
-					} else if (moneda.getId() == 4) { // GS
+					if (moneda.getId() == 1) { // GS
 						mGs = cot.get().getValorVenta();
-					}
+					} else if (moneda.getId() == 2) { // DS
+						mDolar = cot.get().getValorVenta();
+					} else if (moneda.getId() == 3) { // RS
+						mRs = cot.get().getValorVenta();
+					} else if (moneda.getId() == 4) { // PS
+						mPs = cot.get().getValorVenta();
+					} 
 				}
 			}
 			

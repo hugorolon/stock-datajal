@@ -114,11 +114,19 @@ public class Compra {
 	@Column(name = "total_item")
 	private Double totalItem;
 	
+	@Column(name = "descuento")
 	private Double descuento;
 	
+	@Column(name = "cuota_cant")
+	private Integer cuotaCant;
+	
+	@Column(name = "gastos")
 	private Double gastos;
 	
+	@Column(name = "obs")
 	private String obs;
+	
+	@Column(name = "situacion")
 	private String situacion;
 	
 	@ElementCollection(fetch = FetchType.EAGER)
@@ -390,5 +398,14 @@ public class Compra {
 	public void setTotalPagado(Double totalPagado) {
 		this.totalPagado = totalPagado;
 	}
+
+	public Integer getCuotaCant() {
+		return cuotaCant;
+	}
+
+	public void setCuotaCant(Integer cuotaCant) {
+		this.cuotaCant = cuotaCant;
+	}
+
 	
 }
