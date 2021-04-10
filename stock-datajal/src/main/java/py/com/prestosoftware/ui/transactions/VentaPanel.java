@@ -267,6 +267,27 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 					btnAdd.requestFocus();
 				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
 					abandonarNota();
+				} else if (e.getKeyCode() == KeyEvent.VK_F1) {
+					if (!tfPrecio.getText().isEmpty()) {
+						tfPrecio.setText(FormatearValor.doubleAString(productoSeleccionado.getPrecioVentaA()));
+						calculatePrecioTotal();
+					} else {
+						Notifications.showAlert("Digite el precio del Producto");
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_F2) {
+					if (!tfPrecio.getText().isEmpty()) {
+						tfPrecio.setText(FormatearValor.doubleAString(productoSeleccionado.getPrecioVentaB()));
+						calculatePrecioTotal();
+					} else {
+						Notifications.showAlert("Digite el precio del Producto");
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_F3) {
+					if (!tfPrecio.getText().isEmpty()) {
+						tfPrecio.setText(FormatearValor.doubleAString(productoSeleccionado.getPrecioVentaC()));
+						calculatePrecioTotal();
+					} else {
+						Notifications.showAlert("Digite el precio del Producto");
+					}
 				}
 			}
 
@@ -1163,6 +1184,16 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		return result;
 	}
 
+	
+//	
+//	public Optional<Producto> getProducto() {
+//		return producto;
+//	}
+//
+//	public void setProducto(Optional<Producto> producto) {
+//		this.producto = producto;
+//	}
+
 	private void findCondicionPago(int cantDia) {
 		Optional<CondicionPago> condicionPago = condicionPagoService.findByCantDia(cantDia);
 
@@ -1369,6 +1400,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
 		item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
+		Integer iva= this.getProductoSeleccionado().getImpuesto().getPorcentaje().intValue();
+		item.setIva(iva);
 
 		return item;
 	}
@@ -2089,9 +2122,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	private void findProducto(String id) {
 		Optional<Producto> producto = null;
-
 		producto = productoService.findById(Long.valueOf(id));
-
 		if (!producto.isPresent()) {
 			if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
 				producto = productoService.findByReferencia(id);
@@ -2108,7 +2139,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		if (producto != null) {
 			if (producto.getSubgrupo().getTipo().equals("S"))
 				isProductService = true;
-
+			
 			precioInicial = setPrecioByCliente(nivelPrecio, producto);
 			setProductoSeleccionado(producto);
 

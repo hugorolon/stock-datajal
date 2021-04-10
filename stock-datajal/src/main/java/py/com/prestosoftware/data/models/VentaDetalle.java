@@ -32,6 +32,9 @@ public class VentaDetalle {
 	@Column(name = "medio_cif")
 	private Double medioCif;
 	
+	@Column(name = "iva")
+	private Integer iva;
+	
 	public VentaDetalle() {}
 
 	public Double getCantidad() {
@@ -129,5 +132,14 @@ public class VentaDetalle {
 	public void setDescuento(Double descuento) {
 		this.descuento = descuento;
 	}
+
+	public Integer getIva() {
+		return iva;
+	}
+
+	public void setIva(Integer iva) {
+		this.iva = iva;
+	}
+
 	
 }

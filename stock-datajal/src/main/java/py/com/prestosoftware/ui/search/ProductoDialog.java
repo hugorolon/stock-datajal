@@ -25,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.FlowLayout;
@@ -100,6 +102,8 @@ public class ProductoDialog extends JDialog {
 			    } else if (e.getKeyCode()==KeyEvent.VK_F5) {
 			    	
 			    }
+				loadProductos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
+				
 			}
 		});
 		pnlBuscador.add(tfBuscador);
@@ -137,22 +141,44 @@ public class ProductoDialog extends JDialog {
 					aceptar();
 				} else if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
 					 tfBuscador.requestFocus();
-				} else if (e.getKeyCode()==KeyEvent.VK_F4) { //PRECIOS
-					consultaPrecioProducto.setDataProducto(getProducto());
-					consultaPrecioProducto.setVisible(true);
-			    } else if (e.getKeyCode()==KeyEvent.VK_F5) { //HISTORICO DE VENTA
-			    	consultaVentaDialog.setProductoId(getProductoId());
-			    	consultaVentaDialog.setVisible(true);
-			    } else if (e.getKeyCode()==KeyEvent.VK_F6) { //FOTOS
-			    	
-			    } else if (e.getKeyCode()==KeyEvent.VK_F7) { //HISTORICO DE COMPRA
-			    	consultaCompraDialog.setProductoId(getProductoId());
-			    	consultaCompraDialog.setVisible(true);
-			    }
+				} 
+			}
+		});
+		table.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if (e.getClickCount() == 2) {     // to detect doble click events
+					aceptar();
+		            }
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		scrollPane.setViewportView(table);
-		
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(0, 443, 900, 35);
 		getContentPane().add(pnlBotonera);
@@ -223,7 +249,7 @@ public class ProductoDialog extends JDialog {
 		
         tableModel.clear();
         tableModel.addEntities(productos);
-        table.requestFocus();
+        //table.requestFocus();
     }
 	
 	public ProductoInterfaz getInterfaz() {

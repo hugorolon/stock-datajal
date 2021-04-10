@@ -291,9 +291,9 @@ public class ConsultaPrecioProducto extends JDialog {
 		tfMarca.setText(p.getMarca().getNombre());
 		tfGrupo.setText(p.getGrupo().getNombre());
 		tfSubgrupo.setText(p.getSubgrupo().getNombre());
-		tfTamanho.setText(p.getTamanho().getNombre());
-		tfCantPorCaja.setText(FormatearValor.doubleAString(p.getCantidadPorCaja()));
-		tfPeso.setText(FormatearValor.doubleAString(p.getPeso()));
+//		tfTamanho.setText(p.getTamanho().getNombre());
+//		tfCantPorCaja.setText(FormatearValor.doubleAString(p.getCantidadPorCaja()));
+//		tfPeso.setText(FormatearValor.doubleAString(p.getPeso()));
 		tfCostoCif.setText("");
 		tfCostoFob.setText("");
 		tfMedioCif.setText("");
