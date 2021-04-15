@@ -40,5 +40,9 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, vd.precio"
 			+ " FROM ventas v JOIN venta_detalles vd ON v.id = vd.venta_id WHERE vd.producto_id = ?1 ORDER BY v.fecha DESC", nativeQuery = true)
 	List<ConsultaNota> getVentasByProductoId(Long productoId);
+	
+	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, 0 AS precio"
+			+ " FROM ventas v WHERE v.fecha = ?1 ORDER BY v.id ASC", nativeQuery = true)
+	List<ConsultaNota> getVentasDelDia(Date fecha);
 
 }

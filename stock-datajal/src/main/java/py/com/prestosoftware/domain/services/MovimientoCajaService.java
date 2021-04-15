@@ -29,6 +29,10 @@ public class MovimientoCajaService {
     	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
     }
     
+    public Optional<MovimientoCaja> findByIdVenta(String idVenta) {
+    	return repository.getMovimientoCajaPorNota(idVenta);
+    }
+    
     public Optional<MovimientoCaja> getTotalsMovCaja(Caja caja, Date fecha, String situacion) {
     	return repository.getTotalsEntradaCaja(caja, fecha, situacion);
     }

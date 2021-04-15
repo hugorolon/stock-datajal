@@ -46,7 +46,10 @@ import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.ListaPrecio;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.MovimientoCaja;
+import py.com.prestosoftware.data.models.MovimientoIngreso;
+import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 import py.com.prestosoftware.data.models.Pais;
+import py.com.prestosoftware.data.models.ProcesoCobroVentas;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.data.models.Venta;
@@ -57,9 +60,17 @@ import py.com.prestosoftware.domain.services.ClientePaisService;
 import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
+import py.com.prestosoftware.domain.services.CuentaARecibirService;
 import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.DepositoService;
+import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
+import py.com.prestosoftware.domain.services.MovimientoEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoIngresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
+import py.com.prestosoftware.domain.services.ProcesoCobroClientesService;
+import py.com.prestosoftware.domain.services.ProcesoCobroVentasService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.domain.services.UsuarioService;
@@ -81,6 +92,8 @@ import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoInterfaz;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
+import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
+import py.com.prestosoftware.ui.search.ConsultaVentasDialog;
 import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.DepositoInterfaz;
 import py.com.prestosoftware.ui.search.ProductoDialog;
@@ -103,6 +116,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private static final int PRODUCTO_CODE = 4;
 	private static final int SALDO_PRODUCTO_CODE = 5;
 	private static final int CONDICION_PAGO_CODE = 6;
+	private static final int VENTA_CODE = 7;
 
 	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc, lblDescItem;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId, tfDescuentoItem;
@@ -110,7 +124,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private JTextField tfCantidad, tfTotalItems, tfVence, tfDescuento, tfObs;
 	private JTextField tfTotal, tfDepositoID, tfDeposito, tfClienteRuc; // tfSubtotal,
 	private JTextField tfClienteDireccion, tfCuotaCant, tfProductoID;
-	private JButton btnAdd, btnRemove, btnGuardar, btnCancelar, btnCerrar;
+	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer;
 	private JTextField tfCondicionPago;
 	private JPanel pnlTotales;
 	private JTable tbProductos;
@@ -129,6 +143,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private CondicionPagoDialog condicionDialog;
 	private ProductoDialog productoDialog;
 	private ConsultaSaldoDeposito saldoDeposito;
+	private ConsultaVentasDialog ventasDialog;
+	private ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog;
 
 	private VentaService ventaService;
 	private UsuarioRolService usuarioRolService;
@@ -147,10 +163,20 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private CajaService cajaService;
 	private MovimientoCajaService pagoService;
 	private CuentaClienteService cuentaClienteService;
+	private MovimientoIngresoService movimientoIngresoService;
+	private MovimientoEgresoService movimientoEgresoService;
+	private MovimientoItemIngresoService movimientoItemIngresoService;
+	private MovimientoItemEgresoService movimientoItemEgresoService;
+	private ProcesoCobroVentasService procesoCobroVentasService;
+	private ProcesoCobroClientesService procesoCobroClientesService;
+	private CuentaARecibirService cuentaARecibirService;
+	private ItemCuentaARecibirService itemCuentaARecibirService;
 
 	private boolean isProductService;
 	private String nivelPrecio;
 	private Producto productoSeleccionado;
+	private Venta ventaSeleccionado;
+	private Cliente clienteSeleccionado;
 	private Double precioInicial;
 
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
@@ -160,7 +186,12 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
 			CondicionPagoService condicionPagoService, ConfiguracionService configService,
 			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			CuentaClienteService cuentaClienteService) {
+			CuentaClienteService cuentaClienteService, ConsultaVentasDialog ventasDialog,
+			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog, MovimientoIngresoService movimientoIngresoService,
+			MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
+			MovimientoItemEgresoService movimientoItemEgresoService, ProcesoCobroVentasService procesoCobroVentasService,
+			ProcesoCobroClientesService procesoCobroClientesService, CuentaARecibirService cuentaARecibirService,
+			ItemCuentaARecibirService itemCuentaARecibirService) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
 		this.vendedorDialog = vendedorDialog;
@@ -182,6 +213,16 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		this.cajaService = cajaService;
 		this.pagoService = pagoService;
 		this.cuentaClienteService = cuentaClienteService;
+		this.ventasDialog = ventasDialog;
+		this.consultaVentasDelDiaDialog = consultaVentasDelDiaDialog;
+		this.movimientoIngresoService=movimientoIngresoService;
+		this.movimientoEgresoService=movimientoEgresoService;
+		this.movimientoItemIngresoService=movimientoItemIngresoService;
+		this.movimientoItemEgresoService=movimientoItemEgresoService;
+		this.procesoCobroVentasService=procesoCobroVentasService;
+		this.procesoCobroClientesService=procesoCobroClientesService;
+		this.cuentaARecibirService=cuentaARecibirService;
+		this.itemCuentaARecibirService=itemCuentaARecibirService;
 
 		setSize(915, 660);
 		setTitle("REGISTRO DE VENTAS");
@@ -209,7 +250,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		pnlProducto.add(lblCodigo);
 
 		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
-		lblDescripcion.setBounds(147, 10, 171, 30);
+		lblDescripcion.setBounds(152, 10, 171, 30);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel("TOTAL");
@@ -224,7 +265,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(147, 39, 312, 30);
+		tfDescripcion.setBounds(152, 39, 300, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -476,24 +517,6 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		lblCantidad.setBounds(77, 10, 86, 30);
 		pnlProducto.add(lblCantidad);
 
-		btnAdd = new JButton("+");
-		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
-		btnAdd.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					addItem();
-				}
-			}
-		});
-//		btnAdd.addActionListener(new ActionListener() {
-//			public void actionPerformed(ActionEvent e) {
-//				addItem();
-//			}
-//		});
-		btnAdd.setBounds(767, 39, 57, 30);
-		pnlProducto.add(btnAdd);
-
 		label_5 = new JLabel("*");
 		label_5.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_5.setToolTipText("Campos obligatorios");
@@ -530,6 +553,20 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		JLabel lblClienteID = new JLabel("CLIENTE:");
 		lblClienteID.setBounds(156, 6, 57, 30);
 		pnlCliente.add(lblClienteID);
+
+		btnAdd = new JButton("+");
+		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAdd.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					addItem();
+				}
+			}
+		});
+
+		btnAdd.setBounds(767, 39, 56, 30);
+		pnlProducto.add(btnAdd);
 
 		tfClienteID = new JTextField();
 		tfClienteID.addFocusListener(new FocusAdapter() {
@@ -742,7 +779,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 		tfVentaId = new JTextField();
 		tfVentaId.setEditable(false);
-		tfVentaId.setBounds(43, 7, 107, 30);
+		tfVentaId.setBounds(43, 6, 75, 30);
 		pnlCliente.add(tfVentaId);
 		tfVentaId.addKeyListener(new KeyAdapter() {
 			@Override
@@ -756,6 +793,24 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			}
 		});
 		tfVentaId.setColumns(10);
+
+		btnVer = new JButton("VER");
+		btnVer.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnVer.setBounds(123, 6, 27, 30);
+		pnlCliente.add(btnVer);
+		btnVer.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					showDialog(VENTA_CODE);
+				}
+			}
+		});
+		btnVer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(VENTA_CODE);
+			}
+		});
 
 		label = new JLabel("*");
 		label.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -794,7 +849,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		pnlBotonera.setBounds(9, 578, 894, 35);
 		getContentPane().add(pnlBotonera);
 
-		btnGuardar = new JButton("Guardar (F4)");
+		btnGuardar = new JButton("Guardar(F4)");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				save();
@@ -812,6 +867,26 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			}
 		});
 		pnlBotonera.add(btnGuardar);
+
+		btnAnular = new JButton("Anular(F5)");
+		btnAnular.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				anular();
+			}
+		});
+		btnAnular.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					anular();
+				}
+				if (e.getKeyCode() == KeyEvent.VK_F5) {
+					anular();
+				}
+			}
+
+		});
+		pnlBotonera.add(btnAnular);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.addKeyListener(new KeyAdapter() {
@@ -1184,7 +1259,6 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		return result;
 	}
 
-	
 //	
 //	public Optional<Producto> getProducto() {
 //		return producto;
@@ -1400,7 +1474,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
 		item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
-		Integer iva= this.getProductoSeleccionado().getImpuesto().getPorcentaje().intValue();
+		Integer iva = this.getProductoSeleccionado().getImpuesto().getPorcentaje().intValue();
 		item.setIva(iva);
 
 		return item;
@@ -1530,6 +1604,10 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		return btnCerrar;
 	}
 
+	public JButton getBtnAnular() {
+		return btnAnular;
+	}
+
 	private void calculateVencimiento() {
 		// if (!cbCondPago.getText().isEmpty()) {
 		String fecha = Fechas.dateUtilAStringDDMMAAAA(new Date());
@@ -1579,6 +1657,10 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			condicionDialog.setInterfaz(this);
 			condicionDialog.setVisible(true);
 			break;
+		case VENTA_CODE:
+			consultaVentasDelDiaDialog.setInterfaz(this);
+			consultaVentasDelDiaDialog.setVisible(true);
+			break;
 		default:
 			break;
 		}
@@ -1627,17 +1709,19 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	public void setVenta(Venta v) {
 		tfClienteID.setText(String.valueOf(v.getCliente().getId()));
 		tfClienteNombre.setText(v.getClienteNombre());
-		tfClienteRuc.setText("");
-		tfClienteDireccion.setText("");
+		tfClienteRuc.setText(v.getClienteRuc());
+		tfDvRuc.setText(v.getCliente().getDvruc());
+		tfClienteDireccion.setText(v.getCliente().getDireccion());
 		tfTotalItems.setText(String.valueOf(v.getCantItem()));
 		tfCondicionPago.setText(String.valueOf(v.getCondicion()));
 		tfDepositoID.setText(String.valueOf(v.getDeposito().getId()));
 		tfDeposito.setText("");
 		tfDescuento.setText(String.valueOf(v.getTotalDescuento()));
 		// tfSubtotal.setText(String.valueOf(v.getTotalGravada10()));
-		tfTotal.setText(String.valueOf(v.getTotalGeneral()));
+		tfTotal.setText(FormatearValor.doubleAString((v.getTotalGeneral())));
 		tfObs.setText(String.valueOf(v.getObs()));
 		itemTableModel.addEntities(v.getItems());
+		setVentaSeleccionado(v);
 	}
 
 	private void updateStockProduct(List<VentaDetalle> items) {
@@ -1728,6 +1812,56 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		productoService.updateStock(productos);
 	}
 
+	private void updateStockProductRemoved(List<VentaDetalle> items) {
+		List<Producto> productos = new ArrayList<>();
+		int habilitaLanzamientoCaja = 0;
+		if (conf != null && conf.getHabilitaLanzamientoCaja() != 0)
+			habilitaLanzamientoCaja = conf.getHabilitaLanzamientoCaja();
+		for (VentaDetalle e : items) {
+			Optional<Producto> pOptional = productoService.findById(e.getProductoId());
+
+			if (pOptional.isPresent()) {
+				Producto p = pOptional.get();
+
+				int depesitoId = tfDepositoID.getText().isEmpty() ? 0 : Integer.parseInt(tfDepositoID.getText());
+				Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
+				Double cantItem = e.getCantidad();
+				if (habilitaLanzamientoCaja == 1) {
+					p.setSalidaPend(salPend - cantItem);
+				} else {
+					switch (depesitoId) {
+					case 1:
+						Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
+						p.setDepO1(dep01 + cantItem);
+						break;
+					case 2:
+						Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
+						p.setDepO2(dep02 + cantItem);
+						break;
+					case 3:
+						Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
+						p.setDepO3(dep03 + cantItem);
+						break;
+					case 4:
+						Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
+						p.setDepO4(dep04 + cantItem);
+						break;
+					case 5:
+						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
+						p.setDepO5(dep05 + cantItem);
+						break;
+					default:
+						break;
+					}
+				}
+
+				productos.add(p);
+			}
+		}
+
+		productoService.updateStock(productos);
+	}
+
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
 				JOptionPane.OK_CANCEL_OPTION);
@@ -1763,8 +1897,12 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 					if (v != null) {
 						updateStockProduct(v.getItems());
-						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0)
+						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 							lanzamientoCaja(v);
+							movimientoIngresoProcesoCobroVenta(v);
+							
+							//cuentaCliente(v);
+						}
 						Notifications.showAlert("Venta registrado con exito.!");
 					}
 
@@ -1781,56 +1919,49 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			tfProductoID.requestFocus();
 		}
 	}
-
-	private void lanzamientoCaja(Venta v) {
-		Optional<Caja> caja = cajaService.findById(1l);
-		if (caja.isPresent()) {
-			Caja ca = caja.get();
-			Optional<AperturaCierreCaja> movCaja = movCajaService.findByCajaAndFechaApertura(ca, new Date());
-			if (!movCaja.isPresent()) {
-				AperturaCierreCaja newMov = movCajaService.save(new AperturaCierreCaja(ca, new Date(), 0d));
-				String msg = "";
-				if (newMov != null) {
-					msg = "Apertura de Caja correctamente.!";
-				} else {
-					msg = "Lo sentimos. No se pudo abrir la caja correctamente.!";
-				}
-				Notifications.showAlert(msg);
-			}
-			openMovCajaCuentaProveedor(ca, v);
-
-		}
+	
+	private void movimientoIngresoProcesoCobroVenta(Venta venta) {
+		MovimientoIngreso m=new MovimientoIngreso();
+		m.setFecha(new Date());;
+		m.setHora(new Date());
+		m.setMinCaja(1);
+		m.setMinDocumento(venta.getId().toString());
+		m.setMinEntidad(venta.getCliente().getId().toString());
+		m.setMinProceso(Integer.valueOf(venta.getId().toString()));
+		m.setMinTipoProceso(1);
+		m.setMinTipoEntidad(Integer.valueOf(clienteSeleccionado.getTipoEntidad()));
+		m.setMinSituacion(0);
+		m= movimientoIngresoService.save(m);
+		
+		MovimientoItemIngreso mii=new MovimientoItemIngreso();
+		mii.setMiiNumero(m.getMinNumero());
+		mii.setMiiIngreso(1);
+		double monto=(double) Math.round(venta.getTotalGeneral()/11);
+		mii.setMiiMonto(monto);
+		movimientoItemIngresoService.save(mii);
+		
+		MovimientoItemIngreso miiva=new MovimientoItemIngreso();
+		miiva.setMiiNumero(m.getMinNumero());
+		miiva.setMiiIngreso(11);
+		miiva.setMiiMonto(venta.getTotalGeneral()-monto);
+		movimientoItemIngresoService.save(miiva);
+		
+		ProcesoCobroVentas pcv=new ProcesoCobroVentas();
+		pcv.setPveVenta(venta.getId().intValue());
+		pcv.setPveIngresoegreso(1);
+		pcv.setPveTipoproceso(31);
+		pcv.setPveProceso(m.getMinNumero());
+		pcv.setPveFlag(1);
+		procesoCobroVentasService.save(pcv);
 	}
+	
+	
 
-	private void openMovCajaCuentaProveedor(Caja caja, Venta venta) {
-		int cant = 0;
-		// cierre de caja del dia anterio
-		MovimientoCaja movCaja = new MovimientoCaja();
-		movCaja.setCaja(caja);
-		movCaja.setFecha(new Date());
-		movCaja.setMoneda(new Moneda(1l));
-		movCaja.setNotaNro(venta.getId().toString());
-		movCaja.setNotaReferencia(venta.getClienteNombre());
-		movCaja.setNotaValor(venta.getTotalGeneral());
-		movCaja.setPlanCuentaId(1);
-		movCaja.setTipoOperacion("E");
-		movCaja.setUsuario(GlobalVars.USER_ID);
-		movCaja.setValorM01(venta.getTotalGeneral());
-		if (tfCondicionPago.getText().equalsIgnoreCase("0")) {
-			movCaja.setObs("Pagado en caja 01 ");
-			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicionPago.getText().equalsIgnoreCase("100") && !tfCuotaCant.getText().isEmpty()) {
-			cant = Integer.valueOf(tfCuotaCant.getText());
-			movCaja.setObs("Crédito a cuotas :" + cant);
-			movCaja.setSituacion("PROCESADO");
-		} else {
-			movCaja.setObs("Crédito a " + tfCondicionPago.getText() + " días");
-			movCaja.setSituacion("PROCESADO");
-		}
-		pagoService.save(movCaja);
+	private void cuentaCliente(Venta venta) {
 		if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
 			CuentaCliente cuentaCliente = new CuentaCliente();
 			List<CuentaCliente> listaCuentaClientes = new ArrayList<CuentaCliente>();
+			int cant=Integer.valueOf(tfCuotaCant.getText());
 			if (cant > 0) {
 				Double valorTotal = venta.getTotalGeneral() / cant;
 				Calendar cal = Calendar.getInstance();
@@ -1875,6 +2006,132 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			for (CuentaCliente cuentaP : listaCuentaClientes) {
 				cuentaClienteService.save(cuentaP);
 			}
+		}
+		
+	}
+
+	private void anular() {
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
+				JOptionPane.OK_CANCEL_OPTION);
+		if (respuesta == 0) {
+			if(!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
+				updateStockProductRemoved(ventaSeleccionado.getItems());
+
+				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0)
+					removeMovCajaCuentaCliente(ventaSeleccionado);
+
+				ventaSeleccionado.setSituacion("ANULADO");
+				ventaService.save(ventaSeleccionado);
+				newVenta();
+			}
+		}
+		tfProductoID.requestFocus();
+	}
+
+	private void lanzamientoCaja(Venta v) {
+		Optional<Caja> caja = cajaService.findById(1l);
+		if (caja.isPresent()) {
+			Caja ca = caja.get();
+			Optional<AperturaCierreCaja> movCaja = movCajaService.findByCajaAndFechaApertura(ca, new Date());
+			if (!movCaja.isPresent()) {
+				AperturaCierreCaja newMov = movCajaService.save(new AperturaCierreCaja(ca, new Date(), 0d));
+				String msg = "";
+				if (newMov != null) {
+					msg = "Apertura de Caja correctamente.!";
+				} else {
+					msg = "Lo sentimos. No se pudo abrir la caja correctamente.!";
+				}
+				Notifications.showAlert(msg);
+			}
+			openMovCajaCuentaCliente(ca, v);
+
+		}
+	}
+
+	private void openMovCajaCuentaCliente(Caja caja, Venta venta) {
+		int cant = 0;
+		// cierre de caja del dia anterio
+		MovimientoCaja movCaja = new MovimientoCaja();
+		movCaja.setCaja(caja);
+		movCaja.setFecha(new Date());
+		movCaja.setMoneda(new Moneda(1l));
+		movCaja.setNotaNro(venta.getId().toString());
+		movCaja.setNotaReferencia(venta.getClienteNombre());
+		movCaja.setNotaValor(venta.getTotalGeneral());
+		movCaja.setPlanCuentaId(1);
+		movCaja.setTipoOperacion("E");
+		movCaja.setUsuario(GlobalVars.USER_ID);
+		movCaja.setValorM01(venta.getTotalGeneral());
+		if (tfCondicionPago.getText().equalsIgnoreCase("0")) {
+			movCaja.setObs("Pagado en caja 01 ");
+			movCaja.setSituacion("PAGADO");
+		} else if (tfCondicionPago.getText().equalsIgnoreCase("100") && !tfCuotaCant.getText().isEmpty()) {
+			cant = Integer.valueOf(tfCuotaCant.getText());
+			movCaja.setObs("Crédito a cuotas :" + cant);
+			movCaja.setSituacion("PROCESADO");
+		} else {
+			movCaja.setObs("Crédito a " + tfCondicionPago.getText() + " días");
+			movCaja.setSituacion("PROCESADO");
+		}
+		pagoService.save(movCaja);
+	}
+
+	private void removeMovCajaCuentaCliente(Venta venta) {
+		int cant = 0;
+		// cierre de caja del dia anterio
+		Optional <MovimientoCaja> movimientoCaja= pagoService.findByIdVenta(venta.getId().toString());
+		if(movimientoCaja.isPresent()) {
+			MovimientoCaja mc= movimientoCaja.get();
+			mc.setObs("VENTA ANULADO");
+			mc.setSituacion("ANULADO");
+			pagoService.save(mc);
+		}
+
+		CuentaCliente cuentaCliente = new CuentaCliente();
+		List<CuentaCliente> listaCuentaClientes = new ArrayList<CuentaCliente>();
+		if (cant > 0) {
+			Double valorTotal = venta.getTotalGeneral() / cant;
+			Calendar cal = Calendar.getInstance();
+			for (int i = 0; i < cant; i++) {
+				cal.add(Calendar.MONTH, 1);
+				cuentaCliente = new CuentaCliente();
+				cuentaCliente.setCliente(venta.getCliente());
+				cuentaCliente.setClienteNombre(venta.getClienteNombre());
+				cuentaCliente.setCredito(valorTotal);
+				cuentaCliente.setDebito(0d);
+				cuentaCliente.setDocumento("Venta crédito cuota " + (i + 1) + "/" + cant);
+				cuentaCliente.setMoneda(new Moneda(1l));
+				cuentaCliente.setSituacion("CREDITO");
+				cuentaCliente.setTipo("E");
+				cuentaCliente.setValorPagado(0d);
+				cuentaCliente.setValorTotal(venta.getTotalGeneral());
+				cuentaCliente.setVencimiento(cal.getTime());
+				cuentaCliente.setFecha(new Date());
+				cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
+				cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
+				listaCuentaClientes.add(cuentaCliente);
+			}
+		} else {
+			cuentaCliente = new CuentaCliente();
+			cuentaCliente.setCliente(venta.getCliente());
+			cuentaCliente.setClienteNombre(venta.getClienteNombre());
+			cuentaCliente.setCredito(venta.getTotalGeneral());
+			cuentaCliente.setDebito(0d);
+			cuentaCliente.setDocumento("Venta crédito a " + tfCondicionPago.getText() + " días");
+			cuentaCliente.setMoneda(new Moneda(1l));
+			cuentaCliente.setSituacion("CREDITO");
+			cuentaCliente.setTipo("S");
+			cuentaCliente.setValorPagado(0d);
+			cuentaCliente.setValorTotal(venta.getTotalGeneral());
+			cuentaCliente.setVencimiento(new Date("" + tfVence.getText().toString()));
+			cuentaCliente.setFecha(new Date());
+			cuentaCliente.setClienteNombre(venta.getClienteNombre());
+			cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
+			cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
+			listaCuentaClientes.add(cuentaCliente);
+		}
+		for (CuentaCliente cuentaP : listaCuentaClientes) {
+			cuentaClienteService.save(cuentaP);
 		}
 	}
 
@@ -2037,12 +2294,16 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		tfDvRuc.setText("");
 		tfClienteDireccion.setText("");
 		if (cliente != null) {
+			setClienteSeleccionado(cliente);
 			tfClienteID.setText(String.valueOf(cliente.getId()));
 			tfClienteNombre.setText(cliente.getRazonSocial());
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());
-			nivelPrecio = cliente.getListaPrecio().getNombre();
+			if(cliente.getListaPrecio()!=null)
+				nivelPrecio = cliente.getListaPrecio().getNombre();
+			else
+				nivelPrecio = "A";
 			if (cliente.getId() == 0) {
 				// habilitar nombre, ruc, direccion
 				tfClienteNombre.setEnabled(false);
@@ -2139,7 +2400,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		if (producto != null) {
 			if (producto.getSubgrupo().getTipo().equals("S"))
 				isProductService = true;
-			
+
 			precioInicial = setPrecioByCliente(nivelPrecio, producto);
 			setProductoSeleccionado(producto);
 
@@ -2369,6 +2630,22 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	public void setProductoSeleccionado(Producto productoSeleccionado) {
 		this.productoSeleccionado = productoSeleccionado;
+	}
+
+	public Venta getVentaSeleccionado() {
+		return ventaSeleccionado;
+	}
+
+	public void setVentaSeleccionado(Venta ventaSeleccionado) {
+		this.ventaSeleccionado = ventaSeleccionado;
+	}
+
+	public Cliente getClienteSeleccionado() {
+		return clienteSeleccionado;
+	}
+
+	public void setClienteSeleccionado(Cliente clienteSeleccionado) {
+		this.clienteSeleccionado = clienteSeleccionado;
 	}
 
 	public Double getPrecioInicial() {

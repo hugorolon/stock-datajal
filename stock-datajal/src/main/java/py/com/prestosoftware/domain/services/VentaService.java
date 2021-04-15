@@ -80,5 +80,9 @@ public class VentaService {
 	public Optional<Venta> findByVentaIdAndClienteId(Long id, Long clienteId) {
 		return repository.findByIdAndCliente(id, new Cliente(clienteId));
 	}
+	
+	public List<ConsultaNota> retrieveVentasDelDia(Date fecha){
+		return repository.getVentasDelDia(fecha);
+	}
 
 }

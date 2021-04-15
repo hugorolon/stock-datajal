@@ -56,7 +56,7 @@ public class Cliente {
 	private Double limiteCredito;
 	
 	@Column(name = "dia_credito")
-	private int diaCredito;
+	private Integer diaCredito;
 	
 	@Column(name = "credito_saldo")
 	private Double creditoSaldo;
@@ -102,6 +102,9 @@ public class Cliente {
 	
 	@Column(name = "total_credito")
 	private Double totalCredito;
+	
+	@Column(name = "tipo_entidad")
+	private Integer tipoEntidad;
 	
 	public Cliente() {}
 	
@@ -318,11 +321,11 @@ public class Cliente {
 		this.limiteCredito = limiteCredito;
 	}
 
-	public int getDiaCredito() {
+	public Integer getDiaCredito() {
 		return diaCredito;
 	}
 
-	public void setDiaCredito(int diaCredito) {
+	public void setDiaCredito(Integer diaCredito) {
 		this.diaCredito = diaCredito;
 	}
 
@@ -381,5 +384,14 @@ public class Cliente {
 	public void setCelular2(String celular2) {
 		this.celular2 = celular2;
 	}
+
+	public Integer getTipoEntidad() {
+		return tipoEntidad;
+	}
+
+	public void setTipoEntidad(Integer tipoEntidad) {
+		this.tipoEntidad = tipoEntidad;
+	}
+
 	
 }
