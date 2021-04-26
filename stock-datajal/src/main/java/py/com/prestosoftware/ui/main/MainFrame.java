@@ -86,6 +86,18 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuConsultaClientes;
 	private JMenuItem mnuConsultaProveedor;
 	private JMenuItem mnuSaldoDeposito;
+	private JMenu mnuInfProductos;
+	private JMenu mnuInfDatosProductos;
+	private JMenu mnuInfCuentaAPagarRecibir;
+	private JMenu mnuInfCuentaAPagar;
+	private JMenu mnuInfCuentaARecibir;
+	private JMenuItem mnuInfCuentaAPagarVencimientoProveedor;
+	private JMenuItem mnuInfCuentaAPagarExtractoProveedor;
+	private JMenuItem mnuInfCuentaARecibirVencimientoCliente;
+	private JMenuItem mnuInfCuentaARecibirExtractoCliente;
+	private JMenu mnuInfCajas;
+	private JMenuItem mnuInfResumenCajas;
+	private JMenuItem mnuInfResumenAgrupadoCajas;
 	private JMenuItem mnuAnularBoleta;
 	private JPanel panel_1;
 	private JButton btnClientes;
@@ -330,9 +342,47 @@ public class MainFrame extends JFrame {
 		mnuSaldoDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
 		mnuConsultas.add(mnuSaldoDeposito);
 		
-		JMenu mnuRelatorios = new JMenu("RELATORIOS");
+		JMenu mnuRelatorios = new JMenu("INFORMES");
 		mnuRelatorios.setMnemonic('L');
 		menuBar.add(mnuRelatorios);
+		
+		mnuInfProductos = new JMenu("PRODUCTOS");
+		mnuRelatorios.add(mnuInfProductos);
+		
+		mnuInfDatosProductos= new JMenu("DATOS DEL PRODUCTO");
+		mnuInfProductos.add(mnuInfDatosProductos);
+		
+		mnuInfCuentaAPagarRecibir = new JMenu("CUENTAS A PAGAR Y RECIBIR");
+		mnuInfCuentaAPagar = new JMenu("CUENTAS A PAGAR");
+		mnuInfCuentaARecibir = new JMenu("CUENTAS A RECIBIR");
+		
+		mnuInfCuentaAPagarRecibir.add(mnuInfCuentaARecibir);
+		mnuInfCuentaAPagarRecibir.addSeparator();
+		mnuInfCuentaAPagarRecibir.add(mnuInfCuentaAPagar);
+		
+		mnuInfCuentaAPagarVencimientoProveedor = new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL PROVEEDOR");
+		mnuInfCuentaAPagarExtractoProveedor= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL PROVEEDOR");
+		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarVencimientoProveedor);
+		mnuInfCuentaAPagar.addSeparator();
+		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarExtractoProveedor);
+		
+		mnuInfCuentaARecibirVencimientoCliente= new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL CLIENTE");
+		mnuInfCuentaARecibirExtractoCliente= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL CLIENTE");
+		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirVencimientoCliente);
+		mnuInfCuentaARecibir.addSeparator();
+		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirExtractoCliente);
+		
+		mnuRelatorios.add(mnuInfCuentaAPagarRecibir);
+		
+		mnuInfCajas = new JMenu("CAJAS");
+		mnuInfResumenCajas= new JMenuItem("RESUMEN DETALLADO DE INGRESO EGRESO CAJA");
+		mnuInfResumenAgrupadoCajas= new JMenuItem("RESUMEN AGRUPADO DE INGRESO EGRESO");
+		
+		mnuInfCajas.add(mnuInfResumenCajas);
+		mnuInfCajas.addSeparator();
+		mnuInfCajas.add(mnuInfResumenAgrupadoCajas);
+		
+		mnuRelatorios.add(mnuInfCajas);
 		
 		JMenu mnuUtilidades = new JMenu("UTILIDADES");
 		mnuUtilidades.setMnemonic('U');
@@ -718,5 +768,62 @@ public class MainFrame extends JFrame {
 	public JMenuItem getMnuCondicionDePago() {
 		return mnuCondicionDePago;
 	}
+
+	public JMenu getMnuInfProductos() {
+		return mnuInfProductos;
+	}
+
+	public void setMnuInfProductos(JMenu mnuInfProductos) {
+		this.mnuInfProductos = mnuInfProductos;
+	}
+
+	public JMenuItem getMnuInfCuentaAPagarVencimientoProveedor() {
+		return mnuInfCuentaAPagarVencimientoProveedor;
+	}
+
+	public void setMnuInfCuentaAPagarVencimientoProveedor(JMenuItem mnuInfCuentaAPagarVencimientoProveedor) {
+		this.mnuInfCuentaAPagarVencimientoProveedor = mnuInfCuentaAPagarVencimientoProveedor;
+	}
+
+	public JMenuItem getMnuInfCuentaAPagarExtractoProveedor() {
+		return mnuInfCuentaAPagarExtractoProveedor;
+	}
+
+	public void setMnuInfCuentaAPagarExtractoProveedor(JMenuItem mnuInfCuentaAPagarExtractoProveedor) {
+		this.mnuInfCuentaAPagarExtractoProveedor = mnuInfCuentaAPagarExtractoProveedor;
+	}
+
+	public JMenuItem getMnuInfCuentaARecibirVencimientoCliente() {
+		return mnuInfCuentaARecibirVencimientoCliente;
+	}
+
+	public void setMnuInfCuentaARecibirVencimientoCliente(JMenuItem mnuInfCuentaARecibirVencimientoCliente) {
+		this.mnuInfCuentaARecibirVencimientoCliente = mnuInfCuentaARecibirVencimientoCliente;
+	}
+
+	public JMenuItem getMnuInfCuentaARecibirExtractoCliente() {
+		return mnuInfCuentaARecibirExtractoCliente;
+	}
+
+	public void setMnuInfCuentaARecibirExtractoCliente(JMenuItem mnuInfCuentaARecibirExtractoCliente) {
+		this.mnuInfCuentaARecibirExtractoCliente = mnuInfCuentaARecibirExtractoCliente;
+	}
+
+	public JMenuItem getMnuInfResumenCajas() {
+		return mnuInfResumenCajas;
+	}
+
+	public void setMnuInfResumenCajas(JMenuItem mnuInfResumenCajas) {
+		this.mnuInfResumenCajas = mnuInfResumenCajas;
+	}
+
+	public JMenuItem getMnuInfResumenAgrupadoCajas() {
+		return mnuInfResumenAgrupadoCajas;
+	}
+
+	public void setMnuInfResumenAgrupadoCajas(JMenuItem mnuInfResumenAgrupadoCajas) {
+		this.mnuInfResumenAgrupadoCajas = mnuInfResumenAgrupadoCajas;
+	}
+	
 	
 }

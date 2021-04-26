@@ -12,8 +12,14 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 
-import jasper.ConfiguracaoReport;
-import jasper.SwingExporterService;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import py.com.prestosoftware.data.models.VentaDetalle;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
@@ -136,7 +142,8 @@ public class ImpresionUtil {
 	public static void performFactura(String cliente, String ruc, String telefono, String direccion, String nroVenta,
 			int condicion, String vendedor, String  total, String totalIva5, String totalIva10, 
 			String totalExenta, String subTotalIva5, String subTotalIva10, List<VentaDetalle> items) {
-	    
+		Map<String, Object> parametrosObj = new HashMap<String, Object>();
+		parametrosObj.put("items", items);
 		Map<String, String> parametros = new HashMap<String, String>();
 	    parametros.put("clienteNombre", cliente);
 	    parametros.put("clienteRucDv", ruc);
@@ -161,7 +168,7 @@ public class ImpresionUtil {
 //	      parametros.put("guaranies", "X");
 	    
 	    parametros.put("condicion", condicionValue);
-	    parametros.put("fecha", Fechas.formatoDDMMAAAA(new Date()));
+	    //parametros.put("fecha", Fechas.formatoDDMMAAAA(new Date()));
 	    parametros.put("empleadoNombre", vendedor);
 	    parametros.put("subTotalExenta", totalExenta);
 	    parametros.put("subTotalIva5", subTotalIva5);
@@ -170,7 +177,7 @@ public class ImpresionUtil {
 	    parametros.put("totalIva10", totalIva10);
 	    parametros.put("totalIva", String.valueOf( FormatearValor.stringADouble(totalIva5) + FormatearValor.stringADouble(totalIva10)) );
 	    parametros.put("totalGeneral", total);
-	    
+	    parametrosObj.putAll(parametros);
 	    try {
 //	    	if (this.boletaRemision.compareTo("REMISION") == 0) {
 //	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
@@ -179,7 +186,7 @@ public class ImpresionUtil {
 //	    	} else {
 //	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
 //	    				this.lbTotalGeneralLetras.getText());
-	        		dataSourteReport(items, parametros, "remisionFactura");
+	        		dataSourteReport(items, parametrosObj, "facturaLegal");
 //	    	}
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -188,14 +195,24 @@ public class ImpresionUtil {
 	
 	private static void dataSourteReport(List lista, Map parametros, String nombreReporte) {
 		try {
-			DataSource ds=new DataSource();
-			ds.setLista(lista);
-			ConfiguracaoReport cf = new ConfiguracaoReport();
-			cf.setRepositorioName(new File("reportes").getAbsolutePath());
-			cf.setReportName(nombreReporte);
-			cf.setBeanDataSource(ds);
-			cf.setParametros(parametros);
-			SwingExporterService.generateReport(cf, false);
+			String ruta=new File("reportes").getAbsolutePath()+File.separator+nombreReporte+".jrxml";
+			
+	        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
+
+	        JasperDesign jasperDesign = JRXmlLoader.load(ruta);
+	        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, beanColDataSource);
+	        JasperExportManager.exportReportToPdfFile(jasperPrint, "ganttchart.pdf");
+	        
+			
+//			DataSource ds=new DataSource();
+//			ds.setLista(lista);
+//			ConfiguracaoReport cf = new ConfiguracaoReport();
+//			cf.setRepositorioName(new File("reportes").getAbsolutePath());
+//			cf.setReportName(nombreReporte);
+//			cf.setBeanDataSource(ds);
+//			cf.setParametros(parametros);
+//			SwingExporterService.generateReport(cf, false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

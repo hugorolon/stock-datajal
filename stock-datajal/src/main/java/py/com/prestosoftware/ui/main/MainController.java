@@ -34,6 +34,7 @@ import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
+import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.CompraPanel;
@@ -158,6 +159,8 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private ConsultaSaldoDeposito saldoDepositoPanel;
 	@Autowired
+	private CuentaRecibirDialog cuentaRecibirDialog;
+	@Autowired
 	private ConsultaProveedor consultaProveedor;
 	@Autowired
 	private ConsultaCliente consultaCliente;
@@ -215,6 +218,9 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuBoleta(), (e) -> openConsultaBoleta());
 		registerOpenMenu(mainMenuFrame.getMnuSaldoDeposito(), (e) -> openSaldoDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuSaldoStock(), (e) -> openSaldoStock());
+		
+		registerOpenMenu(mainMenuFrame.getMnuInfCuentaARecibirVencimientoCliente(), (e) -> openVencimientoCuentaARecibir());
+		
 		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
 		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
 		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
@@ -319,6 +325,10 @@ public class MainController extends AbstractFrameController {
 	private void openSaldoDeposito() {
 		saldoDepositoPanel.setVisible(true);
 
+	}
+	
+	private void openVencimientoCuentaARecibir() {
+		cuentaRecibirDialog.setVisible(true);
 	}
 
 	private void openConsultaBoleta() {
