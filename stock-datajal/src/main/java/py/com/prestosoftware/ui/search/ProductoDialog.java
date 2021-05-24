@@ -10,15 +10,24 @@ import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.AbstractDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import py.com.prestosoftware.data.models.Producto;
+import py.com.prestosoftware.data.models.ProductoDeposito;
+import py.com.prestosoftware.data.models.ProductoPrecio;
+import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.table.ProductTableModel;
+import py.com.prestosoftware.ui.table.ProductoDepositoTableModel;
+import py.com.prestosoftware.ui.table.ProductoPrecioTableModel;
+
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import java.awt.event.ActionListener;
@@ -43,31 +52,34 @@ public class ProductoDialog extends JDialog {
 	private JTable table;
 	private JScrollPane scrollPane;
 	
+	private JTable tbDeposito;
+	private JScrollPane scrollPaneDeposito;
+	private JTable tbPrecioIva;
+	private JScrollPane scrollPanePrecioIva;
+	
 	private ProductoService service;
 	private ProductTableModel tableModel;
 	private ProductoInterfaz interfaz;
 	
 	private List<Producto> productos;
 	
-	private ConsultaCompraDialog consultaCompraDialog;
-	private ConsultaVentasDialog consultaVentaDialog;
-	private ConsultaPrecioProducto consultaPrecioProducto;
-	private JPanel panel;
-	private JLabel lblNewLabel;
-	private JPanel panel_1;
-	private JLabel label;
+	private ProductoPrecioTableModel precioTableModel;
+	private ProductoDepositoTableModel depositoTableModel;
+	private DepositoService depositoService;
+	
+	private JPanel pnlDeposito;
+	private JPanel pnlPrecioIva;
+	
 
 	@Autowired
 	public ProductoDialog(ProductoService service, 
-			ProductTableModel tableModel,
-			ConsultaCompraDialog consultaCompraDialog,
-			ConsultaVentasDialog consultaVentaDialog,
-			ConsultaPrecioProducto consultaPrecioProducto) {
+			ProductTableModel tableModel, ProductoDepositoTableModel productoDepositoTableModel, DepositoService depositoService,
+			ProductoPrecioTableModel productoPrecioTableModel) {
 		this.service = service;
 		this.tableModel = tableModel;
-		this.consultaCompraDialog = consultaCompraDialog;
-		this.consultaVentaDialog = consultaVentaDialog;
-		this.consultaPrecioProducto = consultaPrecioProducto;
+		this.depositoTableModel = productoDepositoTableModel;
+		this.depositoService = depositoService;
+		this.precioTableModel = productoPrecioTableModel;
 		
 		setTitle("LISTA DE STOCK");
 		setSize(900, 600);
@@ -131,6 +143,11 @@ public class ProductoDialog extends JDialog {
 		
 		table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                loadData(); 
+            }
+        });
 		table.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		table.addKeyListener(new KeyAdapter() {
 			@Override
@@ -178,6 +195,7 @@ public class ProductoDialog extends JDialog {
 				
 			}
 		});
+		
 		scrollPane.setViewportView(table);
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(0, 443, 900, 35);
@@ -215,22 +233,35 @@ public class ProductoDialog extends JDialog {
 		});
 		pnlBotonera.add(btnCancelar);
 		
-		panel = new JPanel();
-		panel.setBounds(626, 35, 262, 197);
-		getContentPane().add(panel);
-		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		pnlDeposito = new JPanel();
+		pnlDeposito.setBounds(626, 35, 248, 197);
+		pnlDeposito.setBorder(new TitledBorder(null, "DEPOSITOS", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		getContentPane().add(pnlDeposito, "cell 1 0 1 3,grow");
+		pnlDeposito.setLayout(null);
 		
-		lblNewLabel = new JLabel("");
-		lblNewLabel.setSize(0, 30);
-		panel.add(lblNewLabel);
+		scrollPaneDeposito = new JScrollPane();
+		scrollPaneDeposito.setBounds(6, 18, 234, 168);
+		pnlDeposito.add(scrollPaneDeposito);
 		
-		panel_1 = new JPanel();
-		panel_1.setBounds(626, 244, 262, 199);
-		getContentPane().add(panel_1);
-		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		tbDeposito = new JTable(depositoTableModel);
+		tbDeposito.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		scrollPaneDeposito.setViewportView(tbDeposito);
 		
-		label = new JLabel("");
-		panel_1.add(label);
+		
+		pnlPrecioIva = new JPanel();
+		pnlPrecioIva.setBounds(626, 244, 248, 199);
+		pnlPrecioIva.setBorder(new TitledBorder(null, "PRECIO CON IVA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		getContentPane().add(pnlPrecioIva, "cell 1 4,grow");
+		pnlPrecioIva.setLayout(null);
+		
+		scrollPanePrecioIva = new JScrollPane();
+		scrollPanePrecioIva.setBounds(6, 18, 232, 173);
+		pnlPrecioIva.add(scrollPanePrecioIva);
+		
+		tbPrecioIva = new JTable(precioTableModel);
+		tbPrecioIva.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		scrollPanePrecioIva.setViewportView(tbPrecioIva);
+		
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize(); 
@@ -277,5 +308,87 @@ public class ProductoDialog extends JDialog {
 
 	public void getProductos() {
 		loadProductos("");
+	}
+	
+	private void getStockProductosByDeposito(Producto p) {
+		depositoTableModel.clear();
+		
+		if (p != null) {
+			String deposito = depositoService.findById(1L).get().getNombre();
+			
+			if (p.getDepO1() != null) {
+				ProductoDeposito dep01 = new ProductoDeposito(deposito, p.getDepO1());
+				depositoTableModel.addEntity(dep01);
+				
+				String deposito2 = depositoService.findById(2L).get().getNombre();
+				if (p.getDepO2() != null) {
+					ProductoDeposito dep02 = new ProductoDeposito(deposito2, p.getDepO2());
+					depositoTableModel.addEntity(dep02);
+					
+					String deposito3 = depositoService.findById(3L).get().getNombre();
+					if (p.getDepO3() != null) {
+						ProductoDeposito dep03 = new ProductoDeposito(deposito3, p.getDepO3());
+						depositoTableModel.addEntity(dep03);
+						
+						String deposito4 = depositoService.findById(4L).get().getNombre();
+						if (p.getDepO4() != null) {
+							ProductoDeposito dep04 = new ProductoDeposito(deposito4, p.getDepO4());
+							depositoTableModel.addEntity(dep04);
+							
+							String deposito5 = depositoService.findById(5L).get().getNombre();
+							if (p.getDepO5() != null) {
+								ProductoDeposito dep05 = new ProductoDeposito(deposito5, p.getDepO5());
+								depositoTableModel.addEntity(dep05);
+							}	
+						}
+					}
+				}
+			}	
+		}
+	}
+	//TODO Buscar por codigo y referencia
+	private void getPreciosByProducto(Producto p) {
+		precioTableModel.clear();
+		
+		if (p != null) {
+			if (p.getPrecioVentaA() != null) {
+				ProductoPrecio precio01 = new ProductoPrecio("Precio A", (p.getPrecioVentaA() != null ? p.getPrecioVentaA():0));
+				precioTableModel.addEntity(precio01);
+			
+				if (p.getPrecioVentaB() != null) {
+					ProductoPrecio precio02 = new ProductoPrecio("Precio B", (p.getPrecioVentaB() != null ? p.getPrecioVentaB():0));
+					precioTableModel.addEntity(precio02);
+					
+					if (p.getPrecioVentaC() != null) {
+						ProductoPrecio precio03 = new ProductoPrecio("Precio C", (p.getPrecioVentaC() != null ? p.getPrecioVentaC():0));
+						precioTableModel.addEntity(precio03);
+						
+						if (p.getPrecioVentaD() != null) {
+							ProductoPrecio precio04 = new ProductoPrecio("Precio D", (p.getPrecioVentaD() != null ? p.getPrecioVentaD():0));
+							precioTableModel.addEntity(precio04);
+							
+							if (p.getPrecioVentaE() != null) {
+								ProductoPrecio precio05 = new ProductoPrecio("Precio E", (p.getPrecioVentaE() != null ? p.getPrecioVentaE():0));
+								precioTableModel.addEntity(precio05);
+							}	
+						}
+					}
+				}
+			}	
+		}
+	}
+	
+	private void loadData() {
+		int selectedRow = table.getSelectedRow();
+        
+		if (selectedRow != -1) {
+			Long productoId = tableModel.getEntityByRow(selectedRow).getId();
+			Producto p = service.getStockDepositoByProductoId(productoId);
+			
+			if (p != null) {
+				getStockProductosByDeposito(p);
+				getPreciosByProducto(p);
+			}
+	    }
 	}
 }

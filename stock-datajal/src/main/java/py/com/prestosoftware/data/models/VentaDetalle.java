@@ -2,6 +2,7 @@ package py.com.prestosoftware.data.models;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
 @Embeddable
 public class VentaDetalle {
@@ -13,6 +14,12 @@ public class VentaDetalle {
 	private Double precio;
 	private Double subtotal;
 	private Double descuento;
+	@Transient
+	private String exenta;
+	@Transient
+	private String iva5;
+	@Transient
+	private String iva10;
 	
 	@Column(name = "precio_fob")
 	private Double precioFob;
@@ -141,5 +148,27 @@ public class VentaDetalle {
 		this.iva = iva;
 	}
 
-	
+	public String getExenta() {
+		return exenta;
+	}
+
+	public void setExenta(String exenta) {
+		this.exenta = exenta;
+	}
+
+	public String getIva5() {
+		return iva5;
+	}
+
+	public void setIva5(String iva5) {
+		this.iva5 = iva5;
+	}
+
+	public String getIva10() {
+		return iva10;
+	}
+
+	public void setIva10(String iva10) {
+		this.iva10 = iva10;
+	}
 }

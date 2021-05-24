@@ -41,7 +41,6 @@ import org.springframework.stereotype.Component;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperPrintManager;
@@ -49,22 +48,19 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.swing.JRViewer;
-import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Proveedor;
-import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.Util;
-import py.com.prestosoftware.ui.table.ClientTableModel;
 import py.com.prestosoftware.ui.table.ProveedorTableModel;
 import py.com.prestosoftware.util.ConnectionUtils;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
+public class CuentaPagarDialog extends JDialog implements ProveedorInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int CLIENTE_CODE = 1;
+	private static final int PROVEEDOR_CODE = 1;
 
 	private JTextField tfClienteID;
 	private JButton btnPrevisualizar;
@@ -72,11 +68,12 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 
 	private JXDatePicker tfFechaInicial;
 	private JXDatePicker tfFechaFinal;
-	private ClienteService service;
-	private ClientTableModel tableModel;
-	private ClienteInterfaz interfaz;
-	private ConsultaCliente clientDialog;
-	private List<Cliente> clientes;
+	private ProveedorService serviceProveedor;
+	private ProveedorTableModel tableModelProveedor;
+	private ProveedorInterfaz interfazProveedor;
+	private ConsultaProveedor proveedorDialog;
+	private List<Proveedor> proveedores;
+
 	private JComboBox<String> cbPeriodo;
 	private JLabel lblNewLabel;
 	private JLabel lblFechaInicio;
@@ -87,13 +84,14 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 	private JLabel lblOrdenadoPor;
 
 	@Autowired
-	public CuentaRecibirDialog(ClienteService service, ClientTableModel tableModel, ConsultaCliente clientDialog) {
-		this.service = service;
-		this.tableModel = tableModel;
-		this.clientDialog = clientDialog;
+	public CuentaPagarDialog(ProveedorService serviceProveedor, ProveedorTableModel tableModelProveedor,
+			ConsultaProveedor proveedorDialog) {
+		this.serviceProveedor = serviceProveedor;
+		this.tableModelProveedor = tableModelProveedor;
+		this.proveedorDialog = proveedorDialog;
 		this.setSize(668, 288);
 		this.setModal(true);
-		this.setTitle("Vencimientos de movimientos del cliente");
+		this.setTitle("Vencimiento de Movimientos con Proveedor");
 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -177,7 +175,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_btnCancelar.gridy = 5;
 		pnlBotonera.add(btnCancelar, gbc_btnCancelar);
 
-		JLabel lblBuscadorCliente = new JLabel("Cliente :"); //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel lblBuscadorCliente = new JLabel("Proveedor"); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gbc_lblBuscadorCliente = new GridBagConstraints();
 		gbc_lblBuscadorCliente.anchor = GridBagConstraints.WEST;
 		gbc_lblBuscadorCliente.insets = new Insets(0, 0, 5, 5);
@@ -196,13 +194,13 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(CLIENTE_CODE);
+					showDialog(PROVEEDOR_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfClienteID.getText().isEmpty()) {
-						findClientById(Long.parseLong(tfClienteID.getText()));
+						findProveedorById(Long.parseLong(tfClienteID.getText()));
 						cbPeriodo.requestFocus();
 					} else {
-						showDialog(CLIENTE_CODE);
+						showDialog(PROVEEDOR_CODE);
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
@@ -272,7 +270,6 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-
 				}
 			}
 		});
@@ -297,11 +294,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		cbOrden.setModel(new DefaultComboBoxModel(new String[] { "Codigo", "Nombre" }));
 		cbOrden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-//				if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo")) {
-//					
-//				} else {
-//
-//				}
+
 			}
 		});
 		GridBagConstraints gbc_cbOrden = new GridBagConstraints();
@@ -355,56 +348,56 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
-		loadClients("");
+		loadProveedores("");
 	}
 
-	private void loadClients(String name) {
+	private void loadProveedores(String name) {
 		if (name.isEmpty()) {
-			clientes = service.findAll();
+			proveedores = serviceProveedor.findAll();
 		} else {
-			clientes = service.findByNombre(name);
+			proveedores = serviceProveedor.findByNombre(name);
 		}
 
-		tableModel.clear();
-		tableModel.addEntities(clientes);
+		tableModelProveedor.clear();
+		tableModelProveedor.addEntities(proveedores);
 	}
 
-	public ClienteInterfaz getInterfaz() {
-		return interfaz;
+	public ProveedorInterfaz getInterfazProveedor() {
+		return interfazProveedor;
 	}
 
-	public void setInterfaz(ClienteInterfaz interfaz) {
-		this.interfaz = interfaz;
+	public void setInterfazProveedor(ProveedorInterfaz interfazProveedor) {
+		this.interfazProveedor = interfazProveedor;
 	}
 
-	private void findClientById(Long id) {
-		Optional<Cliente> cliente = service.findById(id);
-		if (cliente.isPresent()) {
-			setCliente(cliente.get());
+	private void findProveedorById(Long id) {
+		Optional<Proveedor> proveedor = serviceProveedor.findById(id);
+		if (proveedor.isPresent()) {
+			setProveedor(proveedor.get());
 		} else {
-			Notifications.showAlert("No existe Cliente con el codigo informado.!");
+			Notifications.showAlert("No existe Proveedor con el codigo informado.!");
 		}
 	}
 
 	private void preview() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		String idCliente = "";
+		String idProveedor = "";
 		String orden = "";
 		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
-		parametros.put("idCliente", idCliente);
+			idProveedor = " and id_proveedor=" + tfClienteID.getText();
+		parametros.put("idProveedor", idProveedor);
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			orden = " ORDER BY 5, 12,13,14 asc";
+			orden = " ORDER BY 10, 4 asc";
 		else
-			orden = " ORDER BY 6, 12,13,14 asc";
-		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		Date fechaIniSel = tfFechaInicial.getDate();
-		Date fechaFinSel = tfFechaFinal.getDate();
-		parametros.put("fechaInicio", df.format(fechaIniSel));
-		parametros.put("fechaFin", df.format(fechaFinSel));
-		String fechaFiltro1 = " and ica_vencimiento >= to_Date('" + df.format(fechaIniSel)
-				+ "', 'DD/MM/YYYY') and ica_vencimiento <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		String fechaFiltro2 = " and ica_vencimiento < to_Date('" + df.format(fechaIniSel) + "', 'DD/MM/YYYY') ";
+			orden = " ORDER BY 11, 4 asc";
+		SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+		parametros.put("fechaInicio", df.format(tfFechaInicial.getDate()));
+		parametros.put("fechaFin", df.format(tfFechaFinal.getDate()));
+		String fechaFiltro1 = " and icp_vencimiento >= to_Date('" + df.format(tfFechaInicial.getDate())
+				+ "', 'DD/MM/YYYY') and icp_vencimiento <= TO_Date('" + df.format(tfFechaFinal.getDate())
+				+ "', 'DD/MM/YYYY') ";
+		String fechaFiltro2 = " and icp_vencimiento < to_Date('" + df.format(tfFechaInicial.getDate())
+				+ "', 'DD/MM/YYYY') ";
 		parametros.put("fechaFiltro1", fechaFiltro1);
 		parametros.put("fechaFiltro2", fechaFiltro2);
 		parametros.put("orden", orden);
@@ -412,17 +405,19 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		try {
 			conn = ConnectionUtils.getConnection();
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportMovimientoClienteCuenta.jrxml";
+					+ "reportMovimientoProveedorCuenta.jrxml";
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conn);
+			
 			JFrame frame = new JFrame();
-			frame.setTitle("Visualizar Cuentas a cobrar");
+			frame.setTitle("Visualizar Cuentas a pagar");
 			frame.setBounds(100, 100, 800,600);
 			frame.getContentPane().add(new JRViewer(jasperPrint));
 			frame.setModalExclusionType(getModalExclusionType().APPLICATION_EXCLUDE);
 			frame.setLocationRelativeTo(null);
 			frame.setVisible(true);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -430,23 +425,23 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 
 	private void print() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		String idCliente = "";
+		String idProveedor = "";
 		String orden = "";
 		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
-		parametros.put("idCliente", idCliente);
+			idProveedor = "and id_proveedor=" + tfClienteID.getText();
+		parametros.put("idProveedor", idProveedor);
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			orden = " order by 5, 12,13,14 asc";
+			orden = " order by 10, 4 asc";
 		else
-			orden = " order by 6, 12,13,14 asc";
+			orden = " order by 11, 4 asc";
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-		Date fechaIniSel = tfFechaInicial.getDate();
-		Date fechaFinSel = tfFechaFinal.getDate();
-		parametros.put("fechaInicio", df.format(fechaIniSel));
-		parametros.put("fechaFin", df.format(fechaFinSel));
-		String fechaFiltro1 = " and ica_vencimiento >= to_Date('" + df.format(fechaIniSel)
-				+ "', 'DD/MM/YYYY') and ica_vencimiento <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		String fechaFiltro2 = " and ica_vencimiento < to_Date('" + df.format(fechaIniSel) + "', 'DD/MM/YYYY') ";
+		parametros.put("fechaInicio", df.format(tfFechaInicial.getDate()));
+		parametros.put("fechaFin", df.format(tfFechaFinal.getDate()));
+		String fechaFiltro1 = " and icp_vencimiento >= to_Date('" + df.format(tfFechaInicial.getDate())
+				+ "', 'DD/MM/YYYY') and icp_vencimiento <= TO_Date('" + df.format(tfFechaFinal.getDate())
+				+ "', 'DD/MM/YYYY') ";
+		String fechaFiltro2 = " and icp_vencimiento < to_Date('" + df.format(tfFechaInicial.getDate())
+				+ "', 'DD/MM/YYYY') ";
 		parametros.put("fechaFiltro1", fechaFiltro1);
 		parametros.put("fechaFiltro2", fechaFiltro2);
 		parametros.put("orden", orden);
@@ -454,7 +449,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		try {
 			conn = ConnectionUtils.getConnection();
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportMovimientoClienteCuenta.jrxml";
+					+ "reportMovimientoProveedorCuenta.jrxml";
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conn);
@@ -472,25 +467,27 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 
 	private void showDialog(int code) {
 		switch (code) {
-		case CLIENTE_CODE:
-			clientDialog.setInterfaz(this);
-			clientDialog.setVisible(true);
+		case PROVEEDOR_CODE:
+			proveedorDialog.setInterfaz(this);
+			proveedorDialog.setVisible(true);
 			break;
 		default:
 			break;
 		}
 	}
+	
 
 	@Override
-	public void getEntity(Cliente cliente) {
-		setCliente(cliente);
+	public void getEntity(Proveedor proveedor) {
+		setProveedor(proveedor);
 	}
 
-	private void setCliente(Cliente cliente) {
+	private void setProveedor(Proveedor proveedor) {
 		tfNombreCliente.setText("");
-		if (cliente != null) {
-			tfClienteID.setText(String.valueOf(cliente.getId()));
-			tfNombreCliente.setText(cliente.getRazonSocial());
+		if (proveedor != null) {
+			tfClienteID.setText(String.valueOf(proveedor.getId()));
+			tfNombreCliente.setText(proveedor.getRazonSocial());
 		}
 	}
+
 }

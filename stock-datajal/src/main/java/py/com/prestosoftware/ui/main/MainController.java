@@ -30,10 +30,14 @@ import py.com.prestosoftware.ui.controllers.TamanhoController;
 import py.com.prestosoftware.ui.controllers.UnidadMedidaController;
 import py.com.prestosoftware.ui.controllers.UsuarioController;
 import py.com.prestosoftware.ui.controllers.UsuarioRolController;
+import py.com.prestosoftware.ui.reports.InformeResumenCajaDialog;
+import py.com.prestosoftware.ui.reports.InformeStockDeposito;
+import py.com.prestosoftware.ui.reports.UtilidadProductoDialog;
 import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
+import py.com.prestosoftware.ui.search.CuentaPagarDialog;
 import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
@@ -161,11 +165,20 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private CuentaRecibirDialog cuentaRecibirDialog;
 	@Autowired
+	private CuentaPagarDialog cuentaPagarDialog;
+	@Autowired
 	private ConsultaProveedor consultaProveedor;
 	@Autowired
 	private ConsultaCliente consultaCliente;
 	@Autowired
 	private ProductoDialog productoDialog;
+	@Autowired
+	private InformeStockDeposito informeStockDeposito;
+	@Autowired
+	private UtilidadProductoDialog utilidadProductoDialog;
+	@Autowired
+	private InformeResumenCajaDialog informeResumenCajaDialog;
+	
 
 	public MainController() {
 	}
@@ -219,7 +232,11 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuSaldoDeposito(), (e) -> openSaldoDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuSaldoStock(), (e) -> openSaldoStock());
 		
+		registerOpenMenu(mainMenuFrame.getMnuInfStockPorDeposito(), (e) -> openInformeStockDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuInfCuentaARecibirVencimientoCliente(), (e) -> openVencimientoCuentaARecibir());
+		registerOpenMenu(mainMenuFrame.getMnuInfCuentaAPagarVencimientoProveedor(), (e) -> openVencimientoCuentaAPagar());
+		registerOpenMenu(mainMenuFrame.getMnuInfResumenUtilidadProducto(), (e) -> openUtilidadProducto());
+		registerOpenMenu(mainMenuFrame.getMnuInfResumenCajas(), (e) -> openInformeResumenCaja());
 		
 		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
 		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
@@ -327,10 +344,26 @@ public class MainController extends AbstractFrameController {
 
 	}
 	
+	private void openInformeStockDeposito() {
+		informeStockDeposito.setVisible(true);
+	}
+	
 	private void openVencimientoCuentaARecibir() {
 		cuentaRecibirDialog.setVisible(true);
 	}
+	
+	private void openVencimientoCuentaAPagar() {
+		cuentaPagarDialog.setVisible(true);
+	}
 
+	private void openUtilidadProducto() {
+		utilidadProductoDialog.setVisible(true);
+	}
+	
+	private void openInformeResumenCaja() {
+		informeResumenCajaDialog.setVisible(true);
+	}
+	
 	private void openConsultaBoleta() {
 		boletaPanel.setVisible(true);
 	}

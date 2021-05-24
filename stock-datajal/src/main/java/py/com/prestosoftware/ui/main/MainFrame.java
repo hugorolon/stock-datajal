@@ -88,7 +88,10 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuSaldoDeposito;
 	private JMenu mnuInfProductos;
 	private JMenu mnuInfDatosProductos;
+	private JMenuItem mnuInfStockPorDeposito;
 	private JMenu mnuInfCuentaAPagarRecibir;
+	private JMenu mnuInfEstadoFinanciero;
+	private JMenuItem mnuInfResumenUtilidadProducto;
 	private JMenu mnuInfCuentaAPagar;
 	private JMenu mnuInfCuentaARecibir;
 	private JMenuItem mnuInfCuentaAPagarVencimientoProveedor;
@@ -350,7 +353,9 @@ public class MainFrame extends JFrame {
 		mnuRelatorios.add(mnuInfProductos);
 		
 		mnuInfDatosProductos= new JMenu("DATOS DEL PRODUCTO");
+		mnuInfStockPorDeposito = new JMenuItem("INFORME DE STOCK POR DEPOSITO");
 		mnuInfProductos.add(mnuInfDatosProductos);
+		mnuInfDatosProductos.add(mnuInfStockPorDeposito);
 		
 		mnuInfCuentaAPagarRecibir = new JMenu("CUENTAS A PAGAR Y RECIBIR");
 		mnuInfCuentaAPagar = new JMenu("CUENTAS A PAGAR");
@@ -374,6 +379,10 @@ public class MainFrame extends JFrame {
 		
 		mnuRelatorios.add(mnuInfCuentaAPagarRecibir);
 		
+		mnuInfEstadoFinanciero = new JMenu("ESTADO FINANCIERO");
+		mnuInfResumenUtilidadProducto = new JMenuItem("RESUMEN DE UTILIDAD DE PRODUCTOS");
+		mnuInfEstadoFinanciero.add(mnuInfResumenUtilidadProducto);
+		mnuRelatorios.add(mnuInfEstadoFinanciero);
 		mnuInfCajas = new JMenu("CAJAS");
 		mnuInfResumenCajas= new JMenuItem("RESUMEN DETALLADO DE INGRESO EGRESO CAJA");
 		mnuInfResumenAgrupadoCajas= new JMenuItem("RESUMEN AGRUPADO DE INGRESO EGRESO");
@@ -823,6 +832,30 @@ public class MainFrame extends JFrame {
 
 	public void setMnuInfResumenAgrupadoCajas(JMenuItem mnuInfResumenAgrupadoCajas) {
 		this.mnuInfResumenAgrupadoCajas = mnuInfResumenAgrupadoCajas;
+	}
+
+	public JMenuItem getMnuInfStockPorDeposito() {
+		return mnuInfStockPorDeposito;
+	}
+
+	public void setMnuInfStockPorDeposito(JMenuItem mnuInfStockPorDeposito) {
+		this.mnuInfStockPorDeposito = mnuInfStockPorDeposito;
+	}
+
+	public JMenu getMnuInfEstadoFinanciero() {
+		return mnuInfEstadoFinanciero;
+	}
+
+	public void setMnuInfEstadoFinanciero(JMenu mnuInfEstadoFinanciero) {
+		this.mnuInfEstadoFinanciero = mnuInfEstadoFinanciero;
+	}
+
+	public JMenuItem getMnuInfResumenUtilidadProducto() {
+		return mnuInfResumenUtilidadProducto;
+	}
+
+	public void setMnuInfResumenUtilidadProducto(JMenuItem mnuInfResumenUtilidadProducto) {
+		this.mnuInfResumenUtilidadProducto = mnuInfResumenUtilidadProducto;
 	}
 	
 	

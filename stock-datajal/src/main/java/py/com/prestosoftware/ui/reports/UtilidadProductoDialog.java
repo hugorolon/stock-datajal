@@ -1,4 +1,4 @@
-package py.com.prestosoftware.ui.search;
+package py.com.prestosoftware.ui.reports;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -60,13 +60,11 @@ import py.com.prestosoftware.util.ConnectionUtils;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
+public class UtilidadProductoDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final int CLIENTE_CODE = 1;
-
-	private JTextField tfClienteID;
 	private JButton btnPrevisualizar;
 	private JButton btnCancelar;
 
@@ -74,26 +72,26 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 	private JXDatePicker tfFechaFinal;
 	private ClienteService service;
 	private ClientTableModel tableModel;
-	private ClienteInterfaz interfaz;
-	private ConsultaCliente clientDialog;
 	private List<Cliente> clientes;
 	private JComboBox<String> cbPeriodo;
 	private JLabel lblNewLabel;
 	private JLabel lblFechaInicio;
 	private JLabel lblFechaFin;
 	private JButton btnImprimir;
-	private JTextField tfNombreCliente;
 	private JComboBox<String> cbOrden;
 	private JLabel lblOrdenadoPor;
+	private JLabel lblAgrupadoPor;
+	private JComboBox<String> cbEstiloInforme;
 
 	@Autowired
-	public CuentaRecibirDialog(ClienteService service, ClientTableModel tableModel, ConsultaCliente clientDialog) {
+	public UtilidadProductoDialog(ClienteService service, ClientTableModel tableModel) {
 		this.service = service;
 		this.tableModel = tableModel;
-		this.clientDialog = clientDialog;
+
 		this.setSize(668, 288);
 		this.setModal(true);
-		this.setTitle("Vencimientos de movimientos del cliente");
+		this.setTitle(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("UtilidadProductoDialog.this.title")); //$NON-NLS-1$
 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -101,9 +99,9 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
 		GridBagLayout gbl_pnlBuscador = new GridBagLayout();
 		gbl_pnlBuscador.columnWidths = new int[] { 18, 88, 116, 119, 65, 0 };
-		gbl_pnlBuscador.rowHeights = new int[] { 23, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_pnlBuscador.rowHeights = new int[] { 23, 0, 0, 0, 0, 0, 0, 0 };
 		gbl_pnlBuscador.columnWeights = new double[] { 0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE };
-		gbl_pnlBuscador.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_pnlBuscador.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
 		pnlBuscador.setLayout(gbl_pnlBuscador);
 
 		// pnlBuscador.add(tfFechaInicial);
@@ -111,7 +109,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		JPanel pnlBotonera = new JPanel();
 		GridBagConstraints gbc_pnlBotonera = new GridBagConstraints();
 		gbc_pnlBotonera.fill = GridBagConstraints.VERTICAL;
-		gbc_pnlBotonera.gridheight = 8;
+		gbc_pnlBotonera.gridheight = 7;
 		gbc_pnlBotonera.gridx = 4;
 		gbc_pnlBotonera.gridy = 0;
 		pnlBuscador.add(pnlBotonera, gbc_pnlBotonera);
@@ -177,71 +175,6 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_btnCancelar.gridy = 5;
 		pnlBotonera.add(btnCancelar, gbc_btnCancelar);
 
-		JLabel lblBuscadorCliente = new JLabel("Cliente :"); //$NON-NLS-1$ //$NON-NLS-2$
-		GridBagConstraints gbc_lblBuscadorCliente = new GridBagConstraints();
-		gbc_lblBuscadorCliente.anchor = GridBagConstraints.WEST;
-		gbc_lblBuscadorCliente.insets = new Insets(0, 0, 5, 5);
-		gbc_lblBuscadorCliente.gridx = 1;
-		gbc_lblBuscadorCliente.gridy = 1;
-		pnlBuscador.add(lblBuscadorCliente, gbc_lblBuscadorCliente);
-
-		tfClienteID = new JTextField();
-		tfClienteID.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfClienteID.selectAll();
-			}
-		});
-		tfClienteID.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(CLIENTE_CODE);
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfClienteID.getText().isEmpty()) {
-						findClientById(Long.parseLong(tfClienteID.getText()));
-						cbPeriodo.requestFocus();
-					} else {
-						showDialog(CLIENTE_CODE);
-					}
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					dispose();
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-
-		GridBagConstraints gbc_tfClienteID = new GridBagConstraints();
-		gbc_tfClienteID.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfClienteID.insets = new Insets(0, 0, 5, 5);
-		gbc_tfClienteID.gridx = 2;
-		gbc_tfClienteID.gridy = 1;
-		pnlBuscador.add(tfClienteID, gbc_tfClienteID);
-		tfClienteID.setColumns(20);
-
-		tfNombreCliente = new JTextField();
-		tfNombreCliente.setText(""); //$NON-NLS-1$ //$NON-NLS-2$
-		GridBagConstraints gbc_tfNombreCliente = new GridBagConstraints();
-		gbc_tfNombreCliente.insets = new Insets(0, 0, 5, 5);
-		gbc_tfNombreCliente.fill = GridBagConstraints.HORIZONTAL;
-		gbc_tfNombreCliente.gridx = 3;
-		gbc_tfNombreCliente.gridy = 1;
-		pnlBuscador.add(tfNombreCliente, gbc_tfNombreCliente);
-		tfNombreCliente.setColumns(20);
-
-		lblNewLabel = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-				.getString("CuentaRecibirDialog.lblNewLabel.text")); //$NON-NLS-1$
-		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-		gbc_lblNewLabel.gridx = 1;
-		gbc_lblNewLabel.gridy = 3;
-		pnlBuscador.add(lblNewLabel, gbc_lblNewLabel);
-
 		cbPeriodo = new JComboBox<String>();
 		cbPeriodo.setModel(new DefaultComboBoxModel(new String[] { "Hoy", "Este mes", "Este año" }));
 		cbPeriodo.addActionListener(new ActionListener() {
@@ -277,11 +210,20 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 			}
 		});
 
+		lblNewLabel = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("CuentaRecibirDialog.lblNewLabel.text")); //$NON-NLS-1$
+		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
+		gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
+		gbc_lblNewLabel.gridx = 1;
+		gbc_lblNewLabel.gridy = 1;
+		pnlBuscador.add(lblNewLabel, gbc_lblNewLabel);
+
 		GridBagConstraints gbc_cbPeriodo = new GridBagConstraints();
 		gbc_cbPeriodo.insets = new Insets(0, 0, 5, 5);
 		gbc_cbPeriodo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbPeriodo.gridx = 2;
-		gbc_cbPeriodo.gridy = 3;
+		gbc_cbPeriodo.gridy = 1;
 		pnlBuscador.add(cbPeriodo, gbc_cbPeriodo);
 
 		lblOrdenadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
@@ -290,7 +232,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_lblOrdenadoPor.insets = new Insets(0, 0, 5, 5);
 		gbc_lblOrdenadoPor.anchor = GridBagConstraints.WEST;
 		gbc_lblOrdenadoPor.gridx = 1;
-		gbc_lblOrdenadoPor.gridy = 4;
+		gbc_lblOrdenadoPor.gridy = 2;
 		pnlBuscador.add(lblOrdenadoPor, gbc_lblOrdenadoPor);
 
 		cbOrden = new JComboBox<String>();
@@ -308,8 +250,26 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_cbOrden.insets = new Insets(0, 0, 5, 5);
 		gbc_cbOrden.fill = GridBagConstraints.HORIZONTAL;
 		gbc_cbOrden.gridx = 2;
-		gbc_cbOrden.gridy = 4;
+		gbc_cbOrden.gridy = 2;
 		pnlBuscador.add(cbOrden, gbc_cbOrden);
+
+		lblAgrupadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("UtilidadProductoDialog.lblAgrupadoPor.text")); //$NON-NLS-1$
+		GridBagConstraints gbc_lblAgrupadoPor = new GridBagConstraints();
+		gbc_lblAgrupadoPor.anchor = GridBagConstraints.WEST;
+		gbc_lblAgrupadoPor.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAgrupadoPor.gridx = 1;
+		gbc_lblAgrupadoPor.gridy = 3;
+		pnlBuscador.add(lblAgrupadoPor, gbc_lblAgrupadoPor);
+
+		cbEstiloInforme = new JComboBox<String>();
+		cbEstiloInforme.setModel(new DefaultComboBoxModel(new String[] { "Por Categoría", "Por Marca" }));
+		GridBagConstraints gbc_cbEstiloInforme = new GridBagConstraints();
+		gbc_cbEstiloInforme.insets = new Insets(0, 0, 5, 5);
+		gbc_cbEstiloInforme.fill = GridBagConstraints.HORIZONTAL;
+		gbc_cbEstiloInforme.gridx = 2;
+		gbc_cbEstiloInforme.gridy = 3;
+		pnlBuscador.add(cbEstiloInforme, gbc_cbEstiloInforme);
 
 		lblFechaInicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblNewLabel_1.text")); //$NON-NLS-1$
@@ -317,7 +277,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_lblFechaInicio.anchor = GridBagConstraints.WEST;
 		gbc_lblFechaInicio.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFechaInicio.gridx = 1;
-		gbc_lblFechaInicio.gridy = 5;
+		gbc_lblFechaInicio.gridy = 4;
 		pnlBuscador.add(lblFechaInicio, gbc_lblFechaInicio);
 
 		tfFechaInicial = new JXDatePicker();
@@ -328,7 +288,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_tfFechaInicial.anchor = GridBagConstraints.NORTHWEST;
 		gbc_tfFechaInicial.insets = new Insets(0, 0, 5, 5);
 		gbc_tfFechaInicial.gridx = 2;
-		gbc_tfFechaInicial.gridy = 5;
+		gbc_tfFechaInicial.gridy = 4;
 		pnlBuscador.add(tfFechaInicial, gbc_tfFechaInicial);
 		tfFechaInicial.setBounds(100, 100, 50, 50);
 		tfFechaInicial.setDate(new Date());
@@ -339,7 +299,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_lblFechaFin.anchor = GridBagConstraints.WEST;
 		gbc_lblFechaFin.insets = new Insets(0, 0, 0, 5);
 		gbc_lblFechaFin.gridx = 1;
-		gbc_lblFechaFin.gridy = 7;
+		gbc_lblFechaFin.gridy = 6;
 		pnlBuscador.add(lblFechaFin, gbc_lblFechaFin);
 
 		tfFechaFinal = new JXDatePicker();
@@ -348,7 +308,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		gbc_tfFechaInicial_1.anchor = GridBagConstraints.WEST;
 		gbc_tfFechaInicial_1.insets = new Insets(0, 0, 0, 5);
 		gbc_tfFechaInicial_1.gridx = 2;
-		gbc_tfFechaInicial_1.gridy = 7;
+		gbc_tfFechaInicial_1.gridy = 6;
 		pnlBuscador.add(tfFechaFinal, gbc_tfFechaInicial_1);
 		tfFechaFinal.setDate(new Date());
 
@@ -369,56 +329,66 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		tableModel.addEntities(clientes);
 	}
 
-	public ClienteInterfaz getInterfaz() {
-		return interfaz;
-	}
-
-	public void setInterfaz(ClienteInterfaz interfaz) {
-		this.interfaz = interfaz;
-	}
-
-	private void findClientById(Long id) {
-		Optional<Cliente> cliente = service.findById(id);
-		if (cliente.isPresent()) {
-			setCliente(cliente.get());
-		} else {
-			Notifications.showAlert("No existe Cliente con el codigo informado.!");
-		}
-	}
-
 	private void preview() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		String idCliente = "";
-		String orden = "";
-		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
-		parametros.put("idCliente", idCliente);
-		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			orden = " ORDER BY 5, 12,13,14 asc";
-		else
-			orden = " ORDER BY 6, 12,13,14 asc";
+//		String sqlCategoria="";
+//		String sqlMarca="";
+//		String tituloGrupo="";
+//		if(cbEstiloInforme.getSelectedItem().toString().equalsIgnoreCase("Por Marca")) {
+//			tituloGrupo="Marca :";
+//			sqlCategoria=" p.marca_id AS id_grupo, f.nombre AS grupo, ";
+//			sqlMarca=" p.categoria_id AS id_grupo1, a.nombre AS grupo1, ";
+//		}else {
+//			tituloGrupo="Categoría :";
+//			sqlCategoria=" p.categoria_id AS id_grupo, a.nombre AS grupo, ";
+//			sqlMarca=" p.marca_id AS id_grupo1, f.nombre AS grupo1, ";
+//		}
+//		parametros.put("tituloGrupo", tituloGrupo);
+//		parametros.put("sqlCategoria", sqlCategoria);
+//		parametros.put("sqlMarca", sqlMarca);
+
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		Date fechaIniSel = tfFechaInicial.getDate();
 		Date fechaFinSel = tfFechaFinal.getDate();
 		parametros.put("fechaInicio", df.format(fechaIniSel));
 		parametros.put("fechaFin", df.format(fechaFinSel));
-		String fechaFiltro1 = " and ica_vencimiento >= to_Date('" + df.format(fechaIniSel)
-				+ "', 'DD/MM/YYYY') and ica_vencimiento <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		String fechaFiltro2 = " and ica_vencimiento < to_Date('" + df.format(fechaIniSel) + "', 'DD/MM/YYYY') ";
-		parametros.put("fechaFiltro1", fechaFiltro1);
-		parametros.put("fechaFiltro2", fechaFiltro2);
-		parametros.put("orden", orden);
+		String fechaFiltro = " AND v.fecha >= to_date('" + df.format(fechaIniSel)
+				+ "', 'DD/MM/YYYY') and v.fecha <= to_date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
+		
+			
+		String sql="SELECT p.id AS codigo, v.fecha as fecha, extract(month from v.fecha) as mes, p.descripcion AS nombre, \n"
+				+ " a.id AS categoriaId, a.nombre AS nombreCategoria, f.id AS fabricanteId, f.nombre AS nombreFabricante, SUM(i.cantidad) AS cantidad, \n"
+				+ " SUM(i.cantidad * i.precio) / SUM(i.cantidad) AS venta, \n"
+				+ " p.precio_costo AS compra, \n"
+				+ " p.precio_costo * SUM(i.cantidad) AS tcompra, \n"
+				+ " (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) AS tventa\n"
+				+ " , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - \n"
+				+ " (p.precio_costo * SUM(i.cantidad)) AS utilidad \n"
+				+ " FROM productos p, categorias a, marcas f, ventas v, venta_detalles i \n"
+				+ " WHERE \n"
+				+ " v.id = i.venta_id AND i.producto_id = p.id AND v.situacion = 'PAGADO' AND p.marca_id = f.id \n"
+				+ fechaFiltro  
+				+ " GROUP BY p.id, p.descripcion, f.id, a.nombre, f.nombre, v.fecha, a.id \n";
+				
+				
+				
+		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
+			sql = sql +" ORDER BY 1,2 asc";
+		else
+			sql = sql +" ORDER BY 2,1 asc";
+		parametros.put("sql", sql);
+		
 		Connection conn = null;
 		try {
 			conn = ConnectionUtils.getConnection();
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportMovimientoClienteCuenta.jrxml";
+					+ "reportProductoUtilidad.jrxml";
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conn);
 			JFrame frame = new JFrame();
-			frame.setTitle("Visualizar Cuentas a cobrar");
-			frame.setBounds(100, 100, 800,600);
+			frame.setTitle("Visualizar Utilidad de Producto");
+			frame.setBounds(100, 100, 800, 600);
 			frame.getContentPane().add(new JRViewer(jasperPrint));
 			frame.setModalExclusionType(getModalExclusionType().APPLICATION_EXCLUDE);
 			frame.setLocationRelativeTo(null);
@@ -430,31 +400,58 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 
 	private void print() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
-		String idCliente = "";
-		String orden = "";
-		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
-		parametros.put("idCliente", idCliente);
-		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			orden = " order by 5, 12,13,14 asc";
-		else
-			orden = " order by 6, 12,13,14 asc";
+//		String sqlCategoria="";
+//		String sqlMarca="";
+//		String tituloGrupo="";
+//		if(cbEstiloInforme.getSelectedItem().toString().equalsIgnoreCase("Por Marca")) {
+//			tituloGrupo="Marca :";
+//			sqlCategoria=" p.marca_id AS id_grupo, f.nombre AS grupo, ";
+//			sqlMarca=" p.categoria_id AS id_grupo1, a.nombre AS grupo1, ";
+//		}else {
+//			tituloGrupo="Categoría :";
+//			sqlCategoria=" p.categoria_id AS id_grupo, a.nombre AS grupo, ";
+//			sqlMarca=" p.marca_id AS id_grupo1, f.nombre AS grupo1, ";
+//		}
+//		parametros.put("tituloGrupo", tituloGrupo);
+//		parametros.put("sqlCategoria", sqlCategoria);
+//		parametros.put("sqlMarca", sqlMarca);
+
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		Date fechaIniSel = tfFechaInicial.getDate();
 		Date fechaFinSel = tfFechaFinal.getDate();
 		parametros.put("fechaInicio", df.format(fechaIniSel));
 		parametros.put("fechaFin", df.format(fechaFinSel));
-		String fechaFiltro1 = " and ica_vencimiento >= to_Date('" + df.format(fechaIniSel)
-				+ "', 'DD/MM/YYYY') and ica_vencimiento <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		String fechaFiltro2 = " and ica_vencimiento < to_Date('" + df.format(fechaIniSel) + "', 'DD/MM/YYYY') ";
-		parametros.put("fechaFiltro1", fechaFiltro1);
-		parametros.put("fechaFiltro2", fechaFiltro2);
-		parametros.put("orden", orden);
+		String fechaFiltro = " AND v.fecha >= to_date('" + df.format(fechaIniSel)
+				+ "', 'DD/MM/YYYY') and v.fecha <= to_date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
+		
+			
+		String sql="SELECT p.id AS codigo, v.fecha as fecha, extract(month from v.fecha) as mes, p.descripcion AS nombre, \n"
+				+ " a.id AS categoriaId, a.nombre AS nombreCategoria, f.id AS fabricanteId, f.nombre AS nombreFabricante, SUM(i.cantidad) AS cantidad, \n"
+				+ " SUM(i.cantidad * i.precio) / SUM(i.cantidad) AS venta, \n"
+				+ " p.precio_costo AS compra, \n"
+				+ " p.precio_costo * SUM(i.cantidad) AS tcompra, \n"
+				+ " (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) AS tventa\n"
+				+ " , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - \n"
+				+ " (p.precio_costo * SUM(i.cantidad)) AS utilidad \n"
+				+ " FROM productos p, categorias a, marcas f, ventas v, venta_detalles i \n"
+				+ " WHERE \n"
+				+ " v.id = i.venta_id AND i.producto_id = p.id AND v.situacion = 'PAGADO' AND p.marca_id = f.id \n"
+				+ fechaFiltro  
+				+ " GROUP BY p.id, p.descripcion, f.id, a.nombre, f.nombre, v.fecha, a.id \n";
+				
+				
+				
+		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
+			sql = sql +" ORDER BY 1,2 asc";
+		else
+			sql = sql +" ORDER BY 2,1 asc";
+		parametros.put("sql", sql);
+		
 		Connection conn = null;
 		try {
 			conn = ConnectionUtils.getConnection();
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportMovimientoClienteCuenta.jrxml";
+					+ "reportProductoUtilidad.jrxml";
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conn);
@@ -470,27 +467,4 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		}
 	}
 
-	private void showDialog(int code) {
-		switch (code) {
-		case CLIENTE_CODE:
-			clientDialog.setInterfaz(this);
-			clientDialog.setVisible(true);
-			break;
-		default:
-			break;
-		}
-	}
-
-	@Override
-	public void getEntity(Cliente cliente) {
-		setCliente(cliente);
-	}
-
-	private void setCliente(Cliente cliente) {
-		tfNombreCliente.setText("");
-		if (cliente != null) {
-			tfClienteID.setText(String.valueOf(cliente.getId()));
-			tfNombreCliente.setText(cliente.getRazonSocial());
-		}
-	}
 }

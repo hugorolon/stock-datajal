@@ -26,6 +26,22 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 			+ "SUM(valor_m03) AS valor_m03, SUM(valor_m04) AS valor_m04, SUM(valor_m05) AS valor_m05 "
 			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha = ?2 AND situacion = ?3", nativeQuery = true)
 	Optional<MovimientoCaja> getTotalsEntradaCaja(Caja caja, Date fecha, String situacion);
+	
+	@Query(value = "select SUM(VALOR_M01) "
+			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha < ?2 and tipo_operacion = 'E' and situacion='PAGADO'", nativeQuery = true)
+	Optional<Double> getTotalsEntradaAnterior(Caja caja, Date fecha);
+	
+	@Query(value = "select SUM(VALOR_M01) "
+			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha < ?2 and tipo_operacion = 'S' and situacion='PAGADO'", nativeQuery = true)
+	Optional<Double> getTotalsSalidaAnterior(Caja caja, Date fecha);
+	
+	@Query(value = "select SUM(VALOR_M01) "
+			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha >= ?2 and fecha <= ?3 and tipo_operacion = 'E' and situacion='PAGADO'", nativeQuery = true)
+	Optional<Double> getTotalsEntrada(Caja caja, Date fechaInicial, Date fechaFinal);
+	
+	@Query(value = "select SUM(VALOR_M01) "
+			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha >= ?2 and fecha <= ?3 and tipo_operacion = 'S' and situacion='PAGADO'", nativeQuery = true)
+	Optional<Double> getTotalsSalida(Caja caja, Date fechaInicial, Date fechaFinal);
 
 	@Query(value = "SELECT  mc "
 			+ "FROM MovimientoCaja mc " + "WHERE mc.notaNro = ?1", nativeQuery = false)

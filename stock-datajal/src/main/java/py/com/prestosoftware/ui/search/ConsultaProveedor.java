@@ -55,6 +55,7 @@ public class ConsultaProveedor extends JDialog {
 	private void setupUI() {
 		setTitle("CONSULTA PROVEEDORES");
 		setSize(900, 500);
+		setModal(true);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();

@@ -86,6 +86,8 @@ import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.reports.ImpresionPanel;
 import py.com.prestosoftware.ui.reports.ImpresionPanelInterfaz;
 import py.com.prestosoftware.ui.reports.ImpresionUtil;
+import py.com.prestosoftware.ui.reports.ReImpresionPanel;
+import py.com.prestosoftware.ui.reports.ReImpresionPanelInterfaz;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.ClientePaisInterfaz;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
@@ -106,7 +108,7 @@ import py.com.prestosoftware.util.Notifications;
 
 @Component
 public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisInterfaz, VendedorInterfaz,
-		DepositoInterfaz, ProductoInterfaz, VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz {
+		DepositoInterfaz, ProductoInterfaz, VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz, ReImpresionPanelInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
@@ -136,6 +138,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private JLabel lblCamposObligatorios;
 	private JLabel label_5;
 	private JTextField tfDvRuc;
+	private JButton btnReimpresion;
 
 	private ConsultaCliente clientDialog;
 	private VendedorDialog vendedorDialog;
@@ -178,6 +181,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private Venta ventaSeleccionado;
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
+	private Date fechaImpresion;
 
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
 			DepositoDialog depositoDialog, ProductoDialog productoDialog, VentaValidator ventaValidator,
@@ -869,6 +873,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		pnlBotonera.add(btnGuardar);
 
 		btnAnular = new JButton("Anular(F5)");
+		btnAnular.setVisible(false);
 		btnAnular.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				anular();
@@ -886,6 +891,15 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			}
 
 		});
+		
+		btnReimpresion = new JButton("Re Impresión");
+		btnReimpresion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				imprimirDialogoReimpresion();
+			}
+		});
+		btnReimpresion.setVisible(false);
+		pnlBotonera.add(btnReimpresion);
 		pnlBotonera.add(btnAnular);
 
 		btnCancelar = new JButton("Cancelar");
@@ -1386,6 +1400,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private Venta getVentaFrom() {
 		Venta venta = new Venta();
 		venta.setFecha(new Date());
+		this.setFechaImpresion(new Date());
 		venta.setHora(new Date());
 
 		if (!tfVence.getText().isEmpty())
@@ -1525,7 +1540,6 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		tfDescuentoItem.setText("0");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
-		// tfSubtotal.setText("0");
 		tfCondicionPago.setText("0");
 		tfClienteNombre.setEnabled(false);
 		// tfClienteRuc.setEnabled(false);
@@ -1545,7 +1559,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 		calculateVencimiento();
 
-		// newVenta();
+		 newVenta();
 	}
 
 	public JTextField getTfClienteID() {
@@ -1659,6 +1673,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			break;
 		case VENTA_CODE:
 			consultaVentasDelDiaDialog.setInterfaz(this);
+			consultaVentasDelDiaDialog.setVentasDelDia();
 			consultaVentasDelDiaDialog.setVisible(true);
 			break;
 		default:
@@ -1702,11 +1717,14 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	@Override
 	public void getEntity(Venta v) {
 		if (v != null) {
+			btnReimpresion.setVisible(true);
+			btnAnular.setVisible(true);
 			setVenta(v);
 		}
 	}
 
 	public void setVenta(Venta v) {
+		tfVentaId.setText(v.getId().toString());
 		tfClienteID.setText(String.valueOf(v.getCliente().getId()));
 		tfClienteNombre.setText(v.getClienteNombre());
 		tfClienteRuc.setText(v.getClienteRuc());
@@ -1911,7 +1929,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 					if (print == 0)
 						imprimirDialogo();
-					else
+					//else
 						newVenta();
 				}
 			}
@@ -2146,6 +2164,18 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		panel.setVisible(true);
 	}
 
+	private ReImpresionPanel panelReImpresion = null;
+
+	private void imprimirDialogoReimpresion() {
+		if (this.panelReImpresion == null) {
+			panelReImpresion= new ReImpresionPanel();
+			panelReImpresion.setPanelInterfaz(this);
+		}
+
+		panelReImpresion.setVisible(true);
+	}
+	
+
 	private void removeItemBloq() {
 		// remueve los Items bloqueados
 		for (VentaDetalle item : itemTableModel.getEntities()) {
@@ -2256,6 +2286,8 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			tfDeposito.setText(deposito.get().getNombre());
 		}
 		resetCliente();
+		btnAnular.setVisible(false);
+		btnReimpresion.setVisible(false);
 		tfClienteID.requestFocus();
 		tfCuotaCant.setEnabled(false);
 	}
@@ -2695,23 +2727,36 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	@Override
 	public void imprimirNota() {
-		ImpresionUtil.performNota(itemTableModel.getEntities(),
-				tfCondicionPago.getText().equals("0") ? "CONTADO" : "CREDITO", tfVentaId.getText(), tfTotal.getText());
+		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
+				Integer.valueOf(tfCondicionPago.getText()).intValue(),
+				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),itemTableModel.getEntities());
 		clearForm();
 	}
 
 	@Override
 	public void imprimirFactura() {
-		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
-				"0911 111 222", tfClienteDireccion.getText(), tfVentaId.getText(),
-				Integer.valueOf(tfCondicionPago.getText()),
-				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(), "0", "0",
-				"0", "0", "0", itemTableModel.getEntities());
+		
+		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
+				Integer.valueOf(tfCondicionPago.getText()).intValue(),
+				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),itemTableModel.getEntities(), this.fechaImpresion );
 		clearForm();
 	}
 
 	@Override
 	public void cancelarImpresion() {
 		clearForm();
+	}
+
+	public Date getFechaImpresion() {
+		return fechaImpresion;
+	}
+
+	public void setFechaImpresion(Date fechaImpresion) {
+		this.fechaImpresion = fechaImpresion;
+	}
+
+	@Override
+	public void cargaFecha(Date fecha) {
+		this.setFechaImpresion(fecha);		
 	}
 }

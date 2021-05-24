@@ -1,49 +1,52 @@
 package py.com.prestosoftware.ui.reports;
 
-import javax.swing.JDialog;
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Date;
 
-public class ImpresionPanel extends JDialog {
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+import org.jdesktop.swingx.JXDatePicker;
+
+public class ReImpresionPanel extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
-	private ImpresionPanelInterfaz panelInterfaz = null;
+	private ReImpresionPanelInterfaz panelInterfaz = null;
+	private JXDatePicker dtpFecha;
 	
-	public void setPanelInterfaz(ImpresionPanelInterfaz panelInterfaz) {
+	public void setPanelInterfaz(ReImpresionPanelInterfaz panelInterfaz) {
 		this.panelInterfaz = panelInterfaz;
 	}
 	
-	public ImpresionPanelInterfaz getPanelInterfaz() {
+	public ReImpresionPanelInterfaz getPanelInterfaz() {
 		return panelInterfaz;
 	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public ImpresionPanel() {
-		setTitle("OPCIONES DE IMPRESIÓN");
+	public ReImpresionPanel() {
+		setTitle("OPCIONES DE REIMPRESIÓN");
 		setModal(true);
 		setBounds(100, 100, 570, 178);
 		getContentPane().setLayout(null);
 		
-		JButton btnFactura = new JButton("Factura");
+		JButton btnFactura = new JButton("FACTURA");
 		btnFactura.setFont(new Font("Verdana", Font.BOLD, 14));
 		btnFactura.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					panelInterfaz.cargaFecha(dtpFecha.getDate());
 					panelInterfaz.imprimirFactura();
 					dispose();
 				}
@@ -51,6 +54,7 @@ public class ImpresionPanel extends JDialog {
 		});
 		btnFactura.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				panelInterfaz.cargaFecha(dtpFecha.getDate());
 				panelInterfaz.imprimirFactura();
 				dispose();
 			}
@@ -71,6 +75,7 @@ public class ImpresionPanel extends JDialog {
 		});
 		btnRemision.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				panelInterfaz.cargaFecha(dtpFecha.getDate());
 				panelInterfaz.imprimirNota();
 				dispose();
 			}
@@ -78,10 +83,10 @@ public class ImpresionPanel extends JDialog {
 		btnRemision.setBounds(6, 80, 139, 52);
 		getContentPane().add(btnRemision);
 		
-		JLabel lblImpresionFactura = new JLabel("SELECCIONAR / CANCELAR");
-		lblImpresionFactura.setFont(new Font("Verdana", Font.BOLD, 20));
+		JLabel lblImpresionFactura = new JLabel("Fecha Factura");
+		lblImpresionFactura.setFont(new Font("Verdana", Font.BOLD, 10));
 		lblImpresionFactura.setHorizontalAlignment(SwingConstants.CENTER);
-		lblImpresionFactura.setBounds(10, 11, 545, 52);
+		lblImpresionFactura.setBounds(10, 11, 131, 52);
 		getContentPane().add(lblImpresionFactura);
 		
 		JButton btnCancelar = new JButton("Cancelar");
@@ -103,6 +108,13 @@ public class ImpresionPanel extends JDialog {
 		btnCancelar.setFont(new Font("Verdana", Font.BOLD, 14));
 		btnCancelar.setBounds(433, 80, 131, 52);
 		getContentPane().add(btnCancelar);
+		
+		dtpFecha = new JXDatePicker();
+		dtpFecha.setBounds(157, 27, 86, 20);
+		dtpFecha.setFormats("dd/MM/yyyy");
+		dtpFecha.setDate(new Date());
+		getContentPane().add(dtpFecha);
+		//dtpFecha.setColumns(10);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize(); 
