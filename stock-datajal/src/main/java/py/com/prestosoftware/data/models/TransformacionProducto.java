@@ -7,13 +7,14 @@ import java.util.List;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "transformacion_productos")
@@ -25,13 +26,13 @@ public class TransformacionProducto {
 	
 	private Date fecha;
 	private Integer cantidad;
-	private String situacion;
+	private Integer situacion;
 	private String usuario;
 	private String obs;	
 	
 	@ManyToOne
-	@JoinColumn(name = "codigo_producto_origen")
-	private Producto codigoProductoOrigen;
+	@JoinColumn(name = "producto_origen")
+	private Producto productoOrigen;
 	
 	@ManyToOne
 	@JoinColumn(name = "deposito_origen")
@@ -42,7 +43,7 @@ public class TransformacionProducto {
 	private Deposito depositoDestino;
 	
 	
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "transformacion_producto_detalles", joinColumns = @JoinColumn(name = "transformacion_producto_id"))
 	private List<TransformacionProductoDetalle> items = new ArrayList<>();
 	
@@ -81,12 +82,12 @@ public class TransformacionProducto {
 		this.usuario = usuario;
 	}
 
-	public Producto getCodigoProductoOrigen() {
-		return codigoProductoOrigen;
+	public Producto getProductoOrigen() {
+		return productoOrigen;
 	}
 
-	public void setCodigoProductoOrigen(Producto codigoProductoOrigen) {
-		this.codigoProductoOrigen = codigoProductoOrigen;
+	public void setProductoOrigen(Producto productoOrigen) {
+		this.productoOrigen = productoOrigen;
 	}
 
 	public Deposito getDepositoOrigen() {
@@ -105,11 +106,11 @@ public class TransformacionProducto {
 		this.depositoDestino = depositoDestino;
 	}
 
-	public String getSituacion() {
+	public Integer getSituacion() {
 		return situacion;
 	}
 
-	public void setSituacion(String situacion) {
+	public void setSituacion(Integer situacion) {
 		this.situacion = situacion;
 	}
 

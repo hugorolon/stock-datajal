@@ -1,45 +1,29 @@
 package py.com.prestosoftware.data.models;
 
 import javax.persistence.Embeddable;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Embeddable
 public class TransformacionProductoDetalle {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "codigo_producto_destino")
-	private Producto codigoProductoDestino;
+	@JoinColumn(name = "producto_destino")
+	private Producto productoDestino;
 	private Double cantidad;
 	private Double precio;
 
 	public TransformacionProductoDetalle() {}
 
 
-	public Long getId() {
-		return id;
+	public Producto getProductoDestino() {
+		return productoDestino;
 	}
 
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-
-	public Producto getCodigoProductoDestino() {
-		return codigoProductoDestino;
-	}
-
-
-	public void setCodigoProductoDestino(Producto codigoProductoDestino) {
-		this.codigoProductoDestino = codigoProductoDestino;
+	public void setProductoDestino(Producto productoDestino) {
+		this.productoDestino = productoDestino;
 	}
 
 
@@ -59,7 +43,5 @@ public class TransformacionProductoDetalle {
 		this.precio = precio;
 	}
 
-	
-	
 
 }

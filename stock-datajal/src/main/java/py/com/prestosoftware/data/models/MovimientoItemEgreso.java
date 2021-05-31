@@ -14,7 +14,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "movimiento_item_egresos")
+@Table(name = "item_movimientoegresos")
 public class MovimientoItemEgreso {
 	
 	@Id
@@ -30,6 +30,8 @@ public class MovimientoItemEgreso {
 	@Column(name = "mie_monto")
 	private Double mieMonto;
 	
+	@Column(name = "mie_descripcion")
+	private Double mieDescripcion;
 	
 	public MovimientoItemEgreso() {}
 
@@ -65,5 +67,11 @@ public class MovimientoItemEgreso {
 		this.mieMonto = mieMonto;
 	}
 
+	public Double getMieDescripcion() {
+		return mieDescripcion;
+	}
 
+	public void setMieDescripcion(Double mieDescripcion) {
+		this.mieDescripcion = mieDescripcion;
+	}
 }

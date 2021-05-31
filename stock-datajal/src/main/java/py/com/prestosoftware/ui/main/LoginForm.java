@@ -56,7 +56,7 @@ public class LoginForm extends JFrame {
 		this.setSize(796, 498);
 		//this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/presentacion/imagenes/config16x16.png")));
 		this.setContentPane(getJContentPane());
-		this.setTitle("LOGIN - DATAJAL");
+		this.setTitle("LOGIN - STK");
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {

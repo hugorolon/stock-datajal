@@ -270,7 +270,7 @@ public class ProductoDialog extends JDialog {
 		loadProductos("");	
 	}
 	
-	private void loadProductos(String filter) {
+	public void loadProductos(String filter) {
 		if (filter.isEmpty()) {
 			productos = service.findAll();
 		} else {

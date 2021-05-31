@@ -87,4 +87,10 @@ public class ProductoService {
 		repository.flush();
 	}
 	
+	@Transactional
+	public void updateStock(Producto producto) {
+		repository.save(producto);
+		repository.flush();
+	}
+	
 }

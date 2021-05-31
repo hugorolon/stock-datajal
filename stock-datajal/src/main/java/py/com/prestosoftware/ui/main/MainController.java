@@ -39,6 +39,8 @@ import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
 import py.com.prestosoftware.ui.search.CuentaPagarDialog;
 import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
+import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
+import py.com.prestosoftware.ui.search.MovimientoIngresoDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.CompraPanel;
@@ -55,6 +57,7 @@ import py.com.prestosoftware.ui.transactions.LanzamientoCaja;
 import py.com.prestosoftware.ui.transactions.PDV;
 import py.com.prestosoftware.ui.transactions.PresupuestoPanel;
 import py.com.prestosoftware.ui.transactions.TransferenciaPanel;
+import py.com.prestosoftware.ui.transactions.TransformacionPanel;
 import py.com.prestosoftware.ui.transactions.VentaPanel;
 
 @Controller
@@ -136,6 +139,8 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private TransferenciaPanel transferenciaPanel;
 	@Autowired
+	private TransformacionPanel transformacionPanel;
+	@Autowired
 	private DevolucionPanel devolucionPanel;
 	@Autowired
 	private AjusteStockPanel ajusteStockPanel;
@@ -178,7 +183,10 @@ public class MainController extends AbstractFrameController {
 	private UtilidadProductoDialog utilidadProductoDialog;
 	@Autowired
 	private InformeResumenCajaDialog informeResumenCajaDialog;
-	
+	@Autowired
+	private MovimientoIngresoDialog movimientoIngresoDialog;
+	@Autowired
+	private MovimientoEgresoDialog movimientoEgresoDialog;
 
 	public MainController() {
 	}
@@ -221,6 +229,7 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuCompra(), (e) -> openCompra());
 		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
 		registerOpenMenu(mainMenuFrame.getMnuTransferencia(), (e) -> openTransferencia());
+		registerOpenMenu(mainMenuFrame.getMnuTransformacion(), (e) -> openTransformacion());
 		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
 		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
 		registerOpenMenu(mainMenuFrame.getMnuMoneda(), (e) -> openMoneda());
@@ -237,6 +246,8 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuInfCuentaAPagarVencimientoProveedor(), (e) -> openVencimientoCuentaAPagar());
 		registerOpenMenu(mainMenuFrame.getMnuInfResumenUtilidadProducto(), (e) -> openUtilidadProducto());
 		registerOpenMenu(mainMenuFrame.getMnuInfResumenCajas(), (e) -> openInformeResumenCaja());
+		registerOpenMenu(mainMenuFrame.getMnuMovCajaIngreso(), (e) -> openCajaMovimientoIngreso());
+		registerOpenMenu(mainMenuFrame.getMnuMovCajaEgreso(), (e) -> openCajaMovimientoEgreso());
 		
 		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
 		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
@@ -364,6 +375,14 @@ public class MainController extends AbstractFrameController {
 		informeResumenCajaDialog.setVisible(true);
 	}
 	
+	private void openCajaMovimientoIngreso() {
+		movimientoIngresoDialog.setVisible(true);
+	}
+	
+	private void openCajaMovimientoEgreso() {
+		movimientoEgresoDialog.setVisible(true);
+	}
+	
 	private void openConsultaBoleta() {
 		boletaPanel.setVisible(true);
 	}
@@ -405,6 +424,12 @@ public class MainController extends AbstractFrameController {
 		transferenciaPanel.setVisible(true);
 		transferenciaPanel.newTransf();
 	}
+	
+	private void openTransformacion() {
+		transformacionPanel.setVisible(true);
+		transformacionPanel.newTransf();
+	}
+
 
 	private void openDevolucionVenta() {
 		devolucionPanel.setVisible(true);

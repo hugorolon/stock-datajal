@@ -50,6 +50,9 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuCompra;
 	private JMenuItem mnuPresupuesto;
 	private JMenu mnuDevolucion;
+	private JMenu mnuMovCaja;
+	private JMenuItem mnuMovCajaIngreso;
+	private JMenuItem mnuMovCajaEgreso;
 	private JMenuItem mnuNcm;
 	private JMenuItem mnuTamanhos;
 	private JMenuItem mnuColores;
@@ -67,6 +70,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuCotizacion;
 	private JMenuItem mnuPlanDeCuenta;
 	private JMenuItem mnuTransferencia;
+	private JMenuItem mnuTransformacion;
 	private JMenuItem mnuMoneda;
 	private JMenuItem mntmImpresoras;
 	private JMenuItem mnuBoletaFiscal;
@@ -229,6 +233,15 @@ public class MainFrame extends JFrame {
 		menuBar.add(mnuMovimientos);
 		mnuCompra = new JMenuItem("COMPRAS");
 		mnuCompra.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		mnuMovCaja = new JMenu("CAJAS");
+		mnuMovCajaIngreso = new JMenuItem("MOVIMIENTO DE INGRESO DE EFECTIVO");
+		mnuMovCajaEgreso = new JMenuItem("MOVIMIENTO DE EGRESO DE EFECTIVO");
+		mnuMovCaja.add(mnuMovCajaIngreso);
+		mnuMovCaja.addSeparator();
+		mnuMovCaja.add(mnuMovCajaEgreso);
+		mnuMovimientos.addSeparator();
+		mnuMovimientos.add(mnuMovCaja);
+		mnuMovimientos.addSeparator();
 		mnuDevolucion = new JMenu("DEVOLUCIONES");
 		mnuVenta = new JMenuItem("VENTAS");
 		mnuVenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
@@ -256,6 +269,10 @@ public class MainFrame extends JFrame {
 		mnuMovimientos.addSeparator();
 		mnuMovimientos.add(mnuDevolucion);
 		mnuMovimientos.addSeparator();
+		mnuTransformacion = new JMenuItem("TRANSFORMACION DE PRODUCTOS");
+		mnuTransformacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
+		mnuMovimientos.add(mnuTransformacion);
+		
 		mnuDevolucionVenta = new JMenuItem("VENTAS");
 		mnuDevolucion.add(mnuDevolucionVenta);
 		mnuDevolucion.addSeparator();
@@ -652,6 +669,14 @@ public class MainFrame extends JFrame {
 		return mnuTransferencia;
 	}
 	
+	public JMenuItem getMnuTransformacion() {
+		return mnuTransformacion;
+	}
+
+	public void setMnuTransformacion(JMenuItem mnuTransformacion) {
+		this.mnuTransformacion = mnuTransformacion;
+	}
+
 	public JMenuItem getMnuMoneda() {
 		return mnuMoneda;
 	}
@@ -856,6 +881,22 @@ public class MainFrame extends JFrame {
 
 	public void setMnuInfResumenUtilidadProducto(JMenuItem mnuInfResumenUtilidadProducto) {
 		this.mnuInfResumenUtilidadProducto = mnuInfResumenUtilidadProducto;
+	}
+
+	public JMenuItem getMnuMovCajaIngreso() {
+		return mnuMovCajaIngreso;
+	}
+
+	public void setMnuMovCajaIngreso(JMenuItem mnuMovCajaIngreso) {
+		this.mnuMovCajaIngreso = mnuMovCajaIngreso;
+	}
+
+	public JMenuItem getMnuMovCajaEgreso() {
+		return mnuMovCajaEgreso;
+	}
+
+	public void setMnuMovCajaEgreso(JMenuItem mnuMovCajaEgreso) {
+		this.mnuMovCajaEgreso = mnuMovCajaEgreso;
 	}
 	
 	
