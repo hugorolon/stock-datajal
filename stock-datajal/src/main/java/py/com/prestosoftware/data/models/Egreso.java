@@ -24,8 +24,6 @@ public class Egreso {
 	@Column(name = "egr_abreviatura")
 	private String egrAbreviatura;
 
-
-	
 	
 	public Egreso() {}
 	

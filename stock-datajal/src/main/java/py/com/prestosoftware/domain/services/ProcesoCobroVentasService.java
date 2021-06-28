@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import py.com.prestosoftware.data.models.ProcesoCobroClientes;
 import py.com.prestosoftware.data.models.ProcesoCobroVentas;
 import py.com.prestosoftware.data.repository.ProcesoCobroVentasRepository;
 import java.util.List;
@@ -21,6 +22,10 @@ public class ProcesoCobroVentasService {
 
     public List<ProcesoCobroVentas> findAll() {
         return repository.findAll();
+    }
+    
+    public ProcesoCobroVentas findByPveVenta(Integer id) {
+    	return repository.findByPveVenta(id);
     }
     
 //    public List<ProcesoCobroVentas> findByFechaAndEgresoAndSituacion(Date fecha, Egreso ingreso, String situacion) {

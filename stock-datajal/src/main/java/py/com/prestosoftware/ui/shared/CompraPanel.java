@@ -14,11 +14,19 @@ import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
+import py.com.prestosoftware.domain.services.CuentaAPagarService;
 import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.DepositoService;
+import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
 import py.com.prestosoftware.domain.services.MonedaService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
+import py.com.prestosoftware.domain.services.MovimientoEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoIngresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
 import py.com.prestosoftware.domain.services.PedidoService;
+import py.com.prestosoftware.domain.services.ProcesoPagoComprasService;
+import py.com.prestosoftware.domain.services.ProcesoPagoProveedoresService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
@@ -76,6 +84,14 @@ public class CompraPanel extends JDialog {
     private ConfiguracionService configService;
     
     private CuentaProveedorService cuentaProveedorService;
+    private MovimientoIngresoService movimientoIngresoService;
+    private MovimientoItemIngresoService movimientoItemIngresoService;
+	private MovimientoEgresoService movimientoEgresoService;
+	private MovimientoItemEgresoService movimientoItemEgresoService;
+	private ProcesoPagoComprasService procesoPagoComprasService;
+	private ProcesoPagoProveedoresService procesoPagoProveedoresService;
+	private CuentaAPagarService cuentaAPagarService;
+	private ItemCuentaAPagarService itemCuentaAPagarService;
 
     @Autowired
 	public CompraPanel(PanelCompraInterfaz panelInterfaz, CompraItemTableModel itemTableModel,
@@ -88,7 +104,9 @@ public class CompraPanel extends JDialog {
 			CompraImportacionPanel compraImportacion, CondicionPagoDialog condicionPagoDialog,
 			CompraConsignadaPanel compraConsignada, CondicionPagoService condicionPagoService,
 			PedidoCompraPanel pedidoCompra, ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
-			MovimientoCajaService pagoService, CuentaProveedorService cuentaProveedorService) {
+			MovimientoCajaService pagoService, CuentaProveedorService cuentaProveedorService, MovimientoIngresoService movimientoIngresoService,	MovimientoItemIngresoService movimientoItemIngresoService,
+			MovimientoEgresoService movimientoEgresoService, MovimientoItemEgresoService movimientoItemEgresoService, ProcesoPagoComprasService procesoPagoComprasService,
+			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService, ItemCuentaAPagarService itemCuentaAPagarService) {
 		this.panelInterfaz = panelInterfaz;
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
@@ -115,6 +133,14 @@ public class CompraPanel extends JDialog {
 		this.cajaService = cajaService;
 		this.pagoService = pagoService;
 		this.cuentaProveedorService= cuentaProveedorService;
+		this.movimientoIngresoService =movimientoIngresoService;
+		this.movimientoItemIngresoService =movimientoItemIngresoService;
+		this.movimientoEgresoService =movimientoEgresoService;
+		this.movimientoItemEgresoService =movimientoItemEgresoService;
+		this.procesoPagoComprasService =procesoPagoComprasService;
+		this.procesoPagoProveedoresService =procesoPagoProveedoresService;
+		this.cuentaAPagarService =cuentaAPagarService;
+		this.itemCuentaAPagarService=itemCuentaAPagarService;
 		
 		setTitle("OPCIONES DE COMPRA");
 		setModal(true);
@@ -217,11 +243,9 @@ public class CompraPanel extends JDialog {
 	}
 	
 	private void openCompraLocal() {
-		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog,
-				depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, 
-				monedaService, depositoService, compraValidator, productoService, 
-				condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService,
-				pagoService, cuentaProveedorService);
+		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
+				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
+					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService);
 		 compraLocal.setVisible(true);
 		 compraLocal.getConfig();
 		 compraLocal.clearForm();

@@ -12,32 +12,39 @@ public class ProcesoCobroClientes {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "id")
+	private Integer id;
 	
 	@Column(name = "pcc_cobro")
 	private Integer pccCobro;
 
+	@Column(name = "pcc_proceso")
+	private Integer pccProceso;
+	
 	@Column(name = "pcc_ingreso")
 	private Integer pccIngreso;
 	
 	@Column(name = "pcc_tipoproceso")
 	private Integer pccTipoproceso;
 	
-	@Column(name = "pcc_proceso")
-	private Integer pccProceso;
-	
 	@Column(name = "pcc_flag")
 	private Integer pccFlag;
 	
 	public ProcesoCobroClientes() {}
 
-	public Long getId() {
+	
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+
+
+	public void setId(Integer id) {
 		this.id = id;
 	}
+
+
 
 	public Integer getPccCobro() {
 		return pccCobro;

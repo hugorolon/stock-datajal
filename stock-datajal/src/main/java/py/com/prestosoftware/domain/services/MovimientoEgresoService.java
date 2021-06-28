@@ -23,9 +23,13 @@ public class MovimientoEgresoService {
         return repository.findAll();
     }
     
-//    public List<MovimientoEgreso> findByFechaAndEgresoAndSituacion(Date fecha, Egreso ingreso, String situacion) {
-//    	return repository.findByFechaAndEgresoAndSituacionOrderByIdAsc(fecha, caja, situacion);
-//    }
+    public Optional<MovimientoEgreso> findById(Integer id) {
+    	return repository.findById(id);
+    }
+    
+    public MovimientoEgreso findByMegProceso(Integer id) {
+    	return repository.findByMegProceso(id);
+    }
     
 //    public Optional<MovimientoEgreso> findByIdVenta(String idVenta) {
 //    	return repository.getMovimientoEgresoPorNota(idVenta);
@@ -40,6 +44,10 @@ public class MovimientoEgresoService {
 //        repository.save(movimientoEgreso);
 //        repository.flush();
 //    }
+    
+    public long getRowCount() {
+		return repository.getMaxId();
+	}
     
     @Transactional
     public MovimientoEgreso save(MovimientoEgreso movimientoEgreso) {

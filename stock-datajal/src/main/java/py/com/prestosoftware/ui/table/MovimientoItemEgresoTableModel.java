@@ -11,7 +11,7 @@ public class MovimientoItemEgresoTableModel extends DefaultTableModel<Movimiento
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] { "ID.", "TIPO INGRESO", "DESCRIP.", "MONTO", "NUMERO"};
+        return new String[] { "EGRESO", "DESCRIPCIÓN", "MONTO"};
     }
 
     @Override
@@ -20,13 +20,11 @@ public class MovimientoItemEgresoTableModel extends DefaultTableModel<Movimiento
         
         switch (columnIndex) {
             case 0:
-                return item.getId();
-            case 1:
                 return item.getMieEgreso();
+            case 1:
+                return item.getMieDescripcion();
             case 2:
                 return item.getMieMonto();
-            case 3:
-                return item.getMieNumero();
             default:
                 return "";
         }

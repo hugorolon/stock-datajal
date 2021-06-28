@@ -1,18 +1,19 @@
 package py.com.prestosoftware.data.repository;
 
 import java.util.Date;
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoIngreso;
 
 @Repository
-public interface MovimientoIngresoRepository extends JpaRepository<MovimientoIngreso, Long> {
+public interface MovimientoIngresoRepository extends JpaRepository<MovimientoIngreso, Integer> {
 
-//	List<MovimientoIngreso> findByFechaAndCajaAndSituacionOrderByIdAsc(Date fecha, Caja caja, String situacion);
+	MovimientoIngreso findByMinProceso(Integer id);
 //
 //	Optional<MovimientoIngreso> findById(Long id);
 

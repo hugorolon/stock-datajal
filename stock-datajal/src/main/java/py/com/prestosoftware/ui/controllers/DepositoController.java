@@ -82,7 +82,7 @@ public class DepositoController extends AbstractFrameController {
     @Override
     public void prepareAndOpenFrame() {
         loadDepositos();
-        loadEmpresas();
+       // loadEmpresas();
         showFrame();
         getMax();
     }

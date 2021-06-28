@@ -31,7 +31,7 @@ public class MovimientoItemIngreso {
 	private Double miiMonto;
 	
 	@Column(name = "mii_descripcion")
-	private Double miiDescripcion;
+	private String miiDescripcion;
 	
 	public MovimientoItemIngreso() {}
 
@@ -68,11 +68,11 @@ public class MovimientoItemIngreso {
 		this.miiMonto = miiMonto;
 	}
 
-	public Double getMiiDescripcion() {
+	public String getMiiDescripcion() {
 		return miiDescripcion;
 	}
 
-	public void setMiiDescripcion(Double miiDescripcion) {
+	public void setMiiDescripcion(String miiDescripcion) {
 		this.miiDescripcion = miiDescripcion;
 	}
 	

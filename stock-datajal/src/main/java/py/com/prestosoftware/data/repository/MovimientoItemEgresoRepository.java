@@ -1,6 +1,7 @@
 package py.com.prestosoftware.data.repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoItemEgreso;
+import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 
 @Repository
 public interface MovimientoItemEgresoRepository extends JpaRepository<MovimientoItemEgreso, Long> {
@@ -25,8 +27,8 @@ public interface MovimientoItemEgresoRepository extends JpaRepository<Movimiento
 //			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha = ?2 AND situacion = ?3", nativeQuery = true)
 //	Optional<MovimientoItemEgreso> getTotalsEntradaCaja(Caja caja, Date fecha, String situacion);
 //
-//	@Query(value = "SELECT  mc "
-//			+ "FROM MovimientoItemEgreso mc " + "WHERE mc.notaNro = ?1", nativeQuery = false)
-//	Optional <MovimientoItemEgreso> getMovimientoItemEgresoPorNota(String nroNota);
+	@Query(value = "SELECT  mc "
+			+ "FROM MovimientoItemEgreso mc " + "WHERE mc.mieNumero = ?1", nativeQuery = false)
+	List<MovimientoItemEgreso> findByCabId(Integer cabId);
 
 }

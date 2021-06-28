@@ -40,7 +40,6 @@ import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
 import py.com.prestosoftware.ui.search.CuentaPagarDialog;
 import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
 import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
-import py.com.prestosoftware.ui.search.MovimientoIngresoDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.CompraPanel;
@@ -49,11 +48,14 @@ import py.com.prestosoftware.ui.transactions.AjusteCuentaDebitoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
 import py.com.prestosoftware.ui.transactions.AnulacionBoletaPanel;
 import py.com.prestosoftware.ui.transactions.AperturaCierrePanel;
+import py.com.prestosoftware.ui.transactions.CobroClientePanel;
 import py.com.prestosoftware.ui.transactions.CompraLocalPanel;
 import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
 import py.com.prestosoftware.ui.transactions.DevolucionPanel;
 import py.com.prestosoftware.ui.transactions.EntregaBoletaPanel;
 import py.com.prestosoftware.ui.transactions.LanzamientoCaja;
+import py.com.prestosoftware.ui.transactions.MovimientoEgresoPanel;
+import py.com.prestosoftware.ui.transactions.MovimientoIngresoPanel;
 import py.com.prestosoftware.ui.transactions.PDV;
 import py.com.prestosoftware.ui.transactions.PresupuestoPanel;
 import py.com.prestosoftware.ui.transactions.TransferenciaPanel;
@@ -184,24 +186,28 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private InformeResumenCajaDialog informeResumenCajaDialog;
 	@Autowired
-	private MovimientoIngresoDialog movimientoIngresoDialog;
+	private MovimientoIngresoPanel movimientoIngresoPanel;
+	@Autowired
+	private MovimientoEgresoPanel movimientoEgresoPanel;
 	@Autowired
 	private MovimientoEgresoDialog movimientoEgresoDialog;
+	@Autowired
+	private CobroClientePanel cobroClientePanel;
 
 	public MainController() {
 	}
 
 	public void prepareAndOpenFrame() {
-		registerAction(mainMenuFrame.getBtnClientes(), (e) -> openConsultaCliente());
-		registerAction(mainMenuFrame.getBtnProveedores(), (e) -> openConsultaProveedor());
-		registerAction(mainMenuFrame.getBtnProductos(), (e) -> openSaldoDeposito());
+//		registerAction(mainMenuFrame.getBtnClientes(), (e) -> openConsultaCliente());
+//		registerAction(mainMenuFrame.getBtnProveedores(), (e) -> openConsultaProveedor());
+//		registerAction(mainMenuFrame.getBtnProductos(), (e) -> openSaldoDeposito());
 		registerAction(mainMenuFrame.getBtnVentas(), (e) -> openVenta());
 		registerAction(mainMenuFrame.getBtnCompras(), (e) -> openCompraLocal());
-		registerAction(mainMenuFrame.getBtnPDV(), (e) -> openPDV());
-		registerAction(mainMenuFrame.getBtnLanzamientos(), (e) -> openLanzamientoCaja());
+	//	registerAction(mainMenuFrame.getBtnPDV(), (e) -> openPDV());
+	//	registerAction(mainMenuFrame.getBtnLanzamientos(), (e) -> openLanzamientoCaja());
 
-		registerOpenMenu(mainMenuFrame.getMnuConsultaClientes(), (e) -> openConsultaCliente());
-		registerOpenMenu(mainMenuFrame.getMnuConsultaProveedor(), (e) -> openConsultaProveedor());
+//		registerOpenMenu(mainMenuFrame.getMnuConsultaClientes(), (e) -> openConsultaCliente());
+//		registerOpenMenu(mainMenuFrame.getMnuConsultaProveedor(), (e) -> openConsultaProveedor());
 		registerOpenMenu(mainMenuFrame.getMnuCiudad(), (e) -> openCiudad());
 		registerOpenMenu(mainMenuFrame.getMnuDepartamento(), (e) -> openDepartamento());
 		registerOpenMenu(mainMenuFrame.getMnuPais(), (e) -> openPais());
@@ -217,29 +223,29 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuUnidadMedida(), (e) -> openUnidadMedida());
 		registerOpenMenu(mainMenuFrame.getMnuTamanhos(), (e) -> openTamanho());
 		registerOpenMenu(mainMenuFrame.getMnuColores(), (e) -> openColor());
-		registerOpenMenu(mainMenuFrame.getMnuEmpresa(), (e) -> openEmpresa());
-		registerOpenMenu(mainMenuFrame.getMnuDeposito(), (e) -> openDeposito());
+//		registerOpenMenu(mainMenuFrame.getMnuEmpresa(), (e) -> openEmpresa());
+		//registerOpenMenu(mainMenuFrame.getMnuDeposito(), (e) -> openDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuUsuario(), (e) -> openUsuario());
 		registerOpenMenu(mainMenuFrame.getMnuUsuarioRol(), (e) -> openUsuarioRol());
-		registerOpenMenu(mainMenuFrame.getMnuCaja(), (e) -> openCaja());
-		registerOpenMenu(mainMenuFrame.getMnuAperturaCaja(), (e) -> openAperturaCierreCaja(1));
-		registerOpenMenu(mainMenuFrame.getMnuCierreCaja(), (e) -> openAperturaCierreCaja(2));
-		registerOpenMenu(mainMenuFrame.getMnuLanzamiento(), (e) -> openLanzamientoCaja());
+//		registerOpenMenu(mainMenuFrame.getMnuCaja(), (e) -> openCaja());
+//		registerOpenMenu(mainMenuFrame.getMnuAperturaCaja(), (e) -> openAperturaCierreCaja(1));
+//		registerOpenMenu(mainMenuFrame.getMnuCierreCaja(), (e) -> openAperturaCierreCaja(2));
+//		registerOpenMenu(mainMenuFrame.getMnuLanzamiento(), (e) -> openLanzamientoCaja());
 		registerOpenMenu(mainMenuFrame.getMnuVenta(), (e) -> openVenta());
 		registerOpenMenu(mainMenuFrame.getMnuCompra(), (e) -> openCompra());
-		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
-		registerOpenMenu(mainMenuFrame.getMnuTransferencia(), (e) -> openTransferencia());
+//		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
+//		registerOpenMenu(mainMenuFrame.getMnuTransferencia(), (e) -> openTransferencia());
 		registerOpenMenu(mainMenuFrame.getMnuTransformacion(), (e) -> openTransformacion());
-		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
-		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
-		registerOpenMenu(mainMenuFrame.getMnuMoneda(), (e) -> openMoneda());
-		registerOpenMenu(mainMenuFrame.getMnuCotizacion(), (e) -> openCotizacion());
-		registerOpenMenu(mainMenuFrame.getMnuPlanDeCuenta(), (e) -> openPlanCuenta());
+//		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
+//		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
+//		registerOpenMenu(mainMenuFrame.getMnuMoneda(), (e) -> openMoneda());
+//		registerOpenMenu(mainMenuFrame.getMnuCotizacion(), (e) -> openCotizacion());
+//		registerOpenMenu(mainMenuFrame.getMnuPlanDeCuenta(), (e) -> openPlanCuenta());
 		registerOpenMenu(mainMenuFrame.getMnuSubgrupo(), (e) -> openSubgrupo());
 		registerOpenMenu(mainMenuFrame.getMnuRol(), (e) -> openRol());
-		registerOpenMenu(mainMenuFrame.getMnuBoleta(), (e) -> openConsultaBoleta());
-		registerOpenMenu(mainMenuFrame.getMnuSaldoDeposito(), (e) -> openSaldoDeposito());
-		registerOpenMenu(mainMenuFrame.getMnuSaldoStock(), (e) -> openSaldoStock());
+//		registerOpenMenu(mainMenuFrame.getMnuBoleta(), (e) -> openConsultaBoleta());
+//		registerOpenMenu(mainMenuFrame.getMnuSaldoDeposito(), (e) -> openSaldoDeposito());
+//		registerOpenMenu(mainMenuFrame.getMnuSaldoStock(), (e) -> openSaldoStock());
 		
 		registerOpenMenu(mainMenuFrame.getMnuInfStockPorDeposito(), (e) -> openInformeStockDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuInfCuentaARecibirVencimientoCliente(), (e) -> openVencimientoCuentaARecibir());
@@ -248,25 +254,26 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuInfResumenCajas(), (e) -> openInformeResumenCaja());
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaIngreso(), (e) -> openCajaMovimientoIngreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaEgreso(), (e) -> openCajaMovimientoEgreso());
+		registerOpenMenu(mainMenuFrame.getMnuMovCuentaARecibirCobroCliente(), (e) -> openCobroCliente());
 		
-		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
-		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
-		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
-		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
+//		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
+//		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
+//		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
+//		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
 
-		registerOpenMenu(mainMenuFrame.getMnuDebitoCliente(), (e) -> openCuentaDebitoCliente());
-		registerOpenMenu(mainMenuFrame.getMnuDebitoProveedor(), (e) -> openCuentaDebitoProveedor());
-		registerOpenMenu(mainMenuFrame.getMnuCreditoCliente(), (e) -> openCuentaCreditoCliente());
-		registerOpenMenu(mainMenuFrame.getMnuCreditoProveedor(), (e) -> openCuentaCreditoProveedor());
+//		registerOpenMenu(mainMenuFrame.getMnuDebitoCliente(), (e) -> openCuentaDebitoCliente());
+//		registerOpenMenu(mainMenuFrame.getMnuDebitoProveedor(), (e) -> openCuentaDebitoProveedor());
+//		registerOpenMenu(mainMenuFrame.getMnuCreditoCliente(), (e) -> openCuentaCreditoCliente());
+//		registerOpenMenu(mainMenuFrame.getMnuCreditoProveedor(), (e) -> openCuentaCreditoProveedor());
 
-		registerOpenMenu(mainMenuFrame.getMnuAnularBoleta(), (e) -> openAnulacionBoleta());
-		registerOpenMenu(mainMenuFrame.getMnuEmpaque(), (e) -> openEntregaBoletaPanel());
+//		registerOpenMenu(mainMenuFrame.getMnuAnularBoleta(), (e) -> openAnulacionBoleta());
+//		registerOpenMenu(mainMenuFrame.getMnuEmpaque(), (e) -> openEntregaBoletaPanel());
 
-		registerOpenMenu(mainMenuFrame.getMnuPDV(), (e) -> openPDV());
+//		registerOpenMenu(mainMenuFrame.getMnuPDV(), (e) -> openPDV());
 		registerOpenMenu(mainMenuFrame.getMnuConfig(), (e) -> openConfigPanel());
-		registerOpenMenu(mainMenuFrame.getMnuEmpaque_2(), (e) -> openEmpaque());
+//		registerOpenMenu(mainMenuFrame.getMnuEmpaque_2(), (e) -> openEmpaque());
 
-		registerOpenMenu(mainMenuFrame.getMnuCondicionDePago(), (e) -> openCondicionPago());
+//		registerOpenMenu(mainMenuFrame.getMnuCondicionDePago(), (e) -> openCondicionPago());
 
 		openLoginForm();
 	}
@@ -376,11 +383,13 @@ public class MainController extends AbstractFrameController {
 	}
 	
 	private void openCajaMovimientoIngreso() {
-		movimientoIngresoDialog.setVisible(true);
+		movimientoIngresoPanel.setVisible(true);
+		movimientoIngresoPanel.newMov();
 	}
 	
 	private void openCajaMovimientoEgreso() {
-		movimientoEgresoDialog.setVisible(true);
+		movimientoEgresoPanel.setVisible(true);
+		movimientoEgresoPanel.newMov();
 	}
 	
 	private void openConsultaBoleta() {
@@ -554,4 +563,8 @@ public class MainController extends AbstractFrameController {
 		movCaja.setVisible(true);
 	}
 
+	private void openCobroCliente() {
+		cobroClientePanel.setVisible(true);
+		cobroClientePanel.newMov();
+	}
 }

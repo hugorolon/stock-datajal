@@ -7,11 +7,15 @@ import py.com.prestosoftware.ui.shared.DefaultTableModel;
 @Component
 public class MovimientoItemIngresoTableModel extends DefaultTableModel<MovimientoItemIngreso> {
 
-	private static final long serialVersionUID = 1L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1632730735672928703L;
+
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] { "ID.", "TIPO INGRESO", "DESCRIP.", "MONTO", "NUMERO"};
+        return new String[] {"INGRESO", "DESCRIP.", "MONTO"};
     }
 
     @Override
@@ -20,13 +24,12 @@ public class MovimientoItemIngresoTableModel extends DefaultTableModel<Movimient
         
         switch (columnIndex) {
             case 0:
-                return item.getId();
+            	return item.getMiiIngreso();
             case 1:
-                return item.getMiiIngreso();
+            	return item.getMiiDescripcion();
             case 2:
                 return item.getMiiMonto();
-            case 3:
-                return item.getMiiNumero();
+            
             default:
                 return "";
         }

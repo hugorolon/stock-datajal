@@ -7,11 +7,11 @@ import javax.swing.JTextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import py.com.prestosoftware.data.models.Cliente;
-import py.com.prestosoftware.data.models.CuentaCliente;
+//import py.com.prestosoftware.data.models.CuentaCliente;
 import py.com.prestosoftware.data.models.CuentaProveedor;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ClienteService;
-import py.com.prestosoftware.domain.services.CuentaClienteService;
+//import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.Fechas;
@@ -54,7 +54,7 @@ public class AjusteCuentaDebitoPanel extends JDialog implements ClienteInterfaz,
     private JButton btnCancelar;
     private JButton btnCerrar;
  
-    private CuentaClienteService cService;
+//    private CuentaClienteService cService;
     private CuentaProveedorService pService;
     private ClienteService clienteService;
     private ProveedorService proveedorService;
@@ -62,10 +62,12 @@ public class AjusteCuentaDebitoPanel extends JDialog implements ClienteInterfaz,
     private ConsultaProveedor proveedorDialog;
 
     @Autowired
-    public AjusteCuentaDebitoPanel(CuentaClienteService cService, CuentaProveedorService pService,
+    public AjusteCuentaDebitoPanel(
+//    		CuentaClienteService cService, 
+    		CuentaProveedorService pService,
     		ConsultaCliente depositoDialog, ConsultaProveedor proveedorDialog,
     		ClienteService clienteService, ProveedorService proveedorService) {
-    	this.cService = cService;
+//    	this.cService = cService;
     	this.pService = pService;
     	this.clienteDialog = depositoDialog;
     	this.proveedorDialog = proveedorDialog;
@@ -439,22 +441,22 @@ public class AjusteCuentaDebitoPanel extends JDialog implements ClienteInterfaz,
     	return cp;
     }
 
-    public CuentaCliente getClienteValue() {
-    	CuentaCliente cc = new CuentaCliente();
-        
-    	cc.setCliente(new Cliente(Long.valueOf(tfCodigo.getText())));
-    	cc.setClienteNombre(tfNombre.getText());
-    	cc.setTipo("AJUSTES");
-    	cc.setFecha(Fechas.stringDDMMAAAAADateSQL(tfFecha.getText()));
-    	cc.setVencimiento(Fechas.stringDDMMAAAAADateUtil(tfVencimiento.getText()));
-    	//cc.setDocumento(lblDocFinal.getText());
-    	cc.setHora(new Date());
-    	cc.setUsuarioId(GlobalVars.USER_ID);
-    	cc.setObs(tfHistorico.getText());
-    	cc.setDebito(FormatearValor.stringADouble(tfValor.getText()));
-    	
-        return cc;
-    }
+//    public CuentaCliente getClienteValue() {
+//    	CuentaCliente cc = new CuentaCliente();
+//        
+//    	cc.setCliente(new Cliente(Long.valueOf(tfCodigo.getText())));
+//    	cc.setClienteNombre(tfNombre.getText());
+//    	cc.setTipo("AJUSTES");
+//    	cc.setFecha(Fechas.stringDDMMAAAAADateSQL(tfFecha.getText()));
+//    	cc.setVencimiento(Fechas.stringDDMMAAAAADateUtil(tfVencimiento.getText()));
+//    	//cc.setDocumento(lblDocFinal.getText());
+//    	cc.setHora(new Date());
+//    	cc.setUsuarioId(GlobalVars.USER_ID);
+//    	cc.setObs(tfHistorico.getText());
+//    	cc.setDebito(FormatearValor.stringADouble(tfValor.getText()));
+//    	
+//        return cc;
+//    }
     
     public void clearForm() {
     	tfDocumento.setText("");
@@ -488,10 +490,11 @@ public class AjusteCuentaDebitoPanel extends JDialog implements ClienteInterfaz,
     private void save() {
     	Integer respuesta = JOptionPane.showConfirmDialog(null, "CONFIRMA");
 		if (respuesta == 0) {
-			if (tipoCuenta.equals("CLIENTE")) {
-	    		CuentaCliente t = getClienteValue();
-	    		cService.save(t);
-	    	} else {
+//			if (tipoCuenta.equals("CLIENTE")) {
+//	    		CuentaCliente t = getClienteValue();
+//	    		cService.save(t);
+//	    	} else 
+			{
 	    		CuentaProveedor t = getProveedorValue();
 	    		pService.save(t);
 	    	} 
@@ -506,8 +509,8 @@ public class AjusteCuentaDebitoPanel extends JDialog implements ClienteInterfaz,
     
     public void newAjusteCuenta() {
     	if (tipoCuenta.equals("CLIENTE")) {
-    		long max = cService.addNew();
-    		tfNota.setText(String.valueOf(max + 1));
+//    		long max = cService.addNew();
+//    		tfNota.setText(String.valueOf(max + 1));
     	} else {
     		long max = pService.addNew();
     		tfNota.setText(String.valueOf(max + 1));

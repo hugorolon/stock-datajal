@@ -10,9 +10,9 @@ import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoEgreso;
 
 @Repository
-public interface MovimientoEgresoRepository extends JpaRepository<MovimientoEgreso, Long> {
+public interface MovimientoEgresoRepository extends JpaRepository<MovimientoEgreso, Integer> {
 
-
+	MovimientoEgreso findByMegProceso(Integer megProceso);
 
 	@Query("SELECT coalesce(max(id), 0) FROM MovimientoEgreso e")
 	Long getMaxId();

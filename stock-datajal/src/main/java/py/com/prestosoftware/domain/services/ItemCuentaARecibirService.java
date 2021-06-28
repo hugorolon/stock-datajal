@@ -8,22 +8,34 @@ import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.CuentaARecibir;
 import py.com.prestosoftware.data.models.ItemCuentaARecibir;
+import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 import py.com.prestosoftware.data.repository.ItemCuentaARecibirRepository;
 
 @Service
 public class ItemCuentaARecibirService {
 
-    private ItemCuentaARecibirRepository repository;
+	private ItemCuentaARecibirRepository repository;
 
-    @Autowired
-    public ItemCuentaARecibirService(ItemCuentaARecibirRepository repository) {
-        this.repository = repository;
-    }
+	@Autowired
+	public ItemCuentaARecibirService(ItemCuentaARecibirRepository repository) {
+		this.repository = repository;
+	}
 
-    public List<ItemCuentaARecibir> findAll() {
-        return repository.findAll();
-    }
-    
+	public List<ItemCuentaARecibir> findAll() {
+		return repository.findAll();
+	}
+
+	public void cambiaEstadoSituacion(int estado, Long icaSecuencia) {
+		if (estado == 0)
+			repository.cambiaEstadoSituacionActivo(icaSecuencia);
+		else
+			repository.cambiaEstadoSituacionInactivo(icaSecuencia);
+	}
+	
+	 public List<ItemCuentaARecibir> findByCabId(Integer cabId) {
+	    	return repository.findByCabId(cabId);
+	    }
+
 //    public List<CuentaARecibir> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
 //    	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
 //    }
@@ -41,19 +53,19 @@ public class ItemCuentaARecibirService {
 //        repository.save(cuentaARecibir);
 //        repository.flush();
 //    }
-    
-    @Transactional
-    public ItemCuentaARecibir save(ItemCuentaARecibir itemCuentaARecibir) {
-        return repository.save(itemCuentaARecibir);
-    }
-    
-    @Transactional
-    public List<ItemCuentaARecibir> save(List<ItemCuentaARecibir> itemCuentaARecibirs) {
-        return repository.saveAll(itemCuentaARecibirs);
-    }
 
-    public void remove(ItemCuentaARecibir itemCuentaARecibir) {
-        repository.delete(itemCuentaARecibir);
-    }
+	@Transactional
+	public ItemCuentaARecibir save(ItemCuentaARecibir itemCuentaARecibir) {
+		return repository.save(itemCuentaARecibir);
+	}
+
+	@Transactional
+	public List<ItemCuentaARecibir> save(List<ItemCuentaARecibir> itemCuentaARecibirs) {
+		return repository.saveAll(itemCuentaARecibirs);
+	}
+
+	public void remove(ItemCuentaARecibir itemCuentaARecibir) {
+		repository.delete(itemCuentaARecibir);
+	}
 
 }

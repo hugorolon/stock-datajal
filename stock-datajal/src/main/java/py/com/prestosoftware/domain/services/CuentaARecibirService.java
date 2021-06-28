@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.CuentaARecibir;
 import py.com.prestosoftware.data.repository.CuentaARecibirRepository;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CuentaARecibirService {
@@ -23,6 +20,9 @@ public class CuentaARecibirService {
 
     public List<CuentaARecibir> findAll() {
         return repository.findAll();
+    }
+    public CuentaARecibir findByCarProceso(Integer carProceso) {
+        return repository.findByCarProceso(carProceso);
     }
     
 //    public List<CuentaARecibir> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {

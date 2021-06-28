@@ -93,6 +93,16 @@ public class MainFrame extends JFrame {
 	private JMenu mnuInfProductos;
 	private JMenu mnuInfDatosProductos;
 	private JMenuItem mnuInfStockPorDeposito;
+	private JMenu mnuMovProductos;
+	private JMenuItem mnuMovVenta;
+	private JMenuItem mnuMovCompra;
+	private JMenuItem mnuMovTransformacionProducto;
+	
+	private JMenu mnuMovCuentaAPagarRecibir;
+	private JMenu mnuMovCuentaAPagar;
+	private JMenu mnuMovCuentaARecibir;
+	private JMenuItem mnuMovCuentaAPagarPagoProveedor;
+	private JMenuItem mnuMovCuentaARecibirCobroCliente;
 	private JMenu mnuInfCuentaAPagarRecibir;
 	private JMenu mnuInfEstadoFinanciero;
 	private JMenuItem mnuInfResumenUtilidadProducto;
@@ -233,134 +243,152 @@ public class MainFrame extends JFrame {
 		menuBar.add(mnuMovimientos);
 		mnuCompra = new JMenuItem("COMPRAS");
 		mnuCompra.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
+		
+		mnuVenta = new JMenuItem("VENTAS");
+		mnuVenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
+		mnuMovimientos.add(mnuVenta);
+		mnuMovimientos.addSeparator();
+		mnuMovimientos.add(mnuCompra);
+//		mnuPDV = new JMenuItem("PDV");
+//		mnuMovimientos.add(mnuPDV);
+//		mnuMovimientos.addSeparator();
+		
+//		mnuPresupuesto = new JMenuItem("PRESUPUESTOS");
+//		mnuPresupuesto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
+//		
+//		mnuMovimientos.add(mnuPresupuesto);
+//		mnuMovimientos.addSeparator();
+		
+		//mnuMovimientos.addSeparator();
+		
+		
+		mnuDevolucion = new JMenu("DEVOLUCIONES");
+		
+		mnuMovCuentaAPagarRecibir = new JMenu("CUENTAS A PAGAR Y RECIBIR");
+		mnuMovCuentaAPagar = new JMenu("CUENTAS A PAGAR");
+		mnuMovCuentaARecibir = new JMenu("CUENTAS A RECIBIR");
+		mnuMovCuentaAPagarRecibir.add(mnuMovCuentaARecibir);
+		mnuMovCuentaAPagarRecibir.addSeparator();
+		mnuMovCuentaAPagarRecibir.add(mnuMovCuentaAPagar);
+		mnuMovCuentaAPagarPagoProveedor = new JMenuItem("PAGO A PROVEEDORES");
+		mnuMovCuentaAPagar.add(mnuMovCuentaAPagarPagoProveedor);
+		mnuMovCuentaARecibirCobroCliente = new JMenuItem("COBRO A CLIENTES");
+		mnuMovCuentaARecibir.add(mnuMovCuentaARecibirCobroCliente);
+		mnuMovimientos.add(mnuMovCuentaAPagarRecibir);
+		mnuMovimientos.addSeparator();
+		
 		mnuMovCaja = new JMenu("CAJAS");
 		mnuMovCajaIngreso = new JMenuItem("MOVIMIENTO DE INGRESO DE EFECTIVO");
 		mnuMovCajaEgreso = new JMenuItem("MOVIMIENTO DE EGRESO DE EFECTIVO");
 		mnuMovCaja.add(mnuMovCajaIngreso);
 		mnuMovCaja.addSeparator();
 		mnuMovCaja.add(mnuMovCajaEgreso);
-		mnuMovimientos.addSeparator();
 		mnuMovimientos.add(mnuMovCaja);
 		mnuMovimientos.addSeparator();
-		mnuDevolucion = new JMenu("DEVOLUCIONES");
-		mnuVenta = new JMenuItem("VENTAS");
-		mnuVenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
-		mnuMovimientos.add(mnuVenta);
-		mnuMovimientos.addSeparator();
-		mnuPDV = new JMenuItem("PDV");
-		mnuMovimientos.add(mnuPDV);
-		mnuMovimientos.addSeparator();
 		
-		mnuPresupuesto = new JMenuItem("PRESUPUESTOS");
-		mnuPresupuesto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
+//		mnuAnularBoleta = new JMenuItem("ANULAR BOLETAS");
+//		mnuAnularBoleta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_MASK));
+//		mnuMovimientos.add(mnuAnularBoleta);
+//		mnuMovimientos.addSeparator();
 		
-		mnuMovimientos.add(mnuPresupuesto);
-		mnuMovimientos.addSeparator();
-		mnuMovimientos.add(mnuCompra);
-		mnuMovimientos.addSeparator();
-		mnuAnularBoleta = new JMenuItem("ANULAR BOLETAS");
-		mnuAnularBoleta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_MASK));
-		mnuMovimientos.add(mnuAnularBoleta);
-		mnuMovimientos.addSeparator();
-		
-		mnuTransferencia = new JMenuItem("TRANSFERENCIA");
-		mnuTransferencia.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
-		mnuMovimientos.add(mnuTransferencia);
-		mnuMovimientos.addSeparator();
-		mnuMovimientos.add(mnuDevolucion);
-		mnuMovimientos.addSeparator();
+//		mnuTransferencia = new JMenuItem("TRANSFERENCIA");
+//		mnuTransferencia.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
+//		mnuMovimientos.add(mnuTransferencia);
+//		mnuMovimientos.addSeparator();
+//		mnuMovimientos.add(mnuDevolucion);
+//		mnuMovimientos.addSeparator();
 		mnuTransformacion = new JMenuItem("TRANSFORMACION DE PRODUCTOS");
 		mnuTransformacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
 		mnuMovimientos.add(mnuTransformacion);
 		
-		mnuDevolucionVenta = new JMenuItem("VENTAS");
-		mnuDevolucion.add(mnuDevolucionVenta);
-		mnuDevolucion.addSeparator();
-		mnuDevolucionCompra = new JMenuItem("COMPRAS");
-		mnuDevolucion.add(mnuDevolucionCompra);
+//		mnuDevolucionVenta = new JMenuItem("VENTAS");
+//		mnuDevolucion.add(mnuDevolucionVenta);
+//		mnuDevolucion.addSeparator();
+//		mnuDevolucionCompra = new JMenuItem("COMPRAS");
+//		mnuDevolucion.add(mnuDevolucionCompra);
 		
-		mnAjustes = new JMenu("AJUSTES STOCK");
-		mnuMovimientos.add(mnAjustes);
+//		mnAjustes = new JMenu("AJUSTES STOCK");
+//		mnuMovimientos.add(mnAjustes);
+//		
+//		mnuAjusteEntrada = new JMenuItem("ENTRADAS");
+//		mnAjustes.add(mnuAjusteEntrada);
+//		mnAjustes.addSeparator();
+//		mnuAjusteSalida = new JMenuItem("SALIDAS");
+//		mnAjustes.add(mnuAjusteSalida);
+//		mnuMovimientos.addSeparator();
+//		
+//		mnuAjusteCuenta = new JMenu("AJUSTE CUENTA");
+//		mnuMovimientos.add(mnuAjusteCuenta);
+//		
+//		mnuDebitoCliente = new JMenuItem("DEBITO CLIENTES");
+//		mnuAjusteCuenta.add(mnuDebitoCliente);
+//		
+//		mnuCreditoCliente = new JMenuItem("CREDITO CLIENTES");
+//		mnuAjusteCuenta.add(mnuCreditoCliente);
+//		mnuAjusteCuenta.addSeparator();
+//		mnuDebitoProveedor = new JMenuItem("DEBITO PROVEEDORES");
+//		mnuAjusteCuenta.add(mnuDebitoProveedor);
+//		
+//		mnuCreditoProveedor = new JMenuItem("CREDITO PROVEEDORES");
+//		mnuAjusteCuenta.add(mnuCreditoProveedor);
 		
-		mnuAjusteEntrada = new JMenuItem("ENTRADAS");
-		mnAjustes.add(mnuAjusteEntrada);
-		mnAjustes.addSeparator();
-		mnuAjusteSalida = new JMenuItem("SALIDAS");
-		mnAjustes.add(mnuAjusteSalida);
-		mnuMovimientos.addSeparator();
+//		JMenu mnuFinanciero = new JMenu("FINANCIERO");
+//		mnuFinanciero.setMnemonic('F');
+//		menuBar.add(mnuFinanciero);
 		
-		mnuAjusteCuenta = new JMenu("AJUSTE CUENTA");
-		mnuMovimientos.add(mnuAjusteCuenta);
+//		mnuAperturaCaja = new JMenuItem("APERTURA DE CAJA");
+//		mnuAperturaCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
+//		
+//		mnuFinanciero.add(mnuAperturaCaja);
+//		mnuFinanciero.addSeparator();
+//		mnuCierreCaja = new JMenuItem("CIERRE DE CAJA");
+//		mnuCierreCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
+//		mnuFinanciero.add(mnuCierreCaja);
+//		mnuFinanciero.addSeparator();
+//		mnuLanzamiento = new JMenuItem("LANZAMIENTO DE CAJA");
+//		mnuLanzamiento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
+//		mnuFinanciero.add(mnuLanzamiento);
+//		mnuFinanciero.addSeparator();
+//		mnuCotizacion = new JMenuItem("COTIZACIONES");
+//		mnuCotizacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
+//		mnuFinanciero.add(mnuCotizacion);
 		
-		mnuDebitoCliente = new JMenuItem("DEBITO CLIENTES");
-		mnuAjusteCuenta.add(mnuDebitoCliente);
+//		JMenu mnuConsultas = new JMenu("CONSULTAS");
+//		mnuConsultas.setMnemonic('C');
+//		menuBar.add(mnuConsultas);
 		
-		mnuCreditoCliente = new JMenuItem("CREDITO CLIENTES");
-		mnuAjusteCuenta.add(mnuCreditoCliente);
-		mnuAjusteCuenta.addSeparator();
-		mnuDebitoProveedor = new JMenuItem("DEBITO PROVEEDORES");
-		mnuAjusteCuenta.add(mnuDebitoProveedor);
-		
-		mnuCreditoProveedor = new JMenuItem("CREDITO PROVEEDORES");
-		mnuAjusteCuenta.add(mnuCreditoProveedor);
-		
-		JMenu mnuFinanciero = new JMenu("FINANCIERO");
-		mnuFinanciero.setMnemonic('F');
-		menuBar.add(mnuFinanciero);
-		
-		mnuAperturaCaja = new JMenuItem("APERTURA DE CAJA");
-		mnuAperturaCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
-		
-		mnuFinanciero.add(mnuAperturaCaja);
-		mnuFinanciero.addSeparator();
-		mnuCierreCaja = new JMenuItem("CIERRE DE CAJA");
-		mnuCierreCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
-		mnuFinanciero.add(mnuCierreCaja);
-		mnuFinanciero.addSeparator();
-		mnuLanzamiento = new JMenuItem("LANZAMIENTO DE CAJA");
-		mnuLanzamiento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
-		mnuFinanciero.add(mnuLanzamiento);
-		mnuFinanciero.addSeparator();
-		mnuCotizacion = new JMenuItem("COTIZACIONES");
-		mnuCotizacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.ALT_MASK | InputEvent.SHIFT_MASK));
-		mnuFinanciero.add(mnuCotizacion);
-		
-		JMenu mnuConsultas = new JMenu("CONSULTAS");
-		mnuConsultas.setMnemonic('C');
-		menuBar.add(mnuConsultas);
-		
-		mnuBoletaFiscal = new JMenuItem("BOLETA FISCAL");
-		mnuBoletaFiscal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.ALT_GRAPH_MASK));
-		mnuConsultas.add(mnuBoletaFiscal);
-		mnuConsultas.addSeparator();
-		mnuEmpaque = new JMenuItem("EMPAQUE");
-		mnuEmpaque.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_GRAPH_MASK));
-		mnuConsultas.add(mnuEmpaque);
-		mnuConsultas.addSeparator();
-		mnuBoleta = new JMenuItem("BOLETAS");
-		mnuBoleta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_GRAPH_MASK));
-		mnuConsultas.add(mnuBoleta);
-		mnuConsultas.addSeparator();
-		mnuAgenda = new JMenuItem("AGENDA");
-		mnuAgenda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_GRAPH_MASK));
-		mnuConsultas.add(mnuAgenda);
-		mnuConsultas.addSeparator();
-		mnuConsultaClientes = new JMenuItem("CLIENTES");
-		mnuConsultaClientes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
-		mnuConsultas.add(mnuConsultaClientes);
-		mnuConsultas.addSeparator();
-		mnuConsultaProveedor = new JMenuItem("PROVEEDORES");
-		mnuConsultaProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
-		mnuConsultas.add(mnuConsultaProveedor);
-		mnuConsultas.addSeparator();
-		
-		mnuSaldoStock = new JMenuItem("SALDO STOCK");
-		mnuSaldoStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
-		mnuConsultas.add(mnuSaldoStock);
-		mnuConsultas.addSeparator();
-		mnuSaldoDeposito = new JMenuItem("SALDO DEPOSITOS ");
-		mnuSaldoDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
-		mnuConsultas.add(mnuSaldoDeposito);
+//		mnuBoletaFiscal = new JMenuItem("BOLETA FISCAL");
+//		mnuBoletaFiscal.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.ALT_GRAPH_MASK));
+//		mnuConsultas.add(mnuBoletaFiscal);
+//		mnuConsultas.addSeparator();
+//		mnuEmpaque = new JMenuItem("EMPAQUE");
+//		mnuEmpaque.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.ALT_GRAPH_MASK));
+//		mnuConsultas.add(mnuEmpaque);
+//		mnuConsultas.addSeparator();
+//		mnuBoleta = new JMenuItem("BOLETAS");
+//		mnuBoleta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.ALT_GRAPH_MASK));
+//		mnuConsultas.add(mnuBoleta);
+//		mnuConsultas.addSeparator();
+//		mnuAgenda = new JMenuItem("AGENDA");
+//		mnuAgenda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.ALT_GRAPH_MASK));
+//		mnuConsultas.add(mnuAgenda);
+//		mnuConsultas.addSeparator();
+//		mnuConsultaClientes = new JMenuItem("CLIENTES");
+//		mnuConsultaClientes.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0));
+//		mnuConsultas.add(mnuConsultaClientes);
+//		mnuConsultas.addSeparator();
+//		mnuConsultaProveedor = new JMenuItem("PROVEEDORES");
+//		mnuConsultaProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0));
+//		mnuConsultas.add(mnuConsultaProveedor);
+//		mnuConsultas.addSeparator();
+//		
+//		mnuSaldoStock = new JMenuItem("SALDO STOCK");
+//		mnuSaldoStock.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0));
+//		mnuConsultas.add(mnuSaldoStock);
+//		mnuConsultas.addSeparator();
+//		mnuSaldoDeposito = new JMenuItem("SALDO DEPOSITOS ");
+//		mnuSaldoDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
+//		mnuConsultas.add(mnuSaldoDeposito);
 		
 		JMenu mnuRelatorios = new JMenu("INFORMES");
 		mnuRelatorios.setMnemonic('L');
@@ -410,41 +438,41 @@ public class MainFrame extends JFrame {
 		
 		mnuRelatorios.add(mnuInfCajas);
 		
-		JMenu mnuUtilidades = new JMenu("UTILIDADES");
-		mnuUtilidades.setMnemonic('U');
-		menuBar.add(mnuUtilidades);
+//		JMenu mnuUtilidades = new JMenu("UTILIDADES");
+//		mnuUtilidades.setMnemonic('U');
+//		menuBar.add(mnuUtilidades);
 		
 		mnConfiguracion = new JMenu("CONFIG");
 		mnConfiguracion.setMnemonic('C');
 		menuBar.add(mnConfiguracion);
 		
-		mnuEmpresa = new JMenuItem("EMPRESAS");
-		mnuEmpresa.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
-		mnConfiguracion.add(mnuEmpresa);
-		mnConfiguracion.addSeparator();
-		mnuDeposito = new JMenuItem("DEPOSITOS");
-		mnuDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
-		mnConfiguracion.add(mnuDeposito);
-		mnuPlanDeCuenta = new JMenuItem("PLAN DE CUENTAS");
-		mnuPlanDeCuenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
-		mnConfiguracion.addSeparator();
-		mnConfiguracion.add(mnuPlanDeCuenta);
-		mnConfiguracion.addSeparator();
-		mnuMoneda = new JMenuItem("MONEDA");
-		mnuMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
-		mnConfiguracion.add(mnuMoneda);
-		mnConfiguracion.addSeparator();
-		mnuCondicionDePago = new JMenuItem("CONDICION DE PAGO");
-		mnConfiguracion.add(mnuCondicionDePago);
+//		mnuEmpresa = new JMenuItem("EMPRESAS");
+//		mnuEmpresa.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+//		mnConfiguracion.add(mnuEmpresa);
+//		mnConfiguracion.addSeparator();
+//		mnuDeposito = new JMenuItem("DEPOSITOS");
+//		mnuDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+//		mnConfiguracion.add(mnuDeposito);
+//		mnuPlanDeCuenta = new JMenuItem("PLAN DE CUENTAS");
+//		mnuPlanDeCuenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+//		mnConfiguracion.addSeparator();
+//		mnConfiguracion.add(mnuPlanDeCuenta);
+//		mnConfiguracion.addSeparator();
+//		mnuMoneda = new JMenuItem("MONEDA");
+//		mnuMoneda.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+//		mnConfiguracion.add(mnuMoneda);
+//		mnConfiguracion.addSeparator();
+//		mnuCondicionDePago = new JMenuItem("CONDICION DE PAGO");
+//		mnConfiguracion.add(mnuCondicionDePago);
 		mnConfiguracion.addSeparator();
 		mntmImpresoras = new JMenuItem("IMPRESORAS");
 		mntmImpresoras.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mntmImpresoras);
 		mnConfiguracion.addSeparator();
-		mnuCaja = new JMenuItem("CAJAS");
-		mnuCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
-		mnConfiguracion.add(mnuCaja);
-		mnConfiguracion.addSeparator();
+//		mnuCaja = new JMenuItem("CAJAS");
+//		mnuCaja.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+//		mnConfiguracion.add(mnuCaja);
+//		mnConfiguracion.addSeparator();
 		mnuUsuario = new JMenuItem("USUARIOS");
 		mnuUsuario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuUsuario);
@@ -501,22 +529,22 @@ public class MainFrame extends JFrame {
 		contentPane.add(panel_1, BorderLayout.EAST);
 		panel_1.setLayout(new GridLayout(0, 1, 10, 15));
 		
-		btnClientes = new JButton("CLIENTES");
-		btnClientes.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		btnClientes = new JButton("CLIENTES");
+//		btnClientes.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		
+//		panel_1.add(btnClientes);
 		
-		panel_1.add(btnClientes);
-		
-		btnProveedores = new JButton("PROVEEDORES");
-		btnProveedores.setFont(new Font("Lucida Grande", Font.BOLD, 20));
-		
-		panel_1.add(btnProveedores);
+//		btnProveedores = new JButton("PROVEEDORES");
+//		btnProveedores.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		
+//		panel_1.add(btnProveedores);
 		
 		btnVentas = new JButton("VENTAS");
 		btnVentas.setFont(new Font("Lucida Grande", Font.BOLD, 20));
 		
-		btnProductos = new JButton("PRODUCTOS");
-		btnProductos.setFont(new Font("Lucida Grande", Font.BOLD, 20));
-		panel_1.add(btnProductos);
+//		btnProductos = new JButton("PRODUCTOS");
+//		btnProductos.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		panel_1.add(btnProductos);
 		panel_1.add(btnVentas);
 		
 		btnCompras = new JButton("COMPRAS");
@@ -527,13 +555,13 @@ public class MainFrame extends JFrame {
 		});
 		panel_1.add(btnCompras);
 		
-		btnPDV = new JButton("PDV");
-		btnPDV.setFont(new Font("Lucida Grande", Font.BOLD, 20));
-		panel_1.add(btnPDV);
-		
-		btnLanzamientos = new JButton("LANZAMIENTOS");
-		btnLanzamientos.setFont(new Font("Lucida Grande", Font.BOLD, 20));
-		panel_1.add(btnLanzamientos);
+//		btnPDV = new JButton("PDV");
+//		btnPDV.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		panel_1.add(btnPDV);
+//		
+//		btnLanzamientos = new JButton("LANZAMIENTOS");
+//		btnLanzamientos.setFont(new Font("Lucida Grande", Font.BOLD, 20));
+//		panel_1.add(btnLanzamientos);
 	}
 
 	public JPanel getContentPane() {
@@ -898,6 +926,21 @@ public class MainFrame extends JFrame {
 	public void setMnuMovCajaEgreso(JMenuItem mnuMovCajaEgreso) {
 		this.mnuMovCajaEgreso = mnuMovCajaEgreso;
 	}
-	
+
+	public JMenuItem getMnuMovCuentaAPagarPagoProveedor() {
+		return mnuMovCuentaAPagarPagoProveedor;
+	}
+
+	public void setMnuMovCuentaAPagarPagoProveedor(JMenuItem mnuMovCuentaAPagarPagoProveedor) {
+		this.mnuMovCuentaAPagarPagoProveedor = mnuMovCuentaAPagarPagoProveedor;
+	}
+
+	public JMenuItem getMnuMovCuentaARecibirCobroCliente() {
+		return mnuMovCuentaARecibirCobroCliente;
+	}
+
+	public void setMnuMovCuentaARecibirCobroCliente(JMenuItem mnuMovCuentaARecibirCobroCliente) {
+		this.mnuMovCuentaARecibirCobroCliente = mnuMovCuentaARecibirCobroCliente;
+	}
 	
 }

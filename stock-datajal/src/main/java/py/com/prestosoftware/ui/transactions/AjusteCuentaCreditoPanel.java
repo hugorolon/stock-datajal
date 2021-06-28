@@ -11,7 +11,6 @@ import py.com.prestosoftware.data.models.AjusteStock;
 import py.com.prestosoftware.data.models.AjusteStockDetalle;
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Compra;
-import py.com.prestosoftware.data.models.CuentaCliente;
 import py.com.prestosoftware.data.models.CuentaProveedor;
 import py.com.prestosoftware.data.models.Deposito;
 import py.com.prestosoftware.data.models.Proveedor;
@@ -19,7 +18,6 @@ import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.data.models.Venta;
 import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.CompraService;
-import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
@@ -80,7 +78,7 @@ public class AjusteCuentaCreditoPanel extends JDialog implements ClienteInterfaz
     private ClienteService clienteService;
     private ProveedorService proveedorService;
  
-    private CuentaClienteService cService;
+//    private CuentaClienteService cService;
     private CuentaProveedorService pService;
     private VentaService ventaService;
     private CompraService compraService;
@@ -88,13 +86,14 @@ public class AjusteCuentaCreditoPanel extends JDialog implements ClienteInterfaz
     @Autowired
     public AjusteCuentaCreditoPanel(AjusteCuentaTableModel itemTableModel, ConsultaCliente depositoDialog, 
     		ConsultaProveedor proveedorDialog, ClienteService clienteService, ProductoService productoService,
-    		CuentaClienteService cService, CuentaProveedorService pService,
+    		//CuentaClienteService cService, 
+    		CuentaProveedorService pService,
     		VentaService ventaService, CompraService compraService) {
     	this.itemTableModel = itemTableModel;
     	this.clienteDialog = depositoDialog;
     	this.proveedorDialog = proveedorDialog;
     	this.clienteService = clienteService;
-    	this.cService = cService;
+    	//this.cService = cService;
     	this.pService = pService;
     	this.ventaService = ventaService;
     	this.compraService = compraService;
@@ -434,28 +433,29 @@ public class AjusteCuentaCreditoPanel extends JDialog implements ClienteInterfaz
     	return cp;
     }
 
-    public CuentaCliente getClienteValue() {
-    	CuentaCliente cc = new CuentaCliente();
-        
-    	cc.setCliente(new Cliente(Long.valueOf(tfCodigo.getText())));
-    	cc.setClienteNombre(tfNombre.getText());
-    	cc.setTipo("AJUSTES");
-//    	cc.setFecha(Fechas.stringDDMMAAAAADateSQL(tfFecha.getText()));
-//    	cc.setVencimiento(Fechas.stringDDMMAAAAADateUtil(tfVencimiento.getText()));
-//    	cc.setDocumento(tfDocumento.getText());
-//    	cc.setUsuarioId(GlobalVars.USER_ID);
-//    	cc.setObs(tfHistorico.getText());
-    	cc.setDebito(FormatearValor.stringADouble(tfValor.getText()));
-    	
-        return cc;
-    }
+//    public CuentaCliente getClienteValue() {
+//    	CuentaCliente cc = new CuentaCliente();
+//        
+//    	cc.setCliente(new Cliente(Long.valueOf(tfCodigo.getText())));
+//    	cc.setClienteNombre(tfNombre.getText());
+//    	cc.setTipo("AJUSTES");
+//    	
+////    	cc.setFecha(Fechas.stringDDMMAAAAADateSQL(tfFecha.getText()));
+////    	cc.setVencimiento(Fechas.stringDDMMAAAAADateUtil(tfVencimiento.getText()));
+////    	cc.setDocumento(tfDocumento.getText());
+////    	cc.setUsuarioId(GlobalVars.USER_ID);
+////    	cc.setObs(tfHistorico.getText());
+//    	cc.setDebito(FormatearValor.stringADouble(tfValor.getText()));
+//    	
+//        return cc;
+//    }
     
     private void save() {
     	Integer respuesta = JOptionPane.showConfirmDialog(null, "CONFIRMA");
 		if (respuesta == 0) {
 			if (tipoCuenta.equals("CLIENTE")) {
-	    		CuentaCliente t = getClienteValue();
-	    		cService.save(t);
+//	    		CuentaCliente t = getClienteValue();
+//	    		cService.save(t);
 	    	} else {
 	    		CuentaProveedor t = getProveedorValue();
 	    		pService.save(t);

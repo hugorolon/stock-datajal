@@ -23,13 +23,13 @@ public class MovimientoItemIngresoService {
         return repository.findAll();
     }
     
-//    public List<MovimientoItemIngreso> findByFechaAndIngresoAndSituacion(Date fecha, Ingreso ingreso, String situacion) {
-//    	return repository.findByFechaAndIngresoAndSituacionOrderByIdAsc(fecha, caja, situacion);
-//    }
+    public List<MovimientoItemIngreso> findByCabId(Integer cabId) {
+    	return repository.findByCabId(cabId);
+    }
     
-//    public Optional<MovimientoItemIngreso> findByIdVenta(String idVenta) {
-//    	return repository.getMovimientoItemIngresoPorNota(idVenta);
-//    }
+    public Optional<MovimientoItemIngreso> findById(Long id) {
+    	return repository.findById(id);
+    }
     
 //    public Optional<MovimientoItemIngreso> getTotalsMovIngreso(Ingreso caja, Date fecha, String situacion) {
 //    	return repository.getTotalsEntradaIngreso(caja, fecha, situacion);

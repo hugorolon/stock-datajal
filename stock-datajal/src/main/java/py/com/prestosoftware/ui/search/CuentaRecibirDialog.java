@@ -391,12 +391,12 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		String idCliente = "";
 		String orden = "";
 		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
+			idCliente = "and car_entidad=" + tfClienteID.getText();
 		parametros.put("idCliente", idCliente);
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			orden = " ORDER BY 5, 12,13,14 asc";
+			orden = " ORDER BY 5,16, 12,13,14 asc";
 		else
-			orden = " ORDER BY 6, 12,13,14 asc";
+			orden = " ORDER BY 6,16, 12,13,14 asc";
 		DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 		Date fechaIniSel = tfFechaInicial.getDate();
 		Date fechaFinSel = tfFechaFinal.getDate();
@@ -433,7 +433,7 @@ public class CuentaRecibirDialog extends JDialog implements ClienteInterfaz {
 		String idCliente = "";
 		String orden = "";
 		if (!tfClienteID.getText().isEmpty())
-			idCliente = "and id_cliente=" + tfClienteID.getText();
+			idCliente = "and car_entidad=" + tfClienteID.getText();
 		parametros.put("idCliente", idCliente);
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
 			orden = " order by 5, 12,13,14 asc";

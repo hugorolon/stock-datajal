@@ -27,9 +27,9 @@ public class MovimientoItemEgresoService {
 //    	return repository.findByFechaAndEgresoAndSituacionOrderByIdAsc(fecha, caja, situacion);
 //    }
     
-//    public Optional<MovimientoItemEgreso> findByIdVenta(String idVenta) {
-//    	return repository.getMovimientoItemEgresoPorNota(idVenta);
-//    }
+    public List<MovimientoItemEgreso> findByCabId(Integer idCab) {
+    	return repository.findByCabId(idCab);
+    }
     
 //    public Optional<MovimientoItemEgreso> getTotalsMovEgreso(Egreso caja, Date fecha, String situacion) {
 //    	return repository.getTotalsEntradaEgreso(caja, fecha, situacion);

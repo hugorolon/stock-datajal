@@ -1,6 +1,8 @@
 package py.com.prestosoftware.ui.transactions;
 
 import java.awt.Font;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -9,7 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,49 +33,50 @@ import javax.swing.text.AbstractDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import py.com.prestosoftware.data.models.AperturaCierreCaja;
+import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Cliente;
-import py.com.prestosoftware.data.models.Deposito;
-import py.com.prestosoftware.data.models.Producto;
-import py.com.prestosoftware.data.models.TransformacionProducto;
-import py.com.prestosoftware.data.models.TransformacionProductoDetalle;
-import py.com.prestosoftware.domain.services.DepositoService;
-import py.com.prestosoftware.domain.services.ProductoService;
-import py.com.prestosoftware.domain.services.TransformacionProductoService;
-import py.com.prestosoftware.domain.validations.TransformacionProductoValidator;
-import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.data.models.Ingreso;
+import py.com.prestosoftware.data.models.Moneda;
+import py.com.prestosoftware.data.models.MovimientoCaja;
+import py.com.prestosoftware.data.models.MovimientoIngreso;
+import py.com.prestosoftware.data.models.MovimientoItemIngreso;
+import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
+import py.com.prestosoftware.domain.services.CajaService;
+import py.com.prestosoftware.domain.services.IngresoService;
+import py.com.prestosoftware.domain.services.MovimientoCajaService;
+import py.com.prestosoftware.domain.services.MovimientoIngresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
+import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
-import py.com.prestosoftware.ui.search.DepositoDialog;
-import py.com.prestosoftware.ui.search.DepositoInterfaz;
-import py.com.prestosoftware.ui.search.ProductoDialog;
-import py.com.prestosoftware.ui.search.ProductoInterfaz;
-import py.com.prestosoftware.ui.search.TransformacionProductoDialog;
-import py.com.prestosoftware.ui.search.TransformacionProductoInterfaz;
-import py.com.prestosoftware.ui.table.TransformacionTableModel;
+import py.com.prestosoftware.ui.search.IngresoDialog;
+import py.com.prestosoftware.ui.search.IngresoInterfaz;
+import py.com.prestosoftware.ui.search.MovimientoIngresoDialog;
+import py.com.prestosoftware.ui.search.MovimientoIngresoInterfaz;
+import py.com.prestosoftware.ui.table.MovimientoItemIngresoTableModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz, TransformacionProductoInterfaz, ProductoInterfaz {
+public class MovimientoIngresoPanel extends JDialog implements MovimientoIngresoInterfaz, IngresoInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int DEPOSITO_CODE = 1;
-	private static final int PRODUCTO_CODE_ORIGEN = 2;
-	private static final int PRODUCTO_CODE_DESTINO = 3;
-	private static final int TRANSFORMACION_CODE = 4;
-
+	private static final int ENTIDAD_CODE = 1;
+	private static final int INGRESO_CODE = 2;
+	private static final int MOVIMIENTOINGRESO_CODE = 3;	
+	
 	private JTextField tfNombreCaja;
-	private JTextField tfDescripcion;
-	private JTextField tfProductoID;
+	private JTextField tfDescripcionIngreso;
+	private JTextField tfIngresoID;
 	private JTextField tfCajaId;
-	private JTable tbProductos;
-	private JTextField tfCantidad;
+	private JTable tbIngresos;
 	private JTextField tfObs;
-	private JTextField tfDestinoId;
-	private JTextField tfNombreDestino;
+	private JTextField tfCajeroId;
+	private JTextField tfNombreCajero;
 	private JButton btnAdd;
 	private JButton btnRemove;
 	private JButton btnGuardar;
@@ -82,34 +85,37 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 	private JButton btnVer;
 	private JLabel lblSituacion;
 
-	private TransformacionTableModel itemTableModel;
-	private DepositoDialog depositoDialog;
-	private ProductoDialog productoDialog;
-	private TransformacionProductoDialog transformacionProductoDialog;
-	private DepositoService depositoService;
-	private ProductoService productoService;
-	private TransformacionProductoService tService;
-	private TransformacionProductoValidator tValidator;
-	private Producto productoOrigen;
-	private Producto productoDestino;
-	private int origen;
-	private TransformacionProducto transformacionProductoSeleccionado;
+	private MovimientoItemIngresoTableModel itemTableModel;
+	private IngresoDialog ingresoDialog;
+	private IngresoService ingresoService;
+	private CajaService cajaService;
+	private AperturaCierreCajaService movCajaService;
+	private UsuarioService usuarioService;
+	private MovimientoIngresoService movimientoIngresoService;
+	private MovimientoItemIngresoService movimientoItemIngresoService;
+	private MovimientoCajaService pagoService;
+	private MovimientoIngreso movimientoIngresoSeleccionado;
+	private Double totalCalculado; 
+	private Ingreso ingreso;
+	private MovimientoIngresoDialog movimientoIngresoDialog;
+	private boolean bandAgregar=true;
 
 	@Autowired
-	public MovimientoIngresoPanel(TransformacionTableModel itemTableModel, DepositoDialog depositoDialog,
-			ProductoDialog productoDialog, DepositoService depositoService, TransformacionProductoValidator tValidator,
-			ProductoService productoService, TransformacionProductoDialog transformacionProductoDialog, TransformacionProductoService tService) {
+	public MovimientoIngresoPanel(MovimientoIngresoService movimientoIngresoService, MovimientoItemIngresoService movimientoItemIngresoService, MovimientoItemIngresoTableModel itemTableModel, IngresoService ingresoService,
+			CajaService cajaService, UsuarioService usuarioService, IngresoDialog ingresoDialog, MovimientoIngresoDialog movimientoIngresoDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService) {
 		this.itemTableModel = itemTableModel;
-		this.depositoDialog = depositoDialog;
-		this.productoDialog = productoDialog;
-		this.transformacionProductoDialog=transformacionProductoDialog;
-		this.depositoService = depositoService;
-		this.tValidator = tValidator;
-		this.productoService = productoService;
-		this.tService = tService;
+		this.ingresoService = ingresoService;
+		this.movimientoIngresoService = movimientoIngresoService;
+		this.movimientoItemIngresoService = movimientoItemIngresoService;
+		this.cajaService =cajaService;
+		this.usuarioService =usuarioService;
+		this.ingresoDialog =ingresoDialog;
+		this.movimientoIngresoDialog =movimientoIngresoDialog;
+		this.pagoService = pagoService;
+		this.movCajaService =movCajaService;
 
-		setSize(750, 450);
-		setTitle("TRANSFORMACION DE PRODUCTO");
+		setSize(750, 483);
+		setTitle("MOVIMIENTO INGRESO");
 		setLocationRelativeTo(null);
 		setResizable(false);
 		getContentPane().setLayout(null);
@@ -117,6 +123,7 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		initComponents();
 	}
 
+	@SuppressWarnings("serial")
 	private void initComponents() {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setBounds(6, 76, 738, 312);
@@ -127,69 +134,28 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		pnlProducto.setLayout(null);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(6, 11, 717, 79);
+		panel_1.setBounds(6, 11, 717, 64);
 		pnlProducto.add(panel_1);
 		panel_1.setLayout(null);
 		
-		setOrigen(2);
-		
-		
 		tfFecha = new JTextField();
+		tfFecha.setEditable(false);
 		tfFecha.setBounds(10, 32, 77, 30);
 		panel_1.add(tfFecha);
 		tfFecha.setColumns(10);
-		tfFecha.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(PRODUCTO_CODE_ORIGEN);
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfFecha.getText().isEmpty()) {
-						findProductoById(Long.valueOf(tfFecha.getText()),PRODUCTO_CODE_ORIGEN);
-					} else {
-						showDialog(PRODUCTO_CODE_ORIGEN);
-					}
-				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tfCantidadOrigen.requestFocus();
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					Integer respuesta = JOptionPane.showConfirmDialog(null, "Abandonar Nota.?");
-
-					if (respuesta == 0) {
-						clearForm();
-					} else {
-						tfProductoID.requestFocus();
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-
+		
 		tfDocumento = new JTextField();
 		tfDocumento.setBounds(97, 32, 86, 30);
 		panel_1.add(tfDocumento);
 		tfDocumento.setColumns(10);
 
 		tfEntidad = new JTextField();
+		tfEntidad.setEditable(false);
 		tfEntidad.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfEntidad.setBounds(193, 32, 63, 30);
 		panel_1.add(tfEntidad);
 		tfEntidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfEntidad.setColumns(10);
-
-		tfCantidadOrigen = new JTextField();
-		tfCantidadOrigen.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfCantidadOrigen.setBounds(517, 32, 63, 30);
-		panel_1.add(tfCantidadOrigen);
-		tfCantidadOrigen.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfCantidadOrigen.setColumns(10);
-
-		JLabel lblIngreso = new JLabel("INGRESO");
-		lblIngreso.setBounds(517, 0, 63, 30);
-		panel_1.add(lblIngreso);
 
 		JLabel lblEntidad = new JLabel("ENTIDAD");
 		lblEntidad.setBounds(193, 0, 63, 30);
@@ -210,118 +176,48 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		tfNombreEntidad.setColumns(10);
 		tfNombreEntidad.setBounds(261, 32, 152, 30);
 		panel_1.add(tfNombreEntidad);
-		
-		tfDescripcionIngreso = new JTextField();
-		tfDescripcionIngreso.setEditable(false);
-		tfDescripcionIngreso.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfDescripcionIngreso.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfDescripcionIngreso.setColumns(10);
-		tfDescripcionIngreso.setBounds(581, 32, 126, 30);
-		panel_1.add(tfDescripcionIngreso);
 
 		panel_2 = new JPanel();
-		panel_2.setBounds(6, 132, 717, 141);
+		panel_2.setBounds(6, 97, 717, 176);
 		pnlProducto.add(panel_2);
 		panel_2.setLayout(null);
 
-		JLabel lblCodigo = new JLabel("CODIGO");
-		lblCodigo.setBounds(10, 0, 63, 30);
-		panel_2.add(lblCodigo);
+		JLabel lblCodigoIngreso = new JLabel("CODIGO");
+		lblCodigoIngreso.setBounds(10, 0, 63, 30);
+		panel_2.add(lblCodigoIngreso);
 
-		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
-		lblDescripcion.setBounds(77, 0, 364, 30);
-		panel_2.add(lblDescripcion);
+		JLabel lblDescripcionIngreso = new JLabel("DESCRIPCIÓN INGRESO");
+		lblDescripcionIngreso.setBounds(77, 0, 364, 30);
+		panel_2.add(lblDescripcionIngreso);
 
-		tfProductoID = new JTextField();
-		tfProductoID.setBounds(10, 26, 63, 30);
-		panel_2.add(tfProductoID);
-		tfProductoID.addFocusListener(new FocusAdapter() {
+		tfIngresoID = new JTextField();
+		tfIngresoID.setBounds(10, 26, 63, 30);
+		panel_2.add(tfIngresoID);
+		tfIngresoID.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
-				tfProductoID.selectAll();
+				tfIngresoID.selectAll();
 			}
 		});
-		tfProductoID.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(PRODUCTO_CODE_DESTINO);
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfCajaId.getText().isEmpty()) {
-						if (!tfProductoID.getText().isEmpty()) {
-							findProductoById(Long.valueOf(tfProductoID.getText()),PRODUCTO_CODE_DESTINO);
-						} else {
-							showDialog(PRODUCTO_CODE_DESTINO);
-						}
-					} else {
-						Notifications.showAlert("El campo Deposito Origen es Obligatorio.!");
-					}
-				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tfCantidad.requestFocus();
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					Integer respuesta = JOptionPane.showConfirmDialog(null, "Abandonar Nota.?");
-
-					if (respuesta == 0) {
-						clearForm();
-						newTransf();
-					} else {
-						tfProductoID.requestFocus();
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfProductoID.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfProductoID.setColumns(10);
-
-		tfDescripcion = new JTextField();
-		tfDescripcion.setBounds(77, 26, 367, 30);
-		panel_2.add(tfDescripcion);
-		tfDescripcion.setEditable(false);
-		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfDescripcion.setColumns(10);
-
-		JLabel lblStockDestino = new JLabel("STOCK");
-		lblStockDestino.setBounds(446, 0, 63, 30);
-		panel_2.add(lblStockDestino);
-
-		JLabel lblCantidad = new JLabel("CANTIDAD");
-		lblCantidad.setBounds(519, 0, 63, 30);
-		panel_2.add(lblCantidad);
-
-		tfStockDestino = new JTextField();
-		tfStockDestino.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfStockDestino.setBounds(446, 26, 63, 30);
-		panel_2.add(tfStockDestino);
-		tfStockDestino.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfStockDestino.setColumns(10);
-		tfCantidad = new JTextField();
-		tfCantidad.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfCantidad.setBounds(519, 26, 63, 30);
-		panel_2.add(tfCantidad);
-		tfCantidad.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfCantidad.selectAll();
-			}
-		});
-		tfCantidad.addKeyListener(new KeyAdapter() {
+		tfIngresoID.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfCantidad.getText().isEmpty()) {
-						btnAdd.requestFocus();
+					if (!tfIngresoID.getText().isEmpty()) {
+						findIngresoById(Long.valueOf(tfIngresoID.getText()),INGRESO_CODE);
 					} else {
-						Notifications.showAlert("Debes digitar cantidad.!");
+						showDialog(INGRESO_CODE);
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					btnAdd.requestFocus();
-				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-					tfProductoID.requestFocus();
+					tfMontoIngreso.requestFocus();
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					Integer respuesta = JOptionPane.showConfirmDialog(null, "Abandonar Movimiento.?");
+					if (respuesta == 0) {
+						clearForm();
+						newMov();
+					} else {
+						tfIngresoID.requestFocus();
+					}
 				}
 			}
 
@@ -330,8 +226,15 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 				Util.validateNumero(e);
 			}
 		});
-		tfCantidad.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfCantidad.setColumns(10);
+		tfIngresoID.setFont(new Font("Arial", Font.PLAIN, 14));
+		tfIngresoID.setColumns(10);
+
+		tfDescripcionIngreso = new JTextField();
+		tfDescripcionIngreso.setBounds(77, 26, 419, 30);
+		panel_2.add(tfDescripcionIngreso);
+		tfDescripcionIngreso.setEditable(false);
+		tfDescripcionIngreso.setFont(new Font("Arial", Font.PLAIN, 14));
+		tfDescripcionIngreso.setColumns(10);
 
 		btnAdd = new JButton(" + ");
 		btnAdd.setBounds(656, 67, 51, 30);
@@ -341,25 +244,25 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		btnRemove.setBounds(656, 101, 51, 30);
 		panel_2.add(btnRemove);
 
-		JScrollPane scrollProducto = new JScrollPane();
-		scrollProducto.setBounds(10, 67, 630, 64);
-		panel_2.add(scrollProducto);
+		JScrollPane scrollMovimientoIngreso = new JScrollPane();
+		scrollMovimientoIngreso.setBounds(10, 67, 630, 78);
+		panel_2.add(scrollMovimientoIngreso);
 
-		tbProductos = new JTable(itemTableModel) {
+		tbIngresos = new JTable(itemTableModel) {
 			public boolean isCellEditable(int fila, int columna) {
 				return false;
 			}
 		};
 
-		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tbProductos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
-		tbProductos.addMouseListener(new MouseAdapter() {
+		tbIngresos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbIngresos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		tbIngresos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				getItemSelected();
 			}
 		});
-		tbProductos.addKeyListener(new KeyAdapter() {
+		tbIngresos.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
@@ -367,26 +270,72 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 				} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_UP) {
 					getItemSelected();
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					tfProductoID.requestFocus();
+					tfIngresoID.requestFocus();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					btnGuardar.requestFocus();
 				}
 			}
 		});
-		scrollProducto.setViewportView(tbProductos);
+		scrollMovimientoIngreso.setViewportView(tbIngresos);
 
-		lblPrecio = new JLabel("PRECIO");
-		lblPrecio.setBounds(592, 0, 63, 30);
-		panel_2.add(lblPrecio);
+		lblMontoIngreso = new JLabel("MONTO DEL INGRESO");
+		lblMontoIngreso.setBounds(506, 0, 134, 30);
+		panel_2.add(lblMontoIngreso);
 
-		tfPrecio = new JTextField();
-		tfPrecio.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfPrecio.setBounds(592, 26, 86, 30);
-		panel_2.add(tfPrecio);
-		tfPrecio.setColumns(10);
+		tfMontoIngreso = new JTextField();
+		tfMontoIngreso.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfMontoIngreso.setBounds(506, 26, 134, 30);
+		panel_2.add(tfMontoIngreso);
+		tfMontoIngreso.setColumns(10);
+		tfMontoIngreso.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfMontoIngreso.selectAll();
+			}
+			
+		});
+		tfMontoIngreso.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				bandAgregar=true;
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnAdd.requestFocus();
+				} else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+					tfIngresoID.requestFocus();
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					btnAdd.requestFocus();
+				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
+					abandonarNota();
+				} 
+			}
 
-		lblNewLabel = new JLabel("TRANSFORMAR A");
-		lblNewLabel.setBounds(6, 108, 145, 27);
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+		});
+		
+		JLabel lblTotalMontoIngreso = new JLabel("TOTAL  INGRESO");
+		lblTotalMontoIngreso.setFont(new Font("Tahoma", Font.BOLD, 11));
+		lblTotalMontoIngreso.setBounds(339, 146, 134, 30);
+		panel_2.add(lblTotalMontoIngreso);
+		
+		tfTotal = new JTextField();
+		tfTotal.setEditable(false);
+		tfTotal.setText("");
+		tfTotal.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfTotal.setColumns(10);
+		tfTotal.setBounds(506, 146, 134, 30);
+		panel_2.add(tfTotal);
+		
+
+		lblNewLabel = new JLabel("INGRESO");
+		lblNewLabel.setBounds(6, 75, 145, 27);
 		pnlProducto.add(lblNewLabel);
 		btnRemove.addKeyListener(new KeyAdapter() {
 			@Override
@@ -403,8 +352,10 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		});
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (isValidItem()) {
-					addItem();
+				if(bandAgregar) {
+					if (isValidItem()) {
+						addItem();
+					}					
 				}
 			}
 		});
@@ -414,6 +365,7 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (isValidItem()) {
 						addItem();
+						bandAgregar=false;
 					}
 				}
 			}
@@ -435,41 +387,6 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		pnlCliente.add(lblCaja);
 
 		tfCajaId = new JTextField();
-		tfCajaId.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfCajaId.selectAll();
-			}
-		});
-		tfCajaId.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(DEPOSITO_CODE);
-					tfDestinoId.requestFocus();
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfCajaId.getText().isEmpty()) {
-						findDepositoById(Long.valueOf(tfCajaId.getText()));
-						tfDestinoId.requestFocus();
-					} else {
-						showDialog(DEPOSITO_CODE);
-						tfDestinoId.requestFocus();
-					}
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					dispose();
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-
-			}
-		});
 		tfCajaId.setText("0");
 		tfCajaId.setToolTipText("");
 		tfCajaId.setEditable(false);
@@ -487,48 +404,19 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		lblCajero.setBounds(377, 7, 41, 30);
 		pnlCliente.add(lblCajero);
 
-		tfDestinoId = new JTextField();
-		tfDestinoId.setEditable(false);
-		tfDestinoId.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfDestinoId.selectAll();
-			}
-		});
-		tfDestinoId.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(DEPOSITO_CODE);
-					tfProductoID.requestFocus();
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfDestinoId.getText().isEmpty()) {
-						findDepositoById(Long.valueOf(tfDestinoId.getText()));
-						tfProductoID.requestFocus();
-					} else {
-						showDialog(DEPOSITO_CODE);
-						tfProductoID.requestFocus();
-					}
+		tfCajeroId = new JTextField();
+		tfCajeroId.setEditable(false);
+		tfCajeroId.setToolTipText("");
+		tfCajeroId.setText("0");
+		tfCajeroId.setColumns(10);
+		tfCajeroId.setBounds(418, 7, 41, 30);
+		pnlCliente.add(tfCajeroId);
 
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfDestinoId.setToolTipText("");
-		tfDestinoId.setText("0");
-		tfDestinoId.setColumns(10);
-		tfDestinoId.setBounds(418, 7, 41, 30);
-		pnlCliente.add(tfDestinoId);
-
-		tfNombreDestino = new JTextField();
-		tfNombreDestino.setEditable(false);
-		tfNombreDestino.setColumns(10);
-		tfNombreDestino.setBounds(460, 7, 82, 30);
-		pnlCliente.add(tfNombreDestino);
+		tfNombreCajero = new JTextField();
+		tfNombreCajero.setEditable(false);
+		tfNombreCajero.setColumns(10);
+		tfNombreCajero.setBounds(460, 7, 82, 30);
+		pnlCliente.add(tfNombreCajero);
 
 		lblNota = new JLabel("Nota:");
 		lblNota.setBounds(6, 7, 51, 30);
@@ -544,6 +432,19 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		btnVer.setFont(new Font("Dialog", Font.BOLD, 18));
 		btnVer.setBounds(90, 7, 21, 30);
 		pnlCliente.add(btnVer);
+		btnVer.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					showDialog(MOVIMIENTOINGRESO_CODE);
+				}
+			}
+		});
+		btnVer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(MOVIMIENTOINGRESO_CODE);
+			}
+		});
 
 		JLabel lblObs = new JLabel("Obs.:");
 		lblObs.setBounds(555, 7, 41, 30);
@@ -559,7 +460,7 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfProductoID.requestFocus();
+					tfIngresoID.requestFocus();
 				}
 			}
 		});
@@ -572,7 +473,7 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					showDialog(4);
+					showDialog(INGRESO_CODE);
 				}
 			}
 		});
@@ -583,16 +484,24 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		});
 
 		JPanel panel = new JPanel();
-		panel.setBounds(6, 388, 738, 35);
+		panel.setBounds(6, 408, 738, 35);
 		getContentPane().add(panel);
 
-		btnGuardar = new JButton("Guardar");
+		btnGuardar = new JButton("Guardar(F5)");
 		btnGuardar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					save();
 				}
+				else {
+					if (e.getKeyCode() == KeyEvent.VK_F5) {
+		                save();
+		            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		                abandonarNota();
+		            }
+				}
+				
 			}
 		});
 		btnGuardar.addActionListener(new ActionListener() {
@@ -608,18 +517,18 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					clearForm();
-					newTransf();
+					newMov();
 				}
 			}
 		});
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearForm();
-				newTransf();
+				newMov();
 			}
 		});
 		
-		btnAnula = new JButton("Elimina");
+		btnAnula = new JButton("Eliminar");
 		btnAnula.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				elimina();
@@ -641,73 +550,83 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 			}
 		});
 		panel.add(btnCerrar);
+		
+		// other code ...
+		KeyboardFocusManager
+		    .getCurrentKeyboardFocusManager()
+		    .addKeyEventDispatcher(new KeyEventDispatcher() {
+		    public boolean dispatchKeyEvent(KeyEvent e) {
+		        boolean keyHandled = false;
+		        if (e.getID() == KeyEvent.KEY_PRESSED) {
+		            if (e.getKeyCode() == KeyEvent.VK_F5) {
+		                save();
+		                keyHandled = true;
+		            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		                abandonarNota();
+		                keyHandled = true;
+		            }
+		        }
+		        return keyHandled;
+		    }
+		});
+		
 		btnAnula.setVisible(false);	
 		btnGuardar.setVisible(true);
+		clearForm();
+		//newMov();
 	}
 
 	protected void elimina() {
 		btnAnula.setVisible(false);	
 		btnGuardar.setVisible(true);
-		this.getTransformacionProductoSeleccionado().setSituacion(0);
-		tService.save(this.getTransformacionProductoSeleccionado());
-		revertUpdateStockProduct();
+		this.getMovimientoIngresoSeleccionado().setMinSituacion(1);
+		eliminaMovimientoIngreso();
 		clearForm();
-		newTransf();
+		newMov();
 	}
 
 	public void setCliente(Optional<Cliente> cliente) {
 		if (cliente.isPresent()) {
 			String nombre = cliente.get().getRazonSocial();
 			tfNombreCaja.setText(nombre);
-			tfProductoID.requestFocus();
+			tfIngresoID.requestFocus();
 		}
 	}
 
-	private void findProductoById(Long id, int desde) {
-		Optional<Producto> producto = productoService.findById(id);
+	private void findIngresoById(Long id, int desde) {
+		Optional<Ingreso> ingreso = ingresoService.findById(id);
 
-		if (producto.isPresent()) {
-			setProducto(producto, desde);
+		if (ingreso.isPresent()) {
+			setIngreso(ingreso);
 		}
 	}
 
-	public void setProducto(Optional<Producto> producto, int desde) {
-		if (producto.isPresent()) {
-			String nombre = producto.get().getDescripcion();
-			if (desde == 3) {
-				tfDescripcion.setText(nombre);
-				tfCantidad.setText("1");
-				tfStockDestino.setText(FormatearValor.doubleAString(producto.get().getDepO1()));
-				tfPrecio.setText(FormatearValor.doubleAString(producto.get().getPrecioVentaA()));
-				setProductoDestino(producto.get());
-				tfCantidad.requestFocus();
-			} else {
-				tfCantidadOrigen.setText("1");
-				tfDocumento.setText(nombre);
-				tfEntidad.setText(FormatearValor.doubleAString(producto.get().getDepO1()));
-				setProductoOrigen(producto.get());
-			}
+	public void setIngreso(Optional<Ingreso> ingreso) {
+		if (ingreso.isPresent()) {
+			String nombre = ingreso.get().getIngDescripcion();
+				tfDescripcionIngreso.setText(nombre);
+				tfMontoIngreso.requestFocus();
 		}
 	}
 
 	private void getItemSelected() {
-		int selectedRow = tbProductos.getSelectedRow();
+		int selectedRow = tbIngresos.getSelectedRow();
 
 		if (selectedRow != -1) {
-			TransformacionProductoDetalle item = itemTableModel.getEntityByRow(selectedRow);
-			tfProductoID.setText(String.valueOf(item.getProductoDestino().getId()));
-			tfCantidad.setText(FormatearValor.doubleAString(item.getCantidad()));
-			tfDescripcion.setText(String.valueOf(item.getProductoDestino().getDescripcion()));
+			MovimientoItemIngreso item = itemTableModel.getEntityByRow(selectedRow);
+			tfIngresoID.setText(String.valueOf(item.getMiiIngreso()));
+			tfMontoIngreso.setText(FormatearValor.doubleAString(item.getMiiMonto()));
+			Optional<Ingreso> ingresoSeleccionado =ingresoService.findById(Long.valueOf(item.getMiiIngreso()));
+			tfDescripcionIngreso.setText(String.valueOf(ingresoSeleccionado.get().getIngDescripcion()));
 		}
 	}
 
 	private void addItem() {
 		Boolean esDuplicado = false;
 		Integer fila = -1;
-		for (Integer i = 0; i < tbProductos.getRowCount(); i++) {
-			String itemId = String.valueOf(tbProductos.getValueAt(i, 0));
-
-			if (tfProductoID.getText().trim().equals(itemId) && !itemId.equals("")) {
+		for (Integer i = 0; i < tbIngresos.getRowCount(); i++) {
+			String itemId = String.valueOf(tbIngresos.getValueAt(i, 0));
+			if (tfIngresoID.getText().trim().equals(itemId) && !itemId.equals("")) {
 				esDuplicado = true;
 				fila = i;
 			}
@@ -717,30 +636,19 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 					"Registro ya existe en la grilla, desea actualizar los datos?");
 			if (respuesta == 0) {
 				if (isValidItem()) {
-					actualizarRegristroGrilla(fila, String.valueOf(tbProductos.getValueAt(fila, 2)));
-					tfProductoID.requestFocus();
+					actualizarRegristroGrilla(fila, String.valueOf(tbIngresos.getValueAt(fila, 2)));
+					tfIngresoID.requestFocus();
 				}
 			} else {
-				tfProductoID.requestFocus();
+				tfIngresoID.requestFocus();
 			}
 		} else {
-			Long productoId = Long.valueOf(tfFecha.getText());
-			Double cantidad = FormatearValor.stringToDouble(tfCantidadOrigen.getText());
-
-			Optional<Producto> p = productoService.findById(productoId);
-
+			Long ingresoId = Long.valueOf(tfIngresoID.getText());
+			Optional<Ingreso> p = ingresoService.findById(ingresoId);
 			if (p.isPresent()) {
-				Double stock = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
-
-				if (cantidad <= stock) {
 					addItemToList();
 					calculateItem();
-				} else {
-					tfFecha.requestFocus();
-					Notifications.showAlert("No tiene suficiente Stock para este Producto. Stock actual es de: "
-							+ FormatearValor.doubleAString(stock));
-				}
-			}
+			} 
 		}
 
 		clearItem();
@@ -751,33 +659,21 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 	}
 
 	private void calculateItem() {
-		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
-		// Double total = itemTableModel.getEntities().stream().mapToDouble(i ->
-		// i.getSubtotal()).sum();
-		setTotals(cantItem, 0D);
+		totalCalculado = itemTableModel.getEntities().stream().mapToDouble(i -> i.getMiiMonto()).sum();
+		tfTotal.setText(FormatearValor.doubleAString(totalCalculado));
 	}
 
 	private void actualizarRegristroGrilla(Integer fila, String cantAnteriorItem) {
 		itemTableModel.removeRow(fila);
 
-		Long productoId = Long.valueOf(tfProductoID.getText());
-		Double cantidad = FormatearValor.stringADouble(tfCantidad.getText());
+		Long ingresoId = Long.valueOf(tfIngresoID.getText());
 
-		Optional<Producto> p = productoService.findById(productoId);
+		Optional<Ingreso> p = ingresoService.findById(ingresoId);
 
 		if (p.isPresent()) {
-			Double stock = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
-
-			if (cantidad <= stock) {
 				addItemToList();
 				calculateItem();
-			} else {
-				tfProductoID.requestFocus();
-				Notifications
-						.showAlert("No tiene suficiente Stock para este Producto. " + "Stock actual es de: " + stock);
-			}
 		}
-
 		clearItem();
 	}
 
@@ -785,47 +681,46 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 	private JTextField tfNota;
 	private JTextField tfFecha;
 	private JTextField tfDocumento;
-	private JTextField tfStockDestino;
 	private JTextField tfEntidad;
-	private JTextField tfCantidadOrigen;
 	private JLabel lblDescripcionProductoOrigen;
 	private JLabel lblFecha;
 	private JPanel panel_2;
 	private JLabel lblNewLabel;
-	private JLabel lblPrecio;
-	private JTextField tfPrecio;
+	private JLabel lblMontoIngreso;
+	private JTextField tfMontoIngreso;
 	private JButton btnAnula;
 	private JTextField tfNombreEntidad;
-	private JTextField tfDescripcionIngreso;
+	private JTextField tfTotal;
 
-	public TransformacionProducto getFormValue() {
-		TransformacionProducto t = new TransformacionProducto();
-		t.setDepositoOrigen(new Deposito(Long.valueOf(tfCajaId.getText())));
-		t.setDepositoDestino(new Deposito(Long.valueOf(tfDestinoId.getText())));
+	public MovimientoIngreso getFormValue() {
+		MovimientoIngreso t = new MovimientoIngreso();
+		t.setMinCaja(Integer.valueOf(tfCajaId.getText()));
 		t.setFecha(new Date());
-		t.setSituacion(1);
-		t.setObs(tfObs.getText());
-		t.setProductoOrigen(productoOrigen);
-		t.setCantidad(Integer.valueOf(tfCantidadOrigen.getText()));
-		t.setUsuario(GlobalVars.USER);
+		t.setHora(new Date());
+		t.setMinSituacion(0);
+		t.setMinDocumento(tfDocumento.getText());
+		t.setMinTipoEntidad(8);
+		t.setMinEntidad(tfEntidad.getText());
+		t.setMinNumero(Integer.valueOf(tfNota.getText()));
+		t.setMinTipoProceso(0);
+		t.setMinProceso(0);
+		t.setMinEntidad("1");
 		return t;
 	}
 
-	public TransformacionProductoDetalle getItem() {
-		TransformacionProductoDetalle item = new TransformacionProductoDetalle();
-		item.setProductoDestino(this.getProductoDestino());
-		item.setCantidad(Double.valueOf(tfCantidad.getText()));
-		item.setPrecio(this.getProductoDestino().getPrecioVentaA());
+	public MovimientoItemIngreso getItem() {
+		MovimientoItemIngreso item = new MovimientoItemIngreso();
+		item.setMiiIngreso(Integer.valueOf(tfIngresoID.getText()));
+		item.setMiiDescripcion(tfDescripcionIngreso.getText());
+		item.setMiiMonto(Double.valueOf(tfMontoIngreso.getText()));
 		return item;
 	}
 
 	public void clearItem() {
-		tfProductoID.setText("");
-		tfDescripcion.setText("");
-		tfCantidad.setText("");
-		tfPrecio.setText("");
-		tfStockDestino.setText("");
-		tfProductoID.requestFocus();
+		tfIngresoID.setText("");
+		tfDescripcionIngreso.setText("");
+		tfMontoIngreso.setText("");
+		tfIngresoID.requestFocus();
 	}
 
 	public void setTotals(Double cantItem, Double total) {
@@ -845,17 +740,15 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		tfFecha.setText("");
 		tfDocumento.setText("");
 		tfEntidad.setText("");
-		tfCantidadOrigen.setText("");
+		tfNombreEntidad.setText("");
 		tfCajaId.setText("");
 		tfNombreCaja.setText("");
-		tfDestinoId.setText("");
-		tfNombreDestino.setText("");
+		tfCajeroId.setText("");
+		tfNombreCajero.setText("");
 		
-		tfProductoID.setText("");
-		tfStockDestino.setText("");
-		tfCantidad.setText("");
-		tfPrecio.setText("");
-		tfDescripcion.setText("");
+		tfIngresoID.setText("");
+		tfMontoIngreso.setText("");
+		tfDescripcionIngreso.setText("");
 		tfObs.setText("");
 
 		while (itemTableModel.getRowCount() > 0) {
@@ -866,18 +759,22 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 	}
 
 	public int removeItem() {
-		int row[] = tbProductos.getSelectedRows();
+		int row[] = tbIngresos.getSelectedRows();
 
-		if (tbProductos.getSelectedRow() != -1) {
+		if (tbIngresos.getSelectedRow() != -1) {
 			for (Integer i = row.length; i > 0; i--) {
 				itemTableModel.removeRow(row[i - 1]);
 			}
 
-			if (tbProductos.getRowCount() == 0) {
+			if (tbIngresos.getRowCount() == 0) {
 				btnRemove.setEnabled(false);
 			}
-
-			tfProductoID.requestFocus();
+			Double total= itemTableModel.getEntities().stream().mapToDouble(i -> i.getMiiMonto()).sum();
+			tfTotal.setText(FormatearValor.doubleAString(total));
+			tfDescripcionIngreso.setText("");
+			tfIngresoID.setText("");
+			tfMontoIngreso.setText("");
+			tfIngresoID.requestFocus();
 		} else {
 			Notifications.showAlert("Debe seleccionar un Item para quitar de la lista");
 		}
@@ -885,49 +782,24 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		return row[0];
 	}
 
-	private void findDepositoById(Long id) {
-		Optional<Deposito> deposito = depositoService.findById(id);
+		
 
-		if (deposito.isPresent()) {
-			setDeposito(deposito);
-		}
-	}
 	
-
-	private void setDeposito(Optional<Deposito> deposito) {
-		if (deposito.isPresent()) {
-			String nombre = deposito.get().getNombre();
-
-			if (tfNombreCaja.getText().isEmpty()) {
-				tfNombreCaja.setText(nombre);
-			} else {
-				tfNombreDestino.setText(nombre);
-			}
-		}
-	}
-
 	private void showDialog(int code) {
 		switch (code) {
-		case DEPOSITO_CODE:
-			depositoDialog.setInterfaz(this);
-			depositoDialog.setVisible(true);
+		case ENTIDAD_CODE:
+		//	entidadDialog.setInterfaz(this);
+//			entidadDialog.setVisible(true);
 			break;
-		case PRODUCTO_CODE_ORIGEN:
-			setOrigen(PRODUCTO_CODE_ORIGEN);
-			productoDialog.setInterfaz(this);
-			productoDialog.loadProductos("");
-			productoDialog.setVisible(true);
+		case INGRESO_CODE:
+			ingresoDialog.setInterfaz(this);
+			ingresoDialog.loadIngresos("");;
+			ingresoDialog.setVisible(true);
 			break;
-		case PRODUCTO_CODE_DESTINO:
-			setOrigen(PRODUCTO_CODE_DESTINO);
-			productoDialog.setInterfaz(this);
-			productoDialog.loadProductos("");
-			productoDialog.setVisible(true);
-			break;
-		case TRANSFORMACION_CODE:
-			transformacionProductoDialog.setInterfaz(this);
-			transformacionProductoDialog.loadTransformacionProductos("");
-			transformacionProductoDialog.setVisible(true);
+		case MOVIMIENTOINGRESO_CODE:
+			movimientoIngresoDialog.setInterfaz(this);
+			movimientoIngresoDialog.setVisible(true);
+			movimientoIngresoDialog.loadMovimientoIngresos("");
 			break;	
 		default:
 			break;
@@ -938,121 +810,96 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 		Integer respuesta = JOptionPane.showConfirmDialog(null, "CONFIRMA");
 		if (respuesta == 0) {
 			if (validateCabezera() && validateItems(itemTableModel.getEntities())) {
-				TransformacionProducto t = getFormValue();
-				t.setItems(itemTableModel.getEntities());
-
-				Optional<ValidationError> errors = tValidator.validate(t);
-
-				if (errors.isPresent()) {
-					ValidationError validationError = errors.get();
-					Notifications.showFormValidationAlert(validationError.getMessage());
-				} else {
-					TransformacionProducto v = tService.save(t);
-
+				MovimientoIngreso t = getFormValue();
+					MovimientoIngreso v = movimientoIngresoService.save(t);
 					if (v != null) {
-						updateStockProduct(v);
+						for (MovimientoItemIngreso mii : itemTableModel.getEntities()) {
+							mii.setMiiNumero(v.getMinNumero());
+						}
+						movimientoItemIngresoService.save(itemTableModel.getEntities());
 					}
+					//Apertura de caja caso no este abierto
+					lanzamientoCaja();
+					//actualiza ingreso en movimiento Caja
+					Optional<Caja> caja = cajaService.findById(1L);
+					MovimientoCaja movCaja = new MovimientoCaja();
+					movCaja.setCaja(caja.get());
+					movCaja.setFecha(new Date());
+					movCaja.setMoneda(new Moneda(1l));
+					movCaja.setNotaNro(v.getMinNumero().toString());
+					movCaja.setNotaReferencia(v.getMinNumero().toString());
+					movCaja.setNotaValor(totalCalculado);
+					movCaja.setPlanCuentaId(1);
+					movCaja.setTipoOperacion("E");
+					movCaja.setUsuario(GlobalVars.USER_ID);
+					movCaja.setValorM01(totalCalculado);
+					movCaja.setObs("Ingreso en caja 01 ");
+					movCaja.setSituacion("PAGADO");
+					pagoService.save(movCaja);
 
-					Notifications.showAlert("Transformacion de Producto registrado con exito.!");
+					Notifications.showAlert("Movimiento de Ingreso registrado con exito.!");
 					clearForm();
-					newTransf();
-					// newTransformacionProducto();
-				}
+					newMov();
 			}
 		} else {
-			tfProductoID.requestFocus();
+			tfIngresoID.requestFocus();
 		}
 	}
 
-	private void updateStockProduct(TransformacionProducto item) {
-		Optional<Producto> pOptional = productoService.findById(item.getProductoOrigen().getId());
-			if (pOptional.isPresent()) {
-				Producto p = pOptional.get();
-				Double newQt = p.getDepO1() - Double.valueOf(tfCantidadOrigen.getText());
-				p.setDepO1(newQt);
-				productoService.updateStock(p);
+	private void lanzamientoCaja() {
+		Optional<Caja> caja = cajaService.findById(1l);
+		if (caja.isPresent()) {
+			Caja ca = caja.get();
+			Optional<AperturaCierreCaja> movCaja = movCajaService.findByCajaAndFechaApertura(ca, new Date());
+			if (!movCaja.isPresent()) {
+				AperturaCierreCaja newMov = movCajaService.save(new AperturaCierreCaja(ca, new Date(), 0d));
 			}
-			List<Producto> productos = new ArrayList<>();
-			for (TransformacionProductoDetalle e : item.getItems()) {
-				Optional<Producto> pOptionalPdto = productoService.findById(e.getProductoDestino().getId());
-				if (pOptionalPdto.isPresent()) {
-					Producto p = pOptionalPdto.get();
-					Double newQt = p.getDepO1() + e.getCantidad();
-					p.setDepO1(newQt);
-					productos.add(p);
-				}
-			}
-
-			productoService.updateStock(productos);
+		}
 	}
 	
-	private void revertUpdateStockProduct() {
-		Optional<Producto> pOptional = productoService.findById(this.getTransformacionProductoSeleccionado().getProductoOrigen().getId());
+	private void eliminaMovimientoIngreso() {
+		Optional<MovimientoIngreso> pOptional = movimientoIngresoService.findById(Integer.valueOf(this.getMovimientoIngresoSeleccionado().getMinNumero().toString()));
 			if (pOptional.isPresent()) {
-				Producto p = pOptional.get();
-				Double newQt = p.getDepO1() + Double.valueOf(this.getTransformacionProductoSeleccionado().getCantidad());
-				p.setDepO1(newQt);
-				productoService.updateStock(p);
-			}
-			List<Producto> productos = new ArrayList<>();
-			for (TransformacionProductoDetalle e : this.getTransformacionProductoSeleccionado().getItems()) {
-				Optional<Producto> pOptionalPdto = productoService.findById(e.getProductoDestino().getId());
-				if (pOptionalPdto.isPresent()) {
-					Producto p = pOptionalPdto.get();
-					Double newQt = p.getDepO1() - e.getCantidad();
-					p.setDepO1(newQt);
-					productos.add(p);
+				MovimientoIngreso p = pOptional.get();
+				movimientoIngresoService.remove(p);
+				List<MovimientoItemIngreso> listaMovItemIngreso= movimientoItemIngresoService.findByCabId(p.getMinNumero());
+				for (MovimientoItemIngreso movimientoItemIngreso : listaMovItemIngreso) {
+					movimientoItemIngresoService.remove(movimientoItemIngreso);	
 				}
+				Optional<MovimientoCaja> movCaja = pagoService.findByIdVenta(p.getMinNumero().toString());
+				pagoService.remove(movCaja.get());
+				
 			}
-
-			productoService.updateStock(productos);
 	}
 
-//    public void newTransformacionProducto() {
-//		long max = tService.getRowCount();
-//		tfVentaId.setText(String.valueOf(max + 1));
-//		tfClienteID.requestFocus();
-//	}
 
 	private boolean validateCabezera() {
 		// validar deposito
-		if (tfDestinoId.getText().isEmpty()) {
-			Notifications.showAlert("El codigo del Deposito Destino es obligatorio");
-			tfDestinoId.requestFocus();
+		if (tfCajeroId.getText().isEmpty()) {
+			Notifications.showAlert("El codigo del Cajero es obligatorio");
+			tfCajeroId.requestFocus();
 			return false;
 		} else if (tfCajaId.getText().isEmpty()) {
-			Notifications.showAlert("El codigo del Deposito Origen es obligatorio");
+			Notifications.showAlert("El codigo de la caja es obligatorio");
 			tfCajaId.requestFocus();
 			return false;
 		} 
-
-		Optional<Deposito> deposito = depositoService.findById(Long.valueOf(tfCajaId.getText()));
-
-		if (!deposito.isPresent()) {
-			Notifications.showAlert("El codigo del Deposito Origen no existe.!");
-			tfCajaId.requestFocus();
-			return false;
-		}
-
-		Optional<Deposito> d = depositoService.findById(Long.valueOf(tfDestinoId.getText()));
-
-		if (!d.isPresent()) {
-			Notifications.showAlert("El codigo del Deposito Destino no existe.!");
-			tfDestinoId.requestFocus();
-			return false;
-		}
-
+		
 		return true;
 	}
 
-	private boolean validateItems(List<TransformacionProductoDetalle> items) {
-		for (TransformacionProductoDetalle e : items) {
-			Optional<Producto> producto = productoService.findById(e.getProductoDestino().getId());
+	private boolean validateItems(List<MovimientoItemIngreso> items) {
+		if(items.isEmpty()) {
+			Notifications.showAlert("Ningun Item Ingreso encontrado !");
+			return false;
+		}
+		for (MovimientoItemIngreso e : items) {
+			Optional<Ingreso> ingreso = ingresoService.findById(Long.valueOf(e.getMiiIngreso()));
 
-			if (!producto.isPresent()) {
+			if (!ingreso.isPresent()) {
 				// verificar la cantidad
 					// sinStock = true;
-				Notifications.showAlert("Producto no encontrado !");
+				Notifications.showAlert("Ningun Ingreso válido encontrado !");
 					return false;
 			}
 		}
@@ -1060,127 +907,116 @@ public class MovimientoIngresoPanel extends JDialog implements DepositoInterfaz,
 	}
 
 	private Boolean isValidItem() {
-		if (tfProductoID.getText().isEmpty()) {
+		if (tfIngresoID.getText().isEmpty()) {
 			Notifications.showAlert("Digite el codigo del Producto");
-			tfProductoID.requestFocus();
+			tfIngresoID.requestFocus();
 			return false;
-		} else if (tfCantidad.getText().isEmpty()) {
-			Notifications.showAlert("Digite la cantidad");
-			tfCantidad.requestFocus();
+		} else if (tfMontoIngreso.getText().isEmpty()) {
+			Notifications.showAlert("Digite el monto");
+			tfMontoIngreso.requestFocus();
 			return false;
-		} else if (!tfCantidad.getText().isEmpty() && FormatearValor.stringADouble(tfCantidad.getText()) <= 0) {
-			Notifications.showAlert("La cantidad debe ser mayor a cero");
-			tfCantidad.requestFocus();
-			return false;
-		}
-
+		} 
 		return true;
 	}
 
-	@Override
-	public void getEntity(Deposito d) {
-		if (d != null) {
-			if (tfCajaId.getText().isEmpty()) {
-				tfCajaId.setText(String.valueOf(d.getId()));
-				tfNombreCaja.setText(d.getNombre());
-			} else {
-				tfDestinoId.setText(String.valueOf(d.getId()));
-				tfNombreDestino.setText(d.getNombre());
-			}
-		}
-	}
+	
 
-	public void newTransf() {
+	public void newMov() {
 		clearForm();
-		Optional<Deposito> deposito = depositoService.findById(1L);
+		Optional<Caja> caja = cajaService.findById(1L);
 		
-		tfNombreCaja.setText(deposito.get().getNombre());
-		tfNombreDestino.setText(deposito.get().getNombre());
+		tfNombreCaja.setText(caja.get().getNombre());
+		
 		tfCajaId.setText("1");
-		tfDestinoId.setText("1");
-		
-		long max = tService.getRowCount();
+		tfCajeroId.setText(GlobalVars.USER_ID.toString());
+		tfNombreCajero.setText(GlobalVars.USER);
+		SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+		tfFecha.setText(sd.format(new Date()));
+		//Optional<Usuario> usuario= usuarioService.findById(GlobalVars.USER_ID);
+		tfEntidad.setText(GlobalVars.USER_ID.toString());
+		tfNombreEntidad.setText(GlobalVars.USER);
+		long max = movimientoIngresoService.getRowCount();
 		tfNota.setText(String.valueOf(max + 1));
 		lblSituacion.setText("NUEVO");
 		btnGuardar.setVisible(true);
 		btnAnula.setVisible(false);
-		tfFecha.requestFocus();
+		tfIngresoID.requestFocus();
 	}
+
 
 	@Override
-	public void getEntity(Producto producto) {
-		if (producto != null) {
-			if(origen==2) {
-				tfFecha.setText(String.valueOf(producto.getId()));
-				tfDocumento.setText(producto.getDescripcion());
-				tfEntidad.setText(FormatearValor.doubleAString(producto.getDepO1()));
-				tfCantidadOrigen.setText("1");
-				tfCantidadOrigen.requestFocus();
-			}else {
-				tfProductoID.setText(String.valueOf(producto.getId()));
-				tfDescripcion.setText(producto.getDescripcion());
-				tfCantidad.setText(String.valueOf(1));
-				tfCantidad.requestFocus();
-			}
-		}
-	}
-
-	public Producto getProductoOrigen() {
-		return productoOrigen;
-	}
-
-	public void setProductoOrigen(Producto productoOrigen) {
-		this.productoOrigen = productoOrigen;
-	}
-
-	public Producto getProductoDestino() {
-		return productoDestino;
-	}
-
-	public void setProductoDestino(Producto productoDestino) {
-		this.productoDestino = productoDestino;
-	}
-
-	public int getOrigen() {
-		return origen;
-	}
-
-	public void setOrigen(int origen) {
-		this.origen = origen;
-	}
-
-	@Override
-	public void getEntity(TransformacionProducto transformacionProducto) {
-		if (transformacionProducto != null) {
-			setTransformacionProductoSeleccionado(transformacionProducto);
-				if(transformacionProducto.getSituacion()==1) {
+	public void getEntity(MovimientoIngreso movimientoIngreso) {
+		if (movimientoIngreso != null) {
+			setMovimientoIngresoSeleccionado(movimientoIngreso);
+				if(movimientoIngreso.getMinSituacion()==0) {
 					btnAnula.setVisible(true);	
 				}else {
 					btnAnula.setVisible(false);
 				}
 					btnGuardar.setVisible(false);
-				tfNota.setText(transformacionProducto.getId().toString());
-				lblSituacion.setText(transformacionProducto.getSituacion()==1?"VIGENTE":"ELIMINADO");
-				tfCajaId.setText(transformacionProducto.getDepositoOrigen().getId().toString());
-				tfNombreCaja.setText(transformacionProducto.getDepositoOrigen().getNombre());
-				tfDestinoId.setText(transformacionProducto.getDepositoDestino().getId().toString());
-				tfNombreDestino.setText(transformacionProducto.getDepositoDestino().getNombre());
-				tfFecha.setText(String.valueOf(transformacionProducto.getProductoOrigen().getId()));
-				tfDocumento.setText(transformacionProducto.getProductoOrigen().getDescripcion());
-				tfEntidad.setText(FormatearValor.doubleAString(transformacionProducto.getProductoOrigen().getDepO1()));
-				tfCantidadOrigen.setText(transformacionProducto.getCantidad().toString());
+				tfNota.setText(movimientoIngreso.getMinNumero().toString());
+				lblSituacion.setText(movimientoIngreso.getMinSituacion()==0?"VIGENTE":"ELIMINADO");
+				tfCajaId.setText(movimientoIngreso.getMinCaja().toString());
+				Optional<Caja> caja = cajaService.findById(Long.valueOf(movimientoIngreso.getMinCaja()));
+				tfNombreCaja.setText(caja.get().getNombre());
+				tfCajeroId.setText(GlobalVars.USER_ID.toString());
+				tfNombreCajero.setText(GlobalVars.USER);
+				SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+				tfFecha.setText(sd.format(movimientoIngreso.getFecha()));
+				tfDocumento.setText(movimientoIngreso.getMinDocumento());
+				tfEntidad.setText(GlobalVars.USER);
 				itemTableModel.clear();
-				itemTableModel.addEntities(transformacionProducto.getItems());
+				List<MovimientoItemIngreso> listMII = movimientoItemIngresoService.findByCabId(movimientoIngreso.getMinNumero());
+				itemTableModel.addEntities(listMII);
+				calculateItem();
+		}
+		
+	}
+	
+	private void abandonarNota() {
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "ABANDONAR MOVIMIENTO.?", "AVISO",
+				JOptionPane.OK_CANCEL_OPTION);
+
+		if (respuesta == 0) {
+			clearForm();
+		} else {
+			tfIngresoID.requestFocus();
+		}
+	}
+	
+	@Override
+	public void getEntity(Ingreso ingreso) {
+		if (ingreso != null) {
+			setIngreso(ingreso);
+			tfIngresoID.setText(ingreso.getId().toString());
+			tfDescripcionIngreso.setText(ingreso.getIngDescripcion());
+			tfMontoIngreso.requestFocus();
 		}
 		
 	}
 
-	public TransformacionProducto getTransformacionProductoSeleccionado() {
-		return transformacionProductoSeleccionado;
+	public void setIngreso(Ingreso ingreso) {
+		this.ingreso = ingreso;
+	}
+	
+	public Ingreso getIngreso() {
+		return ingreso;
 	}
 
-	public void setTransformacionProductoSeleccionado(TransformacionProducto transformacionProductoSeleccionado) {
-		this.transformacionProductoSeleccionado = transformacionProductoSeleccionado;
+	public MovimientoIngreso getMovimientoIngresoSeleccionado() {
+		return movimientoIngresoSeleccionado;
+	}
+
+	public void setMovimientoIngresoSeleccionado(MovimientoIngreso movimientoIngresoSeleccionado) {
+		this.movimientoIngresoSeleccionado = movimientoIngresoSeleccionado;
+	}
+
+	public Double getTotalCalculado() {
+		return totalCalculado;
+	}
+
+	public void setTotalCalculado(Double totalCalculado) {
+		this.totalCalculado = totalCalculado;
 	}
 }
 

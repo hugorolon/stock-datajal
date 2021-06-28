@@ -46,10 +46,10 @@ public class MovimientoEgreso {
 	private String megEntidad;
 	
 	@Column(name = "meg_tipoentidad")
-	private String megTipoEntidad;
+	private Integer megTipoEntidad;
 	
 	@Column(name = "meg_situacion")
-	private String megSituacion;
+	private Integer megSituacion;
 	
 	
 	public MovimientoEgreso() {}
@@ -120,19 +120,25 @@ public class MovimientoEgreso {
 		this.megEntidad = megEntidad;
 	}
 
-	public String getMegTipoEntidad() {
+
+	public Integer getMegTipoEntidad() {
 		return megTipoEntidad;
 	}
 
-	public void setMegTipoEntidad(String megTipoEntidad) {
+
+	public void setMegTipoEntidad(Integer megTipoEntidad) {
 		this.megTipoEntidad = megTipoEntidad;
 	}
 
-	public String getMegSituacion() {
+
+	public Integer getMegSituacion() {
 		return megSituacion;
 	}
 
-	public void setMegSituacion(String megSituacion) {
+
+	public void setMegSituacion(Integer megSituacion) {
 		this.megSituacion = megSituacion;
 	}
+
+	
 }

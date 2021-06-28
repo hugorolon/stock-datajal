@@ -31,6 +31,7 @@ public class PostgresConnUtils {
  
         Connection conn = DriverManager.getConnection(connectionURL, userName,
                 password);
+        conn.setAutoCommit(false);
         return conn;
     }
 }

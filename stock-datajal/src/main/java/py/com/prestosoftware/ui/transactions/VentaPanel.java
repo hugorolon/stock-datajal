@@ -39,14 +39,17 @@ import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.ClientePais;
 import py.com.prestosoftware.data.models.CondicionPago;
 import py.com.prestosoftware.data.models.Configuracion;
-import py.com.prestosoftware.data.models.CuentaCliente;
+import py.com.prestosoftware.data.models.CuentaARecibir;
 import py.com.prestosoftware.data.models.Departamento;
 import py.com.prestosoftware.data.models.Deposito;
 import py.com.prestosoftware.data.models.Empresa;
+import py.com.prestosoftware.data.models.ItemCuentaARecibir;
 import py.com.prestosoftware.data.models.ListaPrecio;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.MovimientoCaja;
+import py.com.prestosoftware.data.models.MovimientoEgreso;
 import py.com.prestosoftware.data.models.MovimientoIngreso;
+import py.com.prestosoftware.data.models.MovimientoItemEgreso;
 import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 import py.com.prestosoftware.data.models.Pais;
 import py.com.prestosoftware.data.models.ProcesoCobroVentas;
@@ -61,7 +64,6 @@ import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.CuentaARecibirService;
-import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
@@ -107,8 +109,9 @@ import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisInterfaz, VendedorInterfaz,
-		DepositoInterfaz, ProductoInterfaz, VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz, ReImpresionPanelInterfaz {
+public class VentaPanel extends JFrame
+		implements ClienteInterfaz, ClientePaisInterfaz, VendedorInterfaz, DepositoInterfaz, ProductoInterfaz,
+		VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz, ReImpresionPanelInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
@@ -165,13 +168,11 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private AperturaCierreCajaService movCajaService;
 	private CajaService cajaService;
 	private MovimientoCajaService pagoService;
-	private CuentaClienteService cuentaClienteService;
 	private MovimientoIngresoService movimientoIngresoService;
 	private MovimientoEgresoService movimientoEgresoService;
 	private MovimientoItemIngresoService movimientoItemIngresoService;
 	private MovimientoItemEgresoService movimientoItemEgresoService;
 	private ProcesoCobroVentasService procesoCobroVentasService;
-	private ProcesoCobroClientesService procesoCobroClientesService;
 	private CuentaARecibirService cuentaARecibirService;
 	private ItemCuentaARecibirService itemCuentaARecibirService;
 
@@ -182,6 +183,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
 	private Date fechaImpresion;
+	private int cant;
 
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
 			DepositoDialog depositoDialog, ProductoDialog productoDialog, VentaValidator ventaValidator,
@@ -190,11 +192,11 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
 			CondicionPagoService condicionPagoService, ConfiguracionService configService,
 			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			CuentaClienteService cuentaClienteService, ConsultaVentasDialog ventasDialog,
-			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog, MovimientoIngresoService movimientoIngresoService,
-			MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
-			MovimientoItemEgresoService movimientoItemEgresoService, ProcesoCobroVentasService procesoCobroVentasService,
-			ProcesoCobroClientesService procesoCobroClientesService, CuentaARecibirService cuentaARecibirService,
+			ConsultaVentasDialog ventasDialog, ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog,
+			MovimientoIngresoService movimientoIngresoService, MovimientoEgresoService movimientoEgresoService,
+			MovimientoItemIngresoService movimientoItemIngresoService,
+			MovimientoItemEgresoService movimientoItemEgresoService,
+			ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
 			ItemCuentaARecibirService itemCuentaARecibirService) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
@@ -216,17 +218,16 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		this.movCajaService = movCajaService;
 		this.cajaService = cajaService;
 		this.pagoService = pagoService;
-		this.cuentaClienteService = cuentaClienteService;
+		this.cuentaARecibirService = cuentaARecibirService;
 		this.ventasDialog = ventasDialog;
 		this.consultaVentasDelDiaDialog = consultaVentasDelDiaDialog;
-		this.movimientoIngresoService=movimientoIngresoService;
-		this.movimientoEgresoService=movimientoEgresoService;
-		this.movimientoItemIngresoService=movimientoItemIngresoService;
-		this.movimientoItemEgresoService=movimientoItemEgresoService;
-		this.procesoCobroVentasService=procesoCobroVentasService;
-		this.procesoCobroClientesService=procesoCobroClientesService;
-		this.cuentaARecibirService=cuentaARecibirService;
-		this.itemCuentaARecibirService=itemCuentaARecibirService;
+		this.movimientoIngresoService = movimientoIngresoService;
+		this.movimientoEgresoService = movimientoEgresoService;
+		this.movimientoItemIngresoService = movimientoItemIngresoService;
+		this.movimientoItemEgresoService = movimientoItemEgresoService;
+		this.procesoCobroVentasService = procesoCobroVentasService;
+		this.cuentaARecibirService = cuentaARecibirService;
+		this.itemCuentaARecibirService = itemCuentaARecibirService;
 
 		setSize(915, 660);
 		setTitle("REGISTRO DE VENTAS");
@@ -853,7 +854,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		pnlBotonera.setBounds(9, 578, 894, 35);
 		getContentPane().add(pnlBotonera);
 
-		btnGuardar = new JButton("Guardar(F4)");
+		btnGuardar = new JButton("Guardar(F5)");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				save();
@@ -872,7 +873,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		});
 		pnlBotonera.add(btnGuardar);
 
-		btnAnular = new JButton("Anular(F5)");
+		btnAnular = new JButton("Anular");
 		btnAnular.setVisible(false);
 		btnAnular.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -891,7 +892,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			}
 
 		});
-		
+
 		btnReimpresion = new JButton("Re Impresión");
 		btnReimpresion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1254,6 +1255,17 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 //				findDepositoById(conf.getDefineDepositoVenta());
 //			}
 
+			if (conf.getPideVendedor() == 0) {
+				Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
+				tfVendedorID.setText(usuario.get().getId().toString());
+				tfVendedor.setText(usuario.get().getUsuario());
+			}
+			if (conf.getPideDeposito() == 0) {
+				Optional<Deposito> deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
+				tfDepositoID.setText(String.valueOf(deposito.get().getId()));
+				tfDeposito.setText(deposito.get().getNombre());
+			}
+
 		}
 	}
 
@@ -1559,7 +1571,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 		calculateVencimiento();
 
-		 newVenta();
+		newVenta();
 	}
 
 	public JTextField getTfClienteID() {
@@ -1917,9 +1929,13 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 						updateStockProduct(v.getItems());
 						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 							lanzamientoCaja(v);
+							openMovCaja(v);
 							movimientoIngresoProcesoCobroVenta(v);
-							
-							//cuentaCliente(v);
+							if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
+								CuentaARecibir cuentaARecibir = new CuentaARecibir();
+								cuentaARecibir = cuentaARecibirProcesoCobroVenta(v);
+								openMovimientoEgreso(cuentaARecibir);
+							}
 						}
 						Notifications.showAlert("Venta registrado con exito.!");
 					}
@@ -1929,18 +1945,37 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 					if (print == 0)
 						imprimirDialogo();
-					//else
-						newVenta();
+					// else
+					newVenta();
 				}
 			}
 		} else {
 			tfProductoID.requestFocus();
 		}
 	}
-	
+
+	private void openMovimientoEgreso(CuentaARecibir c) {
+		MovimientoEgreso movEgreso = new MovimientoEgreso();
+		movEgreso.setFecha(new Date());
+		movEgreso.setHora(new Date());
+		movEgreso.setMegProceso(c.getCarNumero());
+		movEgreso.setMegTipoProceso(31);
+		movEgreso.setMegEntidad(c.getIdEntidad().toString());
+		movEgreso.setMegSituacion(0);
+		movEgreso.setMegDocumento(c.getNroBoleta());
+		movEgreso = movimientoEgresoService.save(movEgreso);
+		MovimientoItemEgreso movItemEgreso = new MovimientoItemEgreso();
+		movItemEgreso.setMieNumero(movEgreso.getMegNumero());
+		movItemEgreso.setMieEgreso(31);
+		movItemEgreso.setMieMonto(c.getMonto());
+		movItemEgreso.setMieDescripcion("Egreso de efectivo - Venta Crédito");
+		movimientoItemEgresoService.save(movItemEgreso);
+	}
+
 	private void movimientoIngresoProcesoCobroVenta(Venta venta) {
-		MovimientoIngreso m=new MovimientoIngreso();
-		m.setFecha(new Date());;
+		MovimientoIngreso m = new MovimientoIngreso();
+		m.setFecha(new Date());
+		;
 		m.setHora(new Date());
 		m.setMinCaja(1);
 		m.setMinDocumento(venta.getId().toString());
@@ -1949,22 +1984,22 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		m.setMinTipoProceso(1);
 		m.setMinTipoEntidad(Integer.valueOf(clienteSeleccionado.getTipoEntidad()));
 		m.setMinSituacion(0);
-		m= movimientoIngresoService.save(m);
-		
-		MovimientoItemIngreso mii=new MovimientoItemIngreso();
+		m = movimientoIngresoService.save(m);
+
+		MovimientoItemIngreso mii = new MovimientoItemIngreso();
 		mii.setMiiNumero(m.getMinNumero());
 		mii.setMiiIngreso(1);
-		double monto=(double) Math.round(venta.getTotalGeneral()/11);
+		double monto = (double) Math.round(venta.getTotalGeneral() / 11);
 		mii.setMiiMonto(monto);
 		movimientoItemIngresoService.save(mii);
-		
-		MovimientoItemIngreso miiva=new MovimientoItemIngreso();
+
+		MovimientoItemIngreso miiva = new MovimientoItemIngreso();
 		miiva.setMiiNumero(m.getMinNumero());
 		miiva.setMiiIngreso(11);
-		miiva.setMiiMonto(venta.getTotalGeneral()-monto);
+		miiva.setMiiMonto(venta.getTotalGeneral() - monto);
 		movimientoItemIngresoService.save(miiva);
-		
-		ProcesoCobroVentas pcv=new ProcesoCobroVentas();
+
+		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
 		pcv.setPveVenta(venta.getId().intValue());
 		pcv.setPveIngresoegreso(1);
 		pcv.setPveTipoproceso(31);
@@ -1972,74 +2007,96 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		pcv.setPveFlag(1);
 		procesoCobroVentasService.save(pcv);
 	}
-	
-	
 
-	private void cuentaCliente(Venta venta) {
-		if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
-			CuentaCliente cuentaCliente = new CuentaCliente();
-			List<CuentaCliente> listaCuentaClientes = new ArrayList<CuentaCliente>();
-			int cant=Integer.valueOf(tfCuotaCant.getText());
-			if (cant > 0) {
-				Double valorTotal = venta.getTotalGeneral() / cant;
-				Calendar cal = Calendar.getInstance();
-				for (int i = 0; i < cant; i++) {
-					cal.add(Calendar.MONTH, 1);
-					cuentaCliente = new CuentaCliente();
-					cuentaCliente.setCliente(venta.getCliente());
-					cuentaCliente.setClienteNombre(venta.getClienteNombre());
-					cuentaCliente.setCredito(valorTotal);
-					cuentaCliente.setDebito(0d);
-					cuentaCliente.setDocumento("Venta crédito cuota " + (i + 1) + "/" + cant);
-					cuentaCliente.setMoneda(new Moneda(1l));
-					cuentaCliente.setSituacion("CREDITO");
-					cuentaCliente.setTipo("E");
-					cuentaCliente.setValorPagado(0d);
-					cuentaCliente.setValorTotal(venta.getTotalGeneral());
-					cuentaCliente.setVencimiento(cal.getTime());
-					cuentaCliente.setFecha(new Date());
-					cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
-					cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
-					listaCuentaClientes.add(cuentaCliente);
-				}
-			} else {
-				cuentaCliente = new CuentaCliente();
-				cuentaCliente.setCliente(venta.getCliente());
-				cuentaCliente.setClienteNombre(venta.getClienteNombre());
-				cuentaCliente.setCredito(venta.getTotalGeneral());
-				cuentaCliente.setDebito(0d);
-				cuentaCliente.setDocumento("Venta crédito a " + tfCondicionPago.getText() + " días");
-				cuentaCliente.setMoneda(new Moneda(1l));
-				cuentaCliente.setSituacion("CREDITO");
-				cuentaCliente.setTipo("S");
-				cuentaCliente.setValorPagado(0d);
-				cuentaCliente.setValorTotal(venta.getTotalGeneral());
-				cuentaCliente.setVencimiento(new Date("" + tfVence.getText().toString()));
-				cuentaCliente.setFecha(new Date());
-				cuentaCliente.setClienteNombre(venta.getClienteNombre());
-				cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
-				cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
-				listaCuentaClientes.add(cuentaCliente);
-			}
-			for (CuentaCliente cuentaP : listaCuentaClientes) {
-				cuentaClienteService.save(cuentaP);
-			}
+	private void removeMovimientoIngresoProcesoCobroVenta(Venta venta) {
+		MovimientoIngreso m = movimientoIngresoService.findByMinProceso(Integer.valueOf(venta.getId().toString()));
+		Integer cabId = m.getMinNumero();
+		movimientoIngresoService.remove(m);
+
+		List<MovimientoItemIngreso> mii = movimientoItemIngresoService.findByCabId(cabId);
+		for (MovimientoItemIngreso movimientoItemIngreso : mii) {
+			movimientoItemIngresoService.remove(movimientoItemIngreso);
 		}
-		
+		ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(cabId);
+		procesoCobroVentasService.remove(pcv);
+	}
+
+	private CuentaARecibir cuentaARecibirProcesoCobroVenta(Venta venta) {
+		CuentaARecibir cuentaARecibir = new CuentaARecibir();
+
+		cuentaARecibir.setFecha(new Date());
+		cuentaARecibir.setHora(new Date());
+		cuentaARecibir.setNroBoleta(venta.getComprobante());
+		cuentaARecibir.setIdEntidad(venta.getCliente().getId());
+		cuentaARecibir.setTipoEntidad(2);
+		cuentaARecibir.setMonto(venta.getTotalGeneral());
+		cuentaARecibir.setCarProceso(venta.getId().intValue());
+		cuentaARecibir.setCarSituacion(0);
+		cuentaARecibir = cuentaARecibirService.save(cuentaARecibir);
+
+		List<ItemCuentaARecibir> listaItemCuentaARecibir = new ArrayList<ItemCuentaARecibir>();
+
+		int cant = 0;
+		int cantDias = 0;
+		Date fechaVencimiento = new Date();
+		Calendar cal = Calendar.getInstance();
+		if (tfCondicionPago.getText().equalsIgnoreCase("100")) {
+			cant = Integer.valueOf(tfCuotaCant.getText());
+			cantDias = 30;
+		} else {
+			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(tfCondicionPago.getText()));
+			fechaVencimiento = cal.getTime();
+			cantDias = Integer.valueOf(tfCondicionPago.getText());
+			cant = 1;
+		}
+		Double valorTotal = venta.getTotalGeneral() / cant;
+		for (int i = 0; i < cant; i++) {
+			ItemCuentaARecibir itemCuentaARecibir = new ItemCuentaARecibir();
+			cal.add(Calendar.MONTH, 1);
+			itemCuentaARecibir.setIcaCuenta(cuentaARecibir.getCarNumero());
+			itemCuentaARecibir.setIcaMonto(valorTotal);
+			itemCuentaARecibir.setIcaSituacion(0);
+			itemCuentaARecibir.setIcaDocumento(cant + "/" + (i + 1));
+			itemCuentaARecibir.setIcaIva(0d);
+			if (!tfCondicionPago.getText().equalsIgnoreCase("100"))
+				itemCuentaARecibir.setIcaVencimiento(fechaVencimiento);
+			else
+				itemCuentaARecibir.setIcaVencimiento(cal.getTime());
+			itemCuentaARecibir.setIcaDias(cantDias);
+
+			listaItemCuentaARecibir.add(itemCuentaARecibir);
+		}
+		itemCuentaARecibirService.save(listaItemCuentaARecibir);
+		// Proceso Cobro ventas
+		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
+		pcv.setPveVenta(venta.getId().intValue());
+		pcv.setPveIngresoegreso(2);
+		pcv.setPveTipoproceso(31);
+		pcv.setPveProceso(cuentaARecibir.getCarNumero());
+		pcv.setPveFlag(1);
+		procesoCobroVentasService.save(pcv);
+
+		return cuentaARecibir;
 	}
 
 	private void anular() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
 				JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
-			if(!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
+			if (!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
 				updateStockProductRemoved(ventaSeleccionado.getItems());
-
-				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0)
-					removeMovCajaCuentaCliente(ventaSeleccionado);
-
 				ventaSeleccionado.setSituacion("ANULADO");
 				ventaService.save(ventaSeleccionado);
+
+				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
+					removeMovCaja(ventaSeleccionado);
+					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
+					if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
+						Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
+						removeMovimientoEgreso(cuentaARecibir);
+					}
+				}
+
 				newVenta();
 			}
 		}
@@ -2061,16 +2118,14 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 				}
 				Notifications.showAlert(msg);
 			}
-			openMovCajaCuentaCliente(ca, v);
-
 		}
 	}
 
-	private void openMovCajaCuentaCliente(Caja caja, Venta venta) {
-		int cant = 0;
+	private void openMovCaja(Venta venta) {
+		cant = 0;
 		// cierre de caja del dia anterio
 		MovimientoCaja movCaja = new MovimientoCaja();
-		movCaja.setCaja(caja);
+		movCaja.setCaja(new Caja(1l));
 		movCaja.setFecha(new Date());
 		movCaja.setMoneda(new Moneda(1l));
 		movCaja.setNotaNro(venta.getId().toString());
@@ -2090,67 +2145,49 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 		} else {
 			movCaja.setObs("Crédito a " + tfCondicionPago.getText() + " días");
 			movCaja.setSituacion("PROCESADO");
+			cant = 1;
 		}
 		pagoService.save(movCaja);
 	}
 
-	private void removeMovCajaCuentaCliente(Venta venta) {
+	private void removeMovCaja(Venta venta) {
 		int cant = 0;
 		// cierre de caja del dia anterio
-		Optional <MovimientoCaja> movimientoCaja= pagoService.findByIdVenta(venta.getId().toString());
-		if(movimientoCaja.isPresent()) {
-			MovimientoCaja mc= movimientoCaja.get();
+		Optional<MovimientoCaja> movimientoCaja = pagoService.findByIdVenta(venta.getId().toString());
+		if (movimientoCaja.isPresent()) {
+			MovimientoCaja mc = movimientoCaja.get();
 			mc.setObs("VENTA ANULADO");
 			mc.setSituacion("ANULADO");
 			pagoService.save(mc);
 		}
+		// remover los otros movimientos insertados
+	}
 
-		CuentaCliente cuentaCliente = new CuentaCliente();
-		List<CuentaCliente> listaCuentaClientes = new ArrayList<CuentaCliente>();
-		if (cant > 0) {
-			Double valorTotal = venta.getTotalGeneral() / cant;
-			Calendar cal = Calendar.getInstance();
-			for (int i = 0; i < cant; i++) {
-				cal.add(Calendar.MONTH, 1);
-				cuentaCliente = new CuentaCliente();
-				cuentaCliente.setCliente(venta.getCliente());
-				cuentaCliente.setClienteNombre(venta.getClienteNombre());
-				cuentaCliente.setCredito(valorTotal);
-				cuentaCliente.setDebito(0d);
-				cuentaCliente.setDocumento("Venta crédito cuota " + (i + 1) + "/" + cant);
-				cuentaCliente.setMoneda(new Moneda(1l));
-				cuentaCliente.setSituacion("CREDITO");
-				cuentaCliente.setTipo("E");
-				cuentaCliente.setValorPagado(0d);
-				cuentaCliente.setValorTotal(venta.getTotalGeneral());
-				cuentaCliente.setVencimiento(cal.getTime());
-				cuentaCliente.setFecha(new Date());
-				cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
-				cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
-				listaCuentaClientes.add(cuentaCliente);
-			}
-		} else {
-			cuentaCliente = new CuentaCliente();
-			cuentaCliente.setCliente(venta.getCliente());
-			cuentaCliente.setClienteNombre(venta.getClienteNombre());
-			cuentaCliente.setCredito(venta.getTotalGeneral());
-			cuentaCliente.setDebito(0d);
-			cuentaCliente.setDocumento("Venta crédito a " + tfCondicionPago.getText() + " días");
-			cuentaCliente.setMoneda(new Moneda(1l));
-			cuentaCliente.setSituacion("CREDITO");
-			cuentaCliente.setTipo("S");
-			cuentaCliente.setValorPagado(0d);
-			cuentaCliente.setValorTotal(venta.getTotalGeneral());
-			cuentaCliente.setVencimiento(new Date("" + tfVence.getText().toString()));
-			cuentaCliente.setFecha(new Date());
-			cuentaCliente.setClienteNombre(venta.getClienteNombre());
-			cuentaCliente.setObs("Venta crédito de la Factura " + venta.getId());
-			cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
-			listaCuentaClientes.add(cuentaCliente);
+	private Integer removeCuentaARecibirProcesoCobroVenta(Venta venta) {
+		CuentaARecibir cuentaARecibir = cuentaARecibirService
+				.findByCarProceso(Integer.valueOf(venta.getId().toString()));
+		Integer cabId=cuentaARecibir.getCarNumero();
+		cuentaARecibirService.remove(cuentaARecibir);
+
+		List<ItemCuentaARecibir> listaItemCuentaARecibir = itemCuentaARecibirService.findByCabId(cabId);
+		for (ItemCuentaARecibir itemCuentaARecibir : listaItemCuentaARecibir) {
+			itemCuentaARecibirService.remove(itemCuentaARecibir);
 		}
-		for (CuentaCliente cuentaP : listaCuentaClientes) {
-			cuentaClienteService.save(cuentaP);
+
+		// Proceso Cobro ventas
+		ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(Integer.valueOf(venta.getId().toString()));
+		procesoCobroVentasService.remove(pcv);
+
+		return cabId;
+	}
+	
+	private void removeMovimientoEgreso(Integer carNumero) {
+		MovimientoEgreso movEgreso = movimientoEgresoService.findByMegProceso(carNumero);
+		List<MovimientoItemEgreso> movItemEgreso = movimientoItemEgresoService.findByCabId(movEgreso.getMegNumero());
+		for (MovimientoItemEgreso movimientoItemEgreso : movItemEgreso) {
+			movimientoItemEgresoService.remove(movimientoItemEgreso);
 		}
+		movimientoEgresoService.remove(movEgreso);
 	}
 
 	private ImpresionPanel panel = null;
@@ -2168,13 +2205,12 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	private void imprimirDialogoReimpresion() {
 		if (this.panelReImpresion == null) {
-			panelReImpresion= new ReImpresionPanel();
+			panelReImpresion = new ReImpresionPanel();
 			panelReImpresion.setPanelInterfaz(this);
 		}
 
 		panelReImpresion.setVisible(true);
 	}
-	
 
 	private void removeItemBloq() {
 		// remueve los Items bloqueados
@@ -2234,7 +2270,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			tfDepositoID.requestFocus();
 			return false;
 		}
-		if (tfCondicionPago.getText().equalsIgnoreCase("100")) {
+		if (tfCondicionPago.getText().equalsIgnoreCase("1" + "00")) {
 			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
 				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
 				return false;
@@ -2271,25 +2307,32 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 	public void newVenta() {
 		long max = ventaService.getRowCount();
 		tfVentaId.setText(String.valueOf(max + 1));
-		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
-		if (config.isPresent())
-			this.conf = config.get();
-
-		if (conf.getPideVendedor() == 0) {
-			Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
-			tfVendedorID.setText(usuario.get().getId().toString());
-			tfVendedor.setText(usuario.get().getUsuario());
-		}
-		if (conf.getPideDeposito() == 0) {
-			Optional<Deposito> deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
-			tfDepositoID.setText(String.valueOf(deposito.get().getId()));
-			tfDeposito.setText(deposito.get().getNombre());
-		}
 		resetCliente();
+		resetVenta();
 		btnAnular.setVisible(false);
 		btnReimpresion.setVisible(false);
 		tfClienteID.requestFocus();
 		tfCuotaCant.setEnabled(false);
+	}
+
+	private void resetVenta() {
+		tfCantidad.setText("");
+		tfDescripcion.setText("");
+		tfPrecio.setText("");
+		tfPrecioTotal.setText("");
+		tfObs.setText("");
+		tfTotal.setText("0");
+		tfTotalItems.setText("0");
+		tfDescuento.setText("0");
+		tfDescuentoItem.setText("0");
+		tfCuotaCant.setText("0");
+		tfVence.setText("");
+		tfCondicionPago.setText("0");
+		tfClienteNombre.setEnabled(false);
+		while (itemTableModel.getRowCount() > 0) {
+			itemTableModel.removeRow(0);
+		}
+
 	}
 
 	private void resetCliente() {
@@ -2332,7 +2375,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());
-			if(cliente.getListaPrecio()!=null)
+			if (cliente.getListaPrecio() != null)
 				nivelPrecio = cliente.getListaPrecio().getNombre();
 			else
 				nivelPrecio = "A";
@@ -2415,7 +2458,7 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	private void findProducto(String id) {
 		Optional<Producto> producto = null;
-		producto = productoService.findById(Long.valueOf(id));
+		producto = productoService.findById(Long.valueOf(id.trim()));
 		if (!producto.isPresent()) {
 			if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
 				producto = productoService.findByReferencia(id);
@@ -2727,18 +2770,22 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	@Override
 	public void imprimirNota() {
-		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
+		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
+				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				Integer.valueOf(tfCondicionPago.getText()).intValue(),
-				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),itemTableModel.getEntities());
+				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
+				itemTableModel.getEntities());
 		clearForm();
 	}
 
 	@Override
 	public void imprimirFactura() {
-		
-		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
+
+		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
+				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				Integer.valueOf(tfCondicionPago.getText()).intValue(),
-				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),itemTableModel.getEntities(), this.fechaImpresion );
+				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
+				itemTableModel.getEntities(), this.fechaImpresion);
 		clearForm();
 	}
 
@@ -2757,6 +2804,15 @@ public class VentaPanel extends JFrame implements ClienteInterfaz, ClientePaisIn
 
 	@Override
 	public void cargaFecha(Date fecha) {
-		this.setFechaImpresion(fecha);		
+		this.setFechaImpresion(fecha);
 	}
+
+	public int getCant() {
+		return cant;
+	}
+
+	public void setCant(int cant) {
+		this.cant = cant;
+	}
+
 }

@@ -151,7 +151,7 @@ public class IngresoDialog extends JDialog {
 		loadIngresos("");	
 	}
 	
-	private void loadIngresos(String name) {
+	public void loadIngresos(String name) {
 		ingresos = service.findAll();
 		tableModel.clear();
         tableModel.addEntities(ingresos);
@@ -171,5 +171,5 @@ public class IngresoDialog extends JDialog {
 	    }
 		dispose();
 	}
-
+	
 }

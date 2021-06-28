@@ -31,7 +31,7 @@ public class MovimientoItemEgreso {
 	private Double mieMonto;
 	
 	@Column(name = "mie_descripcion")
-	private Double mieDescripcion;
+	private String mieDescripcion;
 	
 	public MovimientoItemEgreso() {}
 
@@ -67,11 +67,11 @@ public class MovimientoItemEgreso {
 		this.mieMonto = mieMonto;
 	}
 
-	public Double getMieDescripcion() {
+	public String getMieDescripcion() {
 		return mieDescripcion;
 	}
 
-	public void setMieDescripcion(Double mieDescripcion) {
+	public void setMieDescripcion(String mieDescripcion) {
 		this.mieDescripcion = mieDescripcion;
 	}
 }

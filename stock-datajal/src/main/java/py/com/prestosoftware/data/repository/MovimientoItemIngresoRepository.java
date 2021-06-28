@@ -1,13 +1,12 @@
 package py.com.prestosoftware.data.repository;
 
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 
 @Repository
@@ -15,7 +14,7 @@ public interface MovimientoItemIngresoRepository extends JpaRepository<Movimient
 
 //	List<MovimientoItemIngreso> findByFechaAndCajaAndSituacionOrderByIdAsc(Date fecha, Caja caja, String situacion);
 //
-//	Optional<MovimientoItemIngreso> findById(Long id);
+	Optional<MovimientoItemIngreso> findById(Long id);
 
 	@Query("SELECT coalesce(max(id), 0) FROM MovimientoItemIngreso e")
 	Long getMaxId();
@@ -25,8 +24,8 @@ public interface MovimientoItemIngresoRepository extends JpaRepository<Movimient
 //			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha = ?2 AND situacion = ?3", nativeQuery = true)
 //	Optional<MovimientoItemIngreso> getTotalsEntradaCaja(Caja caja, Date fecha, String situacion);
 //
-//	@Query(value = "SELECT  mc "
-//			+ "FROM MovimientoItemIngreso mc " + "WHERE mc.notaNro = ?1", nativeQuery = false)
-//	Optional <MovimientoItemIngreso> getMovimientoItemIngresoPorNota(String nroNota);
+	@Query(value = "SELECT  mc "
+			+ "FROM MovimientoItemIngreso mc WHERE mc.miiNumero = ?1", nativeQuery = false)
+	List <MovimientoItemIngreso> findByCabId(Integer cabId);
 
 }

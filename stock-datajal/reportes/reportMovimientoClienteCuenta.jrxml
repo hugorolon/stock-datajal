@@ -6,7 +6,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DAPostgres"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="stk"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
@@ -20,37 +20,37 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT car_numero , car.fecha as car_fecha1, car.hora, car.nro_boleta, car.id_cliente, cli.nombre, cli.celular, cli.direccion, car.tipoentidad,  car.monto as car_monto1, 
+		<![CDATA[SELECT car_numero , car.car_fecha as car_fecha1, car.car_hora, car.car_boleta, car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,  car.car_monto as car_monto1, 
 car_proceso, car_situacion, ica_cuenta, ica_secuencia, ica_dias, ica_vencimiento as ica_vencimiento1, 
 ica_monto as ica_monto1, ica_iva, ica_documento, ica_situacion
 ,coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado,
 ('Ventas de productos #') AS nombre_ingreso 
  FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli 
-	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.id_cliente=cli.id 
+	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.car_entidad=cli.id 
 	  $P!{fechaFiltro1}
 	  $P!{idCliente}
  UNION 
-SELECT car_numero, MAX(car.fecha) AS car_fecha1, car.hora, '' AS nro_boleta, car.id_cliente, cli.nombre, cli.celular, cli.direccion, car.tipoentidad,  SUM(car.monto) AS car_monto1, 
+SELECT car_numero, MAX(car.car_fecha) AS car_fecha1, car.car_hora, '' AS car_boleta, car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,  SUM(car.car_monto) AS car_monto1, 
 car_proceso,  car_situacion, ica_cuenta, ica_secuencia, ica_dias, MAX(ica_vencimiento) AS ica_vencimiento1, 
 SUM(ica_monto) AS ica_monto1, ica_iva, '' AS ica_documento, ica_situacion, 
 COALESCE((SELECT SUM(icl_monto) AS pagado FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado, 
    'Saldo Anterior' AS nombre_ingreso 
  FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR , clientes cli
-	  WHERE car_numero=ica_cuenta and car_situacion=0  and ica_situacion = 0  and car.id_cliente=cli.id 
+	  WHERE car_numero=ica_cuenta and car_situacion=0  and ica_situacion = 0  and car.car_entidad=cli.id 
 	  $P!{fechaFiltro2}	  
 	  $P!{idCliente} 
-GROUP BY car.ID_CLIENTE, cli.nombre, cli.celular, cli.direccion, car.tipoentidad,car_numero, car.hora, ICA_iva, car_proceso, car_situacion,  ica_cuenta, ica_secuencia, ica_dias, ica_iva, ica_situacion  
+GROUP BY car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,car_numero, car.car_hora, ICA_iva, car_proceso, car_situacion,  ica_cuenta, ica_secuencia, ica_dias, ica_iva, ica_situacion  
 $P!{orden}]]>
 	</queryString>
 	<field name="car_numero" class="java.lang.Integer"/>
 	<field name="car_fecha1" class="java.sql.Date"/>
-	<field name="hora" class="java.sql.Time"/>
-	<field name="nro_boleta" class="java.lang.String"/>
-	<field name="id_cliente" class="java.lang.Long"/>
+	<field name="car_hora" class="java.sql.Time"/>
+	<field name="car_boleta" class="java.lang.String"/>
+	<field name="car_entidad" class="java.lang.Long"/>
 	<field name="nombre" class="java.lang.String"/>
 	<field name="celular" class="java.lang.String"/>
 	<field name="direccion" class="java.lang.String"/>
-	<field name="tipoentidad" class="java.lang.Integer"/>
+	<field name="car_tipoentidad" class="java.lang.Integer"/>
 	<field name="car_monto1" class="java.lang.Double"/>
 	<field name="car_proceso" class="java.lang.Integer"/>
 	<field name="car_situacion" class="java.lang.Integer"/>
@@ -80,7 +80,7 @@ $P!{orden}]]>
 		<initialValueExpression><![CDATA[0d]]></initialValueExpression>
 	</variable>
 	<group name="GrupoCliente">
-		<groupExpression><![CDATA[$F{id_cliente}]]></groupExpression>
+		<groupExpression><![CDATA[$F{car_entidad}]]></groupExpression>
 		<groupHeader>
 			<band height="48">
 				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
@@ -98,7 +98,7 @@ $P!{orden}]]>
 					<textElement>
 						<font size="8"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{id_cliente}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{car_entidad}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="2" y="28" width="140" height="19" uuid="c346d5ac-1fcd-41c2-995c-e286bef63fe4"/>
@@ -408,7 +408,7 @@ $P!{orden}]]>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nro_boleta}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{car_boleta}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)">
 				<reportElement x="426" y="0" width="58" height="20" uuid="f4780edc-e0b2-4036-91cb-75edef642968"/>

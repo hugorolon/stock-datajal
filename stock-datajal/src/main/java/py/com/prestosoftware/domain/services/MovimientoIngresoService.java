@@ -24,10 +24,18 @@ public class MovimientoIngresoService {
     }
     
     
-//    public Optional<MovimientoIngreso> findByIdVenta(String idVenta) {
-//    	return repository.getMovimientoIngresoPorNota(idVenta);
-//    }
+    public Optional<MovimientoIngreso> findById(Integer id) {
+    	return repository.findById(id);
+    }
     
+    public MovimientoIngreso findByMinProceso(Integer id) {
+    	return repository.findByMinProceso(id);
+    }
+    
+    
+    public long getRowCount() {
+		return repository.getMaxId();
+	}
     
     @Transactional
     public MovimientoIngreso save(MovimientoIngreso movimientoIngreso) {

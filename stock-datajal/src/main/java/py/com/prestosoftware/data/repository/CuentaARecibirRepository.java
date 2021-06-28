@@ -1,6 +1,5 @@
 package py.com.prestosoftware.data.repository;
 
-import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +10,8 @@ import py.com.prestosoftware.data.models.CuentaARecibir;
 
 @Repository
 public interface CuentaARecibirRepository extends JpaRepository<CuentaARecibir, Long> {
+	
+	CuentaARecibir findByCarProceso(Integer id);
 	
 	@Query("SELECT coalesce(max(id), 0) FROM CuentaARecibir e")
 	Long getMaxId();

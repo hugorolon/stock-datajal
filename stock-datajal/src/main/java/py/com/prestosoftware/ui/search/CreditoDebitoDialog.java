@@ -19,12 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import py.com.prestosoftware.data.models.Cliente;
-import py.com.prestosoftware.data.models.CuentaCliente;
+//import py.com.prestosoftware.data.models.CuentaCliente;
 import py.com.prestosoftware.data.models.CuentaProveedor;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ClienteService;
-import py.com.prestosoftware.domain.services.CuentaClienteService;
+//import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
@@ -69,7 +69,7 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 	private JTable table;
 	private JScrollPane scrollPane;
 	
-	private CuentaClienteInterfaz cuentaClienteInterfaz;
+//	private CuentaClienteInterfaz cuentaClienteInterfaz;
 	private CuentaProveedorInterfaz cuentaProveedorInterfaz;
 	
 	//compras
@@ -78,9 +78,9 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 	private List<CuentaProveedor> proveedorCuentas;
 	
 	//ventas
-	private CuentaClienteService cService;
+//	private CuentaClienteService cService;
 	//private CuentaClienteTableModel tableModel;
-	private List<CuentaCliente> clienteCuentas;
+//	private List<CuentaCliente> clienteCuentas;
 	
 	//DefaultTableModel
 	private DefaultTableModel dtmTable = new DefaultTableModel(null, 
@@ -106,11 +106,12 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 	private JTextField tfTotalPago;
 
 	@Autowired
-	public CreditoDebitoDialog(CuentaClienteService cService, 
+	public CreditoDebitoDialog(
+//			CuentaClienteService cService, 
 			CuentaProveedorService pService,
 			ConsultaCliente clienteDialog, ConsultaProveedor proveedorDialog,
 			ClienteService clienteService, ProveedorService proveedorService) {
-		this.cService = cService;
+//		this.cService = cService;
 		this.pService = pService;
 		this.clienteDialog = clienteDialog;
 		this.proveedorDialog = proveedorDialog;
@@ -338,11 +339,11 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 		clearTable();
 		
 		if (isClient()) {
-			clienteCuentas = cService.findPendientes(new Cliente(Long.valueOf(tfCodigo.getText())), PENDIENTE);
-			loadTable(clienteCuentas, null);
+//			clienteCuentas = cService.findPendientes(new Cliente(Long.valueOf(tfCodigo.getText())), PENDIENTE);
+//			loadTable(clienteCuentas, null);
 		} else {
 			proveedorCuentas = pService.findPendientes(new Proveedor(Long.valueOf(tfCodigo.getText())), PENDIENTE);
-			loadTable(null, proveedorCuentas);
+			//loadTable(null, proveedorCuentas);
 		}
 	
 		calculateTotals();
@@ -358,33 +359,36 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 		}
 	}
 	
-	private void loadTable(List<CuentaCliente> cclientes, List<CuentaProveedor> ccproveedores) {
-		if (cclientes != null && cclientes.size() > 0) {
-			for (CuentaProveedor e : ccproveedores) {
-				Double valorTotal = e.getValorTotal() != null ?  e.getValorTotal():0;
-				Double valorPagado = e.getValorPagado() != null ? e.getValorPagado():0;
-				Double saldo = valorTotal - valorPagado;
-				
-				loadItemTable(e.getId(), e.getDocumento(), e.getVencimiento(), 
-						FormatearValor.formatearValor(valorTotal), 
-						FormatearValor.formatearValor(valorPagado), 
-						FormatearValor.formatearValor(saldo), 
-						FormatearValor.formatearValor(0d));				
-			}
-		} else if (ccproveedores != null && ccproveedores.size() > 0) {
-			for (CuentaProveedor e : ccproveedores) {
-				Double valorTotal 	= e.getValorTotal() != null ? e.getValorTotal():0;
-				Double valorPagado 	= e.getValorPagado() != null ? e.getValorPagado():0;
-				Double saldo 		= valorTotal - valorPagado;
-				
-				loadItemTable(e.getId(), e.getDocumento(), e.getVencimiento(), 
-						FormatearValor.formatearValor(valorTotal), 
-						FormatearValor.formatearValor(valorPagado), 
-						FormatearValor.formatearValor(saldo), 
-						FormatearValor.formatearValor(0d));				
-			}
-		}
-	}
+	//private void loadTable(
+			//List<CuentaCliente> cclientes, 
+//			List<CuentaProveedor> ccproveedores) {
+//		//if (cclientes != null && cclientes.size() > 0) {
+//			for (CuentaProveedor e : ccproveedores) {
+//				Double valorTotal = e.getValorTotal() != null ?  e.getValorTotal():0;
+//				Double valorPagado = e.getValorPagado() != null ? e.getValorPagado():0;
+//				Double saldo = valorTotal - valorPagado;
+//				
+//				loadItemTable(e.getId(), e.getDocumento(), e.getVencimiento(), 
+//						FormatearValor.formatearValor(valorTotal), 
+//						FormatearValor.formatearValor(valorPagado), 
+//						FormatearValor.formatearValor(saldo), 
+//						FormatearValor.formatearValor(0d));				
+//			}
+//		} else 
+//			if (ccproveedores != null && ccproveedores.size() > 0) {
+//			for (CuentaProveedor e : ccproveedores) {
+//				Double valorTotal 	= e.getValorTotal() != null ? e.getValorTotal():0;
+//				Double valorPagado 	= e.getValorPagado() != null ? e.getValorPagado():0;
+//				Double saldo 		= valorTotal - valorPagado;
+//				
+//				loadItemTable(e.getId(), e.getDocumento(), e.getVencimiento(), 
+//						FormatearValor.formatearValor(valorTotal), 
+//						FormatearValor.formatearValor(valorPagado), 
+//						FormatearValor.formatearValor(saldo), 
+//						FormatearValor.formatearValor(0d));				
+//			}
+//		}
+	//}
 	
 	private void distribuirValorEnTabla() {
 		String montoAPagar = tfMonto.getText().isEmpty() ? "0" : tfMonto.getText();
@@ -447,8 +451,8 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 	
 	private void aceptar() {
 		if (isClient()) {
-			CuentaCliente cc = new CuentaCliente();
-			List<CuentaCliente> cuentas = new ArrayList<CuentaCliente>();
+//			CuentaCliente cc = new CuentaCliente();
+//			List<CuentaCliente> cuentas = new ArrayList<CuentaCliente>();
 			
 			for(Integer fila=0; fila< dtmTable.getRowCount(); fila++){
 				String valor = String.valueOf(table.getValueAt(fila, TB_COL_VALOR));
@@ -464,17 +468,17 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 					Double valorPagado = FormatearValor.stringADouble(valor);
 					Double valorTotal = 0d;
 					
-					cuentas.add(new CuentaCliente(new Cliente(Long.valueOf(tfCodigo.getText())), 
-							tfNombre.getText(), "CAJA", documento, new Date(), 0d, 
-							valorPagado, new Date(), new Moneda(GlobalVars.BASE_MONEDA_ID),
-							"", "", GlobalVars.USER_ID, 
-							valorTotal, valorPagado));
+//					cuentas.add(new CuentaCliente(new Cliente(Long.valueOf(tfCodigo.getText())), 
+//							tfNombre.getText(), "CAJA", documento, new Date(), 0d, 
+//							valorPagado, new Date(), new Moneda(GlobalVars.BASE_MONEDA_ID),
+//							"", "", GlobalVars.USER_ID, 
+//							valorTotal, valorPagado));
 				}
 			}
 			
-			cc.setCuentas(cuentas);
+			//cc.setCuentas(cuentas);
 			
-			cuentaClienteInterfaz.getEntity(cc);
+			//cuentaClienteInterfaz.getEntity(cc);
 		} else {
 			CuentaProveedor cp = new CuentaProveedor();
 			List<CuentaProveedor> cuentas = new ArrayList<CuentaProveedor>();
@@ -533,13 +537,13 @@ public class CreditoDebitoDialog extends JFrame implements ClienteInterfaz, Prov
 		return isClient;
 	}
 
-	public CuentaClienteInterfaz getCuentaClienteInterfaz() {
-		return cuentaClienteInterfaz;
-	}
-
-	public void setCuentaClienteInterfaz(CuentaClienteInterfaz cuentaClienteInterfaz) {
-		this.cuentaClienteInterfaz = cuentaClienteInterfaz;
-	}
+//	public CuentaClienteInterfaz getCuentaClienteInterfaz() {
+//		return cuentaClienteInterfaz;
+//	}
+//
+//	public void setCuentaClienteInterfaz(CuentaClienteInterfaz cuentaClienteInterfaz) {
+//		this.cuentaClienteInterfaz = cuentaClienteInterfaz;
+//	}
 
 	public CuentaProveedorInterfaz getCuentaProveedorInterfaz() {
 		return cuentaProveedorInterfaz;

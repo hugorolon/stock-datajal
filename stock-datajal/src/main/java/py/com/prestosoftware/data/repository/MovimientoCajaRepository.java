@@ -18,6 +18,8 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 	List<MovimientoCaja> findByFechaAndCajaAndSituacionOrderByIdAsc(Date fecha, Caja caja, String situacion);
 
 	Optional<MovimientoCaja> findById(Long id);
+	MovimientoCaja findByNotaNro(String id);
+	
 
 	@Query("SELECT coalesce(max(id), 0) FROM MovimientoCaja e")
 	Long getMaxId();

@@ -23,9 +23,9 @@ public class ProcesoCobroClientesService {
         return repository.findAll();
     }
     
-//    public List<ProcesoCobroClientes> findByFechaAndEgresoAndSituacion(Date fecha, Egreso ingreso, String situacion) {
-//    	return repository.findByFechaAndEgresoAndSituacionOrderByIdAsc(fecha, caja, situacion);
-//    }
+    public ProcesoCobroClientes findByPccCobro(Integer id) {
+    	return repository.findByPccCobro(id);
+    }
     
 //    public Optional<ProcesoCobroClientes> findByIdVenta(String idVenta) {
 //    	return repository.getProcesoCobroClientesPorNota(idVenta);

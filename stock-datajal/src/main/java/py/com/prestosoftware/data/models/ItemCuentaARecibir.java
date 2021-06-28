@@ -22,13 +22,11 @@ public class ItemCuentaARecibir {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@Column(name = "ica_secuencia")
+	private Integer icaSecuencia;
 	
 	@Column(name = "ica_cuenta")
 	private Integer icaCuenta;
-
-	@Column(name = "ica_secuencia")
-	private Integer icaSecuencia;
 
 	@Column(name = "ica_dias")
 	private Integer icaDias;
@@ -51,15 +49,7 @@ public class ItemCuentaARecibir {
 
 	public ItemCuentaARecibir() { }
 	
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	
 
 	public Integer getIcaCuenta() {
 		return icaCuenta;

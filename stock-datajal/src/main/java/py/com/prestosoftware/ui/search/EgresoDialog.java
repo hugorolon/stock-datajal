@@ -148,10 +148,10 @@ public class EgresoDialog extends JDialog {
 		Dimension ventana = this.getSize(); 
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 		
-		loadEgresos("");	
+		//loadEgresos("");	
 	}
 	
-	private void loadEgresos(String name) {
+	public void loadEgresos(String name) {
 		egresos = service.findAll();
 		
         tableModel.clear();

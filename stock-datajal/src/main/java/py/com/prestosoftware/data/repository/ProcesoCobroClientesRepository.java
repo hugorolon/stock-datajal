@@ -1,13 +1,12 @@
 package py.com.prestosoftware.data.repository;
 
-import java.util.Date;
-import java.util.Optional;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import py.com.prestosoftware.data.models.Caja;
+
 import py.com.prestosoftware.data.models.ProcesoCobroClientes;
 
 @Repository
@@ -15,7 +14,7 @@ public interface ProcesoCobroClientesRepository extends JpaRepository<ProcesoCob
 
 //	List<ProcesoCobroClientes> findByFechaAndCajaAndSituacionOrderByIdAsc(Date fecha, Caja caja, String situacion);
 //
-//	Optional<ProcesoCobroClientes> findById(Long id);
+	ProcesoCobroClientes findByPccCobro(Integer id);
 
 	@Query("SELECT coalesce(max(id), 0) FROM ProcesoCobroClientes e")
 	Long getMaxId();

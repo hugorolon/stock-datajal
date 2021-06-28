@@ -41,7 +41,6 @@ import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.data.models.CompraDetalle;
 import py.com.prestosoftware.data.models.Cotizacion;
-import py.com.prestosoftware.data.models.CuentaCliente;
 import py.com.prestosoftware.data.models.CuentaProveedor;
 import py.com.prestosoftware.data.models.Devolucion;
 import py.com.prestosoftware.data.models.Moneda;
@@ -56,7 +55,6 @@ import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CotizacionService;
-import py.com.prestosoftware.domain.services.CuentaClienteService;
 import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.DevolucionService;
 import py.com.prestosoftware.domain.services.MonedaService;
@@ -73,7 +71,7 @@ import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.CreditoDebitoDialog;
-import py.com.prestosoftware.ui.search.CuentaClienteInterfaz;
+//import py.com.prestosoftware.ui.search.CuentaClienteInterfaz;
 import py.com.prestosoftware.ui.search.CuentaProveedorInterfaz;
 import py.com.prestosoftware.ui.search.PlanCuentaDialog;
 import py.com.prestosoftware.ui.search.PlanCuentaInterfaz;
@@ -90,7 +88,7 @@ import py.com.prestosoftware.util.Notifications;
 
 @Component
 public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, ClienteInterfaz, 
-	ProveedorInterfaz, CuentaClienteInterfaz, CuentaProveedorInterfaz  {
+	ProveedorInterfaz, CuentaProveedorInterfaz  {
 
 	private static final long serialVersionUID = 1L;
 
@@ -127,7 +125,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private CompraService compraService;
 	private DevolucionService devolucionService;
 	private MovimientoCajaService pagoService;
-	private CuentaClienteService cuentaClienteService;
+	//private CuentaClienteService cuentaClienteService;
 	private CuentaProveedorService cuentaProveedorService;
 	private ProductoService productoService;
 	private PlanCuentaService planService;
@@ -142,7 +140,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	public LanzamientoCaja(VentaService ventaService, CompraService compraService, CajaService cajaService,
 			PlanCuentaService planService, MovimientoCajaService pagoService, CotizacionService cotizacionService,
 			MovimientoCajaTableModel pagoTableModel, NotaTableModel notaModel, MonedaService monedaService,
-			CuentaClienteService cuentaClienteService, CuentaProveedorService cuentaProveedorService,
+			//CuentaClienteService cuentaClienteService, 
+			CuentaProveedorService cuentaProveedorService,
 			AperturaCierreCajaService movCajaService, DevolucionService devolucionService,
 			CotizacionTableModel cotizacionModel, NotaLanzadaTableModel notasLanzadasModel,
 			PlanCuentaDialog cuentaDialog, ProductoService productoService, EntradaCajaTableModel entradaCajaModel,
@@ -157,7 +156,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		this.tableModel = pagoTableModel;
 		this.notaModel = notaModel;
 		this.monedaService = monedaService;
-		this.cuentaClienteService = cuentaClienteService;
+		//this.cuentaClienteService = cuentaClienteService;
 		this.cuentaProveedorService = cuentaProveedorService;
 		this.movCajaService = movCajaService;
 		this.devolucionService = devolucionService;
@@ -1688,8 +1687,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 					} else {
 						v.setSituacion("PROCESADO");
 
-						updateCuentaCliente("VENTA NRO.: " + v.getId(), v.getCliente(), v.getTotalGeneral(),
-								0d, v.getFecha(), v.getVencimiento(), v.getObs());
+//						updateCuentaCliente("VENTA NRO.: " + v.getId(), v.getCliente(), v.getTotalGeneral(),
+//								0d, v.getFecha(), v.getVencimiento(), v.getObs());
 
 						updateSaldoCliente(v.getCliente().getId(), v.getTotalGeneral(), v.getCondicion());
 					}
@@ -1974,30 +1973,30 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		}
 	}
 
-	private void updateCuentaCliente(String documento, Cliente cliente, Double valorTotal, 
-			Double valorPagado, Date fecha, Date vencimiento, String obs) {
-		CuentaCliente cuentaCliente = new CuentaCliente();
-		cuentaCliente.setCliente(cliente);
-		cuentaCliente.setClienteNombre(cliente.getNombre());
-		cuentaCliente.setTipo("CAJA");
-		cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
-		cuentaCliente.setFecha(fecha);
-		cuentaCliente.setVencimiento(vencimiento);
-		cuentaCliente.setObs(obs);
-		cuentaCliente.setHora(new Date());
-		cuentaCliente.setMoneda(new Moneda(1L));
-		cuentaCliente.setDocumento(documento);
-		cuentaCliente.setDebito(valorTotal);
-		cuentaCliente.setValorTotal(valorTotal);
-		cuentaCliente.setValorPagado(valorPagado);
-		
-		if (valorTotal == valorPagado)
-			cuentaCliente.setSituacion("PROCESADO");
-		else
-			cuentaCliente.setSituacion("PENDIENTE");
-	
-		cuentaClienteService.save(cuentaCliente);
-	}
+//	private void updateCuentaCliente(String documento, Cliente cliente, Double valorTotal, 
+//			Double valorPagado, Date fecha, Date vencimiento, String obs) {
+//		CuentaCliente cuentaCliente = new CuentaCliente();
+//		cuentaCliente.setCliente(cliente);
+//		cuentaCliente.setClienteNombre(cliente.getNombre());
+//		cuentaCliente.setTipo("CAJA");
+//		cuentaCliente.setUsuarioId(GlobalVars.USER_ID);
+//		cuentaCliente.setFecha(fecha);
+//		cuentaCliente.setVencimiento(vencimiento);
+//		cuentaCliente.setObs(obs);
+//		cuentaCliente.setHora(new Date());
+//		cuentaCliente.setMoneda(new Moneda(1L));
+//		cuentaCliente.setDocumento(documento);
+//		cuentaCliente.setDebito(valorTotal);
+//		cuentaCliente.setValorTotal(valorTotal);
+//		cuentaCliente.setValorPagado(valorPagado);
+//		
+//		if (valorTotal == valorPagado)
+//			cuentaCliente.setSituacion("PROCESADO");
+//		else
+//			cuentaCliente.setSituacion("PENDIENTE");
+//	
+//		cuentaClienteService.save(cuentaCliente);
+//	}
 
 	private void updateCuentaProveedor(Proveedor proveedor, Double valorTotal, Double valorPagado,
 			boolean esCredito, String documento, Date vencimiento, String obs) {
@@ -2120,7 +2119,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private void openPopup(int key) {
 		switch (key) {
 			case OPERACION_COBRO_CLI:
-				creditoDebitoDialog.setCuentaClienteInterfaz(this);
+				//creditoDebitoDialog.setCuentaClienteInterfaz(this);
 				creditoDebitoDialog.setVisible(true);
 				creditoDebitoDialog.setClient(true);
 				creditoDebitoDialog.clearForm();
@@ -2166,18 +2165,18 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		
 	}
 
-	@Override
-	public void getEntity(CuentaCliente c) {
-		System.out.println(c.toString());
-		if (c != null) {
-			Double total = c.getCuentas().stream().mapToDouble(i -> i.getCredito()).sum();
-			
-			tfNotaNro.setText(c.getCuentas().get(0).getDocumento());
-			tfNotaNombre.setText(c.getCuentas().get(0).getClienteNombre());
-			tfNotaValor.setText(FormatearValor.doubleAString(total));
-			tfObs.requestFocus();
-		}
-	}
+//	@Override
+//	public void getEntity(CuentaCliente c) {
+//		System.out.println(c.toString());
+//		if (c != null) {
+//			Double total = c.getCuentas().stream().mapToDouble(i -> i.getCredito()).sum();
+//			
+//			tfNotaNro.setText(c.getCuentas().get(0).getDocumento());
+//			tfNotaNombre.setText(c.getCuentas().get(0).getClienteNombre());
+//			tfNotaValor.setText(FormatearValor.doubleAString(total));
+//			tfObs.requestFocus();
+//		}
+//	}
 
 	@Override
 	public void getEntity(CuentaProveedor c) {
