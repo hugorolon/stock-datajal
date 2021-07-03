@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.data.models.Proveedor;
+import py.com.prestosoftware.data.models.Venta;
 import py.com.prestosoftware.data.repository.CompraRepository;
 
 import java.util.Date;
@@ -30,6 +31,10 @@ public class CompraService {
     
     public List<Compra> findByFilter(String filter) {
     	return repository.findByProveedorNombre(filter);
+    }
+    
+    public List<Compra> getNotasPorFechas(Date fechaIni, Date fechaFin) {
+    	return repository.findByFechaBetween(fechaIni, fechaFin);
     }
 
     public Compra save(Compra compra) {

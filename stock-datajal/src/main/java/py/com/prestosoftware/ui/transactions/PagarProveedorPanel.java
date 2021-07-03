@@ -44,19 +44,19 @@ import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.ItemPagarProveedor;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.MovimientoCaja;
-import py.com.prestosoftware.data.models.MovimientoIngreso;
-import py.com.prestosoftware.data.models.MovimientoItemIngreso;
+import py.com.prestosoftware.data.models.MovimientoEgreso;
+import py.com.prestosoftware.data.models.MovimientoItemEgreso;
 import py.com.prestosoftware.data.models.PagarProveedor;
 import py.com.prestosoftware.data.models.ProcesoPagoProveedores;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
 import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.ClienteService;
-import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
+import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
 import py.com.prestosoftware.domain.services.ItemPagarProveedorService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
-import py.com.prestosoftware.domain.services.MovimientoIngresoService;
-import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
+import py.com.prestosoftware.domain.services.MovimientoEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
 import py.com.prestosoftware.domain.services.PagarProveedorService;
 import py.com.prestosoftware.domain.services.ProcesoPagoProveedoresService;
 import py.com.prestosoftware.domain.services.ProveedorService;
@@ -67,7 +67,6 @@ import py.com.prestosoftware.ui.search.PagarProveedorDialog;
 import py.com.prestosoftware.ui.search.PagarProveedorInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorDialog;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
-import py.com.prestosoftware.ui.table.DetalleCuentaClienteTableModel;
 import py.com.prestosoftware.ui.table.DetalleCuentaProveedorTableModel;
 import py.com.prestosoftware.ui.viewmodel.DetalleAPagarProveedorView;
 import py.com.prestosoftware.util.Notifications;
@@ -117,11 +116,11 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	@Autowired
 	private ItemPagarProveedorService itemPagarProveedorService;
 	@Autowired
-	private ItemCuentaARecibirService itemCuentaARecibirService;
+	private ItemCuentaAPagarService itemCuentaAPagarService;
 	@Autowired
-	private MovimientoIngresoService movimientoIngresoService;
+	private MovimientoEgresoService movimientoEgresoService;
 	@Autowired
-	private MovimientoItemIngresoService movimientoItemIngresoService;
+	private MovimientoItemEgresoService movimientoItemEgresoService;
 	@Autowired
 	private ProveedorService proveedorService;
 	@Autowired
@@ -132,9 +131,9 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	private ProveedorDialog proveedorDialog;
 
 	@Autowired
-	public PagarProveedorPanel(PagarProveedorService pagarProveedorService, DetalleCuentaProveedorTableModel itemTableModel, ItemPagarProveedorService itemPagarProveedorService, ItemCuentaARecibirService itemCuentaARecibirService,
-			ClienteService clienteService, CajaService cajaService, PagarProveedorDialog pagarProveedorDialog, MovimientoIngresoService movimientoIngresoService,MovimientoItemIngresoService movimientoItemIngresoService,
-			ProveedorDialog proveedorDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoPagoProveedoresService procesoPagarProveedorService) {
+	public PagarProveedorPanel(PagarProveedorService pagarProveedorService, DetalleCuentaProveedorTableModel itemTableModel, ItemPagarProveedorService itemPagarProveedorService, ItemCuentaAPagarService itemCuentaAPagarService,
+			ClienteService clienteService, CajaService cajaService, PagarProveedorDialog pagarProveedorDialog, MovimientoEgresoService movimientoEgresoService,MovimientoItemEgresoService movimientoItemEgresoService,
+			ProveedorDialog proveedorDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoPagoProveedoresService procesoPagarProveedorService,ProveedorService proveedorService) {
 		this.pagarProveedorService = pagarProveedorService;
 		this.itemTableModel = itemTableModel;
 		this.cajaService = cajaService;
@@ -144,10 +143,10 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		this.movCajaService = movCajaService;
 		this.proveedorDialog = proveedorDialog;
 		this.procesoPagarProveedorService =procesoPagarProveedorService;
-		this.movimientoIngresoService =movimientoIngresoService;
-		this.movimientoItemIngresoService =movimientoItemIngresoService;
+		this.movimientoEgresoService =movimientoEgresoService;
+		this.movimientoItemEgresoService =movimientoItemEgresoService;
 		this.itemPagarProveedorService =itemPagarProveedorService;
-		this.itemCuentaARecibirService =itemCuentaARecibirService;
+		this.itemCuentaAPagarService =itemCuentaAPagarService;
 
 		setSize(866, 488);
 		setTitle("PAGAR PROVEEDOR");
@@ -261,7 +260,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 
 			private void cargaSaldo() {
 				for (DetalleAPagarProveedorView ie : itemTableModel.getEntities()) {
-					ie.setCobro(ie.getIca_monto1());
+					ie.setCobro(ie.getIcp_monto1());
 				}
 			}
 			private void descargaSaldo() {
@@ -574,7 +573,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		t.setHora(new Date());
 		t.setPprSituacion(0);
 		t.setPprDocumento(tfDocumento.getText());
-		t.setPprTipoEntidad(8);
+		t.setPprTipoEntidad(3);
 		t.setPprEntidad(Integer.valueOf(tfEntidad.getText()));
 		t.setPprNumero(Integer.valueOf(tfNota.getText()));
 		t.setPprValor(totalCalculado);
@@ -636,42 +635,42 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 								ItemPagarProveedor itemPagarProveedor =new ItemPagarProveedor();
 								itemPagarProveedor.setIppNumero(v.getPprNumero());
 								itemPagarProveedor.setIppMonto(item.getCobro());
-								itemPagarProveedor.setIppSecuenciaCuenta(item.getIca_Secuencia());
-								if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-									itemCuentaARecibirService.cambiaEstadoSituacion(1, Long.valueOf(item.getIca_Secuencia()));
+								itemPagarProveedor.setIppSecuenciaCuenta(item.getIcp_Secuencia());
+								if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIcp_monto1().doubleValue()) {
+									itemCuentaAPagarService.cambiaEstadoSituacion(1, Long.valueOf(item.getIcp_Secuencia()));
 								}
 								detalles.add(itemPagarProveedor);
 							}
 						}
 						itemPagarProveedorService.save(detalles);
 						
-						//MovimientoIngreso
-						MovimientoIngreso movimientoIngreso = new MovimientoIngreso();
-						movimientoIngreso.setFecha(new Date());
-						movimientoIngreso.setHora(new Date());
-						movimientoIngreso.setMinCaja(1);
-						movimientoIngreso.setMinDocumento(v.getPprDocumento());
-						movimientoIngreso.setMinEntidad(tfEntidad.getText());
-						movimientoIngreso.setMinProceso(v.getPprNumero());
-						movimientoIngreso.setMinTipoProceso(2);
-						movimientoIngreso.setMinSituacion(0);
-						movimientoIngreso.setMinTipoEntidad(8);
-						MovimientoIngreso movNew = movimientoIngresoService.save(movimientoIngreso);
+						//MovimientoEgreso
+						MovimientoEgreso movimientoEgreso = new MovimientoEgreso();
+						movimientoEgreso.setFecha(new Date());
+						movimientoEgreso.setHora(new Date());
+						movimientoEgreso.setMegCaja(1);
+						movimientoEgreso.setMegDocumento(v.getPprDocumento());
+						movimientoEgreso.setMegEntidad(tfEntidad.getText());
+						movimientoEgreso.setMegProceso(v.getPprNumero());
+						movimientoEgreso.setMegTipoProceso(2);
+						movimientoEgreso.setMegSituacion(0);
+						movimientoEgreso.setMegTipoEntidad(8);
+						MovimientoEgreso movNew = movimientoEgresoService.save(movimientoEgreso);
 						
-						MovimientoItemIngreso movimientoItemIngreso= new MovimientoItemIngreso();
-						movimientoItemIngreso.setMiiNumero(movNew.getMinNumero());
-						movimientoItemIngreso.setMiiMonto(totalCalculado);
-						movimientoItemIngreso.setMiiIngreso(2);
-						movimientoItemIngreso.setMiiDescripcion("Cobro a Clientes");
-						movimientoItemIngresoService.save(movimientoItemIngreso);
+						MovimientoItemEgreso movimientoItemEgreso= new MovimientoItemEgreso();
+						movimientoItemEgreso.setMieNumero(movNew.getMegNumero());
+						movimientoItemEgreso.setMieMonto(totalCalculado);
+						movimientoItemEgreso.setMieEgreso(2);
+						movimientoItemEgreso.setMieDescripcion("Pago a Proveedores");
+						movimientoItemEgresoService.save(movimientoItemEgreso);
 						
 						//Proceso cobro cliente
 						ProcesoPagoProveedores p= new ProcesoPagoProveedores();
 						p.setPppPago(v.getPprNumero());
-						p.setPppIngresoEgreso(1);
-						p.setPppTipoproceso(31);
+						p.setPppIngresoEgreso(2);
+						p.setPppTipoproceso(32);
 						p.setPppFlag(1);
-						p.setPppProceso(movNew.getMinNumero());
+						p.setPppProceso(movNew.getMegNumero());
 						procesoPagarProveedorService.save(p);
 						
 						
@@ -688,17 +687,17 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 						movCaja.setNotaReferencia(v.getPprNumero().toString());
 						movCaja.setNotaValor(totalCalculado);
 						movCaja.setPlanCuentaId(1);
-						movCaja.setTipoOperacion("E");
+						movCaja.setTipoOperacion("S");
 						movCaja.setUsuario(GlobalVars.USER_ID);
 						movCaja.setValorM01(totalCalculado);
-						movCaja.setObs("Ingreso en caja 01 ");
+						movCaja.setObs("Egreso en caja 01 ");
 						movCaja.setSituacion("PAGADO");
 						pagoService.save(movCaja);
 					
 					}
 					
 
-					Notifications.showAlert("Cobro a Cliente registrado con exito.!");
+					Notifications.showAlert("Pago a Proveedor registrado con exito.!");
 					newMov();
 			}
 		} else {
@@ -727,27 +726,28 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 				List<ItemPagarProveedor> listaItemCobro = itemPagarProveedorService.findByIppNumero(Integer.valueOf(this.getPagarProveedorSeleccionado().getPprNumero().toString()));
 				for (ItemPagarProveedor itemPagarProveedor : listaItemCobro) {
 					//if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-					itemCuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(itemPagarProveedor.getIppSecuenciaCuenta()));
+					itemCuentaAPagarService.cambiaEstadoSituacion(0, Long.valueOf(itemPagarProveedor.getIppSecuenciaCuenta()));
+					
+					//***Esta linea no removió***//
 					itemPagarProveedorService.remove(itemPagarProveedor);
 				}
 				pagarProveedorService.remove(p);
-				MovimientoIngreso movimientoIngreso = movimientoIngresoService.findByMinProceso(p.getPprNumero());
-				
-				List<MovimientoItemIngreso> listaMovItemIngreso= movimientoItemIngresoService.findByCabId(movimientoIngreso.getMinNumero());
-				for (MovimientoItemIngreso movimientoItemIngreso : listaMovItemIngreso) {
-					movimientoItemIngresoService.remove(movimientoItemIngreso);	
+				MovimientoEgreso movimientoEgreso = movimientoEgresoService.findByMegProceso(p.getPprNumero());
+				List<MovimientoItemEgreso> listaMovItemIngreso= movimientoItemEgresoService.findByCabId(movimientoEgreso.getMegNumero());
+				for (MovimientoItemEgreso movimientoItemEgreso : listaMovItemIngreso) {
+					movimientoItemEgresoService.remove(movimientoItemEgreso);	
 				}
-				movimientoIngresoService.remove(movimientoIngreso);
+				movimientoEgresoService.remove(movimientoEgreso);
 				
 				ProcesoPagoProveedores procesoPagarProveedor=procesoPagarProveedorService.findByPppPago(p.getPprNumero());
 				procesoPagarProveedorService.remove(procesoPagarProveedor);
 				
 				MovimientoCaja movCaja = pagoService.findByNotaNro(p.getPprNumero().toString());
-				pagoService.remove(null);
+				pagoService.remove(movCaja);
 			}
 			
 		} catch (Exception e) {
-			Notifications.showAlert("Ocurrió un error al eliminar el registro de cobro del cliente, verifique documento!!");
+			Notifications.showAlert("Ocurrió un error al eliminar el registro de pago al proveedor, verifique documento!!");
 		}
 
 	}
@@ -881,30 +881,30 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
 		tfSaldo.setText(FormatearValor.doubleAString(totalCalculado));
 		tfTotalACobrar.setText(FormatearValor
-				.doubleAString(itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum()));
+				.doubleAString(itemTableModel.getEntities().stream().mapToDouble(i -> i.getCap_monto1()).sum()));
 	}
 
 	private List<DetalleAPagarProveedorView> castDetallePagarProveedor(List<Object[]> listMII, int edicion) {
 		List<DetalleAPagarProveedorView> lista = new ArrayList<DetalleAPagarProveedorView>();
 		for (Object[] objects : listMII) {
 			DetalleAPagarProveedorView det = new DetalleAPagarProveedorView();
-			det.setCar_numero((Integer) objects[0]);
-			det.setCar_fecha1((Date) objects[1]);
-			det.setCar_boleta(objects[2].toString());
-			// det.setCar_entidad((Long)objects[3]);
+			det.setCap_numero((Integer) objects[0]);
+			det.setCap_fecha1((Date) objects[1]);
+			det.setCap_boleta(objects[2].toString());
+			// det.setCap_entidad((Long)objects[3]);
 			det.setNombre(objects[4].toString());
-			det.setCar_monto1((Double) objects[5]);
-			det.setCar_proceso((Integer) objects[6]);
-			det.setIca_vencimiento1((Date) objects[7]);
-			det.setIca_monto1((Double) objects[8] - (Double) objects[10]);
-			det.setIca_documento((String) objects[9]);
+			det.setCap_monto1((Double) objects[5]);
+			det.setCap_proceso((Integer) objects[6]);
+			det.setIcp_vencimiento1((Date) objects[7]);
+			det.setIcp_monto1((Double) objects[8] - (Double) objects[10]);
+			det.setIcp_documento((String) objects[9]);
 			det.setPagado((Double) objects[10]);
 			det.setNombre_ingreso((String) objects[11]);
 			if(edicion==0)
 				det.setCobro(0d);
 			else
 				det.setCobro((Double) objects[13]);	
-			det.setIca_Secuencia((Integer)objects[12]);
+			det.setIcp_Secuencia((Integer)objects[12]);
 
 			lista.add(det);
 		}

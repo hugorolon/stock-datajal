@@ -49,6 +49,10 @@ public class MovimientoCajaService {
     	return repository.getMovimientoCajaPorNota(idVenta);
     }
     
+    public Optional<MovimientoCaja> findByNotaNroAndTipoOperacion(String id, String mov) {
+    	return repository.findByNotaNroAndTipoOperacion(id, mov);
+    }
+    
     public MovimientoCaja findByNotaNro(String id) {
     	return repository.findByNotaNro(id);
     }

@@ -32,9 +32,9 @@ public class ItemCuentaARecibirService {
 			repository.cambiaEstadoSituacionInactivo(icaSecuencia);
 	}
 	
-	 public List<ItemCuentaARecibir> findByCabId(Integer cabId) {
+	public List<ItemCuentaARecibir> findByCabId(Integer cabId) {
 	    	return repository.findByCabId(cabId);
-	    }
+	}
 
 //    public List<CuentaARecibir> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
 //    	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);

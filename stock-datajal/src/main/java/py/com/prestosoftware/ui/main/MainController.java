@@ -49,6 +49,7 @@ import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
 import py.com.prestosoftware.ui.transactions.AnulacionBoletaPanel;
 import py.com.prestosoftware.ui.transactions.AperturaCierrePanel;
 import py.com.prestosoftware.ui.transactions.CobroClientePanel;
+import py.com.prestosoftware.ui.transactions.PagarProveedorPanel;
 import py.com.prestosoftware.ui.transactions.CompraLocalPanel;
 import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
 import py.com.prestosoftware.ui.transactions.DevolucionPanel;
@@ -193,6 +194,8 @@ public class MainController extends AbstractFrameController {
 	private MovimientoEgresoDialog movimientoEgresoDialog;
 	@Autowired
 	private CobroClientePanel cobroClientePanel;
+	@Autowired
+	private PagarProveedorPanel pagarProveedorPanel;
 
 	public MainController() {
 	}
@@ -255,7 +258,7 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaIngreso(), (e) -> openCajaMovimientoIngreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaEgreso(), (e) -> openCajaMovimientoEgreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCuentaARecibirCobroCliente(), (e) -> openCobroCliente());
-		
+		registerOpenMenu(mainMenuFrame.getMnuMovCuentaAPagarPagoProveedor(), (e) -> openPagarProveedor());
 //		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
 //		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
 //		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
@@ -566,5 +569,10 @@ public class MainController extends AbstractFrameController {
 	private void openCobroCliente() {
 		cobroClientePanel.setVisible(true);
 		cobroClientePanel.newMov();
+	}
+	
+	private void openPagarProveedor() {
+		pagarProveedorPanel.setVisible(true);
+		pagarProveedorPanel.newMov();
 	}
 }

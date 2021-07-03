@@ -26,19 +26,19 @@ public class DetalleCuentaProveedorTableModel extends DefaultTableModel<DetalleA
             case 0:
                 return item.getNombre_ingreso();
             case 1:
-                return item.getCar_boleta();    
+                return item.getCap_boleta();    
             case 2:
-                return item.getCar_fecha1();
+                return item.getCap_fecha1();
             case 3:
-                return item.getIca_documento();    
+                return item.getIcp_documento();    
             case 4:
-                return item.getIca_vencimiento1();
+                return item.getIcp_vencimiento1();
             case 5:
-                return item.getCar_monto1();
+                return item.getCap_monto1();
             case 6:
                 return item.getPagado();    
             case 7:
-                return item.getIca_monto1();
+                return item.getIcp_monto1();
             case 8:
                 return item.getCobro();    
             default:
@@ -54,25 +54,25 @@ public class DetalleCuentaProveedorTableModel extends DefaultTableModel<DetalleA
             row.setNombre_ingreso((String) aValue);
         }
         else if(1 == columnIndex) {
-            row.setCar_boleta((String) aValue);
+            row.setCap_boleta((String) aValue);
         }
         else if(2 == columnIndex) {
-            row.setCar_fecha1((Date) aValue);
+            row.setCap_fecha1((Date) aValue);
         }
         else if(3 == columnIndex) {
-            row.setIca_documento((String) aValue);
+            row.setIcp_documento((String) aValue);
         }
         else if(4 == columnIndex) {
-            row.setIca_vencimiento1((Date) aValue);
+            row.setIcp_vencimiento1((Date) aValue);
         }
         else if(5 == columnIndex) {
-            row.setCar_monto1((Double) aValue);
+            row.setCap_monto1((Double) aValue);
         }
         else if(6 == columnIndex) {
             row.setPagado((Double) aValue);
         }
         else if(7 == columnIndex) {
-            row.setIca_monto1((Double) aValue);
+            row.setIcp_monto1((Double) aValue);
         }
         else if(8 == columnIndex) {
             row.setCobro(Double.valueOf(aValue.toString().equalsIgnoreCase("")?"0":aValue.toString()));

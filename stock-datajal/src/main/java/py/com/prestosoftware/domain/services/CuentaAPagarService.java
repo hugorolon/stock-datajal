@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.CuentaAPagar;
+import py.com.prestosoftware.data.models.ProcesoPagoCompras;
 import py.com.prestosoftware.data.repository.CuentaAPagarRepository;
 import java.util.List;
 
@@ -21,7 +22,14 @@ public class CuentaAPagarService {
     public List<CuentaAPagar> findAll() {
         return repository.findAll();
     }
+    public CuentaAPagar findByCapProceso(Integer id) {
+    	return repository.findByCapProceso(id);
+    }
     
+    public CuentaAPagar findByCapProcesoAndIdEntidad(Integer id, Long idEntidad) {
+    	return repository.findByCapProcesoAndIdEntidad(id, idEntidad);
+    }
+
 //    public List<CuentaAPagar> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
 //    	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
 //    }

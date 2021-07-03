@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import py.com.prestosoftware.data.models.ProcesoCobroVentas;
 import py.com.prestosoftware.data.models.ProcesoPagoCompras;
 import py.com.prestosoftware.data.repository.ProcesoPagoComprasRepository;
 import java.util.List;
@@ -23,23 +24,14 @@ public class ProcesoPagoComprasService {
         return repository.findAll();
     }
     
-//    public List<ProcesoPagoCompras> findByFechaAndEgresoAndSituacion(Date fecha, Egreso ingreso, String situacion) {
-//    	return repository.findByFechaAndEgresoAndSituacionOrderByIdAsc(fecha, caja, situacion);
-//    }
+    public ProcesoPagoCompras findByPcoCompra(Integer id) {
+    	return repository.findByPcoCompra(id);
+    }
     
-//    public Optional<ProcesoPagoCompras> findByIdVenta(String idVenta) {
-//    	return repository.getProcesoPagoComprasPorNota(idVenta);
-//    }
-    
-//    public Optional<ProcesoPagoCompras> getTotalsMovEgreso(Egreso caja, Date fecha, String situacion) {
-//    	return repository.getTotalsEntradaEgreso(caja, fecha, situacion);
-//    }
+    public ProcesoPagoCompras findByPcoCompraAndPcoProceso(Integer id, Integer idProceso) {
+    	return repository.findByPcoCompraAndPcoProceso(id, idProceso);
+    }
 
-//    @Transactional
-//    public void save(ProcesoPagoCompras procesoPagoCompras) {
-//        repository.save(procesoPagoCompras);
-//        repository.flush();
-//    }
     
     @Transactional
     public ProcesoPagoCompras save(ProcesoPagoCompras procesoPagoCompras) {

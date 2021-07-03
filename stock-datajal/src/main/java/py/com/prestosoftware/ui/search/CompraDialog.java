@@ -1,36 +1,35 @@
 package py.com.prestosoftware.ui.search;
 
-import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.table.CompraTableModel;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.util.ResourceBundle;
 
 @Component
 public class CompraDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private JTextField tfBuscador;
-	private JButton btnBuscar;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
 	private JTable table;
@@ -40,7 +39,7 @@ public class CompraDialog extends JDialog {
 	private CompraTableModel tableModel;
 	private CompraInterfaz interfaz;
 	
-	private List<Compra> clientes;
+	private List<Compra> compras;
 
 	@Autowired
 	public CompraDialog(CompraService service, CompraTableModel tableModel) {
@@ -56,43 +55,6 @@ public class CompraDialog extends JDialog {
 		JPanel pnlBuscador = new JPanel();
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
 		
-		JLabel lblBuscador = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages").getString("ClienteDialog.lblBuscador.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		pnlBuscador.add(lblBuscador);
-		
-		tfBuscador = new JTextField();
-		tfBuscador.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					loadCompras(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-				if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-			    	dispose();
-			    }
-			    if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			    	table.requestFocus();
-			    }
-			}
-		});
-		pnlBuscador.add(tfBuscador);
-		tfBuscador.setColumns(30);
-		
-		btnBuscar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages").getString("ClienteDialog.btnBuscar.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loadCompras(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-			}
-		});
-		btnBuscar.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() ==  KeyEvent.VK_ENTER) {
-					loadCompras(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-			}
-		});
-		pnlBuscador.add(btnBuscar);
-		
 		scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
@@ -104,9 +66,7 @@ public class CompraDialog extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					aceptar();
-				} else if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
-					 tfBuscador.requestFocus();
-				}
+				} 
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -150,18 +110,13 @@ public class CompraDialog extends JDialog {
 		Dimension ventana = this.getSize(); 
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 		
-		loadCompras("");	
+		loadCompras();	
 	}
 	
-	private void loadCompras(String filter) {
-		if (filter.isEmpty()) {
-			clientes = service.findAll();
-		} else {
-			clientes = service.findByFilter(filter);
-		}
-		
-        tableModel.clear();
-        tableModel.addEntities(clientes);
+	public void loadCompras() {
+		compras = service.getNotasPorFechas(new Date(), new Date());
+		tableModel.clear();
+        tableModel.addEntities(compras);
     }
 	
 	public CompraInterfaz getInterfaz() {
@@ -174,7 +129,7 @@ public class CompraDialog extends JDialog {
 	
 	private void aceptar() {
 		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(clientes.get(c));         
+			interfaz.getEntity(compras.get(c));         
 	    }
 		dispose();
 	}

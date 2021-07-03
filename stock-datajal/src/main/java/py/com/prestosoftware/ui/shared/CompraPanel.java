@@ -30,6 +30,7 @@ import py.com.prestosoftware.domain.services.ProcesoPagoProveedoresService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
+import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.DepositoDialog;
@@ -74,6 +75,7 @@ public class CompraPanel extends JDialog {
 	private CajaService cajaService;
 	private MovimientoCajaService pagoService;
 	private CompraValidator compraValidator;
+    private CompraDialog compraDialog;
     
     private CompraLocalPanel compraLocal;
     private CompraImportacionPanel compraImportacion;
@@ -97,7 +99,7 @@ public class CompraPanel extends JDialog {
 	public CompraPanel(PanelCompraInterfaz panelInterfaz, CompraItemTableModel itemTableModel,
 			CompraImportacionTableModel gastoTableModel, ConsultaProveedor proveedorDialog,
 			DepositoDialog depositoDialog, MonedaDialog monedaDialog, ProductoDialog productoDialog,
-			CompraService compraService, ProveedorService proveedorService, MonedaService monedaService,
+			CompraService compraService, CompraDialog compraDialog, ProveedorService proveedorService, MonedaService monedaService,
 			DepositoService depositoService, ProductoService productoService, 
 			CompraValidator compraValidator, PedidoService pedidoService,
 			CompraLocalPanel compraPanelLocal, PedidoItemTableModel pedidoItemModel,
@@ -114,6 +116,7 @@ public class CompraPanel extends JDialog {
 		this.monedaDialog = monedaDialog;
 		this.productoDialog = productoDialog;
 		this.compraService = compraService;
+		this.compraDialog =compraDialog;
 		this.proveedorService = proveedorService;
 		this.monedaService = monedaService;
 		this.depositoService = depositoService;
@@ -241,9 +244,11 @@ public class CompraPanel extends JDialog {
 		Dimension ventana = this.getSize(); 
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 	}
+    
+
 	
 	private void openCompraLocal() {
-		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
+		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, compraDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
 				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
 					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService);
 		 compraLocal.setVisible(true);

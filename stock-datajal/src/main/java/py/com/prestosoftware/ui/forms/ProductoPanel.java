@@ -280,10 +280,10 @@ public class ProductoPanel extends JDialog {
 		});
 		tfDesFiscal.setColumns(10);
 
-		JLabel lblDescFiscal = new JLabel("Desc. Fiscal");
+		JLabel lblDescFiscal = new JLabel("Desc. Fiscal:");
 		lblDescFiscal.setBounds(16, 145, 98, 21);
 
-		JLabel lblSubreferencia = new JLabel("Sub Referencia");
+		JLabel lblSubreferencia = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.lblSubreferencia.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lblSubreferencia.setBounds(16, 198, 98, 24);
 
 		tfSubreferencia = new JTextField();
@@ -1005,6 +1005,7 @@ public class ProductoPanel extends JDialog {
 				.getString("ProductoPanel.btnGuardar.text")); //$NON-NLS-1$
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 			}
 		});
 		btnGuardar.setMnemonic('G');

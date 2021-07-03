@@ -93,11 +93,6 @@ public class MainFrame extends JFrame {
 	private JMenu mnuInfProductos;
 	private JMenu mnuInfDatosProductos;
 	private JMenuItem mnuInfStockPorDeposito;
-	private JMenu mnuMovProductos;
-	private JMenuItem mnuMovVenta;
-	private JMenuItem mnuMovCompra;
-	private JMenuItem mnuMovTransformacionProducto;
-	
 	private JMenu mnuMovCuentaAPagarRecibir;
 	private JMenu mnuMovCuentaAPagar;
 	private JMenu mnuMovCuentaARecibir;
@@ -125,10 +120,8 @@ public class MainFrame extends JFrame {
 	private JButton btnPDV;
 	private JButton btnLanzamientos;
 	private JMenuItem mnuSaldoStock;
-	private JMenu mnAjustes;
 	private JMenuItem mnuAjusteEntrada;
 	private JMenuItem mnuAjusteSalida;
-	private JMenu mnuAjusteCuenta;
 	private JMenuItem mnuDebitoCliente;
 	private JMenuItem mnuCreditoCliente;
 	private JMenuItem mnuDebitoProveedor;
@@ -411,16 +404,16 @@ public class MainFrame extends JFrame {
 		mnuInfCuentaAPagarRecibir.add(mnuInfCuentaAPagar);
 		
 		mnuInfCuentaAPagarVencimientoProveedor = new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL PROVEEDOR");
-		mnuInfCuentaAPagarExtractoProveedor= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL PROVEEDOR");
+		//mnuInfCuentaAPagarExtractoProveedor= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL PROVEEDOR");
 		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarVencimientoProveedor);
-		mnuInfCuentaAPagar.addSeparator();
-		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarExtractoProveedor);
+//		mnuInfCuentaAPagar.addSeparator();
+//		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarExtractoProveedor);
 		
 		mnuInfCuentaARecibirVencimientoCliente= new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL CLIENTE");
-		mnuInfCuentaARecibirExtractoCliente= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL CLIENTE");
+		//mnuInfCuentaARecibirExtractoCliente= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL CLIENTE");
 		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirVencimientoCliente);
-		mnuInfCuentaARecibir.addSeparator();
-		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirExtractoCliente);
+//		mnuInfCuentaARecibir.addSeparator();
+//		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirExtractoCliente);
 		
 		mnuRelatorios.add(mnuInfCuentaAPagarRecibir);
 		

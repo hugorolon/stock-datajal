@@ -18,25 +18,21 @@ public interface PagarProveedorRepository extends JpaRepository<PagarProveedor, 
 	@Query("SELECT coalesce(max(id), 0) FROM PagarProveedor e")
 	Integer getMaxId();
 	
-	@Query(value =  "SELECT car_numero , car.car_fecha as car_fecha1, car.car_boleta, car.car_entidad, cli.nombre,  car.car_monto as car_monto1, \n"
-			+ "car_proceso, ica_vencimiento as ica_vencimiento1, \n"
-			+ "ica_monto as ica_monto1, ica_documento \n"
-			+ ",coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado,\n"
-			+ "('Venta # '|| car_proceso) AS nombre_ingreso, ica_secuencia  \n"
-			+ " FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli \n"
-			+ "	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.car_entidad=cli.id \n"
-			+ "		and car_entidad=?1 \n"
+	@Query(value =  "SELECT cap_numero , cap.cap_fecha as cap_fecha1, cap.cap_boleta, cap.id_proveedor as cap_entidad, pro.nombre,  cap.cap_monto as cap_monto1, cap_proceso, icp_vencimiento as icp_vencimiento1, icp_monto as icp_monto1, icp_documento, coalesce((select SUM(ipp_monto) FROM item_pago_proveedores where ipp_secuencia_cuenta = icp.icp_secuencia), 0) AS pagado, ('Compra # '|| cap_proceso) AS nombre_Egreso, icp_secuencia  \n"
+			+ "FROM cuenta_a_pagar cap, item_cuenta_a_pagar icp, proveedores pro \n"
+			+ "WHERE cap_numero=icp_cuenta and id_proveedor=pro.id AND cap_situacion=0 AND icp_situacion= 0 AND id_proveedor=?1 "
 			+ "ORDER BY 1,8 asc", nativeQuery = true)
 	List<Object[]> getDetallePagarProveedorView(Long clienteId);
 	
-	@Query(value =  "SELECT car_numero , car.car_fecha as car_fecha1, car.car_boleta, car.car_entidad, cli.nombre,  car.car_monto as car_monto1, \n"
-			+ "car_proceso, ica_vencimiento as ica_vencimiento1, \n"
-			+ "ica_monto as ica_monto1, ica_documento \n"
-			+ ",coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado,\n"
-			+ "('Venta # '|| car_proceso) AS nombre_ingreso, ica_secuencia,  icl.icl_monto \n"
-			+ " FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli, public.cobro_clientes cc, public.item_cobro_clientes icl \n"
-			+ "	  WHERE car_numero=ica_cuenta and car.car_entidad=cli.id \n"
-			+ "	and ccl_numero=icl.icl_numero and icl.icl_secuencia_cuenta=ica_secuencia and car_entidad=?1 and ccl_numero=?2 \n"
-			+ "ORDER BY 1,8 asc", nativeQuery = true)
+	@Query(value =  "SELECT cap_numero , cap.cap_fecha as cap_fecha1, cap.cap_boleta, cap.id_proveedor, pro.nombre,  cap.cap_monto as cap_monto1, \n"
+			+ "		 cap_proceso, icp_vencimiento as icp_vencimiento1, \n"
+			+ "		 icp_monto as icp_monto1, icp_documento \n"
+			+ "		 ,coalesce((select SUM(ipp_monto) FROM item_pago_proveedores where ipp_secuencia_cuenta = icp.icp_secuencia), 0) AS pagado,\n"
+			+ "		 ('Compra # '|| cap_proceso) AS nombre_egreso, icp_secuencia,  ipp.ipp_monto \n"
+			+ "		 FROM cuenta_a_pagar cap, item_cuenta_a_pagar icp, proveedores pro, public.pago_proveedores pp, public.item_pago_proveedores ipp \n"
+			+ "		 WHERE cap_numero=icp_cuenta and cap.id_proveedor=pro.id \n"
+			+ "		 and ppr_numero=ipp.ipp_numero and ipp.ipp_secuencia_cuenta=icp_secuencia \n"
+			+ "		 and cap.id_proveedor=?1 and ppr_numero=?2 \n"
+			+ "		 ORDER BY 1,8 asc", nativeQuery = true)
 	List<Object[]> getProveedorPagadoView(Long clienteId, Integer idCobro);
 }

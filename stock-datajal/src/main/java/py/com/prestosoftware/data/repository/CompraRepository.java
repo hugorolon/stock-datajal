@@ -25,6 +25,8 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 	
 	List<Compra> findByProveedor(Proveedor proveedor);
 	
+	List<Compra> findByFechaBetween(Date fechaIni, Date fechaFin);
+	
 	Optional<Compra> findByIdAndSituacion(Long id, String situacion);
 	
 	Optional<Compra> findByProveedorAndFactura(Proveedor proveedor, String factura);

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.ItemCuentaAPagar;
+import py.com.prestosoftware.data.models.ItemCuentaARecibir;
 import py.com.prestosoftware.data.repository.ItemCuentaAPagarRepository;
 
 @Service
@@ -28,6 +29,10 @@ public class ItemCuentaAPagarService {
 			repository.cambiaEstadoSituacionActivo(icpSecuencia);
 		else
 			repository.cambiaEstadoSituacionInactivo(icpSecuencia);
+	}
+
+	public List<ItemCuentaAPagar> findByCabId(Integer cabId) {
+		return repository.findByCabId(cabId);
 	}
 
 	@Transactional

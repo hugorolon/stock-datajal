@@ -4,162 +4,104 @@ import java.util.Date;
 
 public class DetalleAPagarProveedorView
 {
-    private Integer car_numero;
-    private Date car_fecha1;
-    private String car_boleta;
-    private Long car_entidad;
+    private Integer cap_numero;
+    private Date cap_fecha1;
+    private String cap_boleta;
+    private Long cap_entidad;
     private String nombre;
-    private Double car_monto1;
-    private Integer car_proceso;
-    private Date ica_vencimiento1;
-    private Double ica_monto1;
-    private String ica_documento;
+    private Double cap_monto1;
+    private Integer cap_proceso;
+    private Date icp_vencimiento1;
+    private Double icp_monto1;
+    private String icp_documento;
     private Double pagado;
     private String nombre_ingreso;
     private Double cobro;
-    private Integer ica_Secuencia;
-
-    
-	public Integer getCar_numero() {
-		return car_numero;
+    private Integer icp_Secuencia;
+	public Integer getCap_numero() {
+		return cap_numero;
 	}
-
-
-	public void setCar_numero(Integer car_numero) {
-		this.car_numero = car_numero;
+	public void setCap_numero(Integer cap_numero) {
+		this.cap_numero = cap_numero;
 	}
-
-
-	public Date getCar_fecha1() {
-		return car_fecha1;
+	public Date getCap_fecha1() {
+		return cap_fecha1;
 	}
-
-
-	public void setCar_fecha1(Date car_fecha1) {
-		this.car_fecha1 = car_fecha1;
+	public void setCap_fecha1(Date cap_fecha1) {
+		this.cap_fecha1 = cap_fecha1;
 	}
-
-
-	public String getCar_boleta() {
-		return car_boleta;
+	public String getCap_boleta() {
+		return cap_boleta;
 	}
-
-
-	public void setCar_boleta(String car_boleta) {
-		this.car_boleta = car_boleta;
+	public void setCap_boleta(String cap_boleta) {
+		this.cap_boleta = cap_boleta;
 	}
-
-
-	public Long getCar_entidad() {
-		return car_entidad;
+	public Long getCap_entidad() {
+		return cap_entidad;
 	}
-
-
-	public void setCar_entidad(Long car_entidad) {
-		this.car_entidad = car_entidad;
+	public void setCap_entidad(Long cap_entidad) {
+		this.cap_entidad = cap_entidad;
 	}
-
-
 	public String getNombre() {
 		return nombre;
 	}
-
-
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-
-
-	public Double getCar_monto1() {
-		return car_monto1;
+	public Double getCap_monto1() {
+		return cap_monto1;
 	}
-
-
-	public void setCar_monto1(Double car_monto1) {
-		this.car_monto1 = car_monto1;
+	public void setCap_monto1(Double cap_monto1) {
+		this.cap_monto1 = cap_monto1;
 	}
-
-
-	public Integer getCar_proceso() {
-		return car_proceso;
+	public Integer getCap_proceso() {
+		return cap_proceso;
 	}
-
-
-	public void setCar_proceso(Integer car_proceso) {
-		this.car_proceso = car_proceso;
+	public void setCap_proceso(Integer cap_proceso) {
+		this.cap_proceso = cap_proceso;
 	}
-
-
-	public Date getIca_vencimiento1() {
-		return ica_vencimiento1;
+	public Date getIcp_vencimiento1() {
+		return icp_vencimiento1;
 	}
-
-
-	public void setIca_vencimiento1(Date ica_vencimiento1) {
-		this.ica_vencimiento1 = ica_vencimiento1;
+	public void setIcp_vencimiento1(Date icp_vencimiento1) {
+		this.icp_vencimiento1 = icp_vencimiento1;
 	}
-
-
-	public Double getIca_monto1() {
-		return ica_monto1;
+	public Double getIcp_monto1() {
+		return icp_monto1;
 	}
-
-
-	public void setIca_monto1(Double ica_monto1) {
-		this.ica_monto1 = ica_monto1;
+	public void setIcp_monto1(Double icp_monto1) {
+		this.icp_monto1 = icp_monto1;
 	}
-
-
-	public String getIca_documento() {
-		return ica_documento;
+	public String getIcp_documento() {
+		return icp_documento;
 	}
-
-
-	public void setIca_documento(String ica_documento) {
-		this.ica_documento = ica_documento;
+	public void setIcp_documento(String icp_documento) {
+		this.icp_documento = icp_documento;
 	}
-
-
 	public Double getPagado() {
 		return pagado;
 	}
-
-
 	public void setPagado(Double pagado) {
 		this.pagado = pagado;
 	}
-
-
 	public String getNombre_ingreso() {
 		return nombre_ingreso;
 	}
-
-
 	public void setNombre_ingreso(String nombre_ingreso) {
 		this.nombre_ingreso = nombre_ingreso;
 	}
-
-
 	public Double getCobro() {
 		return cobro;
 	}
-
-
 	public void setCobro(Double cobro) {
 		this.cobro = cobro;
 	}
-
-
-	public Integer getIca_Secuencia() {
-		return ica_Secuencia;
+	public Integer getIcp_Secuencia() {
+		return icp_Secuencia;
+	}
+	public void setIcp_Secuencia(Integer icp_Secuencia) {
+		this.icp_Secuencia = icp_Secuencia;
 	}
 
-
-	public void setIca_Secuencia(Integer ica_Secuencia) {
-		this.ica_Secuencia = ica_Secuencia;
-	}
-
-
-	
-
+    
 }

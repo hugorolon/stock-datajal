@@ -996,7 +996,7 @@ public class VentaPanel extends JFrame
 
 		JLabel lblCuotaCant = new JLabel("CuotaCant:");
 		lblCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCuotaCant.setBounds(311, 46, 41, 30);
+		lblCuotaCant.setBounds(311, 46, 51, 30);
 		pnlTotales.add(lblCuotaCant);
 
 		JLabel lblVence = new JLabel("Vence:");
@@ -1036,7 +1036,7 @@ public class VentaPanel extends JFrame
 
 		tfVence = new JTextField();
 		tfVence.setEditable(false);
-		tfVence.setBounds(215, 45, 97, 30);
+		tfVence.setBounds(215, 45, 86, 30);
 		pnlTotales.add(tfVence);
 		tfVence.setColumns(10);
 
@@ -1729,6 +1729,7 @@ public class VentaPanel extends JFrame
 	@Override
 	public void getEntity(Venta v) {
 		if (v != null) {
+			btnGuardar.setVisible(false);
 			btnReimpresion.setVisible(true);
 			btnAnular.setVisible(true);
 			setVenta(v);
@@ -2151,7 +2152,6 @@ public class VentaPanel extends JFrame
 	}
 
 	private void removeMovCaja(Venta venta) {
-		int cant = 0;
 		// cierre de caja del dia anterio
 		Optional<MovimientoCaja> movimientoCaja = pagoService.findByIdVenta(venta.getId().toString());
 		if (movimientoCaja.isPresent()) {
