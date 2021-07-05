@@ -1,7 +1,15 @@
 package py.com.prestosoftware.ui.main;
 
-import javax.swing.JPanel;
+import java.awt.Dimension;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.util.Optional;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
@@ -12,19 +20,11 @@ import org.springframework.stereotype.Component;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.domain.services.MonedaService;
+import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.util.Notifications;
-
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.util.Optional;
-
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
 @Component
 public class LoginForm extends JFrame {
@@ -41,20 +41,24 @@ public class LoginForm extends JFrame {
 	
 	private MonedaService monedaService;
 	private UsuarioService usuarioService;
+	private UsuarioRolService usuarioRolService;
 	private MainFrame mainMenuFrame;
 
 	@Autowired
-	public LoginForm(MonedaService monedaService, UsuarioService usuarioService, MainFrame mainMenuFrame) {
+	public LoginForm(MonedaService monedaService, UsuarioService usuarioService,UsuarioRolService usuarioRolService, MainFrame mainMenuFrame) {
 		super();
+		
 		this.monedaService = monedaService;
 		this.usuarioService = usuarioService;
 		this.mainMenuFrame = mainMenuFrame;
+		this.usuarioRolService=usuarioRolService;
 		initialize();
 	}
 	
 	private void initialize() {
 		this.setSize(796, 498);
-		//this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/presentacion/imagenes/config16x16.png")));
+		//this.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/src/resources/static/favicon.ico")));
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\adrian5\\stock-datajal\\stock-datajal\\src\\main\\resources\\static\\favicon.ico"));
 		this.setContentPane(getJContentPane());
 		this.setTitle("LOGIN - STK");
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -202,6 +206,10 @@ public class LoginForm extends JFrame {
 	
 	private void showMenu() {
 		dispose();
+		if (usuarioRolService!=null&&!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESCUENTO TOTAL")) {
+			mainMenuFrame.getMnuCompra().setEnabled(false);
+			mainMenuFrame.getBtnCompras().setEnabled(false);
+		}
 		mainMenuFrame.setVisible(true);
 	}
 	
