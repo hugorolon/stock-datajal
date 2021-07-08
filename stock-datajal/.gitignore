@@ -8,6 +8,7 @@
 .factorypath
 #.project
 .classpath
+src/main/resources/application.yml
 .settings
 .springBeans
 .sts4-cache
