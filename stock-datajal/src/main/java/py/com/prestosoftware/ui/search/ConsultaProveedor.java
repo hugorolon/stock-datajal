@@ -164,7 +164,7 @@ public class ConsultaProveedor extends JDialog {
 		if (name.isEmpty()) {
 			proveedores = service.findAll();
 		} else {
-			proveedores = service.findByNombre(name);
+			proveedores = service.findByNombre(name.toUpperCase());
 		}
 		
         tableModel.clear();

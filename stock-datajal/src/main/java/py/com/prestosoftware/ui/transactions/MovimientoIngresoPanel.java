@@ -551,25 +551,6 @@ public class MovimientoIngresoPanel extends JDialog implements MovimientoIngreso
 		});
 		panel.add(btnCerrar);
 		
-		// other code ...
-		KeyboardFocusManager
-		    .getCurrentKeyboardFocusManager()
-		    .addKeyEventDispatcher(new KeyEventDispatcher() {
-		    public boolean dispatchKeyEvent(KeyEvent e) {
-		        boolean keyHandled = false;
-		        if (e.getID() == KeyEvent.KEY_PRESSED) {
-		            if (e.getKeyCode() == KeyEvent.VK_F5) {
-		                save();
-		                keyHandled = true;
-		            } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-		                abandonarNota();
-		                keyHandled = true;
-		            }
-		        }
-		        return keyHandled;
-		    }
-		});
-		
 		btnAnula.setVisible(false);	
 		btnGuardar.setVisible(true);
 		clearForm();

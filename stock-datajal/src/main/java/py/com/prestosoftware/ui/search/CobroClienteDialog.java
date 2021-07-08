@@ -27,9 +27,6 @@ import java.awt.event.KeyEvent;
 public class CobroClienteDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private JTextField tfBuscador;
-	private JButton btnBuscar;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
 	private JTable table;
@@ -54,43 +51,6 @@ public class CobroClienteDialog extends JDialog {
 		JPanel pnlBuscador = new JPanel();
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
 		
-		JLabel lblBuscador = new JLabel("Buscador");
-		pnlBuscador.add(lblBuscador);
-		
-		tfBuscador = new JTextField();
-		tfBuscador.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					loadCobroClientes(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-				if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-			    	dispose();
-			    }
-			    if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			    	table.requestFocus();
-			    }
-			}
-		});
-		pnlBuscador.add(tfBuscador);
-		tfBuscador.setColumns(30);
-		
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loadCobroClientes(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-			}
-		});
-		btnBuscar.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() ==  KeyEvent.VK_ENTER) {
-					loadCobroClientes(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-			}
-		});
-		pnlBuscador.add(btnBuscar);
-		
 		scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 		
@@ -102,9 +62,7 @@ public class CobroClienteDialog extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					aceptar();
-				} else if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
-					 tfBuscador.requestFocus();
-				}
+				} 
 			}
 		});
 		scrollPane.setViewportView(table);

@@ -158,7 +158,7 @@ public class ClienteDialog extends JDialog {
 		if (name.isEmpty()) {
 			clientes = service.findAll();
 		} else {
-			clientes = service.findByNombre(name);
+			clientes = service.findByNombre(name.toUpperCase());
 		}
 		
         tableModel.clear();

@@ -364,9 +364,7 @@ public class VentaPanel extends JFrame
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					showDialog(PRODUCTO_CODE);
-				} else if (e.getKeyCode() == KeyEvent.VK_F5) {
-					showDialog(SALDO_PRODUCTO_CODE);
-				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				}else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 
 					if (tfCondicionPago.isEnabled())
 						tfCondicionPago.requestFocus();
@@ -2375,10 +2373,12 @@ public class VentaPanel extends JFrame
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());
-			if (cliente.getListaPrecio() != null)
+			if (conf.getPermitePrecioPorCliente()==1 && cliente.getListaPrecio() != null)
 				nivelPrecio = cliente.getListaPrecio().getNombre();
-			else
-				nivelPrecio = "A";
+			else {
+				nivelPrecio = conf.getPrecioDefinido();
+			}
+				
 			if (cliente.getId() == 0) {
 				// habilitar nombre, ruc, direccion
 				tfClienteNombre.setEnabled(false);
@@ -2491,19 +2491,19 @@ public class VentaPanel extends JFrame
 	private Double setPrecioByCliente(String nivelPrecio, Producto producto) {
 		Double precio = 0D;
 		switch (nivelPrecio) {
-		case "A":
+		case "Precio A":
 			precio = producto.getPrecioVentaA();
 			break;
-		case "B":
+		case "Precio B":
 			precio = producto.getPrecioVentaB();
 			break;
-		case "C":
+		case "Precio C":
 			precio = producto.getPrecioVentaC();
 			break;
-		case "D":
+		case "Precio D":
 			precio = producto.getPrecioVentaD();
 			break;
-		case "E":
+		case "Precio E":
 			precio = producto.getPrecioVentaE();
 			break;
 

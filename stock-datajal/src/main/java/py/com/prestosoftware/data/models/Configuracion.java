@@ -190,6 +190,10 @@ public class Configuracion {
 	@Column(name = "altera_precio_venta")
 	private int alteraPrecioVenta;
 	
+	@ColumnDefault(value = "A")
+	@Column(name="precio_definido")
+	private String precioDefinido;
+	
 	//opciones de usuario
 	@ColumnDefault(value = "0")
 	@Column(name = "define_deposito_venta")
@@ -712,6 +716,15 @@ public class Configuracion {
 
 	public void setPuedeVerPrecioE(int puedeVerPrecioE) {
 		this.puedeVerPrecioE = puedeVerPrecioE;
+	}
+
+	
+	public String getPrecioDefinido() {
+		return precioDefinido;
+	}
+
+	public void setPrecioDefinido(String precioDefinido) {
+		this.precioDefinido = precioDefinido;
 	}
 
 	public int getPuedeVerCostoFob() {

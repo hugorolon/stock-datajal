@@ -13,7 +13,7 @@ public class ConfigInitPanel extends JDialog {
 	 * Create the dialog.
 	 */
 	public ConfigInitPanel() {
-		setBounds(100, 100, 802, 517);
+		setBounds(100, 100, 841, 574);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tabbedPane, BorderLayout.CENTER);

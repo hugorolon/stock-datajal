@@ -203,7 +203,7 @@ public class ConfiguracionPanel extends JFrame {
 	}
 	
 	private void setupInit() {
-		setBounds(100, 100, 847, 545);
+		setBounds(100, 100, 865, 567);
 		getContentPane().setLayout(null);
 		setTitle("Configuración del Sistema");
 
@@ -857,7 +857,7 @@ public class ConfiguracionPanel extends JFrame {
 		chImprimeNotaCompraResumida.setSelected(c.getImprimeNotaResCompra() == 1 ? true:false);
 		chActualizAutoCompra.setSelected(c.getPermiteActualizacionAutoCompra() == 1 ? true:false);
 		chPideDispNotaCompra.setSelected(c.getPideDispCompra() == 1 ? true:false);
-		
+		cbPrecioNota.setSelectedItem(c.getPrecioDefinido());
 		//opciones de PDV
 		cbCaja.setSelectedIndex(c.getCajaIdPDV());
 		cbDeposito.setSelectedIndex(c.getDepositoIdPDV());
@@ -939,6 +939,7 @@ public class ConfiguracionPanel extends JFrame {
 			c.setPermiteItemDuplicado(chNoRepiteProducto.isSelected() ? 1:0);
 			c.setBloqueaProductoNegativo(chBloqueaVentaProdNegativo.isSelected() ? 1:0);
 			c.setImprimeVendedor(chImprimeNombreVendedor.isSelected() ? 1:0);
+		    c.setPrecioDefinido(cbPrecioNota.getSelectedItem().toString());
 			
 			//opciones de compra
 			c.setPideMoneda(chPideMoneda.isSelected() ? 1:0);

@@ -465,8 +465,14 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					findProveedorById(tfProveedorID.getText(), false);
-				} else if (e.getKeyCode() == KeyEvent.VK_F12) {
+					if (!tfProveedorID.getText().isEmpty()) {
+						findProveedorById(tfProveedorID.getText(), false);
+						tfFactura.requestFocus();
+					} else {
+						showDialog(PROVEEDOR_CODE);
+					}
+					
+				} else if (e.getKeyCode() == KeyEvent.VK_F4) {
 					showDialog(PROVEEDOR_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 					dispose();
