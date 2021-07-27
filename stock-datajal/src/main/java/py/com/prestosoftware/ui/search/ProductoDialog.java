@@ -1,22 +1,26 @@
 package py.com.prestosoftware.ui.search;
 
 import javax.swing.JDialog;
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.List;
+import java.util.Optional;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.AbstractDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.ProductoDeposito;
 import py.com.prestosoftware.data.models.ProductoPrecio;
@@ -24,6 +28,7 @@ import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ProductTableModel;
 import py.com.prestosoftware.ui.table.ProductoDepositoTableModel;
 import py.com.prestosoftware.ui.table.ProductoPrecioTableModel;
@@ -34,11 +39,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.FlowLayout;
+import java.awt.Point;
 
 @Component
 public class ProductoDialog extends JDialog {
@@ -111,11 +118,18 @@ public class ProductoDialog extends JDialog {
 			    	dispose();
 			    } else if(e.getKeyCode()==KeyEvent.VK_DOWN) {
 			    	table.requestFocus();
-			    } else if (e.getKeyCode()==KeyEvent.VK_F5) {
-			    	
-			    }
-				loadProductos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				
+			    } 
+				//loadProductos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				textField.setText(text.toUpperCase());
+				DefaultTableModel table1 = (DefaultTableModel) table.getModel();
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+				table.setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
 			}
 		});
 		pnlBuscador.add(tfBuscador);
@@ -161,6 +175,16 @@ public class ProductoDialog extends JDialog {
 				} 
 			}
 		});
+//		table.addMouseListener(new MouseAdapter() {
+//			public void mousePressed(MouseEvent mouseEvent) {
+//				JTable jTable = (JTable) mouseEvent.getSource();
+//				Point point = mouseEvent.getPoint();
+//				int row = jTable.rowAtPoint(point);
+//				if (mouseEvent.getClickCount() == 2 && jTable.getSelectedRow() != -1) {
+//					aceptar();
+//				}
+//			}
+//		});
 		table.addMouseListener(new MouseListener() {
 			
 			@Override
@@ -271,11 +295,8 @@ public class ProductoDialog extends JDialog {
 	}
 	
 	public void loadProductos(String filter) {
-		if (filter.isEmpty()) {
+		if (filter.isEmpty()&&productos==null) {
 			productos = service.findAll();
-		} else {
-			//productos = service.findByNombre(name);
-			productos = service.findProductByFilter(filter);
 		}
 		
         tableModel.clear();
@@ -292,9 +313,22 @@ public class ProductoDialog extends JDialog {
 	}
 	
 	private void aceptar() {
-		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(productos.get(c));         
-	    }
+		try {
+			int[] selectedRow = table.getSelectedRows();
+			Long selectedId = (Long) table.getValueAt(selectedRow[0], 0);
+
+			Producto producto= productos.stream().filter(p -> p.getId().equals(selectedId.longValue()))
+					  .findAny()
+					  .orElse(null);
+			if(producto!=null) {
+				interfaz.getEntity(producto);
+			}else {
+				Optional<Producto> p = service.findById(selectedId);
+				interfaz.getEntity(p.get());
+			}			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}		
 		dispose();
 	}
 	

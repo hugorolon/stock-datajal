@@ -3,21 +3,29 @@ package py.com.prestosoftware.ui.search;
 import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.util.List;
+import java.util.Optional;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
 import javax.swing.text.AbstractDocument;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ProveedorConsultaTableModel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -25,6 +33,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 @Component
 public class ConsultaProveedor extends JDialog {
@@ -74,16 +84,14 @@ public class ConsultaProveedor extends JDialog {
 		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfBuscador.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					getProveedores(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-				if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-			    	dispose();
-			    }
-			    if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			    	table.requestFocus();
-			    }
+			public void keyReleased(KeyEvent e) {
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				textField.setText(text.toUpperCase());
+				DefaultTableModel table1 = (DefaultTableModel) table.getModel();
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+				table.setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
 			}
 		});
 		pnlBuscador.add(tfBuscador);
@@ -119,6 +127,14 @@ public class ConsultaProveedor extends JDialog {
 				}
 				if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
 					 tfBuscador.requestFocus();
+				}
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				JTable jTable = (JTable) mouseEvent.getSource();
+				if (mouseEvent.getClickCount() == 2 && jTable.getSelectedRow() != -1) {
+					aceptar();
 				}
 			}
 		});
@@ -160,11 +176,9 @@ public class ConsultaProveedor extends JDialog {
 		pnlBotonera.add(btnCancelar);
 	}
 	
-	private void getProveedores(String name) {
-		if (name.isEmpty()) {
+	public void getProveedores(String name) {
+		if (name.isEmpty()&&proveedores==null) {
 			proveedores = service.findAll();
-		} else {
-			proveedores = service.findByNombre(name.toUpperCase());
 		}
 		
         tableModel.clear();
@@ -180,9 +194,21 @@ public class ConsultaProveedor extends JDialog {
 	}
 	
 	private void aceptar() {
-		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(proveedores.get(c));         
-	    }
+		int[] selectedRow = table.getSelectedRows();
+		Long selectedId = (Long) table.getValueAt(selectedRow[0], 0);
+
+		Proveedor proveedor= proveedores.stream().filter(p -> p.getId().equals(selectedId.longValue()))
+				  .findAny()
+				  .orElse(null);
+		if(proveedor!=null) {
+			interfaz.getEntity(proveedor);
+		}else {
+			Optional<Proveedor> pro = service.findById(selectedId);
+			interfaz.getEntity(pro.get());
+		}
+//		for (Integer c : table.getSelectedRows()) {
+//			interfaz.getEntity(proveedores.get(c));         
+//	    }
 		
 		dispose();
 	}

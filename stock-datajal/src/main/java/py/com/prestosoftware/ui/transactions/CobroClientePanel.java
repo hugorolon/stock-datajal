@@ -62,7 +62,7 @@ import py.com.prestosoftware.domain.services.ProcesoCobroClientesService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
-import py.com.prestosoftware.ui.search.ClienteDialog;
+import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.CobroClienteDialog;
 import py.com.prestosoftware.ui.search.CobroClienteInterfaz;
@@ -128,12 +128,12 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	private CobroCliente cobroClienteSeleccionado;
 	private Double totalCalculado;
 	private CobroClienteDialog cobroClienteDialog;
-	private ClienteDialog clienteDialog;
+	private ConsultaCliente clienteDialog;
 
 	@Autowired
 	public CobroClientePanel(CobroClienteService cobroClienteService, DetalleCuentaClienteTableModel itemTableModel, ItemCobroClienteService itemCobroClienteService, ItemCuentaARecibirService itemCuentaARecibirService,
 			ClienteService clienteService, CajaService cajaService, CobroClienteDialog cobroClienteDialog, MovimientoIngresoService movimientoIngresoService,MovimientoItemIngresoService movimientoItemIngresoService,
-			ClienteDialog clienteDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoCobroClientesService procesoCobroClienteService) {
+			ConsultaCliente clienteDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoCobroClientesService procesoCobroClienteService) {
 		this.cobroClienteService = cobroClienteService;
 		this.itemTableModel = itemTableModel;
 		this.cajaService = cajaService;
@@ -615,6 +615,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			break;
 		case ENTIDAD_CODE:
 			clienteDialog.setInterfaz(this);
+			clienteDialog.getClientes("");
 			clienteDialog.setVisible(true);
 			break;
 		default:
@@ -872,6 +873,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			List<DetalleCobroClienteView> listaCasteado = castDetalleCobroCliente(listMII,0);
 			itemTableModel.addEntities(listaCasteado);
 			calculateItem();
+			chkCobraTodos.requestFocus();
 		} else {
 			Notifications.showAlert("No existe cliente informado. Verifique por favor.!");
 		}

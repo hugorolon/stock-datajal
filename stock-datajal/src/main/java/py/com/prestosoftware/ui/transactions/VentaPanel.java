@@ -2,6 +2,7 @@ package py.com.prestosoftware.ui.transactions;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -10,13 +11,17 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -90,6 +95,7 @@ import py.com.prestosoftware.ui.reports.ImpresionPanelInterfaz;
 import py.com.prestosoftware.ui.reports.ImpresionUtil;
 import py.com.prestosoftware.ui.reports.ReImpresionPanel;
 import py.com.prestosoftware.ui.reports.ReImpresionPanelInterfaz;
+import py.com.prestosoftware.ui.search.ClienteDialog;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.ClientePaisInterfaz;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
@@ -130,7 +136,7 @@ public class VentaPanel extends JFrame
 	private JTextField tfTotal, tfDepositoID, tfDeposito, tfClienteRuc; // tfSubtotal,
 	private JTextField tfClienteDireccion, tfCuotaCant, tfProductoID;
 	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer;
-	private JTextField tfCondicionPago;
+	private JComboBox<String> tfCondicionPago;
 	private JPanel pnlTotales;
 	private JTable tbProductos;
 	private JLabel label;
@@ -364,7 +370,7 @@ public class VentaPanel extends JFrame
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					showDialog(PRODUCTO_CODE);
-				}else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 
 					if (tfCondicionPago.isEnabled())
 						tfCondicionPago.requestFocus();
@@ -406,9 +412,12 @@ public class VentaPanel extends JFrame
 				}
 			}
 		});
-		btnRemove.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				removeItem();
+
+		btnRemove.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					removeItem();
+				}
 			}
 		});
 		btnRemove.setBounds(826, 39, 56, 30);
@@ -563,6 +572,13 @@ public class VentaPanel extends JFrame
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					addItem();
+				}
+			}
+		});
+		btnAdd.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
 					addItem();
 				}
 			}
@@ -956,50 +972,35 @@ public class VentaPanel extends JFrame
 		lblCondicin.setBounds(0, 46, 74, 30);
 		pnlTotales.add(lblCondicin);
 
-		tfCondicionPago = new JTextField();
-		tfCondicionPago.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfCondicionPago.selectAll();
-			}
-		});
-		tfCondicionPago.setText("0");
-		tfCondicionPago.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfCondicionPago.getText().isEmpty() && tfCondicionPago.getText().equalsIgnoreCase("100")) {
-						findCondicionPago(Integer.valueOf(tfCondicionPago.getText()));
-						tfCuotaCant.setEnabled(true);
-						tfCuotaCant.requestFocus();
-						tfCuotaCant.selectAll();
-
-					} else if (!tfCondicionPago.getText().isEmpty()
-							&& !tfCondicionPago.getText().equalsIgnoreCase("100")) {
-						findCondicionPago(Integer.valueOf(tfCondicionPago.getText()));
-						btnGuardar.requestFocus();
-					} else {
-						showDialog(CONDICION_PAGO_CODE);
-					}
+		tfCondicionPago = new JComboBox<String>();
+		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] { "Contado", "30 días" }));
+		tfCondicionPago.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Date today = new Date();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(today);
+				if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
+					findCondicionPago(Integer.valueOf("0"));
+					btnGuardar.requestFocus();
+				} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+					findCondicionPago(Integer.valueOf(30));
+					tfCuotaCant.setText("1");
+					tfCuotaCant.setEnabled(false);
 				}
 			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
 		});
-		tfCondicionPago.setBounds(95, 46, 55, 30);
+
+		tfCondicionPago.setBounds(95, 46, 121, 30);
 		pnlTotales.add(tfCondicionPago);
 
 		JLabel lblCuotaCant = new JLabel("CuotaCant:");
 		lblCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCuotaCant.setBounds(311, 46, 51, 30);
+		lblCuotaCant.setBounds(354, 46, 51, 30);
 		pnlTotales.add(lblCuotaCant);
 
 		JLabel lblVence = new JLabel("Vence:");
 		lblVence.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblVence.setBounds(172, 45, 41, 30);
+		lblVence.setBounds(215, 45, 41, 30);
 		pnlTotales.add(lblVence);
 
 		tfCuotaCant = new JTextField();
@@ -1010,7 +1011,7 @@ public class VentaPanel extends JFrame
 				tfCuotaCant.selectAll();
 			}
 		});
-		tfCuotaCant.setBounds(362, 46, 97, 30);
+		tfCuotaCant.setBounds(405, 46, 97, 30);
 		pnlTotales.add(tfCuotaCant);
 		tfCuotaCant.addKeyListener(new KeyAdapter() {
 			@Override
@@ -1034,13 +1035,13 @@ public class VentaPanel extends JFrame
 
 		tfVence = new JTextField();
 		tfVence.setEditable(false);
-		tfVence.setBounds(215, 45, 86, 30);
+		tfVence.setBounds(258, 45, 86, 30);
 		pnlTotales.add(tfVence);
 		tfVence.setColumns(10);
 
 		lblDesc = new JLabel("Desc.:");
 		lblDesc.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDesc.setBounds(311, 12, 51, 30);
+		lblDesc.setBounds(354, 12, 51, 30);
 		pnlTotales.add(lblDesc);
 
 		JLabel lblObs = new JLabel("Obs.:");
@@ -1056,7 +1057,7 @@ public class VentaPanel extends JFrame
 				tfDescuento.selectAll();
 			}
 		});
-		tfDescuento.setBounds(362, 12, 105, 30);
+		tfDescuento.setBounds(405, 12, 105, 30);
 		pnlTotales.add(tfDescuento);
 		tfDescuento.addKeyListener(new KeyAdapter() {
 			@Override
@@ -1296,21 +1297,16 @@ public class VentaPanel extends JFrame
 		Optional<CondicionPago> condicionPago = condicionPagoService.findByCantDia(cantDia);
 
 		if (condicionPago.isPresent()) {
-			tfCondicionPago.setText(String.valueOf(cantDia));
-			calculateVencimiento();
+			// tfCondicionPago.setText(String.valueOf(cantDia));
+			if (cantDia > 0)
+				calculateVencimiento();
 
 			if (conf != null) {
-//				if (conf.getPideFlete() == 1) {
-//					tfFlete.requestFocus();
-//				} else 
 				if (conf.getPideDescuento() == 1) {
 					tfDescuento.requestFocus();
 				} else {
 					tfObs.requestFocus();
 				}
-//			} else {
-//				tfFlete.requestFocus();
-//			}
 			}
 		} else {
 			showDialog(CONDICION_PAGO_CODE);
@@ -1376,6 +1372,7 @@ public class VentaPanel extends JFrame
 		if (respuesta == 0) {
 			removeItemBloq();
 			clearForm();
+			newVenta();
 		} else {
 			tfProductoID.requestFocus();
 		}
@@ -1413,14 +1410,16 @@ public class VentaPanel extends JFrame
 		this.setFechaImpresion(new Date());
 		venta.setHora(new Date());
 
-		if (!tfVence.getText().isEmpty())
-			venta.setVencimiento(Fechas.sumarFecha(Integer.valueOf(tfCondicionPago.getText()), 0, 0,
-					Fechas.dateUtilAStringDDMMAAAA(new Date())));
-		else
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+			venta.setVencimiento(
+					Fechas.sumarFecha(Integer.valueOf(30), 0, 0, Fechas.dateUtilAStringDDMMAAAA(new Date())));
+			venta.setCondicion(30);
+		} else {
 			venta.setVencimiento(new Date());
+			venta.setCondicion(0);
+		}
 
 		venta.setComprobante("SIN COMPROBANTE");
-		venta.setCondicion(Integer.valueOf(tfCondicionPago.getText()));
 
 		if (!tfVendedorID.getText().isEmpty())
 			venta.setVendedor(new Usuario(Long.valueOf(tfVendedorID.getText())));
@@ -1440,7 +1439,7 @@ public class VentaPanel extends JFrame
 		if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
 			venta.setSituacion("PENDIENTE");
 		else {
-			if (!tfCondicionPago.getText().isEmpty() && tfCondicionPago.getText().equalsIgnoreCase("0")) {
+			if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
 				venta.setSituacion("PAGADO");
 				venta.setTotalPagado(
 						tfTotal.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotal.getText()));
@@ -1550,12 +1549,10 @@ public class VentaPanel extends JFrame
 		tfDescuentoItem.setText("0");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
-		tfCondicionPago.setText("0");
+		tfCondicionPago.setSelectedIndex(0);
+		;
 		tfClienteNombre.setEnabled(false);
-		// tfClienteRuc.setEnabled(false);
-
 		tfClienteDireccion.setEnabled(false);
-
 		tfCondicionPago.setEnabled(true);
 		tfClienteID.requestFocus();
 		tfCuotaCant.setEnabled(true);
@@ -1635,9 +1632,10 @@ public class VentaPanel extends JFrame
 	private void calculateVencimiento() {
 		// if (!cbCondPago.getText().isEmpty()) {
 		String fecha = Fechas.dateUtilAStringDDMMAAAA(new Date());
-		Date fechaVenc = Fechas.sumarFecha(Integer.valueOf(tfCondicionPago.getText()), 0, 0, fecha);
-		tfVence.setText(Fechas.formatoDDMMAAAA(fechaVenc));
-		// }
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+			Date fechaVenc = Fechas.sumarFecha(Integer.valueOf(30), 0, 0, fecha);
+			tfVence.setText(Fechas.formatoDDMMAAAA(fechaVenc));
+		}
 	}
 
 	private void calculatePrecioTotal() {
@@ -1657,6 +1655,7 @@ public class VentaPanel extends JFrame
 	private void showDialog(int code) {
 		switch (code) {
 		case CLIENTE_CODE:
+			clientDialog.getClientes("");
 			clientDialog.setInterfaz(this);
 			clientDialog.setVisible(true);
 			break;
@@ -1730,6 +1729,8 @@ public class VentaPanel extends JFrame
 			btnGuardar.setVisible(false);
 			btnReimpresion.setVisible(true);
 			btnAnular.setVisible(true);
+			btnAdd.setEnabled(false);
+			btnRemove.setEnabled(false);
 			setVenta(v);
 		}
 	}
@@ -1742,7 +1743,11 @@ public class VentaPanel extends JFrame
 		tfDvRuc.setText(v.getCliente().getDvruc());
 		tfClienteDireccion.setText(v.getCliente().getDireccion());
 		tfTotalItems.setText(String.valueOf(v.getCantItem()));
-		tfCondicionPago.setText(String.valueOf(v.getCondicion()));
+		if (v.getCondicion() == 0)
+			tfCondicionPago.setSelectedIndex(0);
+		else
+			tfCondicionPago.setSelectedIndex(1);
+
 		tfDepositoID.setText(String.valueOf(v.getDeposito().getId()));
 		tfDeposito.setText("");
 		tfDescuento.setText(String.valueOf(v.getTotalDescuento()));
@@ -1892,8 +1897,9 @@ public class VentaPanel extends JFrame
 	}
 
 	private void save() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
-				JOptionPane.OK_CANCEL_OPTION);
+		Integer respuesta = JOptionPane.showConfirmDialog(this,
+				"CONFIRMAR SI ESTA SEGURO LA CONDICIÓN DE PAGO " + tfCondicionPago.getSelectedItem().toString(),
+				"AVISO - AGROPROGRESO", JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (validateCabezera()) { // && validateItems(itemTableModel.getEntities())
 				Venta venta = getVentaFrom();
@@ -1930,7 +1936,7 @@ public class VentaPanel extends JFrame
 							lanzamientoCaja(v);
 							openMovCaja(v);
 							movimientoIngresoProcesoCobroVenta(v);
-							if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
+							if (!tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
 								CuentaARecibir cuentaARecibir = new CuentaARecibir();
 								cuentaARecibir = cuentaARecibirProcesoCobroVenta(v);
 								openMovimientoEgreso(cuentaARecibir);
@@ -2039,14 +2045,9 @@ public class VentaPanel extends JFrame
 		int cantDias = 0;
 		Date fechaVencimiento = new Date();
 		Calendar cal = Calendar.getInstance();
-		if (tfCondicionPago.getText().equalsIgnoreCase("100")) {
-			cant = Integer.valueOf(tfCuotaCant.getText());
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
+			cant = Integer.valueOf(1);
 			cantDias = 30;
-		} else {
-			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(tfCondicionPago.getText()));
-			fechaVencimiento = cal.getTime();
-			cantDias = Integer.valueOf(tfCondicionPago.getText());
-			cant = 1;
 		}
 		Double valorTotal = venta.getTotalGeneral() / cant;
 		for (int i = 0; i < cant; i++) {
@@ -2057,10 +2058,10 @@ public class VentaPanel extends JFrame
 			itemCuentaARecibir.setIcaSituacion(0);
 			itemCuentaARecibir.setIcaDocumento(cant + "/" + (i + 1));
 			itemCuentaARecibir.setIcaIva(0d);
-			if (!tfCondicionPago.getText().equalsIgnoreCase("100"))
-				itemCuentaARecibir.setIcaVencimiento(fechaVencimiento);
-			else
-				itemCuentaARecibir.setIcaVencimiento(cal.getTime());
+//			if (!tfCondicionPago.getText().equalsIgnoreCase("100"))
+//				itemCuentaARecibir.setIcaVencimiento(fechaVencimiento);
+//			else
+			itemCuentaARecibir.setIcaVencimiento(cal.getTime());
 			itemCuentaARecibir.setIcaDias(cantDias);
 
 			listaItemCuentaARecibir.add(itemCuentaARecibir);
@@ -2090,7 +2091,7 @@ public class VentaPanel extends JFrame
 				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 					removeMovCaja(ventaSeleccionado);
 					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
-					if (!tfCondicionPago.getText().equalsIgnoreCase("0")) {
+					if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
 						Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
 						removeMovimientoEgreso(cuentaARecibir);
 					}
@@ -2134,15 +2135,15 @@ public class VentaPanel extends JFrame
 		movCaja.setTipoOperacion("E");
 		movCaja.setUsuario(GlobalVars.USER_ID);
 		movCaja.setValorM01(venta.getTotalGeneral());
-		if (tfCondicionPago.getText().equalsIgnoreCase("0")) {
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("0")) {
 			movCaja.setObs("Pagado en caja 01 ");
 			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicionPago.getText().equalsIgnoreCase("100") && !tfCuotaCant.getText().isEmpty()) {
-			cant = Integer.valueOf(tfCuotaCant.getText());
+		} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
+			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
 			movCaja.setObs("Crédito a cuotas :" + cant);
 			movCaja.setSituacion("PROCESADO");
 		} else {
-			movCaja.setObs("Crédito a " + tfCondicionPago.getText() + " días");
+			movCaja.setObs("Crédito a " + tfCondicionPago.getSelectedItem().toString() + " días");
 			movCaja.setSituacion("PROCESADO");
 			cant = 1;
 		}
@@ -2164,7 +2165,7 @@ public class VentaPanel extends JFrame
 	private Integer removeCuentaARecibirProcesoCobroVenta(Venta venta) {
 		CuentaARecibir cuentaARecibir = cuentaARecibirService
 				.findByCarProceso(Integer.valueOf(venta.getId().toString()));
-		Integer cabId=cuentaARecibir.getCarNumero();
+		Integer cabId = cuentaARecibir.getCarNumero();
 		cuentaARecibirService.remove(cuentaARecibir);
 
 		List<ItemCuentaARecibir> listaItemCuentaARecibir = itemCuentaARecibirService.findByCabId(cabId);
@@ -2178,7 +2179,7 @@ public class VentaPanel extends JFrame
 
 		return cabId;
 	}
-	
+
 	private void removeMovimientoEgreso(Integer carNumero) {
 		MovimientoEgreso movEgreso = movimientoEgresoService.findByMegProceso(carNumero);
 		List<MovimientoItemEgreso> movItemEgreso = movimientoItemEgresoService.findByCabId(movEgreso.getMegNumero());
@@ -2268,12 +2269,12 @@ public class VentaPanel extends JFrame
 			tfDepositoID.requestFocus();
 			return false;
 		}
-		if (tfCondicionPago.getText().equalsIgnoreCase("1" + "00")) {
-			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
-				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
-				return false;
-			}
-		}
+//		if (tfCondicionPago.getText().equalsIgnoreCase("1" + "00")) {
+//			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
+//				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
+//				return false;
+//			}
+//		}
 
 		return true;
 	}
@@ -2308,7 +2309,10 @@ public class VentaPanel extends JFrame
 		resetCliente();
 		resetVenta();
 		btnAnular.setVisible(false);
+		btnGuardar.setVisible(true);
 		btnReimpresion.setVisible(false);
+		btnAdd.setEnabled(true);
+		btnRemove.setEnabled(true);
 		tfClienteID.requestFocus();
 		tfCuotaCant.setEnabled(false);
 	}
@@ -2325,7 +2329,7 @@ public class VentaPanel extends JFrame
 		tfDescuentoItem.setText("0");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
-		tfCondicionPago.setText("0");
+		tfCondicionPago.setSelectedIndex(0);
 		tfClienteNombre.setEnabled(false);
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
@@ -2373,12 +2377,12 @@ public class VentaPanel extends JFrame
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());
-			if (conf.getPermitePrecioPorCliente()==1 && cliente.getListaPrecio() != null)
+			if (conf.getPermitePrecioPorCliente() == 1 && cliente.getListaPrecio() != null)
 				nivelPrecio = cliente.getListaPrecio().getNombre();
 			else {
 				nivelPrecio = conf.getPrecioDefinido();
 			}
-				
+
 			if (cliente.getId() == 0) {
 				// habilitar nombre, ruc, direccion
 				tfClienteNombre.setEnabled(false);
@@ -2387,7 +2391,7 @@ public class VentaPanel extends JFrame
 				tfProductoID.requestFocus();
 
 				tfCondicionPago.setEnabled(false);
-				tfCondicionPago.setText("0");
+				tfCondicionPago.setSelectedIndex(0);
 
 				calculateVencimiento();
 			}
@@ -2416,7 +2420,7 @@ public class VentaPanel extends JFrame
 			tfDvRuc.setText(clientePai.get().getDvruc());
 			nivelPrecio = "A";
 			tfCondicionPago.setEnabled(false);
-			tfCondicionPago.setText("0");
+			tfCondicionPago.setSelectedIndex(0);
 			// tfClienteID.setEnabled(false);
 			tfClienteNombre.setEnabled(false);
 		}
@@ -2749,7 +2753,7 @@ public class VentaPanel extends JFrame
 	@Override
 	public void getEntity(CondicionPago condicionPago) {
 		if (condicionPago != null) {
-			tfCondicionPago.setText(String.valueOf(condicionPago.getCantDia()));
+			// tfCondicionPago.setSelectedIndex(CLIENTE_CODE);.setItemSelected(String.valueOf(condicionPago.getCantDia()));
 
 //			if (conf != null && conf.getPideFlete() == 1)
 //				tfFlete.requestFocus();
@@ -2764,7 +2768,8 @@ public class VentaPanel extends JFrame
 	@Override
 	public void imprimirTicket() {
 		ImpresionUtil.performTicket(itemTableModel.getEntities(),
-				tfCondicionPago.getText().equals("0") ? "CONTADO" : "CREDITO", tfVentaId.getText(), tfTotal.getText());
+				tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("0") ? "CONTADO" : "CREDITO",
+				tfVentaId.getText(), tfTotal.getText());
 		clearForm();
 	}
 
@@ -2772,7 +2777,7 @@ public class VentaPanel extends JFrame
 	public void imprimirNota() {
 		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
-				Integer.valueOf(tfCondicionPago.getText()).intValue(),
+				Integer.valueOf(tfCondicionPago.getSelectedItem().toString()).intValue(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
 				itemTableModel.getEntities());
 		clearForm();
@@ -2783,7 +2788,7 @@ public class VentaPanel extends JFrame
 
 		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
-				Integer.valueOf(tfCondicionPago.getText()).intValue(),
+				Integer.valueOf(tfCondicionPago.getSelectedItem().toString()).intValue(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
 				itemTableModel.getEntities(), this.fechaImpresion);
 		clearForm();

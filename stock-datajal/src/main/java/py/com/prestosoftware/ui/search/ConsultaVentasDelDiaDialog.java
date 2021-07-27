@@ -107,13 +107,13 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					// aceptar();
+					aceptar();
 				}
 			}
 		});
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// aceptar();
+				aceptar();
 			}
 		});
 		pnlBotonera.add(btnAceptar);

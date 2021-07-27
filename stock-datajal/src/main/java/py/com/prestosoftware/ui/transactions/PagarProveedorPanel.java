@@ -65,7 +65,7 @@ import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.search.PagarProveedorDialog;
 import py.com.prestosoftware.ui.search.PagarProveedorInterfaz;
-import py.com.prestosoftware.ui.search.ProveedorDialog;
+import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.table.DetalleCuentaProveedorTableModel;
 import py.com.prestosoftware.ui.viewmodel.DetalleAPagarProveedorView;
@@ -128,12 +128,12 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	private PagarProveedor pagarProveedorSeleccionado;
 	private Double totalCalculado;
 	private PagarProveedorDialog pagarProveedorDialog;
-	private ProveedorDialog proveedorDialog;
+	private ConsultaProveedor proveedorDialog;
 
 	@Autowired
 	public PagarProveedorPanel(PagarProveedorService pagarProveedorService, DetalleCuentaProveedorTableModel itemTableModel, ItemPagarProveedorService itemPagarProveedorService, ItemCuentaAPagarService itemCuentaAPagarService,
 			ClienteService clienteService, CajaService cajaService, PagarProveedorDialog pagarProveedorDialog, MovimientoEgresoService movimientoEgresoService,MovimientoItemEgresoService movimientoItemEgresoService,
-			ProveedorDialog proveedorDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoPagoProveedoresService procesoPagarProveedorService,ProveedorService proveedorService) {
+			ConsultaProveedor proveedorDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoPagoProveedoresService procesoPagarProveedorService,ProveedorService proveedorService) {
 		this.pagarProveedorService = pagarProveedorService;
 		this.itemTableModel = itemTableModel;
 		this.cajaService = cajaService;
@@ -613,6 +613,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			break;
 		case ENTIDAD_CODE:
 			proveedorDialog.setInterfaz(this);
+			proveedorDialog.getProveedores("");
 			proveedorDialog.setVisible(true);
 			break;
 		default:
@@ -871,6 +872,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listMII,0);
 			itemTableModel.addEntities(listaCasteado);
 			calculateItem();
+			chkCobraTodos.requestFocus();
 		} else {
 			Notifications.showAlert("No existe cliente informado. Verifique por favor.!");
 		}

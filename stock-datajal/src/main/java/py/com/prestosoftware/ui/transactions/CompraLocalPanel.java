@@ -19,7 +19,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -102,8 +104,8 @@ import py.com.prestosoftware.util.Notifications;
 
 @Component("compraLocal")
 @Primary
-public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
-		ProductoInterfaz, PanelCompraInterfaz, CompraInterfaz, CondicionPagoInterfaz {
+public class CompraLocalPanel extends JFrame
+		implements ProveedorInterfaz, ProductoInterfaz, PanelCompraInterfaz, CompraInterfaz, CondicionPagoInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
@@ -116,7 +118,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 
 	private JTextField tfNombre, tfDescripcion, tfProductoID, tfProveedorID, tfPrecioTotal, tfCompraId;
 	private JTextField tfPrecio, tfCantidad, tfCantItem;
-	private JTextField tfCondicion;
+	private JComboBox<String> tfCondicion;
 	private JTextField tfObs, tfTotalGeneral, tfCuotaCant;
 	private JTextField tfRuc, tfDireccion;
 	private JTextField tfFactura;
@@ -148,7 +150,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	private ProductoDialog productoDialog;
 	private CondicionPagoService condicionPagoService;
 	private ConfiguracionService configService;
-	
+
 	private MovimientoIngresoService movimientoIngresoService;
 	private MovimientoItemIngresoService movimientoItemIngresoService;
 	private MovimientoEgresoService movimientoEgresoService;
@@ -161,12 +163,12 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	private Compra compraSeleccionado;
 
 	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
-			CompraDialog compraDialog, ProductoDialog productoDialog,
-			CompraService compraService, ProveedorService proveedorService, MonedaService monedaService,
-			DepositoService depositoService, CompraValidator compraValidator, ProductoService productoService,
-			CondicionPagoDialog condicionPagoDialog, CondicionPagoService condicionPagoService,
-			ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
-			MovimientoCajaService pagoService, MovimientoIngresoService movimientoIngresoService,
+			CompraDialog compraDialog, ProductoDialog productoDialog, CompraService compraService,
+			ProveedorService proveedorService, MonedaService monedaService, DepositoService depositoService,
+			CompraValidator compraValidator, ProductoService productoService, CondicionPagoDialog condicionPagoDialog,
+			CondicionPagoService condicionPagoService, ConfiguracionService configService,
+			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
+			MovimientoIngresoService movimientoIngresoService,
 			MovimientoItemIngresoService movimientoItemIngresoService, MovimientoEgresoService movimientoEgresoService,
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoPagoComprasService procesoPagoComprasService,
@@ -176,7 +178,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		this.proveedorDialog = proveedorDialog;
 		this.productoDialog = productoDialog;
 		this.compraService = compraService;
-		this.compraDialog=compraDialog;
+		this.compraDialog = compraDialog;
 		this.proveedorService = proveedorService;
 		this.productoService = productoService;
 		this.compraValidator = compraValidator;
@@ -330,9 +332,12 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 				}
 			}
 		});
-		btnRemove.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				removeItem();
+
+		btnRemove.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					removeItem();
+				}
 			}
 		});
 		btnRemove.setBounds(826, 30, 51, 30);
@@ -427,6 +432,13 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 				}
 			}
 		});
+		btnAdd.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					addItem();
+				}
+			}
+		});
 		btnAdd.setBounds(767, 30, 57, 30);
 		pnlProducto.add(btnAdd);
 
@@ -471,7 +483,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 					} else {
 						showDialog(PROVEEDOR_CODE);
 					}
-					
+
 				} else if (e.getKeyCode() == KeyEvent.VK_F4) {
 					showDialog(PROVEEDOR_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -526,6 +538,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 								tfProductoID.requestFocus();
 							}
 						}
+						tfProductoID.requestFocus();
 					} else {
 						Notifications.showAlert("Debes ingresar Proveedor y/o Factura Nro.");
 					}
@@ -587,7 +600,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		btnGuardar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.btnGuardar.text")); //$NON-NLS-1$
 		btnGuardar.setMnemonic('G');
-		//btnGuardar.setBounds(169, 5, 110, 34);
+		// btnGuardar.setBounds(169, 5, 110, 34);
 		btnGuardar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -600,15 +613,15 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 				save();
 			}
 		});
-		//pnlBotonera.setLayout(null);
+		// pnlBotonera.setLayout(null);
 		pnlBotonera.add(btnGuardar);
 		getContentPane().setLayout(null);
 		getContentPane().add(tabbedPane);
 		getContentPane().add(pnlCabezera);
 		getContentPane().add(pnlBotonera);
-		
+
 		btnAnular = new JButton("Anular"); //$NON-NLS-1$ //$NON-NLS-2$
-		//btnAnular.setBounds(400, 5, 110, 34);
+		// btnAnular.setBounds(400, 5, 110, 34);
 		btnAnular.setVisible(false);
 		btnAnular.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -627,9 +640,9 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			}
 
 		});
-		
+
 		pnlBotonera.add(btnAnular);
-		
+
 		btnReimpresion = new JButton("Re Impresión"); //$NON-NLS-1$ //$NON-NLS-2$
 		btnReimpresion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -637,48 +650,47 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		});
 		btnReimpresion.setBounds(289, 5, 101, 34);
 		pnlBotonera.add(btnReimpresion);
-		
-				btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
-						.getString("CompraPanel.btnCancelar.text")); //$NON-NLS-1$
-				btnCancelar.setMnemonic('C');
-				//btnCancelar.setBounds(520, 5, 110, 34);
-				btnCancelar.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-							cancelar();
-						}
-					}
-				});
-				btnCancelar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						cancelar();
-					}
-				});
-				pnlBotonera.add(btnCancelar);
-				
 
-				btnCerrar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
-						.getString("CompraPanel.btnCerrar.text")); //$NON-NLS-1$
-				btnCerrar.setMnemonic('E');
-				//btnCerrar.setBounds(640, 5, 110, 34);
-				btnCerrar.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				btnCerrar.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-							dispose();
-						}
-					}
-				});
-				pnlBotonera.add(btnCerrar);
+		btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
+				.getString("CompraPanel.btnCancelar.text")); //$NON-NLS-1$
+		btnCancelar.setMnemonic('C');
+		// btnCancelar.setBounds(520, 5, 110, 34);
+		btnCancelar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					cancelar();
+				}
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cancelar();
+			}
+		});
+		pnlBotonera.add(btnCancelar);
+
+		btnCerrar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
+				.getString("CompraPanel.btnCerrar.text")); //$NON-NLS-1$
+		btnCerrar.setMnemonic('E');
+		// btnCerrar.setBounds(640, 5, 110, 34);
+		btnCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnCerrar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					dispose();
+				}
+			}
+		});
+		pnlBotonera.add(btnCerrar);
 
 		panel = new JPanel();
-		//panel.setBounds(12, 468, 896, 85);
+		// panel.setBounds(12, 468, 896, 85);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -730,8 +742,9 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		label.setFont(new Font("Dialog", Font.BOLD, 20));
 		label.setBounds(276, 4, 14, 30);
 		pnlCliente.add(label);
-		
-		JButton btnVer = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages").getString("CompraLocalPanel.btnNewButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+
+		JButton btnVer = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
+				.getString("CompraLocalPanel.btnNewButton.text")); //$NON-NLS-1$
 		btnVer.setBounds(152, 8, 23, 23);
 		pnlCliente.add(btnVer);
 		btnVer.addKeyListener(new KeyAdapter() {
@@ -761,130 +774,125 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		label_6.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_6.setBounds(12, 443, 14, 25);
 		getContentPane().add(label_6);
-		
-				tfCondicion = new JTextField();
-				tfCondicion.setBounds(96, 474, 51, 30);
-				getContentPane().add(tfCondicion);
-				tfCondicion.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-							if (!tfCondicion.getText().isEmpty()) {
-								findCondicionPago(Integer.parseInt(tfCondicion.getText()));
-								if (tfCondicion.getText().equalsIgnoreCase("100")) {
-									tfCuotaCant.setText("0");
-									tfCuotaCant.setEnabled(true);
-									tfCuotaCant.requestFocus();
-									tfCuotaCant.selectAll();
-								}
-							} else
-								showDialog(CONDICION_PAGO_CODE);
-						}
-					}
 
-					@Override
-					public void keyTyped(KeyEvent e) {
-						Util.validateNumero(e);
-					}
-				});
-				tfCondicion.setFont(new Font("Dialog", Font.PLAIN, 14));
-				
-						JLabel lblCondicin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
-								.getString("CompraPanel.lblCondicin.text"));
-						lblCondicin.setBounds(12, 474, 74, 30);
-						getContentPane().add(lblCondicin);
-						
-								tfCuotaCant = new JTextField();
-								tfCuotaCant.setBounds(350, 508, 101, 30);
-								getContentPane().add(tfCuotaCant);
-								tfCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
-								// tfCuotaCant.setEditable(false);
-								tfCuotaCant.setFont(new Font("Dialog", Font.BOLD, 14));
-								tfCuotaCant.setColumns(10);
-								
-										JLabel lblCantItem = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
-												.getString("CompraPanel.lblCantItem.text"));
-										lblCantItem.setBounds(10, 508, 74, 30);
-										getContentPane().add(lblCantItem);
-										
-												tfCantItem = new JTextField();
-												tfCantItem.setBounds(96, 508, 51, 30);
-												getContentPane().add(tfCantItem);
-												tfCantItem.setFont(new Font("Dialog", Font.PLAIN, 14));
-												tfCantItem.setEditable(false);
-												tfCantItem.setColumns(10);
-																				
-																						JLabel lblSubTotal = new JLabel("Total : ");
-																						lblSubTotal.setBounds(463, 508, 74, 30);
-																						getContentPane().add(lblSubTotal);
-																						
-																								JLabel lblObs = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
-																										.getString("CompraPanel.lblObs.text"));
-																								lblObs.setBounds(677, 508, 74, 30);
-																								getContentPane().add(lblObs);
-																								
-																										tfTotalGeneral = new JTextField();
-																										tfTotalGeneral.setBounds(539, 508, 129, 30);
-																										getContentPane().add(tfTotalGeneral);
-																										tfTotalGeneral.setFont(new Font("Dialog", Font.BOLD, 20));
-																										tfTotalGeneral.setHorizontalAlignment(SwingConstants.RIGHT);
-																										tfTotalGeneral.setForeground(Color.RED);
-																										tfTotalGeneral.setEditable(false);
-																										tfTotalGeneral.setColumns(10);
-																										
-																												JLabel lblTotal = new JLabel("Cuota");
-																												lblTotal.setBounds(295, 508, 51, 30);
-																												getContentPane().add(lblTotal);
-																												
-																														tfObs = new JTextField();
-																														tfObs.setBounds(712, 508, 182, 30);
-																														getContentPane().add(tfObs);
-																														tfObs.setFont(new Font("Dialog", Font.BOLD, 14));
-																														((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-																														tfObs.addFocusListener(new FocusAdapter() {
-																															@Override
-																															public void focusGained(FocusEvent e) {
-																																tfObs.selectAll();
-																															}
-																														});
-																														tfObs.addKeyListener(new KeyAdapter() {
-																															@Override
-																															public void keyPressed(KeyEvent e) {
-																																if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-																																	btnGuardar.requestFocus();
-																																}
-																															}
-																														});
-																														tfObs.setColumns(10);
-																														
-																																label_4 = new JLabel("*");
-																																label_4.setBounds(80, 508, 14, 30);
-																																getContentPane().add(label_4);
-																																label_4.setVerticalAlignment(SwingConstants.BOTTOM);
-																																label_4.setToolTipText("Campos obligatorios");
-																																label_4.setHorizontalAlignment(SwingConstants.CENTER);
-																																label_4.setForeground(Color.RED);
-																																label_4.setFont(new Font("Dialog", Font.BOLD, 20));
-																																
-																																		lblVence = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
-																																				.getString("CompraLocalPanel.lblVence.text"));
-																																		lblVence.setBounds(148, 507, 51, 30);
-																																		getContentPane().add(lblVence);
-																																		
-																																				tfVence = new JTextField();
-																																				tfVence.setBounds(203, 508, 84, 30);
-																																				getContentPane().add(tfVence);
-																																				tfVence.setFont(new Font("Dialog", Font.PLAIN, 14));
-																																				tfVence.setEditable(false);
-																																				tfVence.setColumns(10);
-								tfCuotaCant.addKeyListener(new KeyAdapter() {
-									@Override
-									public void keyPressed(KeyEvent e) {
-										if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-											btnGuardar.requestFocus();
-										}
-									}
-								});
+		tfCondicion = new JComboBox<String>();
+		tfCondicion.setModel(new DefaultComboBoxModel(new String[] { "Contado", "30 días" }));
+		tfCondicion.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Date today = new Date();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(today);
+				if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
+					findCondicionPago(Integer.valueOf("0"));
+					btnGuardar.requestFocus();
+				} else if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+					findCondicionPago(Integer.valueOf(30));
+					tfCuotaCant.setText("1");
+					tfCuotaCant.setEnabled(false);
+				}
+			}
+		});
+
+		tfCondicion.setBounds(94, 507, 119, 30);
+		getContentPane().add(tfCondicion);
+		tfCondicion.setFont(new Font("Dialog", Font.PLAIN, 14));
+
+		JLabel lblCondicin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
+				.getString("CompraPanel.lblCondicin.text"));
+		lblCondicin.setBounds(10, 507, 74, 30);
+		getContentPane().add(lblCondicin);
+
+		tfCuotaCant = new JTextField();
+		tfCuotaCant.setBounds(431, 507, 44, 30);
+		getContentPane().add(tfCuotaCant);
+		tfCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
+		// tfCuotaCant.setEditable(false);
+		tfCuotaCant.setFont(new Font("Dialog", Font.BOLD, 14));
+		tfCuotaCant.setColumns(10);
+
+		JLabel lblCantItem = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
+				.getString("CompraPanel.lblCantItem.text"));
+		lblCantItem.setBounds(12, 467, 74, 30);
+		getContentPane().add(lblCantItem);
+
+		tfCantItem = new JTextField();
+		tfCantItem.setBounds(94, 467, 55, 30);
+		getContentPane().add(tfCantItem);
+		tfCantItem.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tfCantItem.setEditable(false);
+		tfCantItem.setColumns(10);
+
+		JLabel lblSubTotal = new JLabel("Total : ");
+		lblSubTotal.setBounds(485, 507, 74, 30);
+		getContentPane().add(lblSubTotal);
+
+		JLabel lblObs = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
+				.getString("CompraPanel.lblObs.text"));
+		lblObs.setBounds(677, 508, 74, 30);
+		getContentPane().add(lblObs);
+
+		tfTotalGeneral = new JTextField();
+		tfTotalGeneral.setBounds(539, 508, 129, 30);
+		getContentPane().add(tfTotalGeneral);
+		tfTotalGeneral.setFont(new Font("Dialog", Font.BOLD, 20));
+		tfTotalGeneral.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfTotalGeneral.setForeground(Color.RED);
+		tfTotalGeneral.setEditable(false);
+		tfTotalGeneral.setColumns(10);
+
+		JLabel lblTotal = new JLabel("Cuota");
+		lblTotal.setBounds(376, 507, 51, 30);
+		getContentPane().add(lblTotal);
+
+		tfObs = new JTextField();
+		tfObs.setBounds(712, 508, 182, 30);
+		getContentPane().add(tfObs);
+		tfObs.setFont(new Font("Dialog", Font.BOLD, 14));
+		((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+		tfObs.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfObs.selectAll();
+			}
+		});
+		tfObs.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGuardar.requestFocus();
+				}
+			}
+		});
+		tfObs.setColumns(10);
+
+		label_4 = new JLabel("*");
+		label_4.setBounds(70, 467, 14, 30);
+		getContentPane().add(label_4);
+		label_4.setVerticalAlignment(SwingConstants.BOTTOM);
+		label_4.setToolTipText("Campos obligatorios");
+		label_4.setHorizontalAlignment(SwingConstants.CENTER);
+		label_4.setForeground(Color.RED);
+		label_4.setFont(new Font("Dialog", Font.BOLD, 20));
+
+		lblVence = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
+				.getString("CompraLocalPanel.lblVence.text"));
+		lblVence.setBounds(227, 507, 51, 30);
+		getContentPane().add(lblVence);
+
+		tfVence = new JTextField();
+		tfVence.setBounds(282, 508, 84, 30);
+		getContentPane().add(tfVence);
+		tfVence.setFont(new Font("Dialog", Font.PLAIN, 14));
+		tfVence.setEditable(false);
+		tfVence.setColumns(10);
+		tfCuotaCant.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					btnGuardar.requestFocus();
+				}
+			}
+		});
 	}
 
 	private MaskFormatter formatoFecha;
@@ -928,9 +936,12 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		compra.setTipoCompra("LOCAL");
 		compra.setFactura(tfFactura.getText());
 		compra.setFechaCompra(Fechas.stringToDate(tfFechaCompra.getText()));
-		compra.setVencimiento(
-				Fechas.sumarFecha(Integer.parseInt(tfCondicion.getText()), 0, 0, tfFechaCompra.getText()));
-		compra.setCondicion(tfCondicion.getText().isEmpty() ? 0 : Integer.parseInt(tfCondicion.getText()));
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+			compra.setVencimiento(Fechas.sumarFecha(30, 0, 0, tfFechaCompra.getText()));
+			compra.setCondicion(30);
+		} else {
+			compra.setCondicion(0);
+		}
 		compra.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
 		compra.setCaja(new Caja(1L));
 		compra.setProveedor(new Proveedor(Long.valueOf(tfProveedorID.getText())));
@@ -941,7 +952,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
 			compra.setSituacion("PENDIENTE");
 		else {
-			if (!tfCondicion.getText().isEmpty() && tfCondicion.getText().equalsIgnoreCase("0")) {
+			if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
 				compra.setSituacion("PAGADO");
 				compra.setTotalPagado(tfTotalGeneral.getText().isEmpty() ? 0
 						: FormatearValor.stringToDouble(tfTotalGeneral.getText()));
@@ -949,36 +960,13 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 				compra.setSituacion("PROCESADO");
 		}
 		compra.setObs(tfObs.getText());
-//		compra.setGastos(tfFlete.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfFlete.getText()));
-//		compra.setDescuento(tfDescuento.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfDescuento.getText()));
 		compra.setTotalFob(
 				tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
 		compra.setCuotaCant(tfCuotaCant.getText().isEmpty() ? 0 : Integer.valueOf(tfCuotaCant.getText()));
 		compra.setTotalGeneral(
 				tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
 
-//		List<CompraDetalle> detalles = new ArrayList<>();
-//		
-//		if (!tfFlete.getText().isEmpty() || !tfDescuento.getText().isEmpty()) {
-//			//update precio fob
-//			Double desc = tfDescuento.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfDescuento.getText());
-//			Double gastos = tfFlete.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfFlete.getText());
-//			Double total = tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText());
-//			
-//			Double costoCif = ((total + gastos) - (-desc)) / total;
-//			
-//			for (CompraDetalle item : itemTableModel.getEntities()) {
-//				item.setPrecioFob(item.getPrecio());
-//				item.setPrecio(item.getPrecio() + costoCif);
-//				
-//				detalles.add(item);
-//			}
-//			
-//			compra.setItems(detalles);
-//		} else {
 		compra.setItems(itemTableModel.getEntities());
-//		}
-
 		return compra;
 	}
 
@@ -1057,16 +1045,16 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		Optional<CondicionPago> condicion = condicionPagoService.findByCantDia(cantDia);
 
 		if (condicion.isPresent()) {
-			tfCondicion.setText(String.valueOf(cantDia));
+			tfCondicion.setSelectedIndex(condicion.get().getCantDia());
 			tfVence.setText(Fechas.formatoDDMMAAAA(
-					Fechas.sumarFecha(Integer.parseInt(tfCondicion.getText()), 0, 0, tfFechaCompra.getText())));
+					Fechas.sumarFecha(condicion.get().getCantDia(), 0, 0, tfFechaCompra.getText())));
 		} else {
 			showDialog(CONDICION_PAGO_CODE);
 		}
 	}
 
 	private void save() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMA", "AVISO ", JOptionPane.OK_CANCEL_OPTION);
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMA LA OPCION DE PAGO "+tfCondicion.getSelectedItem().toString(), "AVISO ", JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (validateCabezera()) {
 				Compra compra = getCompra();
@@ -1085,7 +1073,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 							lanzamientoCaja(c);
 							openMovCaja(c);
 							openMovimientoEgresoProcesoPagoCompras(c);
-							if (!tfCondicion.getText().equalsIgnoreCase("0")) {
+							if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 								CuentaAPagar cuentaAPagar = new CuentaAPagar();
 								cuentaAPagar = cuentaAPagarProcesoPagoCompras(c);
 								movimientoIngresoProcesoPagoCompras(c, cuentaAPagar);
@@ -1134,16 +1122,13 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		movCaja.setTipoOperacion("S");
 		movCaja.setUsuario(GlobalVars.USER_ID);
 		movCaja.setValorM01(compra.getTotalGeneral());
-		if (tfCondicion.getText().equalsIgnoreCase("0")) {
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("0")) {
 			movCaja.setObs("Pagado al proveedor ");
 			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicion.getText().equalsIgnoreCase("100") && !tfCuotaCant.getText().isEmpty()) {
-			cant = Integer.valueOf(tfCuotaCant.getText());
+		} else if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30")) {
+			tfCuotaCant.setText("1");
+			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
 			movCaja.setObs("Credito a cuotas :" + cant);
-			movCaja.setSituacion("PROCESADO");
-		} else {
-			cant = 1;
-			movCaja.setObs("Credito a " + tfCondicion.getText() + " días");
 			movCaja.setSituacion("PROCESADO");
 		}
 		pagoService.save(movCaja);
@@ -1197,15 +1182,17 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		int cantDias = 0;
 		Date fechaVencimiento = new Date();
 		Calendar cal = Calendar.getInstance();
-		if (tfCondicion.getText().equalsIgnoreCase("100")) {
-			cant = Integer.valueOf(tfCuotaCant.getText());
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30")) {
+			cant =1;// Integer.valueOf(tfCuotaCant.getText());
 			cantDias = 30;
-		} else {
-			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(tfCondicion.getText()));
-			fechaVencimiento = cal.getTime();
-			cantDias = Integer.valueOf(tfCondicion.getText());
-			cant = 1;
-		}
+			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(30));
+		} 
+//else {
+//			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(tfCondicion.getText()));
+//			fechaVencimiento = cal.getTime();
+//			cantDias = Integer.valueOf(tfCondicion.getText());
+//			cant = 1;
+//		}
 		Double valorTotal = compra.getTotalGeneral() / cant;
 		for (int i = 0; i < cant; i++) {
 			ItemCuentaAPagar itemCuentaAPagar = new ItemCuentaAPagar();
@@ -1214,10 +1201,10 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			itemCuentaAPagar.setIcpMonto(valorTotal);
 			itemCuentaAPagar.setIcpSituacion(0);
 			itemCuentaAPagar.setIcpDocumento(cant + "/" + (i + 1));
-			if (!tfCondicion.getText().equalsIgnoreCase("100"))
-				itemCuentaAPagar.setIcpVencimiento(fechaVencimiento);
-			else
-				itemCuentaAPagar.setIcpVencimiento(cal.getTime());
+//			if (!tfCondicion.getText().equalsIgnoreCase("100"))
+//				itemCuentaAPagar.setIcpVencimiento(fechaVencimiento);
+//			else
+			itemCuentaAPagar.setIcpVencimiento(cal.getTime());
 			itemCuentaAPagar.setIcpDias(cantDias);
 
 			listaItemCuentaAPagar.add(itemCuentaAPagar);
@@ -1281,10 +1268,10 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 
 				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 					removeMovCaja(compraSeleccionado);
-					//removeMovimientoIngresoProcesoCobroVenta(compraSeleccionado);
+					// removeMovimientoIngresoProcesoCobroVenta(compraSeleccionado);
 					removeMovimientoEgresoProcesoPagoCompras(compraSeleccionado);
-					if (!tfCondicion.getText().equalsIgnoreCase("0")) {
-						Integer cuentaAPagar=removeCuentaAPagarProcesoPagoCompras(compraSeleccionado);
+					if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+						Integer cuentaAPagar = removeCuentaAPagarProcesoPagoCompras(compraSeleccionado);
 						removeMovimientoIngresoProcesoPagoCompras(compraSeleccionado, cuentaAPagar);
 					}
 				}
@@ -1346,7 +1333,8 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 
 	private void removeMovCaja(Compra compra) {
 		// cierre de caja del dia anterio
-		Optional<MovimientoCaja> movimientoCaja = pagoService.findByNotaNroAndTipoOperacion(compra.getId().toString(),"S");
+		Optional<MovimientoCaja> movimientoCaja = pagoService.findByNotaNroAndTipoOperacion(compra.getId().toString(),
+				"S");
 		if (movimientoCaja.isPresent()) {
 			MovimientoCaja mc = movimientoCaja.get();
 			mc.setObs("COMPRA ANULADO");
@@ -1355,37 +1343,41 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		}
 		// remover los otros movimientos insertados
 	}
-	
+
 	private void removeMovimientoIngresoProcesoPagoCompras(Compra compra, Integer cuentaAPagar) {
 		MovimientoIngreso m = movimientoIngresoService.findByMinProceso(cuentaAPagar);
 		Integer cabId = m.getMinNumero();
-		
+
 		List<MovimientoItemIngreso> mii = movimientoItemIngresoService.findByCabId(cabId);
 		for (MovimientoItemIngreso movimientoItemIngreso : mii) {
 			movimientoItemIngresoService.remove(movimientoItemIngreso);
 		}
 		movimientoIngresoService.remove(m);
-		
-		ProcesoPagoCompras ppc = procesoPagoComprasService.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()),cabId);
+
+		ProcesoPagoCompras ppc = procesoPagoComprasService
+				.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()), cabId);
 		procesoPagoComprasService.remove(ppc);
 	}
-	
+
 	private void removeMovimientoEgresoProcesoPagoCompras(Compra compra) {
-		MovimientoEgreso movEgreso = movimientoEgresoService.findByMegProceso(Integer.valueOf(compra.getId().toString()));
-		Integer idEgreso= movEgreso.getMegNumero();
+		MovimientoEgreso movEgreso = movimientoEgresoService
+				.findByMegProceso(Integer.valueOf(compra.getId().toString()));
+		Integer idEgreso = movEgreso.getMegNumero();
 		List<MovimientoItemEgreso> movItemEgreso = movimientoItemEgresoService.findByCabId(movEgreso.getMegNumero());
 		for (MovimientoItemEgreso movimientoItemEgreso : movItemEgreso) {
 			movimientoItemEgresoService.remove(movimientoItemEgreso);
 		}
 		movimientoEgresoService.remove(movEgreso);
-		
-		ProcesoPagoCompras ppc = procesoPagoComprasService.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()),idEgreso);
+
+		ProcesoPagoCompras ppc = procesoPagoComprasService
+				.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()), idEgreso);
 		procesoPagoComprasService.remove(ppc);
 	}
-	
+
 	private Integer removeCuentaAPagarProcesoPagoCompras(Compra compra) {
-		CuentaAPagar cuentaAPagar = cuentaAPagarService.findByCapProcesoAndIdEntidad(Integer.valueOf(compra.getId().toString()),compra.getProveedor().getId());
-		Integer cabId=cuentaAPagar.getCapNumero();
+		CuentaAPagar cuentaAPagar = cuentaAPagarService.findByCapProcesoAndIdEntidad(
+				Integer.valueOf(compra.getId().toString()), compra.getProveedor().getId());
+		Integer cabId = cuentaAPagar.getCapNumero();
 		cuentaAPagarService.remove(cuentaAPagar);
 
 		List<ItemCuentaAPagar> listaItemCuentaAPagar = itemCuentaAPagarService.findByCabId(cabId);
@@ -1394,12 +1386,13 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		}
 
 		// Proceso Pago Compras
-		ProcesoPagoCompras pcv = procesoPagoComprasService.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()), cabId);
+		ProcesoPagoCompras pcv = procesoPagoComprasService
+				.findByPcoCompraAndPcoProceso(Integer.valueOf(compra.getId().toString()), cabId);
 		procesoPagoComprasService.remove(pcv);
-				
+
 		return cabId;
 	}
-	
+
 	private Configuracion conf;
 	private JLabel lblVence;
 	private JTextField tfVence;
@@ -1443,15 +1436,15 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 //			tfMonedaID.requestFocus();
 //			return false;
 //		} 
-		else if (tfCondicion.getText().equalsIgnoreCase("100")) {
-			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
-				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
-				return false;
-			} else {
-				cant = Integer.valueOf(tfCuotaCant.getText());
-			}
-
-		}
+//		else if (tfCondicion.getText().equalsIgnoreCase("100")) {
+//			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
+//				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
+//				return false;
+//			} else {
+//				cant = Integer.valueOf(tfCuotaCant.getText());
+//			}
+//
+//		}
 
 		Optional<Proveedor> proveedor = proveedorService.findById(Long.valueOf(tfProveedorID.getText()));
 
@@ -1461,13 +1454,13 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			return false;
 		}
 
-		if (!tfCondicion.getText().isEmpty() && tfCondicion.getText().equalsIgnoreCase("100")
-				&& tfCuotaCant.getText().equalsIgnoreCase("0")) {
-			Notifications.showAlert("La cantidad de cuota debe ser mayor a 0 (cero)");
-			tfCuotaCant.requestFocus();
-			tfCuotaCant.selectAll();
-			return false;
-		}
+//		if (!tfCondicion.getText().isEmpty() && tfCondicion.getText().equalsIgnoreCase("100")
+//				&& tfCuotaCant.getText().equalsIgnoreCase("0")) {
+//			Notifications.showAlert("La cantidad de cuota debe ser mayor a 0 (cero)");
+//			tfCuotaCant.requestFocus();
+//			tfCuotaCant.selectAll();
+//			return false;
+//		}
 
 		return true;
 	}
@@ -1491,7 +1484,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		tfCantidad.setText("");
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
-		//tfGasto.setText("");
+		// tfGasto.setText("");
 
 		tfProductoID.requestFocus();
 	}
@@ -1499,7 +1492,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	public void setTotals(Double cantItem, Double total) {
 //		Double descuento = tfDescuento.getText().isEmpty() ? 0d : Double.valueOf(tfDescuento.getText());
 //		Double flete = tfFlete.getText().isEmpty() ? 0d : Double.valueOf(tfFlete.getText());
-		Double totalGeneral = total; //(total + flete) - descuento;
+		Double totalGeneral = total; // (total + flete) - descuento;
 		// Double precioFob = total - descuento;
 
 		tfTotalGeneral.setText(FormatearValor.doubleAString(totalGeneral));
@@ -1526,7 +1519,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		tfCantItem.setText("");
 //		tfDescuento.setText("");
 //		tfFlete.setText("");
-		tfCondicion.setText("0");
+		tfCondicion.setSelectedIndex(0);
 		tfVence.setText("");
 
 		while (itemTableModel.getRowCount() > 0) {
@@ -1563,13 +1556,14 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	private void calculatePrecioTotal() {
 		Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
 		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
-		//Double gastoUnit = FormatearValor.stringToDouble(!tfGasto.getText().isEmpty() ? tfGasto.getText() : "0");
+		// Double gastoUnit = FormatearValor.stringToDouble(!tfGasto.getText().isEmpty()
+		// ? tfGasto.getText() : "0");
 		Double precioTotal = (cantidad * precioUnit);// + gastoUnit;
 
 		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
 
 		btnAdd.requestFocus();
-		
+
 	}
 
 	private void cancelar() {
@@ -1580,16 +1574,18 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	private void showDialog(int code) {
 		switch (code) {
 		case PROVEEDOR_CODE:
+			proveedorDialog.getProveedores("");
 			proveedorDialog.setInterfaz(this);
+			// proveedorDialog.
 			proveedorDialog.setVisible(true);
 			break;
 		case MONEDA_CODE:
-			//monedaDialog.setInterfaz(this);
-			//monedaDialog.setVisible(true);
+			// monedaDialog.setInterfaz(this);
+			// monedaDialog.setVisible(true);
 			break;
 		case DEPOSITO_CODE:
-			//depositoDialog.setInterfaz(this);
-			//depositoDialog.setVisible(true);
+			// depositoDialog.setInterfaz(this);
+			// depositoDialog.setVisible(true);
 			break;
 		case PRODUCTO_CODE:
 			productoDialog.setInterfaz(this);
@@ -1603,7 +1599,7 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			compraDialog.setInterfaz(this);
 			compraDialog.loadCompras();
 			compraDialog.setVisible(true);
-			break;	
+			break;
 		default:
 			break;
 		}
@@ -1636,7 +1632,6 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		}
 	}
 
-	
 	private void findProductoById(Long id) {
 		Optional<Producto> producto = productoService.findById(id);
 
@@ -1727,30 +1722,27 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 //	}
 
 	private void calculateItem() {
-		Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
-		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
-		setTotals(cantItem, total);
+		if (itemTableModel.getEntities().size() > 0) {
+			Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
+			Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+			setTotals(cantItem, total);
+		}
 	}
-
-	
 
 	@Override
 	public void getEntity(Producto producto) {
 		setProducto(producto);
 	}
 
-	
-
 	@Override
 	public void getEntity(Proveedor p) {
 		if (p != null) {
 			tfProveedorID.setText(String.valueOf(p.getId()));
+			tfNombre.setText(p.getNombre());
 			tfRuc.setText(p.getRuc());
 			tfDireccion.setText(p.getDireccion());
 		}
 	}
-
-	
 
 	@Override
 	public void goToPedidoCompra() {
@@ -1765,6 +1757,8 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 			btnAnular.setVisible(true);
 			btnReimpresion.setVisible(true);
 			btnGuardar.setVisible(false);
+			btnAdd.setEnabled(false);
+			btnRemove.setEnabled(false);
 			loadCompra(c);
 		}
 	}
@@ -1802,11 +1796,16 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
 		tfFactura.setText(c.getFactura());
 		tfFechaCompra.setText(c.getFechaCompra() == null ? "" : String.valueOf(c.getFechaCompra()));
-		tfCondicion.setText(String.valueOf(c.getCondicion()));
+		//tfCondicion.setSelectedItem(String.valueOf(c.getCondicion()));
+		if (c.getCondicion() == 0)
+			tfCondicion.setSelectedIndex(0);
+		else
+			tfCondicion.setSelectedIndex(1);
+
 		tfCantItem.setText(FormatearValor.doubleAString(c.getTotalItem()));
 		tfObs.setText(c.getObs());
-		//tfFlete.setText(FormatearValor.doubleAString(c.getGastos()));
-		//tfDescuento.setText(FormatearValor.doubleAString(c.getDescuento()));
+		// tfFlete.setText(FormatearValor.doubleAString(c.getGastos()));
+		// tfDescuento.setText(FormatearValor.doubleAString(c.getDescuento()));
 		tfTotalGeneral.setText(FormatearValor.doubleAString(c.getTotalFob()));
 		tfCuotaCant.setText(c.getCuotaCant().toString());
 
@@ -1820,16 +1819,19 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		resetProveedor();
 		resetCompra();
 		tfCompraId.setText(String.valueOf(newId));
+		btnAdd.setEnabled(true);
+		btnRemove.setEnabled(true);
 		tfCuotaCant.setEnabled(false);
 		btnAnular.setVisible(false);
 		btnReimpresion.setVisible(false);
+		btnGuardar.setVisible(true);
 		tfProveedorID.requestFocus();
-		
+
 //		if (conf.getDefineDepositoCompra() != 0) {
 //			findDepositoById(String.valueOf(conf.getDefineDepositoCompra()));
 //		}
 	}
-	
+
 	private void resetProveedor() {
 		tfProveedorID.setText("");
 		tfNombre.setText("");
@@ -1845,20 +1847,20 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 		tfObs.setText("");
 		tfTotalGeneral.setText("0");
 		tfCantItem.setText("0");
-		//tfDescuento.setText("0");
+		// tfDescuento.setText("0");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
-		tfCondicion.setText("0");
+		tfCondicion.setSelectedIndex(0);
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
 		}
 	}
-	
+
 	@Override
 	public void getEntity(CondicionPago condicionPago) {
 		if (condicionPago != null) {
-			tfCondicion.setText(String.valueOf(condicionPago.getCantDia()));
-			//tfFlete.requestFocus();
+			//tfCondicion.setText(String.valueOf(condicionPago.getCantDia()));
+			// tfFlete.requestFocus();
 		}
 	}
 
@@ -1881,18 +1883,18 @@ public class CompraLocalPanel extends JFrame implements ProveedorInterfaz,
 	@Override
 	public void goToCompraLocal() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void goToCompraImportacion() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void goToCompraConsiganada() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
