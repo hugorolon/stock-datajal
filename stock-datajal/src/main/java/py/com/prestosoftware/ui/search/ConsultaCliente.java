@@ -33,6 +33,7 @@ import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ClienteConsultaTableModel;
+import java.awt.Font;
 
 @Component
 public class ConsultaCliente extends JDialog {
@@ -51,6 +52,7 @@ public class ConsultaCliente extends JDialog {
 	private ClienteInterfaz interfaz;
 
 	private List<Cliente> clientes;
+	private JButton btnActualizarLista;
 
 	@Autowired
 	public ConsultaCliente(ClienteService service, ClienteConsultaTableModel tableModel) {
@@ -72,9 +74,11 @@ public class ConsultaCliente extends JDialog {
 
 		JLabel lblBuscador = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("ClienteDialog.lblBuscador.text")); //$NON-NLS-1$
+		lblBuscador.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBuscador.add(lblBuscador);
 
 		tfBuscador = new JTextField();
+		tfBuscador.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfBuscador.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -92,6 +96,7 @@ public class ConsultaCliente extends JDialog {
 
 		btnBuscar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("ClienteDialog.btnBuscar.text")); //$NON-NLS-1$
+		btnBuscar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getClientes(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
@@ -106,11 +111,21 @@ public class ConsultaCliente extends JDialog {
 			}
 		});
 		pnlBuscador.add(btnBuscar);
+		
+		btnActualizarLista = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages").getString("ConsultaCliente.btnNewButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnActualizarLista.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getClientes("");
+			}
+		});
+		btnActualizarLista.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlBuscador.add(btnActualizarLista);
 
 		scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
 
 		table = new JTable(tableModel);
+		table.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		ListSelectionModel cellSelectionModel = table.getSelectionModel();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table.setDefaultRenderer(Object.class, new CellRendererOperaciones());
@@ -145,6 +160,7 @@ public class ConsultaCliente extends JDialog {
 
 		btnAceptar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("ClienteDialog.btnAceptar.text")); //$NON-NLS-1$
+		btnAceptar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnAceptar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -162,6 +178,7 @@ public class ConsultaCliente extends JDialog {
 
 		btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("ClienteDialog.btnCancelar.text")); //$NON-NLS-1$
+		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnCancelar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {

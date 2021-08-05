@@ -533,6 +533,10 @@ public class MainFrame extends JFrame {
 //		panel_1.add(btnProveedores);
 		
 		btnVentas = new JButton("VENTAS");
+		btnVentas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnVentas.setFont(new Font("Lucida Grande", Font.BOLD, 20));
 		
 //		btnProductos = new JButton("PRODUCTOS");

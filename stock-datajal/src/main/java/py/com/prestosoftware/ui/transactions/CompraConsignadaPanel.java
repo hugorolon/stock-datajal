@@ -31,7 +31,7 @@ import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.DepositoInterfaz;
 import py.com.prestosoftware.ui.search.MonedaDialog;
 import py.com.prestosoftware.ui.search.MonedaInterfaz;
-import py.com.prestosoftware.ui.search.ProductoDialog;
+import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.shared.PanelCompraInterfaz;
@@ -100,7 +100,7 @@ public class CompraConsignadaPanel extends JFrame implements ProveedorInterfaz,
     private ConsultaProveedor proveedorDialog;
     private DepositoDialog depositoDialog;
     private MonedaDialog monedaDialog;
-    private ProductoDialog productoDialog;
+    private ProductoVistaDialog productoDialog;
     private CompraService compraService;
     private ProveedorService proveedorService;
     private MonedaService monedaService;
@@ -110,7 +110,7 @@ public class CompraConsignadaPanel extends JFrame implements ProveedorInterfaz,
     
     public CompraConsignadaPanel(CompraItemTableModel itemTableModel, 
     		ConsultaProveedor proveedorDialog, DepositoDialog depositoDialog, MonedaDialog monedaDialog,
-		ProductoDialog productoDialog, CompraService compraService, ProveedorService proveedorService, 
+		ProductoVistaDialog productoDialog, CompraService compraService, ProveedorService proveedorService, 
 		MonedaService monedaService, DepositoService depositoService, CompraValidator compraValidator,
 		ProductoService productoService ) {
     	this.itemTableModel = itemTableModel;

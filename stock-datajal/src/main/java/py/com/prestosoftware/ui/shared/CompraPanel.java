@@ -35,7 +35,7 @@ import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.MonedaDialog;
-import py.com.prestosoftware.ui.search.ProductoDialog;
+import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.table.CompraImportacionTableModel;
 import py.com.prestosoftware.ui.table.CompraItemTableModel;
 import py.com.prestosoftware.ui.table.PedidoItemTableModel;
@@ -62,7 +62,7 @@ public class CompraPanel extends JDialog {
     private ConsultaProveedor proveedorDialog;
     private DepositoDialog depositoDialog;
     private MonedaDialog monedaDialog;
-    private ProductoDialog productoDialog;
+    private ProductoVistaDialog productoDialog;
     private CompraImportacionTableModel gastoTableModel;
     
     private CompraService compraService;
@@ -85,7 +85,6 @@ public class CompraPanel extends JDialog {
     private CondicionPagoService condicionPagoService;
     private ConfiguracionService configService;
     
-    private CuentaProveedorService cuentaProveedorService;
     private MovimientoIngresoService movimientoIngresoService;
     private MovimientoItemIngresoService movimientoItemIngresoService;
 	private MovimientoEgresoService movimientoEgresoService;
@@ -98,7 +97,7 @@ public class CompraPanel extends JDialog {
     @Autowired
 	public CompraPanel(PanelCompraInterfaz panelInterfaz, CompraItemTableModel itemTableModel,
 			CompraImportacionTableModel gastoTableModel, ConsultaProveedor proveedorDialog,
-			DepositoDialog depositoDialog, MonedaDialog monedaDialog, ProductoDialog productoDialog,
+			DepositoDialog depositoDialog, MonedaDialog monedaDialog, ProductoVistaDialog productoDialog,
 			CompraService compraService, CompraDialog compraDialog, ProveedorService proveedorService, MonedaService monedaService,
 			DepositoService depositoService, ProductoService productoService, 
 			CompraValidator compraValidator, PedidoService pedidoService,
@@ -106,7 +105,7 @@ public class CompraPanel extends JDialog {
 			CompraImportacionPanel compraImportacion, CondicionPagoDialog condicionPagoDialog,
 			CompraConsignadaPanel compraConsignada, CondicionPagoService condicionPagoService,
 			PedidoCompraPanel pedidoCompra, ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
-			MovimientoCajaService pagoService, CuentaProveedorService cuentaProveedorService, MovimientoIngresoService movimientoIngresoService,	MovimientoItemIngresoService movimientoItemIngresoService,
+			MovimientoCajaService pagoService,  MovimientoIngresoService movimientoIngresoService,	MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoEgresoService movimientoEgresoService, MovimientoItemEgresoService movimientoItemEgresoService, ProcesoPagoComprasService procesoPagoComprasService,
 			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService, ItemCuentaAPagarService itemCuentaAPagarService) {
 		this.panelInterfaz = panelInterfaz;
@@ -135,7 +134,6 @@ public class CompraPanel extends JDialog {
 		this.movCajaService = movCajaService;
 		this.cajaService = cajaService;
 		this.pagoService = pagoService;
-		this.cuentaProveedorService= cuentaProveedorService;
 		this.movimientoIngresoService =movimientoIngresoService;
 		this.movimientoItemIngresoService =movimientoItemIngresoService;
 		this.movimientoEgresoService =movimientoEgresoService;

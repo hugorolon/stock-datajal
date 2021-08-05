@@ -22,7 +22,7 @@ import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.PedidoInterfaz;
-import py.com.prestosoftware.ui.search.ProductoDialog;
+import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.shared.PanelCompraInterfaz;
@@ -80,14 +80,14 @@ public class PedidoCompraPanel extends JFrame implements ProveedorInterfaz,
     private PedidoItemTableModel itemTableModel;
     private CompraImportacionTableModel gastoTableModel;
     private ConsultaProveedor proveedorDialog;
-    private ProductoDialog productoDialog;
+    private ProductoVistaDialog productoDialog;
     private PedidoService pedidoService;
     private ProveedorService proveedorService;
     private ProductoService productoService;
     private PedidoValidator pedidoValidator;
     
     public PedidoCompraPanel(PedidoItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
-		ProductoDialog productoDialog, PedidoService pedidoService, 
+		ProductoVistaDialog productoDialog, PedidoService pedidoService, 
 		ProveedorService proveedorService, ProductoService productoService ) {
     	
     	setTitle(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages").getString("PedidoCompraPanel.this.title")); //$NON-NLS-1$ //$NON-NLS-2$

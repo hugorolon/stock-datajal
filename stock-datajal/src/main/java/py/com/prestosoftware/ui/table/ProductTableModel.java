@@ -12,7 +12,7 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] {"COD", "DESCRIPCION", "SALDO", "BLOQ.", "PRECIO A", "PRECIO B", "PRECIO C" };
+        return new String[] {"CODIGO", "DESCRIPCION", "SALDO", "BLOQ.", "PRECIO A", "PRECIO B", "PRECIO C" };
     }
 
     @Override
