@@ -88,7 +88,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performNota(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			int condicion, String vendedor, String  total, List<VentaDetalle> items) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -131,7 +131,7 @@ public class ImpresionUtil {
 	    
 	    String condicionValue = "";
 	    
-	    if (condicion == 0) {
+	    if (condicion.equalsIgnoreCase("contado")) {
 	    	parametros.put("contado", "X");
 	    	parametros.put("credito", "");
 	    	condicionValue = "CONTADO";
@@ -160,7 +160,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performFactura(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			int condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -205,7 +205,7 @@ public class ImpresionUtil {
 	    
 	    String condicionValue = "";
 	    
-	    if (condicion == 0) {
+	    if (condicion.equalsIgnoreCase("contado")) {
 	    	parametros.put("contado", "X");
 	    	parametros.put("credito", "");
 	    	condicionValue = "CONTADO";
