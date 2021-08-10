@@ -49,4 +49,7 @@ public class ItemCuentaAPagarService {
 		repository.delete(itemCuentaAPagar);
 	}
 
+	public long getSecuencia() {
+		return repository.getSecuencia();
+	}
 }

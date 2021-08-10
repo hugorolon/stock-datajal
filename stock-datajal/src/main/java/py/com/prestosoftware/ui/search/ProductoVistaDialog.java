@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -546,7 +547,7 @@ public class ProductoVistaDialog extends JDialog {
 		loadProductos("");
 	}
 	public void inicializaProductos() {
-		productos.clear();
+		productos=new ArrayList<Producto>();
 	}
 	private void getStockProductosByDeposito(Producto p) {
 		depositoTableModel.clear();
@@ -661,11 +662,14 @@ public class ProductoVistaDialog extends JDialog {
 		String precio="";
 		try {
 			if(nivelPrecio.equalsIgnoreCase("Precio A")) {
-				precio=FormatearValor.doubleAString(p.getPrecioVentaA());
+				double precioA=Math.round(p.getPrecioVentaA());
+				precio=FormatearValor.doubleAString(precioA);
 			}else if (nivelPrecio.equalsIgnoreCase("Precio B")) {
-				precio=FormatearValor.doubleAString(p.getPrecioVentaB());
+				double precioB=Math.round(p.getPrecioVentaB());
+				precio=FormatearValor.doubleAString(precioB);
 			}else if (nivelPrecio.equalsIgnoreCase("Precio C")) {
-				precio=FormatearValor.doubleAString(p.getPrecioVentaC());
+				double precioC=Math.round(p.getPrecioVentaC());
+				precio=FormatearValor.doubleAString(precioC);
 			}
 			lblPrecioVentaValor.setText(precio);
 		} catch (Exception e) {

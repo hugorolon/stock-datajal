@@ -802,6 +802,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		btnGuardar.setVisible(true);
 		btnAnula.setVisible(false);
 		itemTableModel.clear();
+		tfEntidad.requestFocus();
 		habilitaEdicion();
 	}
 

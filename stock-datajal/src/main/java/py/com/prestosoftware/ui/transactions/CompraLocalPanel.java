@@ -1073,7 +1073,7 @@ public class CompraLocalPanel extends JFrame
 		Optional<CondicionPago> condicion = condicionPagoService.findByCantDia(cantDia);
 
 		if (condicion.isPresent()) {
-			tfCondicion.setSelectedIndex(condicion.get().getCantDia());
+			//tfCondicion.setSelectedIndex(condicion.get().getCantDia());
 			getFecha();
 			tfVence.setText(Fechas.formatoDDMMAAAA(
 					Fechas.sumarFecha(condicion.get().getCantDia(), 0, 0, tfFechaCompra.getText())));
@@ -1153,10 +1153,10 @@ public class CompraLocalPanel extends JFrame
 		movCaja.setTipoOperacion("S");
 		movCaja.setUsuario(GlobalVars.USER_ID);
 		movCaja.setValorM01(compra.getTotalGeneral());
-		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("0")) {
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("contado")) {
 			movCaja.setObs("Pagado al proveedor ");
 			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30")) {
+		} else if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			tfCuotaCant.setText("1");
 			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
 			movCaja.setObs("Credito a cuotas :" + cant);
@@ -1213,7 +1213,7 @@ public class CompraLocalPanel extends JFrame
 		int cantDias = 0;
 		Date fechaVencimiento = new Date();
 		Calendar cal = Calendar.getInstance();
-		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30")) {
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			cant =1;// Integer.valueOf(tfCuotaCant.getText());
 			cantDias = 30;
 			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(30));
@@ -1226,12 +1226,14 @@ public class CompraLocalPanel extends JFrame
 //		}
 		Double valorTotal = compra.getTotalGeneral() / cant;
 		for (int i = 0; i < cant; i++) {
+			long secuencia = itemCuentaAPagarService.getSecuencia();
 			ItemCuentaAPagar itemCuentaAPagar = new ItemCuentaAPagar();
 			cal.add(Calendar.MONTH, 1);
 			itemCuentaAPagar.setIcpCuenta(cuentaAPagar.getCapNumero());
 			itemCuentaAPagar.setIcpMonto(valorTotal);
 			itemCuentaAPagar.setIcpSituacion(0);
 			itemCuentaAPagar.setIcpDocumento(cant + "/" + (i + 1));
+			itemCuentaAPagar.setIcpSecuencia(Integer.valueOf((int) (secuencia+1)));
 //			if (!tfCondicion.getText().equalsIgnoreCase("100"))
 //				itemCuentaAPagar.setIcpVencimiento(fechaVencimiento);
 //			else
@@ -1588,7 +1590,7 @@ public class CompraLocalPanel extends JFrame
 		Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
 		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 		// Double gastoUnit = FormatearValor.stringToDouble(!tfGasto.getText().isEmpty()
-		// ? tfGasto.getText() : "0");
+		tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
 		Double precioTotal = (cantidad * precioUnit);// + gastoUnit;
 
 		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
@@ -1858,10 +1860,6 @@ public class CompraLocalPanel extends JFrame
 		btnReimpresion.setVisible(false);
 		btnGuardar.setVisible(true);
 		tfProveedorID.requestFocus();
-
-//		if (conf.getDefineDepositoCompra() != 0) {
-//			findDepositoById(String.valueOf(conf.getDefineDepositoCompra()));
-//		}
 	}
 
 	private void resetProveedor() {
@@ -1910,6 +1908,14 @@ public class CompraLocalPanel extends JFrame
 
 	public void setCompraSeleccionado(Compra compraSeleccionado) {
 		this.compraSeleccionado = compraSeleccionado;
+	}
+	
+	public JTextField getTfProveedorID() {
+		return tfProveedorID;
+	}
+
+	public void setTfProveedorID(JTextField tfProveedorID) {
+		this.tfProveedorID = tfProveedorID;
 	}
 
 	@Override

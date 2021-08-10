@@ -23,8 +23,6 @@ public class PagarProveedor {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	
 	@Column(name = "ppr_numero")
 	private Integer pprNumero;
 	
@@ -74,21 +72,6 @@ public class PagarProveedor {
 	
 	public PagarProveedor() { }
 	
-	
-	
-
-	public Integer getId() {
-		return id;
-	}
-
-
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-
 
 
 	public Integer getPprNumero() {

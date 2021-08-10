@@ -18,7 +18,7 @@ public class ProveedorService {
     }
 
     public List<Proveedor> findAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByIdAsc();
     }
     
     public List<Proveedor> findByNombre(String nombre) {

@@ -14,6 +14,9 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 	
 	Cliente findByCiruc(String ciruc);
 	
+	List<Cliente> findAllByOrderByIdAsc();
+	
+	
 	@Query("SELECT coalesce(max(id), 0) FROM Cliente e")
 	Long getMaxId();
 	

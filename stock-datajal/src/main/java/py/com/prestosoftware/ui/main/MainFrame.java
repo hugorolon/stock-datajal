@@ -150,29 +150,41 @@ public class MainFrame extends JFrame {
 		setJMenuBar(menuBar);
 		
 		JMenu mnuRegistros = new JMenu("REGISTROS");
+		mnuRegistros.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuRegistros.setMnemonic('R');
 		JMenu mnuProducto = new JMenu("PRODUCTOS");
+		mnuProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		menuBar.add(mnuRegistros);
 
 		mnuMercaderia = new JMenuItem("MERCADERIAS");
+		mnuMercaderia.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMercaderia.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK));
 		mnuCategoria = new JMenuItem("CATEGORIAS");
+		mnuCategoria.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuCategoria.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		mnuGrupo = new JMenuItem("GRUPOS");
+		mnuGrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuGrupo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.CTRL_MASK));
 		mnuNcm = new JMenuItem("NCM");
+		mnuNcm.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuNcm.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_MASK));
 		mnuMarca = new JMenuItem("MARCAS");
+		mnuMarca.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMarca.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK));
 		mnuImpuesto = new JMenuItem("IMPUESTO IVA");
+		mnuImpuesto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuImpuesto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK));
 		mnuTamanhos = new JMenuItem("TAMAÑOS");
+		mnuTamanhos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuTamanhos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK));
 		mnuColores = new JMenuItem("COLORES");
+		mnuColores.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuColores.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
 		mnuUnidadMedida = new JMenuItem("UNIDAD DE MEDIDA");
+		mnuUnidadMedida.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuUnidadMedida.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK));
 		mnuListaPrecio = new JMenuItem("LISTA DE PRECIOS");
+		mnuListaPrecio.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuListaPrecio.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
 		
 		mnuProducto.add(mnuMercaderia);
@@ -180,10 +192,12 @@ public class MainFrame extends JFrame {
 		mnuProducto.add(mnuGrupo);
 		mnuProducto.addSeparator();
 		mnuSubgrupo = new JMenuItem("SUB GRUPOS");
+		mnuSubgrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuSubgrupo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
 		mnuProducto.add(mnuSubgrupo);
 		mnuProducto.addSeparator();
 		mnuEmpaque_2 = new JMenuItem("EMPAQUES");
+		mnuEmpaque_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuProducto.add(mnuEmpaque_2);
 		mnuProducto.addSeparator();
 		mnuProducto.add(mnuNcm);
@@ -203,12 +217,15 @@ public class MainFrame extends JFrame {
 		mnuProducto.add(mnuListaPrecio);
 		
 		mnuProveedor = new JMenuItem("PROVEEDORES");
+		mnuProveedor.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuProveedor.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
 		mnuCliente = new JMenuItem("CLIENTES");
+		mnuCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuCliente.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK));
 		mnuCliente.setMnemonic('C');
 		mnuCliente.setMnemonic(KeyEvent.VK_ALT);
 		JMenu mnLocalidad = new JMenu("LOCALIDADES");
+		mnLocalidad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		
 		mnuRegistros.add(mnuProducto);
 		mnuRegistros.addSeparator();
@@ -219,10 +236,13 @@ public class MainFrame extends JFrame {
 		mnuRegistros.add(mnLocalidad);
 		
 		mnuPais = new JMenuItem("PAISES");
+		mnuPais.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuPais.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
 		mnuDepartamento = new JMenuItem("DEPARTAMENTOS");
+		mnuDepartamento.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuDepartamento.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK));
 		mnuCiudad = new JMenuItem("CIUDADES");
+		mnuCiudad.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuCiudad.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
 		
 		mnLocalidad.add(mnuPais);
@@ -232,12 +252,15 @@ public class MainFrame extends JFrame {
 		mnLocalidad.add(mnuCiudad);
 		
 		JMenu mnuMovimientos = new JMenu("MOVIMIENTOS");
+		mnuMovimientos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovimientos.setMnemonic('M');
 		menuBar.add(mnuMovimientos);
 		mnuCompra = new JMenuItem("COMPRAS");
+		mnuCompra.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuCompra.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.ALT_MASK));
 		
 		mnuVenta = new JMenuItem("VENTAS");
+		mnuVenta.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuVenta.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_V, InputEvent.ALT_MASK));
 		mnuMovimientos.add(mnuVenta);
 		mnuMovimientos.addSeparator();
@@ -258,21 +281,29 @@ public class MainFrame extends JFrame {
 		mnuDevolucion = new JMenu("DEVOLUCIONES");
 		
 		mnuMovCuentaAPagarRecibir = new JMenu("CUENTAS A PAGAR Y RECIBIR");
+		mnuMovCuentaAPagarRecibir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCuentaAPagar = new JMenu("CUENTAS A PAGAR");
+		mnuMovCuentaAPagar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCuentaARecibir = new JMenu("CUENTAS A RECIBIR");
+		mnuMovCuentaARecibir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCuentaAPagarRecibir.add(mnuMovCuentaARecibir);
 		mnuMovCuentaAPagarRecibir.addSeparator();
 		mnuMovCuentaAPagarRecibir.add(mnuMovCuentaAPagar);
 		mnuMovCuentaAPagarPagoProveedor = new JMenuItem("PAGO A PROVEEDORES");
+		mnuMovCuentaAPagarPagoProveedor.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCuentaAPagar.add(mnuMovCuentaAPagarPagoProveedor);
 		mnuMovCuentaARecibirCobroCliente = new JMenuItem("COBRO A CLIENTES");
+		mnuMovCuentaARecibirCobroCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCuentaARecibir.add(mnuMovCuentaARecibirCobroCliente);
 		mnuMovimientos.add(mnuMovCuentaAPagarRecibir);
 		mnuMovimientos.addSeparator();
 		
 		mnuMovCaja = new JMenu("CAJAS");
+		mnuMovCaja.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCajaIngreso = new JMenuItem("MOVIMIENTO DE INGRESO DE EFECTIVO");
+		mnuMovCajaIngreso.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCajaEgreso = new JMenuItem("MOVIMIENTO DE EGRESO DE EFECTIVO");
+		mnuMovCajaEgreso.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovCaja.add(mnuMovCajaIngreso);
 		mnuMovCaja.addSeparator();
 		mnuMovCaja.add(mnuMovCajaEgreso);
@@ -291,6 +322,7 @@ public class MainFrame extends JFrame {
 //		mnuMovimientos.add(mnuDevolucion);
 //		mnuMovimientos.addSeparator();
 		mnuTransformacion = new JMenuItem("TRANSFORMACION DE PRODUCTOS");
+		mnuTransformacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuTransformacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
 		mnuMovimientos.add(mnuTransformacion);
 		
@@ -384,32 +416,41 @@ public class MainFrame extends JFrame {
 //		mnuConsultas.add(mnuSaldoDeposito);
 		
 		JMenu mnuRelatorios = new JMenu("INFORMES");
+		mnuRelatorios.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuRelatorios.setMnemonic('L');
 		menuBar.add(mnuRelatorios);
 		
 		mnuInfProductos = new JMenu("PRODUCTOS");
+		mnuInfProductos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuRelatorios.add(mnuInfProductos);
 		
 		mnuInfDatosProductos= new JMenu("DATOS DEL PRODUCTO");
+		mnuInfDatosProductos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfStockPorDeposito = new JMenuItem("INFORME DE STOCK POR DEPOSITO");
+		mnuInfStockPorDeposito.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfProductos.add(mnuInfDatosProductos);
 		mnuInfDatosProductos.add(mnuInfStockPorDeposito);
 		
 		mnuInfCuentaAPagarRecibir = new JMenu("CUENTAS A PAGAR Y RECIBIR");
+		mnuInfCuentaAPagarRecibir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfCuentaAPagar = new JMenu("CUENTAS A PAGAR");
+		mnuInfCuentaAPagar.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfCuentaARecibir = new JMenu("CUENTAS A RECIBIR");
+		mnuInfCuentaARecibir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		
 		mnuInfCuentaAPagarRecibir.add(mnuInfCuentaARecibir);
 		mnuInfCuentaAPagarRecibir.addSeparator();
 		mnuInfCuentaAPagarRecibir.add(mnuInfCuentaAPagar);
 		
 		mnuInfCuentaAPagarVencimientoProveedor = new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL PROVEEDOR");
+		mnuInfCuentaAPagarVencimientoProveedor.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		//mnuInfCuentaAPagarExtractoProveedor= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL PROVEEDOR");
 		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarVencimientoProveedor);
 //		mnuInfCuentaAPagar.addSeparator();
 //		mnuInfCuentaAPagar.add(mnuInfCuentaAPagarExtractoProveedor);
 		
 		mnuInfCuentaARecibirVencimientoCliente= new JMenuItem("VENCIMIENTO DE MOVIMIENTOS DEL CLIENTE");
+		mnuInfCuentaARecibirVencimientoCliente.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		//mnuInfCuentaARecibirExtractoCliente= new JMenuItem("EXTRACTO DE MOVIMIENTOS DEL CLIENTE");
 		mnuInfCuentaARecibir.add(mnuInfCuentaARecibirVencimientoCliente);
 //		mnuInfCuentaARecibir.addSeparator();
@@ -418,12 +459,17 @@ public class MainFrame extends JFrame {
 		mnuRelatorios.add(mnuInfCuentaAPagarRecibir);
 		
 		mnuInfEstadoFinanciero = new JMenu("ESTADO FINANCIERO");
+		mnuInfEstadoFinanciero.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfResumenUtilidadProducto = new JMenuItem("RESUMEN DE UTILIDAD DE PRODUCTOS");
+		mnuInfResumenUtilidadProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfEstadoFinanciero.add(mnuInfResumenUtilidadProducto);
 		mnuRelatorios.add(mnuInfEstadoFinanciero);
 		mnuInfCajas = new JMenu("CAJAS");
+		mnuInfCajas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfResumenCajas= new JMenuItem("RESUMEN DETALLADO DE INGRESO EGRESO CAJA");
+		mnuInfResumenCajas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfResumenAgrupadoCajas= new JMenuItem("RESUMEN AGRUPADO DE INGRESO EGRESO");
+		mnuInfResumenAgrupadoCajas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		
 		mnuInfCajas.add(mnuInfResumenCajas);
 		mnuInfCajas.addSeparator();
@@ -436,6 +482,7 @@ public class MainFrame extends JFrame {
 //		menuBar.add(mnuUtilidades);
 		
 		mnConfiguracion = new JMenu("CONFIG");
+		mnConfiguracion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnConfiguracion.setMnemonic('C');
 		menuBar.add(mnConfiguracion);
 		
@@ -459,6 +506,7 @@ public class MainFrame extends JFrame {
 //		mnConfiguracion.add(mnuCondicionDePago);
 		mnConfiguracion.addSeparator();
 		mntmImpresoras = new JMenuItem("IMPRESORAS");
+		mntmImpresoras.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmImpresoras.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mntmImpresoras);
 		mnConfiguracion.addSeparator();
@@ -467,25 +515,31 @@ public class MainFrame extends JFrame {
 //		mnConfiguracion.add(mnuCaja);
 //		mnConfiguracion.addSeparator();
 		mnuUsuario = new JMenuItem("USUARIOS");
+		mnuUsuario.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuUsuario.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuUsuario);
 		mnConfiguracion.addSeparator();
 		mnuUsuarioRol = new JMenuItem("USUARIO ROLES");
+		mnuUsuarioRol.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuUsuarioRol.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuUsuarioRol);
 		mnConfiguracion.addSeparator();
 		mnuRol = new JMenuItem("ROLES");
+		mnuRol.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuRol.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuRol);
 		mnConfiguracion.addSeparator();
 		mnuPermisos = new JMenuItem("PERMISOS");
+		mnuPermisos.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuPermisos.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
 		mnConfiguracion.add(mnuPermisos);
 		mnConfiguracion.addSeparator();
 		mnuConfig = new JMenuItem("CONFIG. GENERAL");
+		mnuConfig.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnConfiguracion.add(mnuConfig);
 		mnConfiguracion.addSeparator();
 		mntmSalir = new JMenuItem("SALIR");
+		mntmSalir.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mntmSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
 		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -503,12 +557,14 @@ public class MainFrame extends JFrame {
 		panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 		
 		lblEmpresaNombre = new JLabel("EMPRESA NOMBRE");
+		lblEmpresaNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panel.add(lblEmpresaNombre);
 		
 		label = new JLabel(" - ");
 		panel.add(label);
 		
 		lblUsuarioNombre = new JLabel("USUARIO NOMBRE");
+		lblUsuarioNombre.setFont(new Font("Sylfaen", Font.PLAIN, 14));
 		panel.add(lblUsuarioNombre);
 		
 		label_1 = new JLabel(" - ");

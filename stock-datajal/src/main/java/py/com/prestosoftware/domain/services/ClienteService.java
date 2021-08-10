@@ -20,7 +20,7 @@ public class ClienteService {
     }
 
     public List<Cliente> findAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByIdAsc();
     }
     
     public Optional<Cliente> findById(Long id) {

@@ -559,6 +559,7 @@ public class MainController extends AbstractFrameController {
 		compraLocalPanel.clearForm();
 		compraLocalPanel.newCompra();
 		compraLocalPanel.setVisible(true);
+		compraLocalPanel.getTfProveedorID().requestFocus();
 	}
 
 	private void openAperturaCierreCaja(int tipo) {

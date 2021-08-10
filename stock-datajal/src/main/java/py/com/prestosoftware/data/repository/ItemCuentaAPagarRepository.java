@@ -18,6 +18,9 @@ public interface ItemCuentaAPagarRepository extends JpaRepository<ItemCuentaAPag
 	@Query("SELECT coalesce(max(id), 0) FROM ItemCuentaAPagar e")
 	Long getMaxId();
 	
+	@Query("SELECT coalesce(max(icpSecuencia), 0) FROM ItemCuentaAPagar e")
+	Long getSecuencia();
+	
 	@Modifying
 	@Transactional
 	@Query(value = "UPDATE public.item_cuenta_a_pagar SET icp_situacion=1 WHERE icp_secuencia=?1", nativeQuery = true)

@@ -12,9 +12,6 @@ public class ProcesoCobroClientes {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
-	
 	@Column(name = "pcc_cobro")
 	private Integer pccCobro;
 
@@ -33,19 +30,6 @@ public class ProcesoCobroClientes {
 	public ProcesoCobroClientes() {}
 
 	
-
-	public Integer getId() {
-		return id;
-	}
-
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-
-
 	public Integer getPccCobro() {
 		return pccCobro;
 	}

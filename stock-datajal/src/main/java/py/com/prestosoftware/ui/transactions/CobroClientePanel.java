@@ -803,6 +803,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		btnGuardar.setVisible(true);
 		btnAnula.setVisible(false);
 		itemTableModel.clear();
+		tfEntidad.requestFocus();
 		habilitaEdicion();
 	}
 

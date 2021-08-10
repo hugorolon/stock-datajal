@@ -12,6 +12,9 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, Long> {
 	
 	List<Proveedor> findByNombreContaining(String nombre);
 	
+	List<Proveedor> findAllByOrderByIdAsc();
+	
+	
 	@Query("SELECT coalesce(max(id), 0) FROM Proveedor e")
 	Long getMaxId();
 

@@ -1670,6 +1670,7 @@ public class VentaPanel extends JFrame
 		Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
 		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 		Double precioTotal = cantidad * precioUnit;
+		tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
 
 		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
 		if (usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESC. ITEM")) {
@@ -2076,7 +2077,7 @@ public class VentaPanel extends JFrame
 		int cantDias = 0;
 		Date fechaVencimiento = new Date();
 		Calendar cal = Calendar.getInstance();
-		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			cant = Integer.valueOf(1);
 			cantDias = 30;
 		}
@@ -2122,7 +2123,7 @@ public class VentaPanel extends JFrame
 				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 					removeMovCaja(ventaSeleccionado);
 					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
-					if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
+					if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 						Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
 						removeMovimientoEgreso(cuentaARecibir);
 					}
@@ -2166,10 +2167,10 @@ public class VentaPanel extends JFrame
 		movCaja.setTipoOperacion("E");
 		movCaja.setUsuario(GlobalVars.USER_ID);
 		movCaja.setValorM01(venta.getTotalGeneral());
-		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("0")) {
+		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
 			movCaja.setObs("Pagado en caja 01 ");
 			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30")) {
+		} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
 			movCaja.setObs("Crédito a cuotas :" + cant);
 			movCaja.setSituacion("PROCESADO");
@@ -2516,7 +2517,8 @@ public class VentaPanel extends JFrame
 
 			tfProductoID.setText(String.valueOf(producto.getId()));
 			tfDescripcion.setText(producto.getDescripcion());
-			tfPrecio.setText(FormatearValor.doubleAString(precioInicial));
+			double d=Math.round (precioInicial);
+			tfPrecio.setText(FormatearValor.doubleAString(d));
 			tfCantidad.setText("1");
 			//tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
 			tfCantidad.requestFocus();

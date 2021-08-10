@@ -859,8 +859,8 @@ public class ConfiguracionPanel extends JFrame {
 		chPideDispNotaCompra.setSelected(c.getPideDispCompra() == 1 ? true:false);
 		cbPrecioNota.setSelectedItem(c.getPrecioDefinido());
 		//opciones de PDV
-		cbCaja.setSelectedIndex(c.getCajaIdPDV());
-		cbDeposito.setSelectedIndex(c.getDepositoIdPDV());
+		//cbCaja.setSelectedIndex(c.getCajaIdPDV());
+		//cbDeposito.setSelectedIndex(c.getDepositoIdPDV());
 			
 		//opciones de usuario
 		cbUsuarios.setSelectedItem(c.getUsuarioId());

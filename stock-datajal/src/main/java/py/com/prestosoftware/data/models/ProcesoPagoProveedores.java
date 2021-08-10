@@ -12,9 +12,6 @@ public class ProcesoPagoProveedores {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
-	
 	@Column(name = "ppp_pago")
 	private Integer pppPago;
 
@@ -34,18 +31,7 @@ public class ProcesoPagoProveedores {
 
 	
 
-	public Integer getId() {
-		return id;
-	}
-
-
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-
-
+	
 	public Integer getPppPago() {
 		return pppPago;
 	}
