@@ -28,6 +28,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
+import org.eclipse.swt.widgets.MessageBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -108,7 +109,7 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		this.productoService = productoService;
 		this.tService = tService;
 
-		setSize(750, 450);
+		setSize(750, 481);
 		setTitle("TRANSFORMACION DE PRODUCTO");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -799,11 +800,16 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 	}
 
 	public TransformacionProductoDetalle getItem() {
+		if(this.getProductoDestino()!=null&&this.getProductoDestino().getPrecioVentaA()!=null) {
 		TransformacionProductoDetalle item = new TransformacionProductoDetalle();
 		item.setProductoDestino(this.getProductoDestino());
 		item.setCantidad(Double.valueOf(tfCantidad.getText()));
 		item.setPrecio(this.getProductoDestino().getPrecioVentaA());
 		return item;
+		}else {
+			Notifications.showAlert("El producto no tiene precio");
+			return null;
+		}
 	}
 
 	public void clearItem() {
@@ -1107,6 +1113,8 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 				tfProductoID.setText(String.valueOf(producto.getId()));
 				tfDescripcion.setText(producto.getDescripcion());
 				tfCantidad.setText(String.valueOf(1));
+				tfStockDestino.setText(producto.getDepO1().toString());
+				tfPrecio.setText(producto.getPrecioVentaA().toString());
 				tfCantidad.requestFocus();
 			}
 		}

@@ -7,7 +7,7 @@ import java.util.Optional;
 @Component
 public class TransformacionProductoValidator extends ValidationSupport implements Validator<TransformacionProducto> {
 
-    private static final String REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA = "Campos Obligatorios";
+    private static final String REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA = "Campos Obligatorios o Agregar productos Destinos";
 
     @Override
     public Optional<ValidationError> validate(TransformacionProducto t) {

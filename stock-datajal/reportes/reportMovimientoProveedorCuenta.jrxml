@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportMovimientoProveedorCuenta" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -374,14 +374,14 @@ where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_
 				<textFieldExpression><![CDATA[$F{icp_documento}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="101" y="0" width="36" height="20" uuid="8a6b45a4-71e3-419c-8327-8d9ab7ba3f45"/>
-				<textElement textAlignment="Right">
+				<reportElement x="50" y="0" width="70" height="20" uuid="8a6b45a4-71e3-419c-8327-8d9ab7ba3f45"/>
+				<textElement textAlignment="Left">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{proceso}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="104" height="20" uuid="36ea4146-4142-4918-9928-36e4b923f628"/>
+				<reportElement x="0" y="0" width="50" height="20" uuid="36ea4146-4142-4918-9928-36e4b923f628"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
@@ -393,13 +393,6 @@ where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{monto}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="137" y="0" width="40" height="20" uuid="77ebe340-872a-4f49-ba49-c25087db300d"/>
-				<textElement>
-					<font size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{numero}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)">
 				<reportElement x="427" y="0" width="53" height="20" uuid="f4780edc-e0b2-4036-91cb-75edef642968"/>
@@ -414,6 +407,11 @@ where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{saldoResumen}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="120" y="-1" width="57" height="21" uuid="bae7690a-b95c-43d5-83b5-cf3fdab57223"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{boleta}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

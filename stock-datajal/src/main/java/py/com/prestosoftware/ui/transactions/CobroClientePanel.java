@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -32,6 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -294,6 +297,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				getItemSelected();
+				calculateItem();
 			}
 		});
 		tbDetalleCobroCliente.addKeyListener(new KeyAdapter() {
@@ -305,10 +309,28 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					calculateItem();
 					//btnGuardar.requestFocus();
+				} else if(e.getKeyCode()== KeyEvent.VK_TAB) {
+					calculateItem();
 				}
-				itemTableModel.fireTableDataChanged();
 			}
 		});
+		tbDetalleCobroCliente.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  
+   			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				// TODO Auto-generated method stub
+   				calculateItem();
+			}  
+        });  
+		tbDetalleCobroCliente.addFocusListener(new FocusListener() {
+		    public void focusLost(FocusEvent arg0) {
+		        calculateItem();    
+		    }
+
+		    public void focusGained(FocusEvent arg0) {
+		    	// TODO Auto-generated method stub
+		    }
+		});
+		
 		scrollDetalleCobroClientes.setViewportView(tbDetalleCobroCliente);
 
 		JLabel lblTotalMontoIngreso = new JLabel("TOTALES");
@@ -882,10 +904,14 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 
 	private void calculateItem() {
 		totalCalculado = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
+		Double pagado= itemTableModel.getEntities().stream().mapToDouble(e -> e.getPagado()).sum();
+		Double aPagar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum();
+		Double diferencia =(aPagar-pagado);
+		System.out.println("calculado - pagado"+diferencia);
 		tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
-		tfSaldo.setText(FormatearValor.doubleAString(totalCalculado));
+		tfSaldo.setText(FormatearValor.doubleAString(pagado));
 		tfTotalACobrar.setText(FormatearValor
-				.doubleAString(itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum()));
+				.doubleAString(diferencia));
 	}
 
 	private List<DetalleCobroClienteView> castDetalleCobroCliente(List<Object[]> listMII, int edicion) {

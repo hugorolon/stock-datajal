@@ -80,6 +80,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
@@ -104,13 +105,15 @@ public class CompraLocalPanel extends JFrame
 		implements ProveedorInterfaz, ProductoInterfaz, PanelCompraInterfaz, CompraInterfaz, CondicionPagoInterfaz {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private static final int PROVEEDOR_CODE = 1;
 	private static final int MONEDA_CODE = 2;
 	private static final int DEPOSITO_CODE = 3;
 	private static final int PRODUCTO_CODE = 4;
 	private static final int CONDICION_PAGO_CODE = 5;
 	private static final int COMPRA_CODE = 6;
+	private static final int PROVEEDOR_ADD_CODE = 7;
+	
 
 	private JTextField tfNombre, tfDescripcion, tfProductoID, tfProveedorID, tfPrecioTotal, tfCompraId;
 	private JTextField tfPrecio, tfCantidad, tfCantItem;
@@ -142,6 +145,7 @@ public class CompraLocalPanel extends JFrame
 
 	private CompraDialog compraDialog;
 	private ConsultaProveedor proveedorDialog;
+	private ProveedorAddPanel proveedorAddPanel;
 	private CondicionPagoDialog condicionPagoDialog;
 	private ProductoVistaDialog productoDialog;
 	private CondicionPagoService condicionPagoService;
@@ -159,7 +163,7 @@ public class CompraLocalPanel extends JFrame
 	private Compra compraSeleccionado;
 	
 
-	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
+	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog, ProveedorAddPanel proveedorAddPanel,
 			CompraDialog compraDialog, ProductoVistaDialog productoDialog, CompraService compraService,
 			ProveedorService proveedorService, MonedaService monedaService, DepositoService depositoService,
 			CompraValidator compraValidator, ProductoService productoService, CondicionPagoDialog condicionPagoDialog,
@@ -173,6 +177,7 @@ public class CompraLocalPanel extends JFrame
 			ItemCuentaAPagarService itemCuentaAPagarService) {
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
+		this.proveedorAddPanel=proveedorAddPanel;
 		this.productoDialog = productoDialog;
 		this.compraService = compraService;
 		this.compraDialog = compraDialog;
@@ -504,14 +509,14 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfProveedorID.setText("");
 
-		tfProveedorID.setBounds(292, 4, 51, 30);
+		tfProveedorID.setBounds(321, 4, 68, 30);
 		pnlCliente.add(tfProveedorID);
 		tfProveedorID.setColumns(10);
 
 		tfNombre = new JTextField();
 		tfNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfNombre.setEditable(false);
-		tfNombre.setBounds(344, 4, 209, 30);
+		tfNombre.setBounds(399, 4, 177, 30);
 		pnlCliente.add(tfNombre);
 		tfNombre.setColumns(10);
 
@@ -526,7 +531,7 @@ public class CompraLocalPanel extends JFrame
 		tfDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDireccion.setEditable(false);
 		tfDireccion.setColumns(10);
-		tfDireccion.setBounds(556, 4, 224, 30);
+		tfDireccion.setBounds(586, 4, 194, 30);
 		pnlCliente.add(tfDireccion);
 
 		tfFactura = new JTextField();
@@ -562,7 +567,7 @@ public class CompraLocalPanel extends JFrame
 		});
 
 		tfFactura.setColumns(10);
-		tfFactura.setBounds(292, 38, 76, 30);
+		tfFactura.setBounds(321, 39, 68, 30);
 		pnlCliente.add(tfFactura);
 
 		JLabel lblFactura = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -761,7 +766,7 @@ public class CompraLocalPanel extends JFrame
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setForeground(Color.RED);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label.setBounds(276, 4, 14, 30);
+		label.setBounds(308, 2, 14, 30);
 		pnlCliente.add(label);
 
 		JButton btnVer = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -769,6 +774,16 @@ public class CompraLocalPanel extends JFrame
 		btnVer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnVer.setBounds(152, 8, 23, 23);
 		pnlCliente.add(btnVer);
+		
+		JButton btnAddProveedor = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnAddProveedor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(PROVEEDOR_ADD_CODE);
+			}
+		});
+		btnAddProveedor.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAddProveedor.setBounds(255, 4, 43, 30);
+		pnlCliente.add(btnAddProveedor);
 		btnVer.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -1634,6 +1649,14 @@ public class CompraLocalPanel extends JFrame
 			compraDialog.loadCompras();
 			compraDialog.setVisible(true);
 			break;
+		case PROVEEDOR_ADD_CODE:
+			proveedorAddPanel.setInterfaz(this);
+			proveedorAddPanel.loadCiudades();
+			proveedorAddPanel.loadEmpresas();
+			proveedorAddPanel.addNewProveedor();
+			proveedorAddPanel.setVisible(true);
+			break;	
+			
 		default:
 			break;
 		}

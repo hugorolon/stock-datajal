@@ -35,7 +35,7 @@ public class ImpresionPanel extends JDialog {
 	public ImpresionPanel() {
 		setTitle("OPCIONES DE IMPRESIÓN");
 		setModal(true);
-		setBounds(100, 100, 570, 178);
+		setBounds(100, 100, 608, 223);
 		getContentPane().setLayout(null);
 		
 		JButton btnFactura = new JButton("Factura");
@@ -75,7 +75,7 @@ public class ImpresionPanel extends JDialog {
 				dispose();
 			}
 		});
-		btnRemision.setBounds(6, 80, 139, 52);
+		btnRemision.setBounds(20, 80, 139, 52);
 		getContentPane().add(btnRemision);
 		
 		JLabel lblImpresionFactura = new JLabel("SELECCIONAR / CANCELAR");

@@ -47,6 +47,8 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 @Component
 public class ClientePanel extends JDialog {
@@ -791,6 +793,11 @@ public class ClientePanel extends JDialog {
            getContentPane().add(panel, "cell 0 5 5 1,alignx center,aligny center");
            
            btnGuardar = new JButton("Guardar");
+           btnGuardar.addActionListener(new ActionListener() {
+           	public void actionPerformed(ActionEvent e) {
+           		
+           	}
+           });
            btnGuardar.setFont(new Font("Tahoma", Font.PLAIN, 14));
            panel.add(btnGuardar);
            
@@ -861,7 +868,7 @@ public class ClientePanel extends JDialog {
 //    	client.setCreditoDisponible(Double.valueOf(tfCreditoDisponible.getText()));
 //    	client.setCreditoSaldo(Double.valueOf(tfCreditoSaldo.getText()));
     	client.setDiaCredito(tfDiaCredito.getText().isEmpty() ? 0 : Integer.parseInt(tfDiaCredito.getText()));
-    	client.setLimiteCredito(tfLimiteCredito.getText().isEmpty() ? 0 : Double.valueOf(tfLimiteCredito.getText()));
+    	client.setLimiteCredito(tfLimiteCredito.getText().isEmpty() ? 0 : Double.valueOf(FormatearValor.sinSeparadorDeMiles(tfLimiteCredito.getText())));
     	client.setPlazo(tfPlazo.getText().isEmpty() ? 0 : Integer.parseInt(tfPlazo.getText()));
     	
     	client.setCiudad((Ciudad)ciudadComboBoxModel.getSelectedItem());

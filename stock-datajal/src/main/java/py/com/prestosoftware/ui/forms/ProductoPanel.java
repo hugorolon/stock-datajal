@@ -1321,7 +1321,7 @@ public class ProductoPanel extends JDialog {
 				}
 			} else {
 				fileChooser = new JFileChooser();
-				imagenUrl = "C:\\adrian\\stock-datajal\\src\\img\\noImagen.jpg";
+				imagenUrl = "C:\\eclipse\\AgroProgreso\\stock-datajal\\src\\img\\noImagen.jpg";
 				fileChooser.setSelectedFile(new File(imagenUrl));
 				if (fileChooser.getSelectedFile().exists()) {
 					zoom = new ImagenPanel(ImageIO.read(fileChooser.getSelectedFile()));

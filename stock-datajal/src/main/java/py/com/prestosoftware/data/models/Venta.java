@@ -100,7 +100,7 @@ public class Venta {
 	private String obs;
 	private String situacion;
 	
-	@ElementCollection(fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "venta_detalles", joinColumns = @JoinColumn(name = "venta_id"))
 	private List<VentaDetalle> items = new ArrayList<>();
 	

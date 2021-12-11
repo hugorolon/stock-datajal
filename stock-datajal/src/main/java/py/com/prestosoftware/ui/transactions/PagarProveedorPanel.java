@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -32,6 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -305,10 +308,39 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					calculateItem();
 					//btnGuardar.requestFocus();
+				} else if(e.getKeyCode()== KeyEvent.VK_TAB) {
+					calculateItem();
 				}
 				itemTableModel.fireTableDataChanged();
 			}
 		});
+		
+		tbDetallePagarProveedor.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				getItemSelected();
+				calculateItem();
+			}
+		});
+		
+		tbDetallePagarProveedor.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  
+   			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				// TODO Auto-generated method stub
+   				calculateItem();
+			}  
+        });  
+		tbDetallePagarProveedor.addFocusListener(new FocusListener() {
+		    public void focusLost(FocusEvent arg0) {
+		        calculateItem();    
+		    }
+
+		    public void focusGained(FocusEvent arg0) {
+		        // TODO Auto-generated method stub
+		    }
+		});
+		
+		
 		scrollDetallePagarProveedors.setViewportView(tbDetallePagarProveedor);
 
 		JLabel lblTotalMontoIngreso = new JLabel("TOTALES");
@@ -908,8 +940,8 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			else
 				det.setCobro((Double) objects[13]);	
 			det.setIcp_Secuencia((Integer)objects[12]);
-
-			lista.add(det);
+			if(det.getIcp_monto1()>0)
+				lista.add(det);
 		}
 
 		return lista;
