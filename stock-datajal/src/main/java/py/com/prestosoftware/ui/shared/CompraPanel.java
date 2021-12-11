@@ -80,7 +80,7 @@ public class CompraPanel extends JDialog {
     
     private CompraLocalPanel compraLocal;
     private CompraImportacionPanel compraImportacion;
-    private CompraConsignadaPanel compraConsignada;
+   // private CompraConsignadaPanel compraConsignada;
     private PedidoCompraPanel pedidoCompra;
     private CondicionPagoDialog condicionPagoDialog;
     private CondicionPagoService condicionPagoService;
@@ -105,7 +105,8 @@ public class CompraPanel extends JDialog {
 			CompraValidator compraValidator, PedidoService pedidoService,
 			CompraLocalPanel compraPanelLocal, PedidoItemTableModel pedidoItemModel,
 			CompraImportacionPanel compraImportacion, CondicionPagoDialog condicionPagoDialog,
-			CompraConsignadaPanel compraConsignada, CondicionPagoService condicionPagoService,
+			//CompraConsignadaPanel compraConsignada, 
+			CondicionPagoService condicionPagoService,
 			PedidoCompraPanel pedidoCompra, ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
 			MovimientoCajaService pagoService,  MovimientoIngresoService movimientoIngresoService,	MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoEgresoService movimientoEgresoService, MovimientoItemEgresoService movimientoItemEgresoService, ProcesoPagoComprasService procesoPagoComprasService,
@@ -128,7 +129,7 @@ public class CompraPanel extends JDialog {
 		this.pedidoItemModel = pedidoItemModel;
 		this.compraLocal = compraPanelLocal;
 		this.compraImportacion = compraImportacion;
-		this.compraConsignada = compraConsignada;
+		//this.compraConsignada = compraConsignada;
 		this.pedidoCompra = pedidoCompra;
 		this.condicionPagoDialog = condicionPagoDialog;
 		this.condicionPagoService = condicionPagoService;
@@ -267,12 +268,12 @@ public class CompraPanel extends JDialog {
 	}
 	
 	private void openCompraConsignada() {
-		compraConsignada = new CompraConsignadaPanel(itemTableModel, proveedorDialog,
-				depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, 
-				monedaService, depositoService, compraValidator, productoService);
-		compraConsignada.setVisible(true);
-		compraConsignada.newCompra();
-		compraConsignada.clearForm();
+//		compraConsignada = new CompraConsignadaPanel(itemTableModel, proveedorDialog,
+//				depositoDialog, monedaDialog, productoDialog, compraService, proveedorService, 
+//				monedaService, depositoService, compraValidator, productoService);
+//		compraConsignada.setVisible(true);
+//		compraConsignada.newCompra();
+//		compraConsignada.clearForm();
 	}
 	
 	private void openSolicitudCompra() {
