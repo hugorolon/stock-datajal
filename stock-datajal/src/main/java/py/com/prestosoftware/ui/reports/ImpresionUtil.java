@@ -150,7 +150,8 @@ public class ImpresionUtil {
 	    parametros.put("totalIva", FormatearValor.doubleAString(totalIva5+totalIva10));
 	    parametros.put("totalGeneral", total);
 	    try {
-			String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"notaInterna.jrxml";
+	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"notaInterna.jrxml";
+			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"notaInterna.jrxml";
 
 	        		dataSourteReport(items, parametros, ruta);
 //	    	}
@@ -232,7 +233,8 @@ public class ImpresionUtil {
 //	    	} else {
 //	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
 //	    				this.lbTotalGeneralLetras.getText());
-			String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
+	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"facturaLegal.jrxml";
+			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
 
 	        		dataSourteReport(items, parametros, ruta);
 //	    	}
