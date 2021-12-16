@@ -94,24 +94,24 @@ public class ImpresionUtil {
 			for (VentaDetalle vd : items) {
 				Double iva10 = (vd.getIva().intValue()==10?vd.getCantidad()*vd.getPrecio():0d);
 				if(iva10>0) {
-					vd.setIva10(FormatearValor.doubleAString(iva10));
+					vd.setIva10(iva10);
 					subTotalIva10=subTotalIva10+iva10;
 					iva10= (double) Math.round(iva10/11);
 					totalIva10=totalIva10+iva10;
 				}else {
-					vd.setIva10(FormatearValor.doubleAString(iva10));
+					vd.setIva10(iva10);
 				}
 				Double iva5 = (vd.getIva().intValue()==5?vd.getCantidad()*vd.getPrecio():0d);
 				if(iva5>0) {
-					vd.setIva5(FormatearValor.doubleAString(iva5));
+					vd.setIva5(iva5);
 					subTotalIva5=subTotalIva5+iva5;
 					iva5= (double)Math.round(iva5/21);
 					totalIva5=totalIva5+iva5;
 				}else {
-					vd.setIva5(FormatearValor.doubleAString(iva5));
+					vd.setIva5(iva5);
 				}
 				Double exentas = (vd.getIva().intValue()==0?vd.getCantidad()*vd.getPrecio():0d);
-				vd.setExenta(FormatearValor.doubleAString(exentas));
+				vd.setExenta(exentas);
 				if(exentas>0)
 					totalExenta=totalExenta+totalExenta;
 				total=FormatearValor.doubleAString(totalIva5+totalIva10+exentas);
@@ -167,24 +167,24 @@ public class ImpresionUtil {
 			for (VentaDetalle vd : items) {
 				Double iva10 = (vd.getIva().intValue()==10?vd.getCantidad()*vd.getPrecio():0d);
 				if(iva10>0) {
-					vd.setIva10(FormatearValor.doubleAString(iva10));
+					vd.setIva10(iva10);
 					subTotalIva10=subTotalIva10+iva10;
 					iva10= (double) Math.round(iva10/11);
 					totalIva10=totalIva10+iva10;
 				}else {
-					vd.setIva10(FormatearValor.doubleAString(iva10));
+					vd.setIva10(iva10);
 				}
 				Double iva5 = (vd.getIva().intValue()==5?vd.getCantidad()*vd.getPrecio():0d);
 				if(iva5>0) {
-					vd.setIva5(FormatearValor.doubleAString(iva5));
+					vd.setIva5(iva5);
 					subTotalIva5=subTotalIva5+iva5;
 					iva5= (double)Math.round(iva5/21);
 					totalIva5=totalIva5+iva5;
 				}else {
-					vd.setIva5(FormatearValor.doubleAString(iva5));
+					vd.setIva5(iva5);
 				}
 				Double exentas = (vd.getIva().intValue()==0?vd.getCantidad()*vd.getPrecio():0d);
-				vd.setExenta(FormatearValor.doubleAString(exentas));
+				vd.setExenta(exentas);
 				if(exentas>0)
 					totalExenta=totalExenta+totalExenta;
 				//total= total + FormatearValor.doubleAString(Double.valueOf(vd.getIva10())+Double.valueOf(vd.getIva5())+Double.valueOf(vd.getExenta()));
@@ -197,7 +197,9 @@ public class ImpresionUtil {
 		SimpleDateFormat sd=new SimpleDateFormat("dd ' de ' MMMM ' de ' yyyy", espanol);
 		String fecha= sd.format(fechaImpresion);
 		parametros.put("fecha", fecha);
-		parametros.put("montoEnLetras", MontoEnLetras.convertir(total,",","",true));
+		int totalInt= Integer.valueOf(FormatearValor.sinSeparadorDeMiles(total));
+		String p=MontoEnLetras.convertir("18000",",","",true);
+		parametros.put("montoEnLetras", MontoEnLetras.convertir(String.valueOf(totalInt),",","",true));
 		parametros.put("clienteNombre", cliente);
 	    parametros.put("clienteRucDv", ruc);
 	    parametros.put("clienteCelular", telefono);

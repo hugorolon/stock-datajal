@@ -15,11 +15,11 @@ public class VentaDetalle {
 	private Double subtotal;
 	private Double descuento;
 	@Transient
-	private String exenta;
+	private Double exenta;
 	@Transient
-	private String iva5;
+	private Double iva5;
 	@Transient
-	private String iva10;
+	private Double iva10;
 	
 	@Column(name = "precio_fob")
 	private Double precioFob;
@@ -148,27 +148,27 @@ public class VentaDetalle {
 		this.iva = iva;
 	}
 
-	public String getExenta() {
+	public Double getExenta() {
 		return exenta;
 	}
 
-	public void setExenta(String exenta) {
+	public void setExenta(Double exenta) {
 		this.exenta = exenta;
 	}
 
-	public String getIva5() {
+	public Double getIva5() {
 		return iva5;
 	}
 
-	public void setIva5(String iva5) {
+	public void setIva5(Double iva5) {
 		this.iva5 = iva5;
 	}
 
-	public String getIva10() {
+	public Double getIva10() {
 		return iva10;
 	}
 
-	public void setIva10(String iva10) {
+	public void setIva10(Double iva10) {
 		this.iva10 = iva10;
 	}
 }

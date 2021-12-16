@@ -3,12 +3,15 @@ package py.com.prestosoftware.data.repository;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Venta;
+import py.com.prestosoftware.data.models.VentaDetalle;
 import py.com.prestosoftware.ui.viewmodel.ConsultaNota;
 
 @Repository
@@ -44,5 +47,9 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, 0 AS precio"
 			+ " FROM ventas v WHERE v.fecha = ?1 ORDER BY v.id ASC", nativeQuery = true)
 	List<ConsultaNota> getVentasDelDia(Date fecha);
+	
+	@Query(value =  "SELECT venta_id, cantidad, precio, producto, producto_id, subtotal, id,  iva "
+			+ "	FROM public.venta_detalles v WHERE v.venta_id = ?1 ORDER BY v.id ASC", nativeQuery = true)
+	List<Object[]> getVentaDetallesByVentaId(Long ventaId);
 
 }

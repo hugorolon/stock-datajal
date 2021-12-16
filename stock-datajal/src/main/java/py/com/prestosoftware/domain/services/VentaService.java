@@ -1,15 +1,17 @@
 package py.com.prestosoftware.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import py.com.prestosoftware.data.models.Cliente;
-import py.com.prestosoftware.data.models.Venta;
-import py.com.prestosoftware.data.repository.VentaRepository;
-import py.com.prestosoftware.ui.viewmodel.ConsultaNota;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import py.com.prestosoftware.data.models.Cliente;
+import py.com.prestosoftware.data.models.Venta;
+import py.com.prestosoftware.data.models.VentaDetalle;
+import py.com.prestosoftware.data.repository.VentaRepository;
+import py.com.prestosoftware.ui.viewmodel.ConsultaNota;
 
 @Service
 public class VentaService {
@@ -75,6 +77,10 @@ public class VentaService {
 	
 	public List<ConsultaNota> retriveVentasByProductoId(Long productoId) {
 		return repository.getVentasByProductoId(productoId);
+	}
+
+	public List<Object[]> retriveVentaDetalleByIdVenta(Long ventaId) {
+		return repository.getVentaDetallesByVentaId(ventaId);
 	}
 
 	public Optional<Venta> findByVentaIdAndClienteId(Long id, Long clienteId) {

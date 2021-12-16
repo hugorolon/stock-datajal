@@ -11,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,6 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.transaction.Transactional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +28,6 @@ import org.springframework.stereotype.Component;
 import py.com.prestosoftware.data.models.Venta;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
-import py.com.prestosoftware.ui.table.ConsultaVentaTableModel;
 import py.com.prestosoftware.ui.table.VentaTableModel;
 
 @Component
@@ -139,25 +141,29 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 	}
 
+	@Transactional
 	public VentaInterfaz getInterfaz() {
 		return interfaz;
 	}
 
+	@Transactional
 	public void setInterfaz(VentaInterfaz interfaz) {
 		this.interfaz = interfaz;
 	}
 
+	@Transactional
 	public void setVentasDelDia() {
-		ventas= service.getNotasPorFechas(new Date(),new Date());
+		ventas = service.getNotasPorFechas(new Date(), new Date());
 		tableModel.clear();
 		tableModel.addEntities(ventas);
 		table.requestFocus();
 	}
-	
+
+	@Transactional
 	private void aceptar() {
 		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(ventas.get(c));         
-	    }
+			interfaz.getEntity(ventas.get(c));
+		}
 		dispose();
 	}
 

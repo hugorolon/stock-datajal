@@ -34,6 +34,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
+import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
@@ -1754,6 +1755,7 @@ public class VentaPanel extends JFrame
 	}
 
 	@Override
+	@Transactional
 	public void getEntity(Venta v) {
 		if (v != null) {
 			btnGuardar.setVisible(false);
@@ -1765,6 +1767,7 @@ public class VentaPanel extends JFrame
 		}
 	}
 
+	@Transactional
 	public void setVenta(Venta v) {
 		tfVentaId.setText(v.getId().toString());
 		tfClienteID.setText(String.valueOf(v.getCliente().getId()));
@@ -1784,10 +1787,27 @@ public class VentaPanel extends JFrame
 		// tfSubtotal.setText(String.valueOf(v.getTotalGravada10()));
 		tfTotal.setText(FormatearValor.doubleAString((v.getTotalGeneral())));
 		tfObs.setText(String.valueOf(v.getObs()));
-		itemTableModel.addEntities(v.getItems());
+		List<VentaDetalle> listaDetalles=new ArrayList<VentaDetalle>();
+		List<Object[]> listaItems= ventaService.retriveVentaDetalleByIdVenta(v.getId());
+		//venta_id, cantidad, precio, producto, producto_id, subtotal, id,  iva
+		for (Object[] object : listaItems) {
+			VentaDetalle det=new VentaDetalle();
+			det.setCantidad(Double.valueOf(object[1].toString()));
+			det.setPrecio(Double.valueOf(object[2].toString()));
+			det.setProducto(object[3].toString());
+			det.setProductoId(Long.valueOf(object[4].toString()));
+			det.setSubtotal(Double.valueOf(object[5].toString()));
+			det.setIva(Integer.valueOf(object[7].toString()));
+
+			
+			listaDetalles.add(det);
+		}
+		
+		itemTableModel.addEntities(listaDetalles);
 		setVentaSeleccionado(v);
 	}
 
+	@Transactional
 	private void updateStockProduct(List<VentaDetalle> items) {
 		List<Producto> productos = new ArrayList<>();
 		int habilitaLanzamientoCaja = 0;
