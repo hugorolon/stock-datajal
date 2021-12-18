@@ -488,7 +488,7 @@ public class ProductoVistaDialog extends JDialog {
 	
 	public void loadProductos(String filter) {
 		if (filter.isEmpty()&&productos==null) {
-			productos = service.findAll();
+			productos = service.findAllByNombre();
 		}
 		
         tableModel.clear();
