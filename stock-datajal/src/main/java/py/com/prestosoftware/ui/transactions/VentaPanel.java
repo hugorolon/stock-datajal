@@ -2,7 +2,6 @@ package py.com.prestosoftware.ui.transactions;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -11,8 +10,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -77,7 +74,6 @@ import py.com.prestosoftware.domain.services.MovimientoEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
 import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
-import py.com.prestosoftware.domain.services.ProcesoCobroClientesService;
 import py.com.prestosoftware.domain.services.ProcesoCobroVentasService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.UsuarioRolService;
@@ -85,6 +81,7 @@ import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.domain.validations.VentaValidator;
+import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
@@ -96,7 +93,6 @@ import py.com.prestosoftware.ui.reports.ImpresionPanelInterfaz;
 import py.com.prestosoftware.ui.reports.ImpresionUtil;
 import py.com.prestosoftware.ui.reports.ReImpresionPanel;
 import py.com.prestosoftware.ui.reports.ReImpresionPanelInterfaz;
-import py.com.prestosoftware.ui.search.ClienteDialog;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.ClientePaisInterfaz;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
@@ -104,11 +100,10 @@ import py.com.prestosoftware.ui.search.CondicionPagoInterfaz;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
 import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
-import py.com.prestosoftware.ui.search.ConsultaVentasDialog;
 import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.DepositoInterfaz;
-import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
+import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.search.VendedorInterfaz;
 import py.com.prestosoftware.ui.search.VentaInterfaz;
@@ -129,6 +124,7 @@ public class VentaPanel extends JFrame
 	private static final int SALDO_PRODUCTO_CODE = 5;
 	private static final int CONDICION_PAGO_CODE = 6;
 	private static final int VENTA_CODE = 7;
+	private static final int CLIENTE_ADD_CODE=8;
 
 	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
@@ -156,7 +152,7 @@ public class VentaPanel extends JFrame
 	private CondicionPagoDialog condicionDialog;
 	private ProductoVistaDialog productoDialog;
 	private ConsultaSaldoDeposito saldoDeposito;
-	private ConsultaVentasDialog ventasDialog;
+	private ClienteAddPanel clienteAddPanel;
 	private ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog;
 
 	private VentaService ventaService;
@@ -199,12 +195,12 @@ public class VentaPanel extends JFrame
 			ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
 			CondicionPagoService condicionPagoService, ConfiguracionService configService,
 			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			ConsultaVentasDialog ventasDialog, ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog,
+			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog,
 			MovimientoIngresoService movimientoIngresoService, MovimientoEgresoService movimientoEgresoService,
 			MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
-			ItemCuentaARecibirService itemCuentaARecibirService) {
+			ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
 		this.vendedorDialog = vendedorDialog;
@@ -226,7 +222,6 @@ public class VentaPanel extends JFrame
 		this.cajaService = cajaService;
 		this.pagoService = pagoService;
 		this.cuentaARecibirService = cuentaARecibirService;
-		this.ventasDialog = ventasDialog;
 		this.consultaVentasDelDiaDialog = consultaVentasDelDiaDialog;
 		this.movimientoIngresoService = movimientoIngresoService;
 		this.movimientoEgresoService = movimientoEgresoService;
@@ -235,6 +230,7 @@ public class VentaPanel extends JFrame
 		this.procesoCobroVentasService = procesoCobroVentasService;
 		this.cuentaARecibirService = cuentaARecibirService;
 		this.itemCuentaARecibirService = itemCuentaARecibirService;
+		this.clienteAddPanel=clienteAddPanel;
 
 		setSize(1042, 672);
 		setTitle("REGISTRO DE VENTAS");
@@ -409,6 +405,10 @@ public class VentaPanel extends JFrame
 		tfProductoID.setColumns(10);
 
 		btnRemove = new JButton("-");
+		btnRemove.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnRemove.setFont(new Font("Dialog", Font.BOLD, 18));
 		btnRemove.addKeyListener(new KeyAdapter() {
 			@Override
@@ -564,6 +564,10 @@ public class VentaPanel extends JFrame
 		pnlCliente.add(lblClienteID);
 
 		btnAdd = new JButton("+");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
 		btnAdd.addKeyListener(new KeyAdapter() {
 			@Override
@@ -618,7 +622,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteID.setText("0");
-		tfClienteID.setBounds(262, 6, 67, 30);
+		tfClienteID.setBounds(318, 6, 47, 30);
 		pnlCliente.add(tfClienteID);
 		tfClienteID.setColumns(10);
 
@@ -639,13 +643,13 @@ public class VentaPanel extends JFrame
 				}
 			}
 		});
-		tfClienteNombre.setBounds(332, 6, 273, 30);
+		tfClienteNombre.setBounds(368, 6, 273, 30);
 		pnlCliente.add(tfClienteNombre);
 		tfClienteNombre.setColumns(10);
 
-		JLabel lblVendedor = new JLabel("VEND.");
+		JLabel lblVendedor = new JLabel("VENDEDOR");
 		lblVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVendedor.setBounds(185, 41, 57, 30);
+		lblVendedor.setBounds(185, 41, 103, 30);
 		pnlCliente.add(lblVendedor);
 
 		tfVendedorID = new JTextField();
@@ -680,21 +684,21 @@ public class VentaPanel extends JFrame
 				Util.validateNumero(e);
 			}
 		});
-		tfVendedorID.setBounds(262, 40, 67, 30);
+		tfVendedorID.setBounds(318, 46, 47, 30);
 		pnlCliente.add(tfVendedorID);
 		tfVendedorID.setColumns(10);
 
 		tfVendedor = new JTextField();
 		tfVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfVendedor.setEditable(false);
-		tfVendedor.setBounds(332, 40, 273, 30);
+		tfVendedor.setBounds(368, 46, 273, 30);
 		pnlCliente.add(tfVendedor);
 		tfVendedor.setToolTipText("Nombre del Vendedor");
 		tfVendedor.setColumns(10);
 
 		JLabel lblDeposito = new JLabel("DEP.:");
 		lblDeposito.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDeposito.setBounds(615, 45, 40, 30);
+		lblDeposito.setBounds(652, 41, 40, 30);
 		pnlCliente.add(lblDeposito);
 
 		tfDepositoID = new JTextField();
@@ -725,7 +729,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfDepositoID.setColumns(10);
-		tfDepositoID.setBounds(676, 42, 58, 30);
+		tfDepositoID.setBounds(722, 42, 58, 30);
 		pnlCliente.add(tfDepositoID);
 
 		tfDeposito = new JTextField();
@@ -733,7 +737,7 @@ public class VentaPanel extends JFrame
 		tfDeposito.setEditable(false);
 		tfDeposito.setToolTipText("Nombre del Vendedor");
 		tfDeposito.setColumns(10);
-		tfDeposito.setBounds(737, 41, 243, 30);
+		tfDeposito.setBounds(790, 41, 190, 30);
 		pnlCliente.add(tfDeposito);
 
 		lblRuc = new JLabel("RUC:");
@@ -776,7 +780,7 @@ public class VentaPanel extends JFrame
 
 		lblDireccion = new JLabel("DIR:");
 		lblDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDireccion.setBounds(615, 10, 45, 30);
+		lblDireccion.setBounds(652, 6, 45, 30);
 		pnlCliente.add(lblDireccion);
 
 		tfClienteDireccion = new JTextField();
@@ -798,7 +802,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteDireccion.setColumns(10);
-		tfClienteDireccion.setBounds(676, 9, 304, 30);
+		tfClienteDireccion.setBounds(721, 9, 259, 30);
 		pnlCliente.add(tfClienteDireccion);
 
 		lblBuscadorDeVentas = new JLabel("NOTA:");
@@ -848,7 +852,7 @@ public class VentaPanel extends JFrame
 		label.setFont(new Font("Dialog", Font.BOLD, 20));
 		label.setToolTipText("Campos obligatorios");
 		label.setForeground(Color.RED);
-		label.setBounds(248, 6, 14, 30);
+		label.setBounds(298, 2, 14, 30);
 		pnlCliente.add(label);
 
 		label_1 = new JLabel("*");
@@ -857,7 +861,7 @@ public class VentaPanel extends JFrame
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setForeground(Color.RED);
 		label_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_1.setBounds(248, 41, 14, 30);
+		label_1.setBounds(298, 46, 14, 30);
 		pnlCliente.add(label_1);
 
 		label_3 = new JLabel("*");
@@ -866,7 +870,7 @@ public class VentaPanel extends JFrame
 		label_3.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3.setForeground(Color.RED);
 		label_3.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3.setBounds(652, 46, 14, 30);
+		label_3.setBounds(689, 42, 14, 30);
 		pnlCliente.add(label_3);
 
 		tfDvRuc = new JTextField();
@@ -875,6 +879,16 @@ public class VentaPanel extends JFrame
 		tfDvRuc.setBounds(148, 42, 27, 30);
 		pnlCliente.add(tfDvRuc);
 		tfDvRuc.setColumns(10);
+		
+		JButton btnAddProveedor = new JButton("+");
+		btnAddProveedor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(CLIENTE_ADD_CODE);
+			}
+		});
+		btnAddProveedor.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAddProveedor.setBounds(252, 5, 44, 30);
+		pnlCliente.add(btnAddProveedor);
 
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(9, 578, 1009, 35);
@@ -1716,6 +1730,14 @@ public class VentaPanel extends JFrame
 			consultaVentasDelDiaDialog.setVentasDelDia();
 			consultaVentasDelDiaDialog.setVisible(true);
 			break;
+		case CLIENTE_ADD_CODE:
+			clienteAddPanel.setInterfaz(this);
+			clienteAddPanel.loadCiudades();
+			clienteAddPanel.loadEmpresas();
+			clienteAddPanel.addNewCliente();
+			clienteAddPanel.setVisible(true);
+			break;	
+			
 		default:
 			break;
 		}
@@ -2872,5 +2894,4 @@ public class VentaPanel extends JFrame
 	public void setCant(int cant) {
 		this.cant = cant;
 	}
-
 }

@@ -369,14 +369,18 @@ public class InformeStockDeposito extends JDialog {
 			tituloCompra="Precio Compra";
 		}
 		parametros.put("tituloCompra", tituloCompra);			
-			
+		
+		String sqlStock=" ";
+		if(!chkProductosSinStock.isSelected()) {
+			sqlStock=" and p.dep_01 > 0 ";
+		}
 		String sql="select p.ID AS codigo, p.DESCRIPCION AS nombre, \n"
 				+ sqlCategoria
 				+ sqlMarca 
 				+ sqlCompra+" AS compra, p.precio_venta_a, p.precio_venta_b, p.precio_venta_c, \n"
 				+ "p.dep_01 as stock, 'GS' AS mone \n"
 				+ "FROM productos p, categorias a, marcas f  \n"
-				+ "	where p.categoria_id = a.id  AND p.marca_id=f.id ";
+				+ "	where p.categoria_id = a.id  AND p.marca_id=f.id "+ sqlStock;
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
 			sql = sql +" ORDER BY codigo asc";
 		else

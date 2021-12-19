@@ -1,11 +1,18 @@
 package py.com.prestosoftware.ui.shared;
 
-import javax.swing.JDialog;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +22,6 @@ import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.CuentaAPagarService;
-import py.com.prestosoftware.domain.services.CuentaProveedorService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
 import py.com.prestosoftware.domain.services.MonedaService;
@@ -30,6 +36,7 @@ import py.com.prestosoftware.domain.services.ProcesoPagoProveedoresService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
+import py.com.prestosoftware.ui.forms.ProductoAddPanel;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
@@ -40,16 +47,9 @@ import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.table.CompraImportacionTableModel;
 import py.com.prestosoftware.ui.table.CompraItemTableModel;
 import py.com.prestosoftware.ui.table.PedidoItemTableModel;
-import py.com.prestosoftware.ui.transactions.CompraConsignadaPanel;
 import py.com.prestosoftware.ui.transactions.CompraImportacionPanel;
 import py.com.prestosoftware.ui.transactions.CompraLocalPanel;
 import py.com.prestosoftware.ui.transactions.PedidoCompraPanel;
-
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 @Component
 public class CompraPanel extends JDialog {	
@@ -95,6 +95,7 @@ public class CompraPanel extends JDialog {
 	private CuentaAPagarService cuentaAPagarService;
 	private ItemCuentaAPagarService itemCuentaAPagarService;
 	private ProveedorAddPanel proveedorAddPanel;
+	private ProductoAddPanel productoAddPanel;
 
     @Autowired
 	public CompraPanel(PanelCompraInterfaz panelInterfaz, CompraItemTableModel itemTableModel,
@@ -110,7 +111,7 @@ public class CompraPanel extends JDialog {
 			PedidoCompraPanel pedidoCompra, ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
 			MovimientoCajaService pagoService,  MovimientoIngresoService movimientoIngresoService,	MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoEgresoService movimientoEgresoService, MovimientoItemEgresoService movimientoItemEgresoService, ProcesoPagoComprasService procesoPagoComprasService,
-			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService, ItemCuentaAPagarService itemCuentaAPagarService, ProveedorAddPanel proveedorAddPanel) {
+			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService, ItemCuentaAPagarService itemCuentaAPagarService, ProveedorAddPanel proveedorAddPanel, ProductoAddPanel productoAddPanel) {
 		this.panelInterfaz = panelInterfaz;
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
@@ -146,6 +147,7 @@ public class CompraPanel extends JDialog {
 		this.cuentaAPagarService =cuentaAPagarService;
 		this.itemCuentaAPagarService=itemCuentaAPagarService;
 		this.proveedorAddPanel =proveedorAddPanel;
+		this.productoAddPanel =productoAddPanel;
 		setTitle("OPCIONES DE COMPRA");
 		setModal(true);
 		setBounds(100, 100, 563, 178);
@@ -251,7 +253,7 @@ public class CompraPanel extends JDialog {
 	private void openCompraLocal() {
 		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, proveedorAddPanel, compraDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
 				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
-					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService);
+					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoAddPanel);
 		 compraLocal.setVisible(true);
 		 compraLocal.getConfig();
 		 compraLocal.clearForm();

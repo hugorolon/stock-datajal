@@ -58,9 +58,6 @@ public class ProductoDialog extends JDialog {
 	private JButton btnCancelar;
 	private JTable table;
 	private JScrollPane scrollPane;
-	
-	private JTable tbDeposito;
-	private JScrollPane scrollPaneDeposito;
 	private JTable tbPrecioIva;
 	private JScrollPane scrollPanePrecioIva;
 	
@@ -73,8 +70,6 @@ public class ProductoDialog extends JDialog {
 	private ProductoPrecioTableModel precioTableModel;
 	private ProductoDepositoTableModel depositoTableModel;
 	private DepositoService depositoService;
-	
-	private JPanel pnlDeposito;
 	private JPanel pnlPrecioIva;
 	
 
@@ -257,23 +252,9 @@ public class ProductoDialog extends JDialog {
 		});
 		pnlBotonera.add(btnCancelar);
 		
-		pnlDeposito = new JPanel();
-		pnlDeposito.setBounds(626, 35, 248, 197);
-		pnlDeposito.setBorder(new TitledBorder(null, "DEPOSITOS", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		getContentPane().add(pnlDeposito, "cell 1 0 1 3,grow");
-		pnlDeposito.setLayout(null);
-		
-		scrollPaneDeposito = new JScrollPane();
-		scrollPaneDeposito.setBounds(6, 18, 234, 168);
-		pnlDeposito.add(scrollPaneDeposito);
-		
-		tbDeposito = new JTable(depositoTableModel);
-		tbDeposito.setDefaultRenderer(Object.class, new CellRendererOperaciones());
-		scrollPaneDeposito.setViewportView(tbDeposito);
-		
 		
 		pnlPrecioIva = new JPanel();
-		pnlPrecioIva.setBounds(626, 244, 248, 199);
+		pnlPrecioIva.setBounds(628, 50, 248, 199);
 		pnlPrecioIva.setBorder(new TitledBorder(null, "PRECIO CON IVA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(pnlPrecioIva, "cell 1 4,grow");
 		pnlPrecioIva.setLayout(null);
@@ -295,9 +276,9 @@ public class ProductoDialog extends JDialog {
 	}
 	
 	public void loadProductos(String filter) {
-		if (filter.isEmpty()&&productos==null) {
-			productos = service.findAll();
-		}
+		//if (filter.isEmpty()&&productos==null) {
+			productos = service.findAllByNombre();
+		//}
 		
         tableModel.clear();
         tableModel.addEntities(productos);

@@ -80,6 +80,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.forms.ProductoAddPanel;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.Fechas;
@@ -113,7 +114,7 @@ public class CompraLocalPanel extends JFrame
 	private static final int CONDICION_PAGO_CODE = 5;
 	private static final int COMPRA_CODE = 6;
 	private static final int PROVEEDOR_ADD_CODE = 7;
-	
+	private static final int PRODUCTO_ADD_CODE = 8;
 
 	private JTextField tfNombre, tfDescripcion, tfProductoID, tfProveedorID, tfPrecioTotal, tfCompraId;
 	private JTextField tfPrecio, tfCantidad, tfCantItem;
@@ -146,6 +147,7 @@ public class CompraLocalPanel extends JFrame
 	private CompraDialog compraDialog;
 	private ConsultaProveedor proveedorDialog;
 	private ProveedorAddPanel proveedorAddPanel;
+	private ProductoAddPanel productoAddPanel;
 	private CondicionPagoDialog condicionPagoDialog;
 	private ProductoVistaDialog productoDialog;
 	private CondicionPagoService condicionPagoService;
@@ -174,7 +176,7 @@ public class CompraLocalPanel extends JFrame
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoPagoComprasService procesoPagoComprasService,
 			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService,
-			ItemCuentaAPagarService itemCuentaAPagarService) {
+			ItemCuentaAPagarService itemCuentaAPagarService, ProductoAddPanel productoAddPanel) {
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
 		this.proveedorAddPanel=proveedorAddPanel;
@@ -197,6 +199,7 @@ public class CompraLocalPanel extends JFrame
 		this.procesoPagoComprasService = procesoPagoComprasService;
 		this.cuentaAPagarService = cuentaAPagarService;
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
+		this.productoAddPanel = productoAddPanel;
 
 		setSize(920, 650);
 		setTitle("REGISTRO DE COMPRAS");
@@ -226,26 +229,26 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblDescripcion = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblDescripcion.text")); //$NON-NLS-1$
 		lblDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDescripcion.setBounds(176, 6, 242, 18);
+		lblDescripcion.setBounds(194, 6, 242, 18);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblSubtotal.text")); //$NON-NLS-1$
 		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSubtotal.setBounds(629, 6, 138, 18);
+		lblSubtotal.setBounds(652, 6, 115, 18);
 		pnlProducto.add(lblSubtotal);
 
 		JLabel lblPrecio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblPrecio.text")); //$NON-NLS-1$
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(504, 6, 115, 18);
+		lblPrecio.setBounds(538, 6, 115, 18);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(153, 30, 341, 30);
+		tfDescripcion.setBounds(194, 30, 341, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -253,7 +256,7 @@ public class CompraLocalPanel extends JFrame
 		tfPrecioTotal.setEditable(false);
 		tfPrecioTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecioTotal.setColumns(10);
-		tfPrecioTotal.setBounds(629, 30, 138, 30);
+		tfPrecioTotal.setBounds(652, 30, 115, 30);
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
@@ -287,7 +290,7 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(504, 30, 115, 30);
+		tfPrecio.setBounds(538, 30, 106, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -324,7 +327,7 @@ public class CompraLocalPanel extends JFrame
 			}
 		});
 		tfProductoID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfProductoID.setBounds(6, 30, 73, 30);
+		tfProductoID.setBounds(6, 30, 57, 30);
 		pnlProducto.add(tfProductoID);
 		tfProductoID.setColumns(10);
 
@@ -419,13 +422,13 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfCantidad.setColumns(10);
-		tfCantidad.setBounds(80, 30, 73, 30);
+		tfCantidad.setBounds(117, 30, 73, 30);
 		pnlProducto.add(tfCantidad);
 
 		JLabel lblCantidad = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblCantidad.text")); //$NON-NLS-1$
 		lblCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCantidad.setBounds(87, 6, 77, 18);
+		lblCantidad.setBounds(117, 6, 76, 18);
 		pnlProducto.add(lblCantidad);
 
 		btnAdd = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -458,6 +461,16 @@ public class CompraLocalPanel extends JFrame
 		label_7.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_7.setBounds(67, 6, 14, 18);
 		pnlProducto.add(label_7);
+		
+		btnAddProducto = new JButton("+");
+		btnAddProducto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(PRODUCTO_ADD_CODE);
+			}
+		});
+		btnAddProducto.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAddProducto.setBounds(64, 30, 51, 30);
+		pnlProducto.add(btnAddProducto);
 
 		JPanel pnlCabezera = new JPanel();
 		pnlCabezera.setBounds(12, 12, 896, 105);
@@ -1444,6 +1457,7 @@ public class CompraLocalPanel extends JFrame
 	private Configuracion conf;
 	private JLabel lblVence;
 	private JTextField tfVence;
+	private JButton btnAddProducto;
 
 	public void getConfig() {
 		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
@@ -1656,7 +1670,13 @@ public class CompraLocalPanel extends JFrame
 			proveedorAddPanel.addNewProveedor();
 			proveedorAddPanel.setVisible(true);
 			break;	
-			
+		case PRODUCTO_ADD_CODE:
+			productoAddPanel.setInterfaz(this);
+			productoAddPanel.loadGrupos();
+			productoAddPanel.addNewProducto();
+			productoAddPanel.setVisible(true);
+			break;
+	
 		default:
 			break;
 		}

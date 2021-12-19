@@ -324,11 +324,11 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		tfCantidad.setColumns(10);
 
 		btnAdd = new JButton(" + ");
-		btnAdd.setBounds(656, 67, 51, 30);
+		btnAdd.setBounds(650, 67, 57, 30);
 		panel_2.add(btnAdd);
 
 		btnRemove = new JButton(" - ");
-		btnRemove.setBounds(656, 101, 51, 30);
+		btnRemove.setBounds(650, 101, 57, 30);
 		panel_2.add(btnRemove);
 
 		JScrollPane scrollProducto = new JScrollPane();
@@ -386,18 +386,24 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 				}
 			}
 		});
+		
+		//iniico
+		btnRemove.setFont(new Font("Dialog", Font.BOLD, 18));
+		
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				removeItem();
 			}
 		});
-		btnAdd.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (isValidItem()) {
-					addItem();
+		btnRemove.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					removeItem();
 				}
 			}
 		});
+		
+		//
+		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
 		btnAdd.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -408,6 +414,15 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 				}
 			}
 		});
+		btnAdd.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					addItem();
+				}
+			}
+		});
+
+		
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(null, "Seleccione", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -958,7 +973,7 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 	}
 
 	private void updateStockProduct(TransformacionProducto item) {
-		Optional<Producto> pOptional = productoService.findById(item.getProductoOrigen().getId());
+		Optional<Producto> pOptional = productoService.findById(productoOrigen.getId());
 			if (pOptional.isPresent()) {
 				Producto p = pOptional.get();
 				Double newQt = p.getDepO1() - Double.valueOf(tfCantidadOrigen.getText());
@@ -1109,13 +1124,15 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 				tfStockOrigen.setText(FormatearValor.doubleAString(producto.getDepO1()));
 				tfCantidadOrigen.setText("1");
 				tfCantidadOrigen.requestFocus();
+				setProductoOrigen(producto);
 			}else {
 				tfProductoID.setText(String.valueOf(producto.getId()));
 				tfDescripcion.setText(producto.getDescripcion());
 				tfCantidad.setText(String.valueOf(1));
 				tfStockDestino.setText(producto.getDepO1().toString());
-				tfPrecio.setText(producto.getPrecioVentaA().toString());
+				tfPrecio.setText(FormatearValor.doubleAString(producto.getPrecioVentaA()));
 				tfCantidad.requestFocus();
+				setProductoDestino(producto);
 			}
 		}
 	}
