@@ -1,0 +1,1 @@
+java -jar target/stock-agroprogreso-0.0.1.jar

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportMovimientoClienteCuenta" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -8,6 +8,8 @@
 	<property name="ireport.y" value="0"/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="stk"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -20,25 +22,27 @@
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
 	<queryString>
-		<![CDATA[SELECT car_numero , car.car_fecha as car_fecha1, car.car_hora, car.car_boleta, car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,  car.car_monto as car_monto1, 
+		<![CDATA[SELECT 0 as car_numero, MAX(car.car_fecha) AS car_fecha1, '00:00:00'::time as car_hora, '' AS car_boleta, $P!{idCliente} as car_entidad, '' as nombre, '' as celular, 
+'' as direccion,  0 as car_tipoentidad,  SUM(car.car_monto) AS car_monto1, 
+0 as car_proceso, 0 as  car_situacion, 0 as ica_cuenta,0 as ica_secuencia, 0 as ica_dias, now() as ica_vencimiento1, 
+0 AS ica_monto1,0 as ica_iva, '' AS ica_documento, 0 as ica_situacion, 
+sum(COALESCE((SELECT SUM(icl_monto) AS pagado FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0)) AS pagado, 
+   'Saldo Anterior' AS nombre_ingreso 
+ FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR , clientes cli
+	  WHERE car_numero=ica_cuenta and car_situacion=0   and car.car_entidad=cli.id 
+	  $P!{fechaFiltro2}	  
+	  $P!{idCliente} 
+	  UNION
+SELECT car_numero , car.car_fecha as car_fecha1, car.car_hora, car.car_boleta, car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,  car.car_monto as car_monto1, 
 car_proceso, car_situacion, ica_cuenta, ica_secuencia, ica_dias, ica_vencimiento as ica_vencimiento1, 
 ica_monto as ica_monto1, ica_iva, ica_documento, ica_situacion
 ,coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado,
 ('Ventas de productos #') AS nombre_ingreso 
  FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli 
-	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.car_entidad=cli.id 
+	  WHERE car_numero=ica_cuenta AND car_situacion=0  and car.car_entidad=cli.id 
 	  $P!{fechaFiltro1}
 	  $P!{idCliente}
- UNION 
-SELECT car_numero, MAX(car.car_fecha) AS car_fecha1, car.car_hora, '' AS car_boleta, car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,  SUM(car.car_monto) AS car_monto1, 
-car_proceso,  car_situacion, ica_cuenta, ica_secuencia, ica_dias, MAX(ica_vencimiento) AS ica_vencimiento1, 
-SUM(ica_monto) AS ica_monto1, ica_iva, '' AS ica_documento, ica_situacion, 
-COALESCE((SELECT SUM(icl_monto) AS pagado FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado, 
-   'Saldo Anterior' AS nombre_ingreso 
- FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR , clientes cli
-	  WHERE car_numero=ica_cuenta and car_situacion=0  and ica_situacion = 0  and car.car_entidad=cli.id 
-	  $P!{fechaFiltro2}	  
-	  $P!{idCliente} 
+
 GROUP BY car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,car_numero, car.car_hora, ICA_iva, car_proceso, car_situacion,  ica_cuenta, ica_secuencia, ica_dias, ica_iva, ica_situacion  
 $P!{orden}]]>
 	</queryString>
