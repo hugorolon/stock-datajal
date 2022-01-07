@@ -88,7 +88,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performNota(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalle> items) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items,Date fechaImpresion) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -121,7 +121,7 @@ public class ImpresionUtil {
 		}
 		Map<String, String> parametros = new HashMap<String, String>();
 		SimpleDateFormat sd=new SimpleDateFormat("dd/MM/yyyy");
-		String fecha= sd.format(new Date());
+		String fecha= sd.format(fechaImpresion);
 		parametros.put("fecha", fecha);
 	    parametros.put("clienteNombre", cliente);
 	    parametros.put("clienteRucDv", ruc);

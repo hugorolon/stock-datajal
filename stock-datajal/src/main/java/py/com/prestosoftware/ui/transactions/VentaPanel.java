@@ -2854,7 +2854,7 @@ public class VentaPanel extends JFrame
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
-				itemTableModel.getEntities());
+				itemTableModel.getEntities(), this.fechaImpresion);
 		clearForm();
 	}
 

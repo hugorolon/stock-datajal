@@ -43,6 +43,7 @@
 	<parameter name="totalIva" class="java.lang.String"/>
 	<parameter name="totalGeneral" class="java.lang.String"/>
 	<parameter name="montoEnLetras" class="java.lang.String" isForPrompting="false"/>
+	<parameter name="fecha" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -91,10 +92,6 @@
 	<pageHeader>
 		<band height="188" splitType="Immediate">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField pattern="d &apos;de&apos; MMMM &apos;del&apos; yyyy">
-				<reportElement x="69" y="107" width="220" height="14" uuid="a9c1c734-5824-41c4-9d7c-bdb7345b25e9"/>
-				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="90" y="122" width="271" height="15" uuid="15483d89-d24a-45a1-8cc4-0f0b9332adc0">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -125,6 +122,10 @@
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$P{credito}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="69" y="107" width="231" height="14" uuid="30bc1cd3-9610-47e5-9c2e-90e64a7cc3dc"/>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

@@ -68,6 +68,7 @@ public class ReImpresionPanel extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					panelInterfaz.cargaFecha(dtpFecha.getDate());
 					panelInterfaz.imprimirNota();
 					dispose();
 				}
