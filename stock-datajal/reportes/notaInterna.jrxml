@@ -365,7 +365,7 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="51">
+		<band height="58">
 			<staticText>
 				<reportElement x="280" y="10" width="120" height="15" uuid="878c1de3-f038-482a-9e58-2cbe29a61b2e">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
