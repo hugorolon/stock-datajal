@@ -71,6 +71,7 @@ public class ProductoDialog extends JDialog {
 	private ProductoDepositoTableModel depositoTableModel;
 	private DepositoService depositoService;
 	private JPanel pnlPrecioIva;
+	private JButton btnActualizarLista;
 	
 
 	@Autowired
@@ -145,6 +146,14 @@ public class ProductoDialog extends JDialog {
 			}
 		});
 		pnlBuscador.add(btnBuscar);
+		
+		btnActualizarLista = new JButton("Actualizar Lista");
+		btnActualizarLista.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actualizaLista();
+			}
+		});
+		pnlBuscador.add(btnActualizarLista);
 		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 35, 614, 408);
@@ -284,6 +293,14 @@ public class ProductoDialog extends JDialog {
         tableModel.addEntities(productos);
         //table.requestFocus();
     }
+	
+	public void actualizaLista() {
+		productos = service.findAll();
+		//}
+		
+        tableModel.clear();
+        tableModel.addEntities(productos);
+	}
 	
 	public ProductoInterfaz getInterfaz() {
 		return interfaz;
