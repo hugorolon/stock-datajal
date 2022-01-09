@@ -331,7 +331,8 @@ public class UtilidadProductoDialog extends JDialog {
 
 	private void preview() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
-//		String sqlCategoria="";
+
+		String orden="";
 //		String sqlMarca="";
 //		String tituloGrupo="";
 //		if(cbEstiloInforme.getSelectedItem().toString().equalsIgnoreCase("Por Marca")) {
@@ -354,30 +355,14 @@ public class UtilidadProductoDialog extends JDialog {
 		parametros.put("fechaFin", df.format(fechaFinSel));
 		String fechaFiltro = " AND v.fecha >= to_date('" + df.format(fechaIniSel)
 				+ "', 'DD/MM/YYYY') and v.fecha <= to_date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		
-			
-		String sql="SELECT p.id AS codigo, v.fecha as fecha, extract(month from v.fecha) as mes, p.descripcion AS nombre, \n"
-				+ " a.id AS categoriaId, a.nombre AS nombreCategoria, f.id AS fabricanteId, f.nombre AS nombreFabricante, SUM(i.cantidad) AS cantidad, \n"
-				+ " SUM(i.cantidad * i.precio) / SUM(i.cantidad) AS venta, \n"
-				+ " p.precio_costo AS compra, \n"
-				+ " p.precio_costo * SUM(i.cantidad) AS tcompra, \n"
-				+ " (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) AS tventa\n"
-				+ " , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - \n"
-				+ " (p.precio_costo * SUM(i.cantidad)) AS utilidad \n"
-				+ " FROM productos p, categorias a, marcas f, ventas v, venta_detalles i \n"
-				+ " WHERE \n"
-				+ " v.id = i.venta_id AND i.producto_id = p.id AND v.situacion = 'PAGADO' AND p.marca_id = f.id \n"
-				+ fechaFiltro  
-				+ " GROUP BY p.id, p.descripcion, f.id, a.nombre, f.nombre, v.fecha, a.id \n";
-				
-				
 				
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
-			sql = sql +" ORDER BY 1,2 asc";
+			orden = " ORDER BY 1,2 asc";
 		else
-			sql = sql +" ORDER BY 2,1 asc";
-		parametros.put("sql", sql);
-		
+			orden = " ORDER BY 2,1 asc";
+		//parametros.put("sql", sql);
+		parametros.put("fechaFiltro", fechaFiltro);
+		parametros.put("orden", orden);
 		Connection conn = null;
 		try {
 			conn = ConnectionUtils.getConnection();

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportProductoUtilidad" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -18,8 +18,23 @@
 	<parameter name="sql" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 	</parameter>
+	<parameter name="fechaFiltro" class="java.lang.String"/>
 	<queryString>
-		<![CDATA[$P!{sql}]]>
+		<![CDATA[SELECT p.id AS codigo, v.fecha as fecha, extract(month from v.fecha) as mes, p.descripcion AS nombre, 
+				 a.id AS categoriaId, a.nombre AS nombreCategoria, f.id AS fabricanteId, f.nombre AS nombreFabricante, SUM(i.cantidad) AS cantidad, 
+				 SUM(i.cantidad * i.precio) / SUM(i.cantidad) AS venta, 
+				 p.precio_costo AS compra, 
+				 p.precio_costo * SUM(i.cantidad) AS tcompra, 
+				 (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) AS tventa
+				 , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - (p.precio_costo * SUM(i.cantidad)) AS utilidad 
+				 FROM productos p, categorias a, marcas f, ventas v, venta_detalles i 
+				 WHERE 
+				 v.id = i.venta_id AND i.producto_id = p.id 
+				 --AND v.situacion = 'PAGADO' 
+				 AND p.marca_id = f.id 
+				 $P!{fechaFiltro}
+				
+GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 	</queryString>
 	<field name="codigo" class="java.lang.Long"/>
 	<field name="fecha" class="java.sql.Date"/>
@@ -48,12 +63,12 @@
 		<initialValueExpression><![CDATA[0d]]></initialValueExpression>
 	</variable>
 	<group name="Grupo">
-		<groupExpression><![CDATA[$F{codigo}]]></groupExpression>
+		<groupExpression><![CDATA[$F{fecha}]]></groupExpression>
 		<groupHeader>
 			<band height="57">
 				<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				<staticText>
-					<reportElement x="120" y="30" width="170" height="19" uuid="c346d5ac-1fcd-41c2-995c-e286bef63fe4">
+					<reportElement x="120" y="31" width="170" height="19" uuid="c346d5ac-1fcd-41c2-995c-e286bef63fe4">
 						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 					</reportElement>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
@@ -110,12 +125,8 @@
 					<text><![CDATA[PORC. %]]></text>
 				</staticText>
 				<textField>
-					<reportElement x="8" y="10" width="52" height="20" uuid="180a7ce1-7fba-4afb-b9d0-cc03c33e6047"/>
-					<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement x="60" y="10" width="230" height="20" uuid="7bc96a6d-1334-4a8d-98a9-c89e36657e6b"/>
-					<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+					<reportElement x="2" y="10" width="100" height="20" uuid="15f26512-28d7-4f5d-a27b-6281b921c0ab"/>
+					<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupHeader>
