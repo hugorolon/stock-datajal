@@ -178,6 +178,15 @@ public class ProductoVistaDialog extends JDialog {
 		});
 		pnlBuscador.add(btnBuscar);
 		
+		JButton btnActualizarLista = new JButton("Actualizar Lista");
+		btnActualizarLista.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				actualizaLista();
+			}
+		});
+		btnActualizarLista.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlBuscador.add(btnActualizarLista);
+		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 35, 614, 476);
 		getContentPane().add(scrollPane);
@@ -495,6 +504,14 @@ public class ProductoVistaDialog extends JDialog {
         tableModel.addEntities(productos);
         //table.requestFocus();
     }
+	
+	public void actualizaLista() {
+		productos = service.findAll();
+		//}
+		
+        tableModel.clear();
+        tableModel.addEntities(productos);
+	}
 	
 	public ProductoInterfaz getInterfaz() {
 		return interfaz;
