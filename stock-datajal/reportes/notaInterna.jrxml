@@ -40,6 +40,7 @@
 	<parameter name="totalIva" class="java.lang.String"/>
 	<parameter name="totalGeneral" class="java.lang.String"/>
 	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="vencimiento" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -312,6 +313,10 @@
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="416" y="64" width="148" height="15" uuid="6520d807-2964-4d35-9e5b-1d5d6fb5ca37"/>
+				<textFieldExpression><![CDATA[$P{vencimiento}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

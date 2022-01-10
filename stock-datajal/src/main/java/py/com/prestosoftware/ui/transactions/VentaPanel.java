@@ -124,7 +124,7 @@ public class VentaPanel extends JFrame
 	private static final int SALDO_PRODUCTO_CODE = 5;
 	private static final int CONDICION_PAGO_CODE = 6;
 	private static final int VENTA_CODE = 7;
-	private static final int CLIENTE_ADD_CODE=8;
+	private static final int CLIENTE_ADD_CODE = 8;
 
 	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
@@ -143,6 +143,7 @@ public class VentaPanel extends JFrame
 	private JLabel label_4;
 	private JLabel lblCamposObligatorios;
 	private JLabel label_5;
+	private JLabel lblSituacion;
 	private JTextField tfDvRuc;
 	private JButton btnReimpresion;
 
@@ -195,9 +196,8 @@ public class VentaPanel extends JFrame
 			ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
 			CondicionPagoService condicionPagoService, ConfiguracionService configService,
 			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog,
-			MovimientoIngresoService movimientoIngresoService, MovimientoEgresoService movimientoEgresoService,
-			MovimientoItemIngresoService movimientoItemIngresoService,
+			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog, MovimientoIngresoService movimientoIngresoService,
+			MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
 			ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel) {
@@ -230,7 +230,7 @@ public class VentaPanel extends JFrame
 		this.procesoCobroVentasService = procesoCobroVentasService;
 		this.cuentaARecibirService = cuentaARecibirService;
 		this.itemCuentaARecibirService = itemCuentaARecibirService;
-		this.clienteAddPanel=clienteAddPanel;
+		this.clienteAddPanel = clienteAddPanel;
 
 		setSize(1042, 672);
 		setTitle("REGISTRO DE VENTAS");
@@ -560,7 +560,7 @@ public class VentaPanel extends JFrame
 
 		JLabel lblClienteID = new JLabel("CLIENTE:");
 		lblClienteID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblClienteID.setBounds(185, 6, 67, 30);
+		lblClienteID.setBounds(253, 6, 79, 30);
 		pnlCliente.add(lblClienteID);
 
 		btnAdd = new JButton("+");
@@ -622,7 +622,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteID.setText("0");
-		tfClienteID.setBounds(318, 6, 47, 30);
+		tfClienteID.setBounds(398, 6, 47, 30);
 		pnlCliente.add(tfClienteID);
 		tfClienteID.setColumns(10);
 
@@ -643,13 +643,13 @@ public class VentaPanel extends JFrame
 				}
 			}
 		});
-		tfClienteNombre.setBounds(368, 6, 273, 30);
+		tfClienteNombre.setBounds(448, 6, 273, 30);
 		pnlCliente.add(tfClienteNombre);
 		tfClienteNombre.setColumns(10);
 
 		JLabel lblVendedor = new JLabel("VENDEDOR");
 		lblVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVendedor.setBounds(185, 41, 103, 30);
+		lblVendedor.setBounds(253, 42, 103, 30);
 		pnlCliente.add(lblVendedor);
 
 		tfVendedorID = new JTextField();
@@ -684,21 +684,21 @@ public class VentaPanel extends JFrame
 				Util.validateNumero(e);
 			}
 		});
-		tfVendedorID.setBounds(318, 46, 47, 30);
+		tfVendedorID.setBounds(398, 42, 47, 30);
 		pnlCliente.add(tfVendedorID);
 		tfVendedorID.setColumns(10);
 
 		tfVendedor = new JTextField();
 		tfVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfVendedor.setEditable(false);
-		tfVendedor.setBounds(368, 46, 273, 30);
+		tfVendedor.setBounds(448, 42, 273, 30);
 		pnlCliente.add(tfVendedor);
 		tfVendedor.setToolTipText("Nombre del Vendedor");
 		tfVendedor.setColumns(10);
 
 		JLabel lblDeposito = new JLabel("DEP.:");
 		lblDeposito.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDeposito.setBounds(652, 41, 40, 30);
+		lblDeposito.setBounds(731, 45, 40, 30);
 		pnlCliente.add(lblDeposito);
 
 		tfDepositoID = new JTextField();
@@ -729,7 +729,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfDepositoID.setColumns(10);
-		tfDepositoID.setBounds(722, 42, 58, 30);
+		tfDepositoID.setBounds(804, 42, 27, 30);
 		pnlCliente.add(tfDepositoID);
 
 		tfDeposito = new JTextField();
@@ -737,12 +737,12 @@ public class VentaPanel extends JFrame
 		tfDeposito.setEditable(false);
 		tfDeposito.setToolTipText("Nombre del Vendedor");
 		tfDeposito.setColumns(10);
-		tfDeposito.setBounds(790, 41, 190, 30);
+		tfDeposito.setBounds(841, 42, 139, 30);
 		pnlCliente.add(tfDeposito);
 
 		lblRuc = new JLabel("RUC:");
 		lblRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRuc.setBounds(0, 41, 42, 30);
+		lblRuc.setBounds(0, 42, 42, 30);
 		pnlCliente.add(lblRuc);
 
 		tfClienteRuc = new JTextField();
@@ -775,12 +775,12 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteRuc.setColumns(10);
-		tfClienteRuc.setBounds(43, 42, 95, 30);
+		tfClienteRuc.setBounds(43, 42, 150, 30);
 		pnlCliente.add(tfClienteRuc);
 
 		lblDireccion = new JLabel("DIR:");
 		lblDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDireccion.setBounds(652, 6, 45, 30);
+		lblDireccion.setBounds(731, 6, 45, 30);
 		pnlCliente.add(lblDireccion);
 
 		tfClienteDireccion = new JTextField();
@@ -802,7 +802,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteDireccion.setColumns(10);
-		tfClienteDireccion.setBounds(721, 9, 259, 30);
+		tfClienteDireccion.setBounds(801, 6, 179, 30);
 		pnlCliente.add(tfClienteDireccion);
 
 		lblBuscadorDeVentas = new JLabel("NOTA:");
@@ -812,13 +812,19 @@ public class VentaPanel extends JFrame
 
 		tfVentaId = new JTextField();
 		tfVentaId.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfVentaId.setEditable(false);
-		tfVentaId.setBounds(43, 6, 95, 30);
+		tfVentaId.setEditable(true);
+		tfVentaId.setBounds(43, 6, 67, 30);
 		pnlCliente.add(tfVentaId);
 		tfVentaId.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfVentaId.getText().isEmpty()) {
+						findVenta(tfVentaId.getText());
+					} else {
+						showDialog(PRODUCTO_CODE);
+					}
+				}
 			}
 
 			@Override
@@ -826,11 +832,12 @@ public class VentaPanel extends JFrame
 				Util.validateNumero(e);
 			}
 		});
+
 		tfVentaId.setColumns(10);
 
 		btnVer = new JButton("VER");
 		btnVer.setFont(new Font("Dialog", Font.BOLD, 18));
-		btnVer.setBounds(148, 6, 27, 30);
+		btnVer.setBounds(203, 6, 27, 30);
 		pnlCliente.add(btnVer);
 		btnVer.addKeyListener(new KeyAdapter() {
 			@Override
@@ -852,7 +859,7 @@ public class VentaPanel extends JFrame
 		label.setFont(new Font("Dialog", Font.BOLD, 20));
 		label.setToolTipText("Campos obligatorios");
 		label.setForeground(Color.RED);
-		label.setBounds(298, 2, 14, 30);
+		label.setBounds(378, 6, 14, 30);
 		pnlCliente.add(label);
 
 		label_1 = new JLabel("*");
@@ -861,7 +868,7 @@ public class VentaPanel extends JFrame
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setForeground(Color.RED);
 		label_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_1.setBounds(298, 46, 14, 30);
+		label_1.setBounds(378, 42, 14, 30);
 		pnlCliente.add(label_1);
 
 		label_3 = new JLabel("*");
@@ -870,16 +877,16 @@ public class VentaPanel extends JFrame
 		label_3.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3.setForeground(Color.RED);
 		label_3.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3.setBounds(689, 42, 14, 30);
+		label_3.setBounds(768, 42, 14, 30);
 		pnlCliente.add(label_3);
 
 		tfDvRuc = new JTextField();
 		tfDvRuc.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		tfDvRuc.setEnabled(false);
-		tfDvRuc.setBounds(148, 42, 27, 30);
+		tfDvRuc.setBounds(203, 42, 27, 30);
 		pnlCliente.add(tfDvRuc);
 		tfDvRuc.setColumns(10);
-		
+
 		JButton btnAddProveedor = new JButton("+");
 		btnAddProveedor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -887,8 +894,13 @@ public class VentaPanel extends JFrame
 			}
 		});
 		btnAddProveedor.setFont(new Font("Dialog", Font.BOLD, 18));
-		btnAddProveedor.setBounds(252, 5, 44, 30);
+		btnAddProveedor.setBounds(332, 6, 44, 30);
 		pnlCliente.add(btnAddProveedor);
+
+		lblSituacion = new JLabel("Situación");
+		lblSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSituacion.setBounds(118, 10, 85, 20);
+		pnlCliente.add(lblSituacion);
 
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(9, 578, 1009, 35);
@@ -1255,7 +1267,7 @@ public class VentaPanel extends JFrame
 			tfDescripcion.setText(String.valueOf(item.getProducto()));
 			tfPrecio.setText(FormatearValor.doubleAString(item.getPrecio()));
 			tfPrecioTotal.setText(FormatearValor.doubleAString(item.getSubtotal()));
-			//tfDescuentoItem.setText(item.getDescuento().toString());
+			// tfDescuentoItem.setText(item.getDescuento().toString());
 		}
 	}
 
@@ -1378,13 +1390,14 @@ public class VentaPanel extends JFrame
 		case 1:
 			Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
 			depBlo = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
-			result = getStockDisp(dep01 - salPend - depBlo, cantidad);
+			//result = getStockDisp(dep01 - salPend - depBlo, cantidad);
+			result = getStockDisp(dep01, cantidad);
 			break;
 		case 2:
 
 			Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
 			depBlo = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
-			result = getStockDisp(dep02 - salPend - depBlo, cantidad);
+			result = getStockDisp(dep02, cantidad);
 			break;
 		case 3:
 			Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
@@ -1540,7 +1553,7 @@ public class VentaPanel extends JFrame
 		item.setCantidad(FormatearValor.stringToDouble(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
-		//item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
+		// item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
 		Integer iva = this.getProductoSeleccionado().getImpuesto().getPorcentaje().intValue();
 		item.setIva(iva);
 
@@ -1553,7 +1566,7 @@ public class VentaPanel extends JFrame
 		tfCantidad.setText("");
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
-		//tfDescuentoItem.setText("");
+		// tfDescuentoItem.setText("");
 		tfProductoID.requestFocus();
 	}
 
@@ -1577,9 +1590,9 @@ public class VentaPanel extends JFrame
 		tfClienteRuc.setText("");
 		tfDvRuc.setText("");
 		tfClienteDireccion.setText("");
-		//tfVendedorID.setText("");
-		//tfVendedor.setText("");
-		//tfDeposito.setText("");
+		// tfVendedorID.setText("");
+		// tfVendedor.setText("");
+		// tfDeposito.setText("");
 		tfProductoID.setText("");
 		tfCantidad.setText("");
 		tfDescripcion.setText("");
@@ -1589,7 +1602,7 @@ public class VentaPanel extends JFrame
 		tfTotal.setText("0");
 		tfTotalItems.setText("0");
 		tfDescuento.setText("0");
-		//tfDescuentoItem.setText("0");
+		// tfDescuentoItem.setText("0");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
 		tfCondicionPago.setSelectedIndex(0);
@@ -1604,8 +1617,8 @@ public class VentaPanel extends JFrame
 			itemTableModel.removeRow(0);
 		}
 
-		//tfDepositoID.setEditable(true);
-		//tfDepositoID.setText("");
+		// tfDepositoID.setEditable(true);
+		// tfDepositoID.setText("");
 
 		calculateVencimiento();
 
@@ -1690,7 +1703,7 @@ public class VentaPanel extends JFrame
 		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
 		if (usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESC. ITEM")) {
 			Double desc = (((precioUnit - this.getPrecioInicial()) / this.getPrecioInicial()) * 100);
-			//tfDescuentoItem.setText(FormatearValor.doubleAString(desc));
+			// tfDescuentoItem.setText(FormatearValor.doubleAString(desc));
 		}
 
 		btnAdd.requestFocus();
@@ -1736,8 +1749,8 @@ public class VentaPanel extends JFrame
 			clienteAddPanel.loadEmpresas();
 			clienteAddPanel.addNewCliente();
 			clienteAddPanel.setVisible(true);
-			break;	
-			
+			break;
+
 		default:
 			break;
 		}
@@ -1782,7 +1795,6 @@ public class VentaPanel extends JFrame
 		if (v != null) {
 			btnGuardar.setVisible(false);
 			btnReimpresion.setVisible(true);
-			btnAnular.setVisible(true);
 			btnAdd.setEnabled(false);
 			btnRemove.setEnabled(false);
 			setVenta(v);
@@ -1803,17 +1815,23 @@ public class VentaPanel extends JFrame
 		else
 			tfCondicionPago.setSelectedIndex(1);
 
+		if (v.getSituacion().contentEquals("ANULADO")) 
+			btnAnular.setVisible(false);
+		else 
+			btnAnular.setVisible(true);
+		
 		tfDepositoID.setText(String.valueOf(v.getDeposito().getId()));
 		tfDeposito.setText(v.getDeposito().getNombre());
 		tfDescuento.setText(String.valueOf(v.getTotalDescuento()));
 		// tfSubtotal.setText(String.valueOf(v.getTotalGravada10()));
 		tfTotal.setText(FormatearValor.doubleAString((v.getTotalGeneral())));
 		tfObs.setText(String.valueOf(v.getObs()));
-		List<VentaDetalle> listaDetalles=new ArrayList<VentaDetalle>();
-		List<Object[]> listaItems= ventaService.retriveVentaDetalleByIdVenta(v.getId());
-		//venta_id, cantidad, precio, producto, producto_id, subtotal, id,  iva
+		lblSituacion.setText(v.getSituacion());
+		List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
+		List<Object[]> listaItems = ventaService.retriveVentaDetalleByIdVenta(v.getId());
+		// venta_id, cantidad, precio, producto, producto_id, subtotal, id, iva
 		for (Object[] object : listaItems) {
-			VentaDetalle det=new VentaDetalle();
+			VentaDetalle det = new VentaDetalle();
 			det.setCantidad(Double.valueOf(object[1].toString()));
 			det.setPrecio(Double.valueOf(object[2].toString()));
 			det.setProducto(object[3].toString());
@@ -1821,10 +1839,11 @@ public class VentaPanel extends JFrame
 			det.setSubtotal(Double.valueOf(object[5].toString()));
 			det.setIva(Integer.valueOf(object[7].toString()));
 
-			
 			listaDetalles.add(det);
 		}
-		
+		v.setItems(new ArrayList<VentaDetalle>());
+		v.setItems(listaDetalles);
+		itemTableModel.clear();
 		itemTableModel.addEntities(listaDetalles);
 		setVentaSeleccionado(v);
 	}
@@ -2088,16 +2107,21 @@ public class VentaPanel extends JFrame
 	}
 
 	private void removeMovimientoIngresoProcesoCobroVenta(Venta venta) {
-		MovimientoIngreso m = movimientoIngresoService.findByMinProceso(Integer.valueOf(venta.getId().toString()));
-		Integer cabId = m.getMinNumero();
-		movimientoIngresoService.remove(m);
+		try {
+			MovimientoIngreso m = movimientoIngresoService.findByMinProceso(Integer.valueOf(venta.getId().toString()));
+			Integer cabId = m.getMinNumero();
+			movimientoIngresoService.remove(m);
 
-		List<MovimientoItemIngreso> mii = movimientoItemIngresoService.findByCabId(cabId);
-		for (MovimientoItemIngreso movimientoItemIngreso : mii) {
-			movimientoItemIngresoService.remove(movimientoItemIngreso);
+			List<MovimientoItemIngreso> mii = movimientoItemIngresoService.findByCabId(cabId);
+			for (MovimientoItemIngreso movimientoItemIngreso : mii) {
+				movimientoItemIngresoService.remove(movimientoItemIngreso);
+			}
+			ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(cabId);
+			procesoCobroVentasService.remove(pcv);
+			
+		} catch (Exception e) {
+			
 		}
-		ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(cabId);
-		procesoCobroVentasService.remove(pcv);
 	}
 
 	private CuentaARecibir cuentaARecibirProcesoCobroVenta(Venta venta) {
@@ -2165,10 +2189,15 @@ public class VentaPanel extends JFrame
 				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
 					removeMovCaja(ventaSeleccionado);
 					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
-					if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-						Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
-						removeMovimientoEgreso(cuentaARecibir);
+					try {
+						if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+							Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
+							removeMovimientoEgreso(cuentaARecibir);
+						}						
+					} catch (Exception e) {
+						// TODO: handle exception
 					}
+
 				}
 
 				newVenta();
@@ -2400,11 +2429,13 @@ public class VentaPanel extends JFrame
 		tfTotal.setText("0");
 		tfTotalItems.setText("0");
 		tfDescuento.setText("0");
-		//tfDescuentoItem.setText("0");
+		// tfDescuentoItem.setText("0");
+		lblSituacion.setText("VIGENTE");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
 		tfCondicionPago.setSelectedIndex(0);
 		tfClienteNombre.setEnabled(false);
+
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
 		}
@@ -2549,6 +2580,20 @@ public class VentaPanel extends JFrame
 		}
 	}
 
+	private void findVenta(String id) {
+		Optional<Venta> venta = null;
+		venta = ventaService.findById(Long.valueOf(id.trim()));
+		if (venta.isPresent()) {
+			setVenta(venta.get());
+			btnGuardar.setVisible(false);
+			btnReimpresion.setVisible(true);
+			btnAdd.setEnabled(false);
+			btnRemove.setEnabled(false);
+		} else {
+			Notifications.showAlert("No existe venta informado. Verifique por favor.!");
+		}
+	}
+
 	private void setProducto(Producto producto) {
 		if (producto != null) {
 			if (producto.getSubgrupo().getTipo().equals("S"))
@@ -2559,10 +2604,10 @@ public class VentaPanel extends JFrame
 
 			tfProductoID.setText(String.valueOf(producto.getId()));
 			tfDescripcion.setText(producto.getDescripcion());
-			double d=Math.round (precioInicial);
+			double d = Math.round(precioInicial);
 			tfPrecio.setText(FormatearValor.doubleAString(d));
 			tfCantidad.setText("1");
-			//tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
+			// tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
 			tfCantidad.requestFocus();
 		}
 	}
