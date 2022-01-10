@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.PrintJob;
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -130,7 +131,11 @@ public class ImpresionUtil {
 	    parametros.put("comprobante", nroVenta);
 	    
 	    String condicionValue = "";
-	    
+	    Calendar cal = Calendar.getInstance();
+	    cal.add(Calendar.MONTH, 1);
+	    Date fechaVencimiento=cal.getTime();
+	    String vencimiento="";
+	    SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
 	    if (condicion.equalsIgnoreCase("contado")) {
 	    	parametros.put("contado", "X");
 	    	parametros.put("credito", "");
@@ -139,7 +144,9 @@ public class ImpresionUtil {
 	    	parametros.put("credito", "X");
 	    	parametros.put("contado", "");
 	    	condicionValue = "CREDITO";
+	    	vencimiento="Vence  :"+sdf.format(fechaVencimiento);
 	    }
+	    parametros.put("vencimiento", vencimiento);
 	    parametros.put("condicion", condicionValue);
 	    parametros.put("empleadoNombre", vendedor);
 	    parametros.put("subTotalExenta",FormatearValor.doubleAString(totalExenta));
