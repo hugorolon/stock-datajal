@@ -353,6 +353,37 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfDescuentos = new JTextField();
 		tfDescuentos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfDescuentos.setBounds(116, 171, 163, 30);
+		tfDescuentos.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfDescuentos.selectAll();
+			}
+		});
+		tfDescuentos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+						calculateMontoTotal(0);
+					} else {
+						Notifications.showAlert("Digite el monto a descontar");
+						tfDescuentos.requestFocus();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					tfRecargos.requestFocus();
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+		});
 		panel_2.add(tfDescuentos);
 		tfDescuentos.setColumns(10);
 
@@ -360,9 +391,40 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfRecargos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfRecargos.setColumns(10);
 		tfRecargos.setBounds(289, 171, 163, 30);
+		tfRecargos.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfRecargos.selectAll();
+			}
+		});
+		tfRecargos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+						calculateMontoTotal(1);
+					} else {
+						Notifications.showAlert("Digite el monto a recargar");
+						tfRecargos.requestFocus();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					tfRecargos.requestFocus();
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+		});
 		panel_2.add(tfRecargos);
 
-		JLabel lblRecargos = new JLabel("DESCUENTOS");
+		JLabel lblRecargos = new JLabel("RECARGOS");
 		lblRecargos.setBounds(289, 156, 79, 14);
 		panel_2.add(lblRecargos);
 
@@ -555,6 +617,38 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		
 	}
 
+	private void calculateMontoTotal(int origen) {
+		try {
+			Double aCobrar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
+			if(aCobrar>0) {
+				Double totalCta = FormatearValor.stringToDouble(tfTotalACobrar.getText());
+				Double descuento =0d;
+				Double recargo =  0d;
+				if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+					descuento = FormatearValor.stringToDouble(tfDescuentos.getText());
+					tfDescuentos.setText(FormatearValor.doubleAString(descuento));
+				}
+				if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+				    recargo = FormatearValor.stringToDouble(tfRecargos.getText());
+				    tfRecargos.setText(FormatearValor.doubleAString(recargo));
+				}
+				totalCalculado = totalCta - descuento + recargo;
+				tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
+				if(origen==0) 
+					tfRecargos.requestFocus();
+				else
+					tfMontoACobrar.requestFocus();
+
+			}else {
+				tfRecargos.setText("0");
+				tfDescuentos.setText("0");
+				Notifications.showAlert("Debe cargar primero los datos a pagar.!");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	
 	@Transactional
@@ -600,7 +694,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		t.setCclNumero(Integer.valueOf(tfNota.getText()));
 		t.setCclValor(totalCalculado);
 		Double descuento=FormatearValor.desformatearValor(tfDescuentos.getText());
-		Double interes=FormatearValor.desformatearValor(tfDescuentos.getText());
+		Double interes=FormatearValor.desformatearValor(tfRecargos.getText());
 		t.setCclMonto(totalCalculado-descuento+interes);
 		t.setCclDescuento(descuento);
 		t.setCclRecargo(interes);
@@ -648,7 +742,8 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(null, "CONFIRMA");
 		if (respuesta == 0) {
-			if (validateCabezera() && validateItems(itemTableModel.getEntities())) {
+			Double aPagar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum();
+			if (validateCabezera() && validateItems(itemTableModel.getEntities()) && aPagar > 0) {
 				//Cobro clientes
 				CobroCliente t = getFormValue();
 				CobroCliente v = cobroClienteService.save(t);
@@ -684,7 +779,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 						
 						MovimientoItemIngreso movimientoItemIngreso= new MovimientoItemIngreso();
 						movimientoItemIngreso.setMiiNumero(movNew.getMinNumero());
-						movimientoItemIngreso.setMiiMonto(totalCalculado);
+						movimientoItemIngreso.setMiiMonto(Double.valueOf(tfMontoACobrar.getText()));
 						movimientoItemIngreso.setMiiIngreso(2);
 						movimientoItemIngreso.setMiiDescripcion("Cobro a Clientes");
 						movimientoItemIngresoService.save(movimientoItemIngreso);
@@ -724,6 +819,8 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 
 					Notifications.showAlert("Cobro a Cliente registrado con exito.!");
 					newMov();
+			}else {
+				Notifications.showAlert("Cargar valores a pagar!");
 			}
 		} else {
 			tfEntidad.requestFocus();
@@ -790,6 +887,8 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			return false;
 		}
 		for (DetalleCobroClienteView e : items) {
+			//Double aPagar=e.getCar_monto1()
+			
 //			Optional<Ingreso> ingreso = ingresoService.findById(Long.valueOf(e.getMiiIngreso()));
 //
 //			if (!ingreso.isPresent()) {
@@ -908,6 +1007,14 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		Double aPagar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum();
 		Double diferencia =(aPagar-pagado);
 		System.out.println("calculado - pagado"+diferencia);
+		Double descuento=0d;
+		Double recargo =0d;
+		if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0"))
+			descuento = FormatearValor.stringToDouble(tfDescuentos.getText());
+		
+		if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0"))
+		    recargo = FormatearValor.stringToDouble(tfRecargos.getText());
+		totalCalculado= totalCalculado - descuento +recargo;
 		tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
 		tfSaldo.setText(FormatearValor.doubleAString(pagado));
 		tfTotalACobrar.setText(FormatearValor
