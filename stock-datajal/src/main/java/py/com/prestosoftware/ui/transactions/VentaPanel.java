@@ -2650,7 +2650,7 @@ public class VentaPanel extends JFrame
 				Double stockDepBloq = p.get().getDepO1Bloq() != null ? p.get().getDepO1Bloq() : 0;
 
 				if (stockDep01 >= cantidad) {
-					producto.setDepO1Bloq((stockDepBloq + cantidad) - cantAnterior);
+					//producto.setDepO1Bloq((stockDepBloq + cantidad) - cantAnterior);
 				} else {
 					Notifications.showAlert("No tiene suficiente Stock para el Item");
 				}
@@ -2705,7 +2705,7 @@ public class VentaPanel extends JFrame
 				break;
 			}
 
-			productoService.save(producto);
+			//productoService.save(producto);
 		}
 
 		tfProductoID.requestFocus();
