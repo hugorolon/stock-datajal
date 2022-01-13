@@ -20,6 +20,8 @@ public class VentaDetalle {
 	private Double iva5;
 	@Transient
 	private Double iva10;
+	@Transient
+	private Double stock;
 	
 	@Column(name = "precio_fob")
 	private Double precioFob;
@@ -146,6 +148,14 @@ public class VentaDetalle {
 
 	public void setIva(Integer iva) {
 		this.iva = iva;
+	}
+	
+	public Double getStock() {
+		return stock;
+	}
+
+	public void setStock(Double stock) {
+		this.stock = stock;
 	}
 
 	public Double getExenta() {

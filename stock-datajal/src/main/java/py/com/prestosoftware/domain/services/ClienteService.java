@@ -1,13 +1,15 @@
 package py.com.prestosoftware.domain.services;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.repository.ClienteRepository;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -35,16 +37,22 @@ public class ClienteService {
     	return repository.findByNombreContaining(name);
     }
 
-    public Cliente save(Cliente client) {
-        return repository.save(client);
+    // Utilice el atributo rollbackFor de la anotación @Transactional para especificar una excepción específica, los datos se retrotraen.
+    @Transactional
+    // A Proxy is Created that wraps the function insert
+	// BeginTransaction
+    public Cliente save(Cliente client) throws Exception {
+    	Cliente c=repository.save(client);
+    	return c;  
     }
+    // Commit Transaction
 
     public void remove(Cliente client) {
         repository.delete(client);
     }
 
 	public long addNewClient() {
-		return repository.getMaxId();
+		return repository.getMaxId()+1;
 	}
 
 }

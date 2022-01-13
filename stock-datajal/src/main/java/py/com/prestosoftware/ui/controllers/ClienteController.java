@@ -9,6 +9,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import py.com.prestosoftware.data.models.Ciudad;
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Empresa;
@@ -179,7 +182,14 @@ public class ClienteController extends AbstractFrameController {
 			ValidationError validationError = errors.get();
 			Notifications.showFormValidationAlert(validationError.getMessage());
 		} else {
-			clientService.save(client);
+			try {
+				clientService.save(client);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			int i= 10 /0 ;
+			System.out.println("div cero");
 			cleanInputs();
 			loadClients();
 		}

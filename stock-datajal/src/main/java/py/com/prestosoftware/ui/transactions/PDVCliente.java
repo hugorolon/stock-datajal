@@ -937,11 +937,18 @@ public class PDVCliente extends JFrame implements ClienteInterfaz {
 			c.setDvruc("");
 		}
 
-		Cliente cliente = clienteService.save(c);
-
-		if (cliente != null) {
-			newClientId = cliente.getId();
+		
+		try {
+			Cliente cliente = clienteService.save(c);
+			if (cliente != null) {
+				newClientId = cliente.getId();
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+
+		
 	}
 
 	private void habilitarCampos(boolean isEditing) {
