@@ -1877,7 +1877,12 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 //				cli.setTotalCredito(totalCredito + totalGeneral);
 //			}
 
-			clienteService.save(cli);
+			try {
+				clienteService.save(cli);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 

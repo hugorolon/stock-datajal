@@ -460,7 +460,13 @@ public class ClienteAddPanel extends JDialog {
 			ValidationError validationError = errors.get();
 			Notifications.showFormValidationAlert(validationError.getMessage());
 		} else {
-			clienteService.save(cliente);
+			try {
+				clienteService.save(cliente);
+			} catch (Exception e) {
+				Notifications.showAlert("Error al guardar cliente");
+				e.printStackTrace();
+				return;
+			}
 			clienteRec = clienteService.findById(cliente.getId());
 			clearForm();
 		}
@@ -473,7 +479,7 @@ public class ClienteAddPanel extends JDialog {
 
 	public void addNewCliente() {
 		long Id = clienteService.addNewClient();
-		this.setNewCliente(Id + 1);
+		this.setNewCliente(Id);
 	}
 
 	public void clearForm() {

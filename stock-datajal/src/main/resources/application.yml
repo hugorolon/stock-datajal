@@ -1,5 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://server:5432/sys_agroprogreso
+    url: jdbc:postgresql://localhost:5432/sys_agroprogreso30122021
     username: postgres
     password: adminpg
+
+jpa:
+    hibernate:
+             ddl-auto: update # Use la actualización después de la primera creación del perfil
+    show-sql: true
