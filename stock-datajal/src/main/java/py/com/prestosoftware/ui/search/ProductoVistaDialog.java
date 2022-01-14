@@ -32,7 +32,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import javax.swing.text.AbstractDocument;
 
-import org.eclipse.jdt.internal.compiler.flow.TryFlowContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -496,7 +495,7 @@ public class ProductoVistaDialog extends JDialog {
 	}
 	
 	public void loadProductos(String filter) {
-		if (filter.isEmpty()&&productos==null) {
+		if (filter.equalsIgnoreCase("")|| filter.isEmpty()||productos==null) {
 			productos = service.findAllByNombre();
 		}
 		
@@ -506,10 +505,8 @@ public class ProductoVistaDialog extends JDialog {
     }
 	
 	public void actualizaLista() {
-		productos = service.findAll();
-		//}
-		
-        tableModel.clear();
+		productos = service.findAllByNombre();
+		tableModel.clear();
         tableModel.addEntities(productos);
 	}
 	

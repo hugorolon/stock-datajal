@@ -15,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -57,6 +58,7 @@ import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.ImagenPanel;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
+import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.table.CategoriaComboBoxModel;
 import py.com.prestosoftware.ui.table.ColorComboBoxModel;
 import py.com.prestosoftware.ui.table.GrupoComboBoxModel;
@@ -80,9 +82,9 @@ public class ProductoPanel extends JDialog {
 	private JTextField tfDescripcion, tfDesFiscal, tfReferencia, tfSubreferencia, tfPeso;
 	private JTextField tfUltimoPrecioCompra;
 	private JTextField tfPrecioPromedio, tfProductoId;
-	private JTextField tfUltimaSalida, tfUltimaEntrada, tfPrecioValor;
+	private JTextField tfUltimaSalida, tfUltimaEntrada;
 	private JCheckBox chActivo;
-	private JButton btnGuardar, btnCancelar, btnCerrar, btnAddPrecio, btnRemovePrecio;
+	private JButton btnGuardar, btnCancelar, btnCerrar;
 	private JButton btnExaminar, btnMasZoom, btnMenosZoom, btnRestaurar;
 	private JComboBox<Grupo> cbGrupo;
 	private JComboBox<Marca> cbMarca;
@@ -92,10 +94,8 @@ public class ProductoPanel extends JDialog {
 	private JComboBox<Impuesto> cbImpuesto;
 	private JComboBox<ListaPrecio> cbListaPrecio;
 	private JComboBox<Subgrupo> cbSubgrupo;
-	private JPanel pnlImagen, pnlNivel, pnlImagenView;
+	private JPanel pnlImagen, pnlImagenView;
 	private JTable tbListaPrecio;
-	private JScrollPane scrollPane;
-	private JLabel lblValor, lblNivelPrecio;
 	private FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivo de Imagen", "jpg", "png");
 	private JFileChooser fileChooser;
 	private File directorio;
@@ -113,7 +113,6 @@ public class ProductoPanel extends JDialog {
 	private ColorComboBoxModel colorComboBoxModel;
 	private TamanhoComboBoxModel tamanhoComboBoxModel;
 	private UnidadMedidaComboBoxModel unidadMedidaComboBoxModel;
-	private ListaPrecioComboBoxModel listaComboBoxModel;
 	private SubgrupoComboBoxModel subgrupoComboBoxModel;
 	private ProductoPrecioTableModel precioTableModel;
 	private ProductoDepositoTableModel depositoTableModel;
@@ -168,6 +167,7 @@ public class ProductoPanel extends JDialog {
 	private JLabel label_16;
 
 	private SubgrupoService subgrupoService;
+	private ProductoInterfaz interfaz;
 
 	@Autowired
 	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel,
@@ -186,7 +186,6 @@ public class ProductoPanel extends JDialog {
 		this.tamanhoComboBoxModel = tamanhoComboBoxModel;
 		this.subgrupoComboBoxModel = subgrupoComboBoxModel;
 		this.unidadMedidaComboBoxModel = unidadMedidaComboBoxModel;
-		this.listaComboBoxModel = listaComboBoxModel;
 		this.precioTableModel = precioTableModel;
 		this.depositoTableModel = depositoTableModel;
 		this.productTableModel = productTableModel;
@@ -233,9 +232,12 @@ public class ProductoPanel extends JDialog {
 		lblCodigo.setBounds(16, 4, 98, 25);
 
 		tfProductoId = new JTextField();
+		tfProductoId.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfProductoId.setBounds(118, 4, 79, 25);
-		tfProductoId.setEditable(false);
+		
 
+		
+		
 		JLabel lblNombre = new JLabel("Descripción");
 		lblNombre.setBounds(16, 120, 98, 21);
 
@@ -1022,21 +1024,21 @@ public class ProductoPanel extends JDialog {
 		panelBotonera.add(btnCerrar);
 
 		tfBuscador = new JTextField();
-		tfBuscador.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfBuscador.selectAll();
-			}
-		});
-		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfBuscador.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-					dispose();
-				}
-			}
-		});
+//		tfBuscador.addFocusListener(new FocusAdapter() {
+//			@Override
+//			public void focusGained(FocusEvent e) {
+//				tfBuscador.selectAll();
+//			}
+//		});
+//		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+//		tfBuscador.addKeyListener(new KeyAdapter() {
+//			@Override
+//			public void keyPressed(KeyEvent e) {
+//				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+//					dispose();
+//				}
+//			}
+//		});
 		getContentPane().add(tfBuscador, "cell 0 0,grow");
 		tfBuscador.setText("");
 		tfBuscador.setColumns(10);
@@ -1073,6 +1075,9 @@ public class ProductoPanel extends JDialog {
 		return btnCancelar;
 	}
 
+	public JTextField getTfProductoId() {
+		return tfProductoId;
+	}
 	public JButton getBtnCerrar() {
 		return btnCerrar;
 	}
@@ -1333,6 +1338,14 @@ public class ProductoPanel extends JDialog {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public ProductoInterfaz getInterfaz() {
+		return interfaz;
+	}
+
+	public void setInterfaz(ProductoInterfaz interfaz) {
+		this.interfaz = interfaz;
 	}
 
 	private void aumentarImagen() {
