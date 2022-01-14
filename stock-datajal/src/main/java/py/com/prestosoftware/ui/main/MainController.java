@@ -485,6 +485,7 @@ public class MainController extends AbstractFrameController {
 	private void openMercaderia() {
 		productController.addNewProduct();
 		productController.prepareAndOpenFrame();
+		productController.setOrigen("MENU");
 	}
 
 	private void openCliente() {

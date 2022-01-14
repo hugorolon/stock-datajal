@@ -85,7 +85,9 @@ public class ProductoController extends AbstractFrameController {
     private ColorComboBoxModel colorComboBoxModel;
     private ListaPrecioComboBoxModel listaComboBoxModel;
     private ProductoDepositoTableModel depositoTableModel;
-   
+    private String origen;
+    private Producto producto;
+    
     @Autowired
     public ProductoController(ProductoPanel productFrame, ProductTableModel productTableModel, ProductoService productService, 
     	ProductoValidator productValidator, CategoriaService categoriaService, GrupoService grupoService, ListaPrecioService listaPrecioService,
@@ -142,7 +144,23 @@ public class ProductoController extends AbstractFrameController {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					String name = productoPanel.getTfBuscador().getText();
-					findByName(name);
+					findByName(name.toUpperCase());
+				}
+			}
+		});
+        
+        registerKeyEvent(productoPanel.getTfProductoId(), new KeyListener() {
+        	@Override
+			public void keyTyped(KeyEvent e) {}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					String id = productoPanel.getTfProductoId().getText();
+					 findById(id);
 				}
 			}
 		});
@@ -189,7 +207,7 @@ public class ProductoController extends AbstractFrameController {
     }
 
     private void loadProducts() {
-        List<Producto> productos = productService.findAll();
+        List<Producto> productos = productService.findAllByNombre();
         productTableModel.clear();
         productTableModel.addEntities(productos);
     }
@@ -309,9 +327,22 @@ public class ProductoController extends AbstractFrameController {
         productTableModel.addEntities(productos);
     }
 
+    private void findById(String id) {
+    	Optional<Producto> producto=Optional.of(new Producto());
+    	if (!id.equalsIgnoreCase("0") ||Integer.valueOf(id).intValue()>0) {
+    		producto = productService.findById(Long.valueOf(id));
+		}
+    	productoPanel.setProductForm(producto.get());  
+    	List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(producto.get());
+    	depositoTableModel.clear();
+    	depositoTableModel.addEntities(listProductoDeposito);
+    }
+
+    
     private void showProductFrame() {
         productoPanel.setVisible(true);
         productoPanel.getTfNombre().requestFocus();
+       // productoPanel.setinterfaz(compraLocal);
     }
 
     private void save() {
@@ -323,8 +354,14 @@ public class ProductoController extends AbstractFrameController {
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
             productService.save(product);
-            loadProducts();
-            cleanInputs();
+           // if(origen.equalsIgnoreCase("MENU")) {
+            	loadProducts();
+            	cleanInputs();
+//            }else {
+//            	setProducto(product);
+//            	productoPanel.dispose();	
+//            }
+            	
         }
     }
 
@@ -350,4 +387,21 @@ public class ProductoController extends AbstractFrameController {
         }
     }
 
+	public String getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+
+	public Producto getProducto() {
+		return producto;
+	}
+
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
+    
 }

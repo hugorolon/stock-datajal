@@ -80,6 +80,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.controllers.ProductoController;
 import py.com.prestosoftware.ui.forms.ProductoAddPanel;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
@@ -163,6 +164,7 @@ public class CompraLocalPanel extends JFrame
 	private int cant;
 	private Proveedor proveedorSeleccionado;
 	private Compra compraSeleccionado;
+	private ProductoController productoController;
 	
 
 	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog, ProveedorAddPanel proveedorAddPanel,
@@ -176,7 +178,7 @@ public class CompraLocalPanel extends JFrame
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoPagoComprasService procesoPagoComprasService,
 			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService,
-			ItemCuentaAPagarService itemCuentaAPagarService, ProductoAddPanel productoAddPanel) {
+			ItemCuentaAPagarService itemCuentaAPagarService, ProductoAddPanel productoAddPanel, ProductoController productoController) {
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
 		this.proveedorAddPanel=proveedorAddPanel;
@@ -200,6 +202,7 @@ public class CompraLocalPanel extends JFrame
 		this.cuentaAPagarService = cuentaAPagarService;
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
 		this.productoAddPanel = productoAddPanel;
+		this.productoController=productoController;
 
 		setSize(920, 650);
 		setTitle("REGISTRO DE COMPRAS");
@@ -1671,10 +1674,13 @@ public class CompraLocalPanel extends JFrame
 			proveedorAddPanel.setVisible(true);
 			break;	
 		case PRODUCTO_ADD_CODE:
-			productoAddPanel.setInterfaz(this);
-			productoAddPanel.loadGrupos();
-			productoAddPanel.addNewProducto();
-			productoAddPanel.setVisible(true);
+			productoController.addNewProduct();
+			productoController.prepareAndOpenFrame();
+			productoController.setOrigen("PRODUCTO");
+//			productoAddPanel.setInterfaz(this);
+//			productoAddPanel.loadGrupos();
+//			productoAddPanel.addNewProducto();
+//			productoAddPanel.setVisible(true);
 			break;
 	
 		default:
