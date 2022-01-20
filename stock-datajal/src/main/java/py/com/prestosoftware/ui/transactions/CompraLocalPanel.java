@@ -1677,6 +1677,7 @@ public class CompraLocalPanel extends JFrame
 			productoController.addNewProduct();
 			productoController.prepareAndOpenFrame();
 			productoController.setOrigen("PRODUCTO");
+			productoController.setInterfaz(this);
 //			productoAddPanel.setInterfaz(this);
 //			productoAddPanel.loadGrupos();
 //			productoAddPanel.addNewProducto();

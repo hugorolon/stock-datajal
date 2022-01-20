@@ -25,6 +25,10 @@ public class ClienteService {
         return repository.findAllByOrderByIdAsc();
     }
     
+    public List<Cliente> findAllOrderByName() {
+        return repository.findAllByOrderByNombreAsc();
+    }
+    
     public Optional<Cliente> findById(Long id) {
     	return repository.findById(id);
     }

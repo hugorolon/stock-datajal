@@ -40,6 +40,7 @@ import py.com.prestosoftware.domain.services.UnidadMedidaService;
 import py.com.prestosoftware.domain.validations.ProductoValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.forms.ProductoPanel;
+import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.table.CategoriaComboBoxModel;
 import py.com.prestosoftware.ui.table.ColorComboBoxModel;
@@ -345,6 +346,10 @@ public class ProductoController extends AbstractFrameController {
        // productoPanel.setinterfaz(compraLocal);
     }
 
+    public void setInterfaz(ProductoInterfaz productoInterfaz) {
+    	productoPanel.setInterfaz(productoInterfaz);
+    }
+    
     private void save() {
         Producto product = productoPanel.getProductForm();
         Optional<ValidationError> errors = productValidator.validate(product);
@@ -354,13 +359,14 @@ public class ProductoController extends AbstractFrameController {
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
             productService.save(product);
-           // if(origen.equalsIgnoreCase("MENU")) {
+            if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
             	cleanInputs();
-//            }else {
-//            	setProducto(product);
-//            	productoPanel.dispose();	
-//            }
+            }else {
+            	setProducto(product);
+            	//setInterfaz(product);
+            	productoPanel.dispose();	
+            }
             	
         }
     }

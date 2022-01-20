@@ -187,6 +187,7 @@ public class VentaPanel extends JFrame
 	private Double precioB;
 	private Double precioC;
 	private int impuesto;
+	private Double precioCompra;
 	private Venta ventaSeleccionado;
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
@@ -1717,16 +1718,13 @@ public class VentaPanel extends JFrame
 		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 		Double precioTotal = cantidad * precioUnit;
 		tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
-
-		tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
-		// if (usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON
-		// DESC. ITEM")) {
-		// Double desc = (((precioUnit - this.getPrecioInicial()) /
-		// this.getPrecioInicial()) * 100);
-		// tfDescuentoItem.setText(FormatearValor.doubleAString(desc));
-		// }
-
-		btnAdd.requestFocus();
+		if (this.precioCompra> precioUnit) {
+			Notifications.showAlert("No puede vender a bajo del precio de compra!");
+			tfPrecio.requestFocus();
+		}else {
+				tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
+				btnAdd.requestFocus();
+		}
 	}
 
 	private void showDialog(int code) {
@@ -2713,6 +2711,7 @@ public class VentaPanel extends JFrame
 				this.precioB = producto.getPrecioVentaB();
 				this.precioC = producto.getPrecioVentaC();
 				this.impuesto = producto.getImpuesto().getPorcentaje().intValue();
+				this.precioCompra= producto.getPrecioCosto();
 				// setProductoSeleccionado(producto);
 
 				tfProductoID.setText(String.valueOf(producto.getId()));
@@ -3027,7 +3026,7 @@ public class VentaPanel extends JFrame
 	@Override
 	public void imprimirNota() {
 		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
-				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
+				clienteSeleccionado.getCelular(), tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
 				itemTableModel.getEntities(), this.fechaImpresion);
@@ -3093,6 +3092,14 @@ public class VentaPanel extends JFrame
 
 	public void setPrecioC(Double precioC) {
 		this.precioC = precioC;
+	}
+	
+	public Double getPrecioCompra() {
+		return precioCompra;
+	}
+
+	public void setPrecioCompra(Double precioCompra) {
+		this.precioCompra = precioCompra;
 	}
 
 	public int getImpuesto() {
