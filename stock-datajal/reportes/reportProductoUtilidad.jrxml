@@ -34,7 +34,8 @@
 				 AND p.marca_id = f.id 
 				 $P!{fechaFiltro}
 				
-GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
+GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre
+order by v.fecha asc]]>
 	</queryString>
 	<field name="codigo" class="java.lang.Long"/>
 	<field name="fecha" class="java.sql.Date"/>
@@ -55,8 +56,7 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 		<initialValueExpression><![CDATA[1]]></initialValueExpression>
 	</variable>
 	<variable name="porcentaje" class="java.lang.Double">
-		<variableExpression><![CDATA[($F{utilidad}/$F{tventa}*100)
-]]></variableExpression>
+		<variableExpression><![CDATA[($F{utilidad}/$F{tventa}*100)]]></variableExpression>
 		<initialValueExpression><![CDATA[0d]]></initialValueExpression>
 	</variable>
 	<variable name="totaliza" class="java.lang.Double">
@@ -100,13 +100,15 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 					<text><![CDATA[TOTAL VENTAS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="50" y="30" width="47" height="26" uuid="1b064092-5563-4c01-9b5b-9a07e2c96223">
+					<reportElement x="60" y="30" width="37" height="26" uuid="1b064092-5563-4c01-9b5b-9a07e2c96223">
 						<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					</reportElement>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<text><![CDATA[CODIGO]]></text>
+					<text><![CDATA[COD.]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="352" y="30" width="68" height="27" uuid="4ae170ec-ef55-4069-b2bc-bd3cf3a1755b"/>
@@ -125,8 +127,10 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 					<text><![CDATA[UTILIDAD]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="2" y="30" width="42" height="27" uuid="f18be2bf-d0b4-475e-a75c-74caa4bd530f"/>
-					<textElement textAlignment="Left" verticalAlignment="Middle">
+					<reportElement x="2" y="30" width="58" height="26" uuid="f18be2bf-d0b4-475e-a75c-74caa4bd530f">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
 					<text><![CDATA[FECHA]]></text>
@@ -147,7 +151,9 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 		<groupFooter>
 			<band height="27">
 				<textField pattern="#,##0">
-					<reportElement x="430" y="2" width="60" height="17" uuid="59885614-a3bd-4516-90e4-27bf5cc3d10e"/>
+					<reportElement x="430" y="0" width="60" height="17" uuid="59885614-a3bd-4516-90e4-27bf5cc3d10e">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{totaliza}]]></textFieldExpression>
 				</textField>
@@ -157,12 +163,14 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 					<textFieldExpression><![CDATA[$V{totalizaCostos}]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0">
-					<reportElement x="250" y="2" width="100" height="17" uuid="cf236913-67b1-45d5-958e-d769a994833b"/>
+					<reportElement x="250" y="0" width="100" height="17" uuid="cf236913-67b1-45d5-958e-d769a994833b">
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA[$V{totalizaVentas}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00;(###0.00)">
-					<reportElement x="490" y="2" width="44" height="17" uuid="a559e1cd-2f1b-491a-aa94-29c67937e27d">
+					<reportElement x="490" y="0" width="44" height="17" uuid="a559e1cd-2f1b-491a-aa94-29c67937e27d">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
@@ -259,13 +267,13 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy">
-				<reportElement x="2" y="0" width="48" height="20" uuid="95eab81d-52ab-4c67-8c62-6c09600b73b7"/>
+				<reportElement x="2" y="0" width="58" height="20" uuid="95eab81d-52ab-4c67-8c62-6c09600b73b7"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{fecha}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="50" y="0" width="47" height="20" uuid="38a92782-11ec-48df-ae06-4c217a941600"/>
-				<textElement verticalAlignment="Middle"/>
+				<reportElement x="60" y="0" width="37" height="20" uuid="38a92782-11ec-48df-ae06-4c217a941600"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -299,8 +307,36 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 		<band splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="12" splitType="Stretch">
+		<band height="22" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+			<staticText>
+				<reportElement x="0" y="0" width="149" height="12" uuid="8a25fd58-9b87-4d5e-9c05-38b55ba378f2"/>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[STK-GESTION]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="10" width="50" height="12" forecolor="#000000" uuid="e84a78d5-95b7-42d5-a844-cfb46174348b"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="50" y="10" width="70" height="12" forecolor="#000000" uuid="bab8af07-9cf6-415b-9fc5-e0fddecbb88d"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="8" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="439" y="0" width="95" height="12" uuid="79867a83-de59-4abd-9028-c87c05f7d379"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<summary>
@@ -312,34 +348,6 @@ GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre]]>
 				</textElement>
 				<text><![CDATA[Total General]]></text>
 			</staticText>
-			<staticText>
-				<reportElement x="0" y="3" width="149" height="12" uuid="8a25fd58-9b87-4d5e-9c05-38b55ba378f2"/>
-				<textElement>
-					<font size="8"/>
-				</textElement>
-				<text><![CDATA[STK-GESTION]]></text>
-			</staticText>
-			<textField>
-				<reportElement x="2" y="15" width="70" height="12" forecolor="#000000" uuid="e84a78d5-95b7-42d5-a844-cfb46174348b"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement x="72" y="15" width="25" height="12" forecolor="#000000" uuid="bab8af07-9cf6-415b-9fc5-e0fddecbb88d"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="8" isBold="false"/>
-				</textElement>
-				<textFieldExpression><![CDATA[" de "+$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField pattern="dd/MM/yyyy HH:mm:ss">
-				<reportElement x="2" y="27" width="95" height="12" uuid="79867a83-de59-4abd-9028-c87c05f7d379"/>
-				<textElement textAlignment="Right">
-					<font size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
-			</textField>
 			<textField pattern="#,##0">
 				<reportElement x="352" y="0" width="78" height="20" uuid="ca9d9712-a966-4d99-9f25-2d119516660f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
