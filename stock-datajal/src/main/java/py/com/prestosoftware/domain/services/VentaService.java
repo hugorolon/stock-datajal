@@ -103,7 +103,7 @@ public class VentaService {
 	@Transactional(rollbackFor = RuntimeException.class)
 	public Venta save(int lanzamientoCaja, Venta venta, Cliente clienteNuevo, String condicion) throws RuntimeException{
 		Venta v=new Venta();
-			if (clienteNuevo != null && clienteNuevo.getId() == Long.valueOf(999)) {
+			if (clienteNuevo != null && clienteNuevo.getId()!=null && clienteNuevo.getId().intValue() == Long.valueOf(999).intValue()) {
 				clienteNuevo.setId(null);
 				Cliente n = this.repositoryCliente.save(clienteNuevo);
 				venta.setCliente(n);

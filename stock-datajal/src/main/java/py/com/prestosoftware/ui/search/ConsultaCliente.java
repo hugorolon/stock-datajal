@@ -201,7 +201,7 @@ public class ConsultaCliente extends JDialog {
 
 	public void getClientes(String name) {
 		if (name.isEmpty()) {
-			clientes = service.findAll();
+			clientes = service.findAllOrderByName();
 		} else {
 			clientes = service.findByNombre(name.toUpperCase());
 		}

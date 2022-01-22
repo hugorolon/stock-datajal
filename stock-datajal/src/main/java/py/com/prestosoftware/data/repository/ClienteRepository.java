@@ -10,6 +10,8 @@ import py.com.prestosoftware.data.models.Cliente;
 @Repository
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
+	List<Cliente> findAllByOrderByNombreAsc();
+	
 	List<Cliente> findByNombreContaining(String name);
 	
 	Cliente findByCiruc(String ciruc);
