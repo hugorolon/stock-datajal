@@ -57,6 +57,7 @@
 	<field name="iva10" class="java.lang.Double"/>
 	<field name="iva5" class="java.lang.Double"/>
 	<field name="exenta" class="java.lang.Double"/>
+	<field name="descripcionFiscal" class="java.lang.String"/>
 	<variable name="iva101" class="java.lang.Double" resetType="Page" calculation="Sum">
 		<variableExpression><![CDATA[$F{iva10}]]></variableExpression>
 		<initialValueExpression><![CDATA[new Double(0.0)]]></initialValueExpression>
@@ -98,6 +99,9 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<textElement>
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteNombre}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -106,7 +110,9 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Left"/>
+				<textElement textAlignment="Left">
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteRucDv}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -125,6 +131,9 @@
 			</textField>
 			<textField>
 				<reportElement x="69" y="107" width="231" height="14" uuid="30bc1cd3-9610-47e5-9c2e-90e64a7cc3dc"/>
+				<textElement>
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 			</textField>
 		</band>
@@ -137,7 +146,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{producto}]]></textFieldExpression>
 			</textField>
@@ -147,14 +156,14 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)">
 				<reportElement x="310" y="0" width="50" height="14" uuid="3445ff6c-6b44-4f12-8afe-1c7139594ae9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
 			</textField>
@@ -163,7 +172,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{iva10}]]></textFieldExpression>
 			</textField>
@@ -172,7 +181,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{exenta}]]></textFieldExpression>
 			</textField>
@@ -181,7 +190,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="SansSerif" size="10"/>
+					<font fontName="EPSON ���������l" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{iva5}]]></textFieldExpression>
 			</textField>
@@ -196,7 +205,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
-					<font isBold="false" isItalic="true"/>
+					<font fontName="EPSON ���������l" isBold="false" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{iva101}]]></textFieldExpression>
 			</textField>
@@ -206,7 +215,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
-					<font isBold="false" isItalic="true"/>
+					<font fontName="EPSON ���������l" isBold="false" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{iva51}]]></textFieldExpression>
 			</textField>
@@ -222,26 +231,36 @@
 			<textField evaluationTime="Page" pattern="#,##0.###;(#,##0.###-)">
 				<reportElement x="450" y="24" width="110" height="18" uuid="3e4df70d-4da9-4edb-b277-d2efb2ba9188"/>
 				<textElement textAlignment="Right">
-					<font isBold="false" isItalic="true"/>
+					<font fontName="EPSON ���������l" isBold="false" isItalic="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumaTotalPagina}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Page" pattern="#,##0;(#,##0-)">
 				<reportElement x="157" y="40" width="100" height="20" uuid="1eb149ee-b906-4e2b-b46d-26352d66d704"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{VTotalIva10}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Page" pattern="#,##0;(#,##0-)">
 				<reportElement x="46" y="40" width="100" height="20" uuid="5ac47231-c4b2-4ad2-a155-1b3bd767e5ef"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{VTotalIva5}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Page">
 				<reportElement x="57" y="18" width="393" height="16" uuid="376a18e0-1d51-43b9-a21a-92e5e947be95"/>
+				<textElement>
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$P{Scriptlet_1_SCRIPTLET}.convertir($V{totalInt}.toString(),".","",true)]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;(#,##0-)">
 				<reportElement x="320" y="40" width="100" height="19" uuid="f8116963-94ec-4033-a068-f4f05f4d6989"/>
+				<textElement>
+					<font fontName="EPSON ���������l"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$V{VTotalIva}]]></textFieldExpression>
 			</textField>
 		</band>

@@ -54,7 +54,7 @@ import py.com.prestosoftware.util.ConnectionUtils;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class InformeResumenCajaDialog extends JDialog {
+public class InformeAgrupadoIngresoEgresoCajaDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 
@@ -72,11 +72,11 @@ public class InformeResumenCajaDialog extends JDialog {
 	private JButton btnImprimir;
 
 	@Autowired
-	public InformeResumenCajaDialog(MovimientoCajaService service) {
+	public InformeAgrupadoIngresoEgresoCajaDialog(MovimientoCajaService service) {
 		this.service = service;
 		this.setSize(668, 288);
 		this.setModal(true);
-		this.setTitle("Informe Resumen Movimiento Ingreso/Egreso caja"); //$NON-NLS-1$
+		this.setTitle("Informe Agrupado Ingreso/Egreso caja"); //$NON-NLS-1$
 
 		getContentPane().setLayout(new BorderLayout());
 
@@ -264,6 +264,7 @@ public class InformeResumenCajaDialog extends JDialog {
 			Notifications.showAlert("La fecha fin no puede ser menor que fecha Inicio!");
 			return;	
 		}
+				
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		Caja caja=new Caja();
 		caja.setId((long) 1);
@@ -292,7 +293,7 @@ public class InformeResumenCajaDialog extends JDialog {
 			//List lista=new ArrayList<Object>();
 			//JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportResumenCaja.jrxml";
+					+ "agrupadoIngresoEgresoCaja.jrxml";
 			//inicio
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
@@ -316,6 +317,7 @@ public class InformeResumenCajaDialog extends JDialog {
 			Notifications.showAlert("La fecha fin no puede ser menor que fecha Inicio!");
 			return;	
 		}
+
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		Caja caja=new Caja();
 		caja.setId((long) 1);
@@ -344,7 +346,7 @@ public class InformeResumenCajaDialog extends JDialog {
 			//List lista=new ArrayList<Object>();
 			//JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 			String ruta = new File("reportes").getAbsolutePath() + File.separator
-					+ "reportResumenCaja.jrxml";
+					+ "agrupadoIngresoEgresoCaja.jrxml";
 			//inicio
 			JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);

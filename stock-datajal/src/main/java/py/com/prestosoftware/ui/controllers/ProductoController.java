@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +45,7 @@ import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.forms.ProductoPanel;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
+import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.CategoriaComboBoxModel;
 import py.com.prestosoftware.ui.table.ColorComboBoxModel;
 import py.com.prestosoftware.ui.table.GrupoComboBoxModel;
@@ -72,6 +76,7 @@ public class ProductoController extends AbstractFrameController {
     private UnidadMedidaService unidadMedidaService;
     private ColorService colorService;
     private ListaPrecioService listaPrecioService;
+   // private ProductoInterfaz interfaz;
     
     private ProductoPanel productoPanel;
     private ProductTableModel productTableModel;
@@ -139,7 +144,15 @@ public class ProductoController extends AbstractFrameController {
 			public void keyTyped(KeyEvent e) {}
 			
 			@Override
-			public void keyReleased(KeyEvent e) {}
+			public void keyReleased(KeyEvent e) {
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				textField.setText(text.toUpperCase());
+				DefaultTableModel table1 = (DefaultTableModel) productoPanel.getTbProducto().getModel();
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+				productoPanel.getTbProducto().setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
+			}
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -341,16 +354,22 @@ public class ProductoController extends AbstractFrameController {
 
     
     private void showProductFrame() {
-        productoPanel.setVisible(true);
+    	//productoPanel.setInterfaz(this.getInterfaz());
+    	productoPanel.setVisible(true);
         productoPanel.getTfNombre().requestFocus();
-       // productoPanel.setinterfaz(compraLocal);
+        
+        //productoPanel.setinterfaz(compraLocal);
     }
 
     public void setInterfaz(ProductoInterfaz productoInterfaz) {
     	productoPanel.setInterfaz(productoInterfaz);
     }
     
-    private void save() {
+    public ProductoInterfaz getInterfaz() {
+		return productoPanel.getInterfaz();
+	}
+
+	private void save() {
         Producto product = productoPanel.getProductForm();
         Optional<ValidationError> errors = productValidator.validate(product);
         
@@ -359,12 +378,12 @@ public class ProductoController extends AbstractFrameController {
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
             productService.save(product);
+            productoPanel.getInterfaz().getEntity(product);
             if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
             	cleanInputs();
             }else {
             	setProducto(product);
-            	//setInterfaz(product);
             	productoPanel.dispose();	
             }
             	

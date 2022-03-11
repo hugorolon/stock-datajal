@@ -26,33 +26,27 @@
 	<parameter name="saldo" class="java.lang.Double"/>
 	<parameter name="saldoAnterior" class="java.lang.Double"/>
 	<queryString>
-		<![CDATA[select 0  AS NUMERO, date('01/01/1990') AS FECHA, '00:00:00'::time AS HORA, 0 AS PROCESO,  0 as tipo,
-'Saldo Anterior'  as nombreProceso,
+		<![CDATA[select 0  AS ing_egr, 0 AS codigorubro, 'Saldo Anterior'  as nombrerubro,
 sum(MII_MONTO) AS INGRESO, (select sum(MIE_MONTO) AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero and meg_caja=1 and meg_situacion=0 and meg_fecha<date($P{fechaInicio})) AS EGRESO
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi where min_numero=mii_numero and min_caja=1 and min_situacion=0 and min_fecha<date($P{fechaInicio})
 UNION
-select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, MIN_HORA AS HORA, MIN_PROCESO AS PROCESO,  mii_ingreso as tipo,
-CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'#',min_proceso)  as nombreProceso,
-MII_MONTO AS INGRESO, 0 AS EGRESO
-			 FROM public.movimiento_ingresos , item_movimientoingresos imi where min_numero=mii_numero and min_caja=1 and min_situacion=0
-			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
-			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
+SELECT 0 as ing_egr,mii_ingreso as codigorubro, ing_descripcion as nombrerubro, SUM(mii_monto) AS INGRESO, 0.00 as EGRESO 
+FROM movimiento_ingresos, item_movimientoingresos, ingresos  
+WHERE min_numero=mii_numero AND mii_ingreso=ing_ingreso AND min_situacion=0 AND min_caja = 1 AND
+min_fecha>=date($P{fechaInicio}) AND min_fecha<=date($P{fechaFin})  
+group by 1,2,3
 UNION
-SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, MEG_PROCESO AS PROCESO, mie_egreso as tipo,
-concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',meg_proceso) as nombreProceso
- ,  0 AS INGRESO, MIE_MONTO AS EGRESO 
-			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero
-			 and meg_caja=1 and meg_situacion=0
-			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
-			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
-			  ORDER BY 2,3,5 ASC]]>
+SELECT 1 as ing_egr, egr_egreso as codigorubro, egr_descripcion as nombrerubro,  0.00 as INGRESO, SUM(mie_monto) AS EGRESO 
+FROM movimiento_egresos, item_movimientoegresos, egresos  
+WHERE meg_numero = mie_numero AND mie_egreso=egr_egreso AND meg_situacion=0 AND meg_caja = 1 AND 
+meg_fecha >= date($P{fechaInicio}) AND meg_fecha<=date($P{fechaFin}) 
+GROUP BY 1,2,3  
+ORDER BY 1, 2, 3]]>
 	</queryString>
-	<field name="NUMERO" class="java.lang.Integer"/>
-	<field name="FECHA" class="java.sql.Date"/>
-	<field name="HORA" class="java.sql.Time"/>
-	<field name="PROCESO" class="java.lang.Integer"/>
-	<field name="nombreProceso" class="java.lang.String"/>
+	<field name="ing_egr" class="java.lang.Integer"/>
+	<field name="codigorubro" class="java.lang.Integer"/>
+	<field name="nombrerubro" class="java.lang.String"/>
 	<field name="INGRESO" class="java.lang.Double"/>
 	<field name="EGRESO" class="java.lang.Double"/>
 	<variable name="contadorPagina" class="java.lang.Integer" resetType="None" incrementType="Page">
@@ -79,7 +73,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 	<title>
 		<band height="72" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText" x="116" y="14" width="314" height="22" uuid="e164876a-de06-4c77-bf95-0cd0c733fc56"/>
+				<reportElement key="staticText" x="116" y="14" width="394" height="22" uuid="e164876a-de06-4c77-bf95-0cd0c733fc56"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -89,7 +83,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 				<textElement textAlignment="Center">
 					<font fontName="SansSerif" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RESUMEN DE INGRESO/EGRESO DE CAJA]]></text>
+				<text><![CDATA[RESUMEN DE INGRESO/EGRESO AGRUPADO DE CAJA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="451" y="1" width="86" height="14" uuid="2d9ea7d4-4ae6-497b-9b37-a629a53e1f4d"/>
@@ -165,22 +159,13 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		<band height="30" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="2" y="0" width="68" height="30" uuid="070a269c-d130-464c-94dc-b9c9ebfcb33e">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[FECHA INICIAL]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="73" y="0" width="207" height="30" uuid="556881fb-6387-47f4-bbc6-20e14da8522a">
+				<reportElement x="2" y="0" width="278" height="30" uuid="556881fb-6387-47f4-bbc6-20e14da8522a">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[DESCRIPCIÓN]]></text>
+				<text><![CDATA[RUBROS]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="359" y="0" width="68" height="30" uuid="67d7865b-d5f7-4576-94ac-1d5cc0c58a95">
@@ -210,13 +195,9 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 	<detail>
 		<band height="21" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
-			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="0" y="0" width="80" height="21" uuid="4270def4-6c5b-4a33-a601-314d4ecb0da5"/>
-				<textFieldExpression><![CDATA[$F{FECHA}]]></textFieldExpression>
-			</textField>
 			<textField>
-				<reportElement x="80" y="0" width="250" height="21" uuid="2cb9c745-ec31-4774-8214-07e74c0058c8"/>
-				<textFieldExpression><![CDATA[$F{nombreProceso}]]></textFieldExpression>
+				<reportElement x="2" y="0" width="328" height="21" uuid="2cb9c745-ec31-4774-8214-07e74c0058c8"/>
+				<textFieldExpression><![CDATA[$F{nombrerubro}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0;(#,##0-)">
 				<reportElement x="343" y="0" width="80" height="21" uuid="750c41a8-cc0a-44ee-9c7c-3d222c67d248"/>

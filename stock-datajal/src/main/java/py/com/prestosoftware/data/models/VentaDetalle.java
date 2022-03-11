@@ -22,6 +22,8 @@ public class VentaDetalle {
 	private Double iva10;
 	@Transient
 	private Double stock;
+	@Transient
+	private String descripcionFiscal;
 	
 	@Column(name = "precio_fob")
 	private Double precioFob;
@@ -181,4 +183,13 @@ public class VentaDetalle {
 	public void setIva10(Double iva10) {
 		this.iva10 = iva10;
 	}
+
+	public String getDescripcionFiscal() {
+		return descripcionFiscal;
+	}
+
+	public void setDescripcionFiscal(String descripcionFiscal) {
+		this.descripcionFiscal = descripcionFiscal;
+	}
+	
 }

@@ -604,6 +604,10 @@ public class VentaPanel extends JFrame
 		tfStock.setColumns(10);
 		tfStock.setBounds(840, 39, 63, 30);
 		pnlProducto.add(tfStock);
+		
+		lblDescripcionFiscal = new JLabel("");
+		lblDescripcionFiscal.setBounds(252, 10, 320, 24);
+		pnlProducto.add(lblDescripcionFiscal);
 
 		tfClienteID = new JTextField();
 		tfClienteID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1571,6 +1575,7 @@ public class VentaPanel extends JFrame
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
+		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
 		// item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
 		Integer iva = impuesto;
 		item.setIva(iva);
@@ -1892,6 +1897,7 @@ public class VentaPanel extends JFrame
 				det.setProductoId(Long.valueOf(object[4].toString()));
 				det.setSubtotal(Double.valueOf(object[5].toString()));
 				det.setIva(Integer.valueOf(object[7].toString()));
+				det.setDescripcionFiscal(object[8].toString());
 
 				listaDetalles.add(det);
 			}
@@ -2075,12 +2081,6 @@ public class VentaPanel extends JFrame
 						clienteNuevo.setRazonSocial(tfClienteNombre.getText());
 						String vTipo = (tfClienteRuc.getText().contains("800") ? "JURIDICO" : "FISICO");
 						clienteNuevo.setTipo(vTipo);
-//						try {
-//							clienteNuevo = clienteService.save(clienteNuevo);
-//						} catch (Exception e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
 						venta.setCliente(clienteNuevo);
 					}
 					
@@ -2098,21 +2098,6 @@ public class VentaPanel extends JFrame
 							e.printStackTrace();
 						}
 					}
-//					if (v != null) {
-//						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
-//							updateStockProduct(v.getItems());
-//							lanzamientoCaja(v);
-//							openMovCaja(v);
-//							movimientoIngresoProcesoCobroVenta(v);
-//							if (!tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
-//								CuentaARecibir cuentaARecibir = new CuentaARecibir();
-//								cuentaARecibir = cuentaARecibirProcesoCobroVenta(v);
-//								openMovimientoEgreso(cuentaARecibir);
-//							}
-//						}
-//					}
-//					Notifications.showAlert("Venta registrado con exito.!");
-
 					
 
 					if (print == 0)
@@ -2379,6 +2364,7 @@ public class VentaPanel extends JFrame
 	}
 
 	private ReImpresionPanel panelReImpresion = null;
+	private JLabel lblDescripcionFiscal;
 
 	private void imprimirDialogoReimpresion() {
 		if (this.panelReImpresion == null) {
@@ -2716,6 +2702,7 @@ public class VentaPanel extends JFrame
 
 				tfProductoID.setText(String.valueOf(producto.getId()));
 				tfDescripcion.setText(producto.getDescripcion());
+				lblDescripcionFiscal.setText(producto.getDescripcionFiscal());
 				double d = Math.round(precioInicial);
 				tfPrecio.setText(FormatearValor.doubleAString(d));
 				tfCantidad.setText("1");

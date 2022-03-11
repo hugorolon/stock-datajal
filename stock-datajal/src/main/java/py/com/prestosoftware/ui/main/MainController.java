@@ -30,6 +30,7 @@ import py.com.prestosoftware.ui.controllers.TamanhoController;
 import py.com.prestosoftware.ui.controllers.UnidadMedidaController;
 import py.com.prestosoftware.ui.controllers.UsuarioController;
 import py.com.prestosoftware.ui.controllers.UsuarioRolController;
+import py.com.prestosoftware.ui.reports.InformeAgrupadoIngresoEgresoCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeResumenCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeStockDeposito;
 import py.com.prestosoftware.ui.reports.UtilidadProductoDialog;
@@ -49,7 +50,6 @@ import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
 import py.com.prestosoftware.ui.transactions.AnulacionBoletaPanel;
 import py.com.prestosoftware.ui.transactions.AperturaCierrePanel;
 import py.com.prestosoftware.ui.transactions.CobroClientePanel;
-import py.com.prestosoftware.ui.transactions.PagarProveedorPanel;
 import py.com.prestosoftware.ui.transactions.CompraLocalPanel;
 import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
 import py.com.prestosoftware.ui.transactions.DevolucionPanel;
@@ -58,6 +58,7 @@ import py.com.prestosoftware.ui.transactions.LanzamientoCaja;
 import py.com.prestosoftware.ui.transactions.MovimientoEgresoPanel;
 import py.com.prestosoftware.ui.transactions.MovimientoIngresoPanel;
 import py.com.prestosoftware.ui.transactions.PDV;
+import py.com.prestosoftware.ui.transactions.PagarProveedorPanel;
 import py.com.prestosoftware.ui.transactions.PresupuestoPanel;
 import py.com.prestosoftware.ui.transactions.TransferenciaPanel;
 import py.com.prestosoftware.ui.transactions.TransformacionPanel;
@@ -187,6 +188,8 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private InformeResumenCajaDialog informeResumenCajaDialog;
 	@Autowired
+	private InformeAgrupadoIngresoEgresoCajaDialog informeAgrupadoIngresoEgresoCajaDialog;
+	@Autowired
 	private MovimientoIngresoPanel movimientoIngresoPanel;
 	@Autowired
 	private MovimientoEgresoPanel movimientoEgresoPanel;
@@ -255,6 +258,7 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuInfCuentaAPagarVencimientoProveedor(), (e) -> openVencimientoCuentaAPagar());
 		registerOpenMenu(mainMenuFrame.getMnuInfResumenUtilidadProducto(), (e) -> openUtilidadProducto());
 		registerOpenMenu(mainMenuFrame.getMnuInfResumenCajas(), (e) -> openInformeResumenCaja());
+		registerOpenMenu(mainMenuFrame.getMnuInfResumenAgrupadoCajas(), (e) -> openInformeAgrupadoIngresoEgresoCaja());
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaIngreso(), (e) -> openCajaMovimientoIngreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaEgreso(), (e) -> openCajaMovimientoEgreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCuentaARecibirCobroCliente(), (e) -> openCobroCliente());
@@ -383,6 +387,10 @@ public class MainController extends AbstractFrameController {
 	
 	private void openInformeResumenCaja() {
 		informeResumenCajaDialog.setVisible(true);
+	}
+	
+	private void openInformeAgrupadoIngresoEgresoCaja() {
+		informeAgrupadoIngresoEgresoCajaDialog.setVisible(true);
 	}
 	
 	private void openCajaMovimientoIngreso() {

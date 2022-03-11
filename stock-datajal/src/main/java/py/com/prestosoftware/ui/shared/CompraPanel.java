@@ -256,14 +256,16 @@ public class CompraPanel extends JDialog {
 
 	
 	private void openCompraLocal() {
-		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, proveedorAddPanel, compraDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
+		 compraLocal = new CompraLocalPanel(itemTableModel, proveedorDialog, proveedorAddPanel, compraDialog, productoDialog, compraService, proveedorService, monedaService, depositoService, compraValidator, productoService, 
+				 condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
 				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
-					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoAddPanel, productoController);
+					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoController);
 		 compraLocal.setVisible(true);
 		 compraLocal.getConfig();
 		 compraLocal.clearForm();
 		 compraLocal.newCompra();
 	}
+	
 	
 	private void openCompraImportacion() {
 		compraImportacion = new CompraImportacionPanel(itemTableModel, gastoTableModel, proveedorDialog,

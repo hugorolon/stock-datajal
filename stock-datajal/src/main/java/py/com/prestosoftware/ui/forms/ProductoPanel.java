@@ -118,6 +118,7 @@ public class ProductoPanel extends JDialog {
 	private ProductoDepositoTableModel depositoTableModel;
 	private JLabel lblEsServicio;
 	private JCheckBox chServicio;
+	private JCheckBox cbDescripcionFiscal;
 	private JLabel label;
 	private JComboBox<Categoria> cbCategoria;
 	private JLabel label_1;
@@ -255,7 +256,7 @@ public class ProductoPanel extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfDesFiscal.setText(tfDescripcion.getText());
+					//tfDesFiscal.setText(tfDescripcion.getText());
 					tfDesFiscal.requestFocus();
 				}
 			}
@@ -270,7 +271,7 @@ public class ProductoPanel extends JDialog {
 				tfDesFiscal.selectAll();
 			}
 		});
-		tfDesFiscal.setBounds(118, 145, 227, 21);
+		tfDesFiscal.setBounds(159, 145, 186, 21);
 		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDesFiscal.addKeyListener(new KeyAdapter() {
 			@Override
@@ -407,7 +408,7 @@ public class ProductoPanel extends JDialog {
 
 		chServicio = new JCheckBox();
 		chServicio.setVisible(false);
-		chServicio.setBounds(282, 4, 21, 25);
+		chServicio.setBounds(282, 4, 28, 25);
 		pnlDatosPersonal.add(chServicio);
 
 		label_7 = new JLabel("Precio A");
@@ -626,6 +627,16 @@ public class ProductoPanel extends JDialog {
 		label_16.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_16.setBounds(96, 170, 18, 25);
 		pnlDatosPersonal.add(label_16);
+		
+		cbDescripcionFiscal = new JCheckBox();
+		cbDescripcionFiscal.setBounds(118, 147, 28, 21);
+		cbDescripcionFiscal.addItemListener(new ItemListener() {    
+            public void itemStateChanged(ItemEvent e) {                 
+            	tfDesFiscal.setText(e.getStateChange()==1?"EN CUMPLIMIENTO DE LA RES. 39/2020, DETALLAMOS LAS SIGUIENTES INFORMACIONES COMPLEMENTARIAS: REGISTRO"
+            			+ " DE IMPORTADOR N° 1489, REGISTRO DE ENTIDAD COMERCIAL ANTE SENAVE: N° 216, REGISTRO DEL PRODUCTO EN SENAVE N° 608 ":" ");    
+            }    
+         });  
+		pnlDatosPersonal.add(cbDescripcionFiscal);
 
 		JPanel pnlInfo = new JPanel();
 		tabbedPane.addTab("Info", null, pnlInfo, "");
@@ -1086,7 +1097,7 @@ public class ProductoPanel extends JDialog {
 		tfProductoId.setText(product.getId() + "");
 		// tfNombre.setText(product.getNombre());
 		tfDescripcion.setText(product.getDescripcion());
-		tfDesFiscal.setText(product.getDescripcionFiscal());
+		
 		tfReferencia.setText(product.getReferencia());
 		tfSubreferencia.setText(product.getSubreferencia());
 		cbRegimen.setSelectedItem(product.getRegimen());
@@ -1121,6 +1132,9 @@ public class ProductoPanel extends JDialog {
 
 		// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
 		chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
+		tfDesFiscal.setText(product.getDescripcionFiscal());
+		cbDescripcionFiscal.setSelected(product.getDescripcionFiscal().isEmpty()?false:true);
+		
 		chActivo.setSelected(product.getActivo() == 1 ? true : false);
 
 		cbEsFraccionado.setSelectedIndex(product.getEsFraccionado() == 1 ? 1 : 0);
@@ -1148,7 +1162,6 @@ public class ProductoPanel extends JDialog {
 
 		// product.setNombre(tfNombre.getText());
 		product.setDescripcion(tfDescripcion.getText());
-		product.setDescripcionFiscal(tfDesFiscal.getText());
 		product.setReferencia(tfReferencia.getText());
 		product.setSubreferencia(tfSubreferencia.getText());
 		product.setSeccion(tfSeccion.getText());
@@ -1160,6 +1173,7 @@ public class ProductoPanel extends JDialog {
 		product.setEsServicio(chServicio.isSelected() ? 1 : 0);
 		product.setActivo(chActivo.isSelected() ? 1 : 0);
 		product.setImagenUrl(imagenUrl);
+		product.setDescripcionFiscal(tfDesFiscal.getText());
 
 		product.setCategoria(categoriaComboBoxModel.getSelectedItem());
 		product.setGrupo(grupoComboBoxModel.getSelectedItem());
@@ -1208,6 +1222,7 @@ public class ProductoPanel extends JDialog {
 		cbNcm.setSelectedIndex(0);
 		cbSubgrupo.setSelectedIndex(0);
 		cbImpuesto.setSelectedIndex(0);
+		cbDescripcionFiscal.setSelected(false);
 		pnlImagenView = new JPanel();
 		pnlImagenView.repaint();
 		pnlImagen = new JPanel();

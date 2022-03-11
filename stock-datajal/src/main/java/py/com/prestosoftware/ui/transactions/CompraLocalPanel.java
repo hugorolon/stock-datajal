@@ -36,6 +36,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
+import javax.transaction.Transactional;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
@@ -81,7 +82,6 @@ import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.controllers.ProductoController;
-import py.com.prestosoftware.ui.forms.ProductoAddPanel;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.Fechas;
@@ -107,7 +107,7 @@ public class CompraLocalPanel extends JFrame
 		implements ProveedorInterfaz, ProductoInterfaz, PanelCompraInterfaz, CompraInterfaz, CondicionPagoInterfaz {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int PROVEEDOR_CODE = 1;
 	private static final int MONEDA_CODE = 2;
 	private static final int DEPOSITO_CODE = 3;
@@ -148,7 +148,6 @@ public class CompraLocalPanel extends JFrame
 	private CompraDialog compraDialog;
 	private ConsultaProveedor proveedorDialog;
 	private ProveedorAddPanel proveedorAddPanel;
-	private ProductoAddPanel productoAddPanel;
 	private CondicionPagoDialog condicionPagoDialog;
 	private ProductoVistaDialog productoDialog;
 	private CondicionPagoService condicionPagoService;
@@ -161,27 +160,26 @@ public class CompraLocalPanel extends JFrame
 	private ProcesoPagoComprasService procesoPagoComprasService;
 	private CuentaAPagarService cuentaAPagarService;
 	private ItemCuentaAPagarService itemCuentaAPagarService;
-	private int cant;
 	private Proveedor proveedorSeleccionado;
 	private Compra compraSeleccionado;
 	private ProductoController productoController;
-	
 
-	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog, ProveedorAddPanel proveedorAddPanel,
-			CompraDialog compraDialog, ProductoVistaDialog productoDialog, CompraService compraService,
-			ProveedorService proveedorService, MonedaService monedaService, DepositoService depositoService,
-			CompraValidator compraValidator, ProductoService productoService, CondicionPagoDialog condicionPagoDialog,
-			CondicionPagoService condicionPagoService, ConfiguracionService configService,
-			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			MovimientoIngresoService movimientoIngresoService,
+	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
+			ProveedorAddPanel proveedorAddPanel, CompraDialog compraDialog, ProductoVistaDialog productoDialog,
+			CompraService compraService, ProveedorService proveedorService, MonedaService monedaService,
+			DepositoService depositoService, CompraValidator compraValidator, ProductoService productoService,
+			CondicionPagoDialog condicionPagoDialog, CondicionPagoService condicionPagoService,
+			ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
+			MovimientoCajaService pagoService, MovimientoIngresoService movimientoIngresoService,
 			MovimientoItemIngresoService movimientoItemIngresoService, MovimientoEgresoService movimientoEgresoService,
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoPagoComprasService procesoPagoComprasService,
 			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService,
-			ItemCuentaAPagarService itemCuentaAPagarService, ProductoAddPanel productoAddPanel, ProductoController productoController) {
+			ItemCuentaAPagarService itemCuentaAPagarService, 
+			ProductoController productoController) {
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
-		this.proveedorAddPanel=proveedorAddPanel;
+		this.proveedorAddPanel = proveedorAddPanel;
 		this.productoDialog = productoDialog;
 		this.compraService = compraService;
 		this.compraDialog = compraDialog;
@@ -201,8 +199,7 @@ public class CompraLocalPanel extends JFrame
 		this.procesoPagoComprasService = procesoPagoComprasService;
 		this.cuentaAPagarService = cuentaAPagarService;
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
-		this.productoAddPanel = productoAddPanel;
-		this.productoController=productoController;
+		this.productoController = productoController;
 
 		setSize(920, 650);
 		setTitle("REGISTRO DE COMPRAS");
@@ -464,7 +461,7 @@ public class CompraLocalPanel extends JFrame
 		label_7.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_7.setBounds(67, 6, 14, 18);
 		pnlProducto.add(label_7);
-		
+
 		btnAddProducto = new JButton("+");
 		btnAddProducto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -790,7 +787,7 @@ public class CompraLocalPanel extends JFrame
 		btnVer.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnVer.setBounds(152, 8, 23, 23);
 		pnlCliente.add(btnVer);
-		
+
 		JButton btnAddProveedor = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
 		btnAddProveedor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1029,6 +1026,7 @@ public class CompraLocalPanel extends JFrame
 		return compra;
 	}
 
+	@Transactional
 	private void updateStockProduct(List<CompraDetalle> items, Deposito deposito) {
 		List<Producto> productos = new ArrayList<>();
 		int habilitaLanzamientoCaja = 0;
@@ -1054,23 +1052,23 @@ public class CompraLocalPanel extends JFrame
 					Double cantDep = 0d;
 					switch (GlobalVars.DEPOSITO_ID.intValue()) {
 					case 1:
-						cantDep = p.getDepO1();
+						cantDep = p.getDepO1() != null ? p.getDepO1() : 0;
 						p.setDepO1(cantDep + cantCompra);
 						break;
 					case 2:
-						cantDep = p.getDepO2();
+						cantDep = p.getDepO2() != null ? p.getDepO2() : 0;
 						p.setDepO2(cantDep + cantCompra);
 						break;
 					case 3:
-						cantDep = p.getDepO3();
+						cantDep = p.getDepO3() != null ? p.getDepO3() : 0;
 						p.setDepO3(cantDep + cantCompra);
 						break;
 					case 4:
-						cantDep = p.getDepO4();
+						cantDep = p.getDepO4() != null ? p.getDepO4() : 0;
 						p.setDepO4(cantDep + cantCompra);
 						break;
 					case 5:
-						cantDep = p.getDepO5();
+						cantDep = p.getDepO5() != null ? p.getDepO5() : 0;
 						p.setDepO5(cantDep + cantCompra);
 						break;
 					default:
@@ -1104,19 +1102,23 @@ public class CompraLocalPanel extends JFrame
 		Optional<CondicionPago> condicion = condicionPagoService.findByCantDia(cantDia);
 
 		if (condicion.isPresent()) {
-			//tfCondicion.setSelectedIndex(condicion.get().getCantDia());
+			// tfCondicion.setSelectedIndex(condicion.get().getCantDia());
 			getFecha();
-			tfVence.setText(Fechas.formatoDDMMAAAA(
-					Fechas.sumarFecha(condicion.get().getCantDia(), 0, 0, tfFechaCompra.getText())));
+			tfVence.setText(Fechas
+					.formatoDDMMAAAA(Fechas.sumarFecha(condicion.get().getCantDia(), 0, 0, tfFechaCompra.getText())));
 		} else {
 			showDialog(CONDICION_PAGO_CODE);
 		}
 	}
 
+	@Transactional
 	private void save() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMA LA OPCION DE PAGO "+tfCondicion.getSelectedItem().toString(), "AVISO ", JOptionPane.OK_CANCEL_OPTION);
+		Integer respuesta = JOptionPane.showConfirmDialog(this,
+				"CONFIRMA LA OPCION DE PAGO " + tfCondicion.getSelectedItem().toString(), "AVISO ",
+				JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (validateCabezera()) {
+				lanzamientoCaja();
 				Compra compra = getCompra();
 
 				Optional<ValidationError> errors = compraValidator.validate(compra);
@@ -1125,25 +1127,33 @@ public class CompraLocalPanel extends JFrame
 					ValidationError validationError = errors.get();
 					Notifications.showFormValidationAlert(validationError.getMessage());
 				} else {
-					Compra c = compraService.save(compra);
-
-					if (c != null) {
-						updateStockProduct(c.getItems(), c.getDeposito());
-						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
-							lanzamientoCaja(c);
-							openMovCaja(c);
-							openMovimientoEgresoProcesoPagoCompras(c);
-							if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-								CuentaAPagar cuentaAPagar = new CuentaAPagar();
-								cuentaAPagar = cuentaAPagarProcesoPagoCompras(c);
-								movimientoIngresoProcesoPagoCompras(c, cuentaAPagar);
+					if (conf != null) {
+						int lanzCaja = conf.getHabilitaLanzamientoCaja();
+						try {
+							Compra c = compraService.save(lanzCaja, compra, tfCondicion.getSelectedItem().toString());
+							if (c != null) {
+								Notifications.showAlert("Compra registrado correctamente.!");
 							}
+						}catch (Exception e) {
+							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
+						clearForm();
+						newCompra();
 					}
-
-					Notifications.showAlert("Compra registrado correctamente.!");
-					clearForm();
-					newCompra();
+//					if (c != null) {
+//						updateStockProduct(c.getItems(), c.getDeposito());
+//						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
+//							openMovCaja(c);
+//							openMovimientoEgresoProcesoPagoCompras(c);
+//							if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+//								CuentaAPagar cuentaAPagar = new CuentaAPagar();
+//								cuentaAPagar = cuentaAPagarProcesoPagoCompras(c);
+//								movimientoIngresoProcesoPagoCompras(c, cuentaAPagar);
+//							}
+//						}
+//					}
 					productoDialog.inicializaProductos();
 					productoDialog.getProductos();
 				}
@@ -1153,7 +1163,7 @@ public class CompraLocalPanel extends JFrame
 		}
 	}
 
-	private void lanzamientoCaja(Compra c) {
+	private void lanzamientoCaja() {
 		Optional<Caja> caja = cajaService.findById(1l);
 		if (caja.isPresent()) {
 			Caja ca = caja.get();
@@ -1171,156 +1181,7 @@ public class CompraLocalPanel extends JFrame
 		}
 	}
 
-	private void openMovCaja(Compra compra) {
-		// cierre de caja del dia anterio
-		MovimientoCaja movCaja = new MovimientoCaja();
-		movCaja.setCaja(new Caja(1L));
-		movCaja.setFecha(new Date());
-		movCaja.setMoneda(new Moneda(1l));
-		movCaja.setNotaNro(compra.getId().toString());
-		movCaja.setNotaReferencia(compra.getProveedorNombre());
-		movCaja.setNotaValor(compra.getTotalGeneral());
-		movCaja.setPlanCuentaId(2);
-		movCaja.setTipoOperacion("S");
-		movCaja.setUsuario(GlobalVars.USER_ID);
-		movCaja.setValorM01(compra.getTotalGeneral());
-		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("contado")) {
-			movCaja.setObs("Pagado al proveedor ");
-			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			tfCuotaCant.setText("1");
-			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
-			movCaja.setObs("Credito a cuotas :" + cant);
-			movCaja.setSituacion("PROCESADO");
-		}
-		pagoService.save(movCaja);
-	}
-
-	private void movimientoIngresoProcesoPagoCompras(Compra compra, CuentaAPagar cuentaAPagar) {
-		MovimientoIngreso m = new MovimientoIngreso();
-		m.setFecha(new Date());
-		m.setHora(new Date());
-		m.setMinCaja(1);
-		m.setMinDocumento(cuentaAPagar.getNroBoleta().toString());
-		m.setMinEntidad(cuentaAPagar.getIdEntidad().toString());
-		m.setMinProceso(cuentaAPagar.getCapNumero());
-		m.setMinTipoProceso(30);
-		m.setMinTipoEntidad(3);
-		m.setMinSituacion(0);
-		m = movimientoIngresoService.save(m);
-
-		MovimientoItemIngreso mii = new MovimientoItemIngreso();
-		mii.setMiiNumero(m.getMinNumero());
-		mii.setMiiIngreso(30);
-		mii.setMiiMonto(cuentaAPagar.getMonto());
-		movimientoItemIngresoService.save(mii);
-
-		ProcesoPagoCompras ppc = new ProcesoPagoCompras();
-		ppc.setPcoCompra(compra.getId().intValue());
-		ppc.setPcoIngresoEgreso(1);
-		ppc.setPcoTipoproceso(31);
-		ppc.setPcoProceso(m.getMinNumero());
-		ppc.setPcoFlag(1);
-		procesoPagoComprasService.save(ppc);
-	}
-
-	private CuentaAPagar cuentaAPagarProcesoPagoCompras(Compra compra) {
-		CuentaAPagar cuentaAPagar = new CuentaAPagar();
-
-		cuentaAPagar.setFecha(new Date());
-		cuentaAPagar.setHora(new Date());
-		cuentaAPagar.setNroBoleta(compra.getComprobante());
-		cuentaAPagar.setIdEntidad(compra.getProveedor().getId());
-		cuentaAPagar.setTipoEntidad(3);
-		cuentaAPagar.setMonto(compra.getTotalGeneral());
-		cuentaAPagar.setCapProceso(compra.getId().intValue());
-		cuentaAPagar.setCapSituacion(0);
-
-		cuentaAPagar = cuentaAPagarService.save(cuentaAPagar);
-
-		List<ItemCuentaAPagar> listaItemCuentaAPagar = new ArrayList<ItemCuentaAPagar>();
-
-		int cant = 0;
-		int cantDias = 0;
-		Date fechaVencimiento = new Date();
-		Calendar cal = Calendar.getInstance();
-		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			cant =1;// Integer.valueOf(tfCuotaCant.getText());
-			cantDias = 30;
-			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(30));
-		} 
-//else {
-//			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(tfCondicion.getText()));
-//			fechaVencimiento = cal.getTime();
-//			cantDias = Integer.valueOf(tfCondicion.getText());
-//			cant = 1;
-//		}
-		Double valorTotal = compra.getTotalGeneral() / cant;
-		for (int i = 0; i < cant; i++) {
-			long secuencia = itemCuentaAPagarService.getSecuencia();
-			ItemCuentaAPagar itemCuentaAPagar = new ItemCuentaAPagar();
-			cal.add(Calendar.MONTH, 1);
-			itemCuentaAPagar.setIcpCuenta(cuentaAPagar.getCapNumero());
-			itemCuentaAPagar.setIcpMonto(valorTotal);
-			itemCuentaAPagar.setIcpSituacion(0);
-			itemCuentaAPagar.setIcpDocumento(cant + "/" + (i + 1));
-			itemCuentaAPagar.setIcpSecuencia(Integer.valueOf((int) (secuencia+1)));
-//			if (!tfCondicion.getText().equalsIgnoreCase("100"))
-//				itemCuentaAPagar.setIcpVencimiento(fechaVencimiento);
-//			else
-			itemCuentaAPagar.setIcpVencimiento(cal.getTime());
-			itemCuentaAPagar.setIcpDias(cantDias);
-
-			listaItemCuentaAPagar.add(itemCuentaAPagar);
-		}
-		itemCuentaAPagarService.save(listaItemCuentaAPagar);
-		// Proceso pago compras
-		ProcesoPagoCompras ppc = new ProcesoPagoCompras();
-		ppc.setPcoCompra(compra.getId().intValue());
-		ppc.setPcoIngresoEgreso(1);
-		ppc.setPcoTipoproceso(30);
-		ppc.setPcoProceso(cuentaAPagar.getCapNumero());
-		ppc.setPcoFlag(1);
-		procesoPagoComprasService.save(ppc);
-
-		return cuentaAPagar;
-	}
-
-	private void openMovimientoEgresoProcesoPagoCompras(Compra c) {
-		MovimientoEgreso movEgreso = new MovimientoEgreso();
-		movEgreso.setFecha(new Date());
-		movEgreso.setHora(new Date());
-		movEgreso.setMegProceso(c.getId().intValue());
-		movEgreso.setMegTipoProceso(1);
-		movEgreso.setMegEntidad(c.getProveedor().getId().toString());
-		movEgreso.setMegSituacion(0);
-		movEgreso.setMegDocumento(c.getComprobante());
-		movEgreso = movimientoEgresoService.save(movEgreso);
-
-		MovimientoItemEgreso movItemEgreso = new MovimientoItemEgreso();
-		movItemEgreso.setMieNumero(movEgreso.getMegNumero());
-		movItemEgreso.setMieEgreso(1);
-		double monto = (double) Math.round(c.getTotalGeneral() / 11);
-		movItemEgreso.setMieMonto(monto);
-		movItemEgreso.setMieDescripcion("Egreso  - Compra Crédito IVA");
-		movimientoItemEgresoService.save(movItemEgreso);
-
-		MovimientoItemEgreso movIE = new MovimientoItemEgreso();
-		movIE.setMieNumero(movEgreso.getMegNumero());
-		movIE.setMieEgreso(4);
-		movIE.setMieMonto(c.getTotalGeneral() - monto);
-		movIE.setMieDescripcion("Egreso  - Compra Crédito IMPONIBLE");
-		movimientoItemEgresoService.save(movIE);
-
-		ProcesoPagoCompras ppc = new ProcesoPagoCompras();
-		ppc.setPcoCompra(c.getId().intValue());
-		ppc.setPcoIngresoEgreso(2);
-		ppc.setPcoTipoproceso(32);
-		ppc.setPcoProceso(movEgreso.getMegNumero());
-		ppc.setPcoFlag(1);
-		procesoPagoComprasService.save(ppc);
-	}
-
+	
 	private void anular() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
 				JOptionPane.OK_CANCEL_OPTION);
@@ -1601,21 +1462,23 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void removeItem() {
-		int row[] = tbProductos.getSelectedRows();
-
-		if (tbProductos.getSelectedRow() != -1) {
-			for (Integer i = row.length; i > 0; i--) {
-				itemTableModel.removeRow(row[i - 1]);
+		try {
+			int row[] = tbProductos.getSelectedRows();
+			if (tbProductos.getSelectedRow() != -1) {
+				for (Integer i = row.length; i > 0; i--) {
+					itemTableModel.removeRow(row[i - 1]);
+				}
+				tfProductoID.requestFocus();
+			} else {
+				Notifications.showAlert("Debe seleccionar un Item para quitar de la lista");
 			}
+			clearItem();
 
-			tfProductoID.requestFocus();
-		} else {
-			Notifications.showAlert("Debe seleccionar un Item para quitar de la lista");
+			calculateItem();	
+		} catch (Exception e) {
+			// TODO: handle exception
+			Notifications.showAlert("Error al eliminar el item!");
 		}
-
-		clearItem();
-
-		calculateItem();
 	}
 
 	private void calculatePrecioTotal() {
@@ -1672,20 +1535,31 @@ public class CompraLocalPanel extends JFrame
 			proveedorAddPanel.loadEmpresas();
 			proveedorAddPanel.addNewProveedor();
 			proveedorAddPanel.setVisible(true);
-			break;	
+			break;
 		case PRODUCTO_ADD_CODE:
+			productoController.setInterfaz(this);
 			productoController.addNewProduct();
 			productoController.prepareAndOpenFrame();
 			productoController.setOrigen("PRODUCTO");
-			productoController.setInterfaz(this);
+
 //			productoAddPanel.setInterfaz(this);
 //			productoAddPanel.loadGrupos();
 //			productoAddPanel.addNewProducto();
 //			productoAddPanel.setVisible(true);
 			break;
-	
+
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void getEntity(Producto producto) {
+		try {
+			setProducto(producto);
+		} catch (Exception e) {
+			Notifications.showAlert("Hubo problemas con el Producto, intente nuevamente!");
+			// TODO: handle exception
 		}
 	}
 
@@ -1694,40 +1568,49 @@ public class CompraLocalPanel extends JFrame
 			Notifications.showAlert("Debes ingresar Proveedor.!");
 			return;
 		}
+		try {
+			Optional<Proveedor> proveedor = proveedorService.findById(Long.valueOf(proveedorId));
+			if (proveedor.isPresent()) {
+				if (!isImportacion) {
+					tfProveedorID.setText(String.valueOf(proveedor.get().getId()));
+					tfNombre.setText(proveedor.get().getRazonSocial());
+					tfRuc.setText(proveedor.get().getRuc());
+					tfDireccion.setText(proveedor.get().getDireccion());
+					tfFechaCompra.requestFocus();
+				}
 
-		Optional<Proveedor> proveedor = proveedorService.findById(Long.valueOf(proveedorId));
-
-		if (proveedor.isPresent()) {
-			if (!isImportacion) {
-				tfProveedorID.setText(String.valueOf(proveedor.get().getId()));
-				tfNombre.setText(proveedor.get().getRazonSocial());
-				tfRuc.setText(proveedor.get().getRuc());
-				tfDireccion.setText(proveedor.get().getDireccion());
-				tfFechaCompra.requestFocus();
+			} else {
+				Notifications.showAlert("No existe Proveedor con ese codigo.!");
+				tfProveedorID.requestFocus();
 			}
-//			else {
-//				tfProveedorImport.setText(proveedor.get().getRazonSocial());
-//				tfValorImport.requestFocus();
-//			}
-
-		} else {
-			Notifications.showAlert("No existe Proveedor con ese codigo.!");
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			Notifications.showAlert("Error al recuperar Proveedor!");
 			tfProveedorID.requestFocus();
 		}
+
+		
 	}
 
 	private void findProductoById(Long id) {
-		Optional<Producto> producto = productoService.findById(id);
+		try {
+			Optional<Producto> producto = productoService.findById(id);
 
-		if (producto.isPresent()) {
-			if (producto.get().getSubgrupo().getTipo().equals("S")) {
-				Notifications.showAlert("Este Producto es un servicio, no se puede comprar.!");
-				clearItem();
+			if (producto.isPresent()) {
+				if (producto.get().getSubgrupo().getTipo().equals("S")) {
+					Notifications.showAlert("Este Producto es un servicio, no se puede comprar.!");
+					clearItem();
+				} else {
+					setProducto(producto.get());
+				}
 			} else {
-				setProducto(producto.get());
-			}
-		} else {
-			Notifications.showAlert("No existe Producto con ese codigo.!");
+				Notifications.showAlert("No existe Producto con ese codigo.!");
+				tfProductoID.requestFocus();
+			}	
+		} catch (Exception e) {
+			// TODO: handle exception
+			Notifications.showAlert("Error en busqueda de Producto.!");
 			tfProductoID.requestFocus();
 		}
 	}
@@ -1791,19 +1674,6 @@ public class CompraLocalPanel extends JFrame
 		return true;
 	}
 
-//	private Boolean isValidItemImport() {
-//		if (tfProveedorImport.getText().isEmpty()) {
-//			Notifications.showAlert("Codigo es un campo obligatorio.!");
-//			tfProductoID.requestFocus();
-//			return false;
-//		} else if (tfValorImport.getText().isEmpty()) {
-//			Notifications.showAlert("Valor es un campo obligatorio");
-//			tfCantidad.requestFocus();
-//			return false;
-//		}
-//
-//		return true;
-//	}
 
 	private void calculateItem() {
 		if (itemTableModel.getEntities().size() > 0) {
@@ -1811,11 +1681,6 @@ public class CompraLocalPanel extends JFrame
 			Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
 			setTotals(cantItem, total);
 		}
-	}
-
-	@Override
-	public void getEntity(Producto producto) {
-		setProducto(producto);
 	}
 
 	@Override
@@ -1866,21 +1731,23 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void findCompraById(Long id) {
-		Optional<Compra> compra = compraService.findById(id);
-
-		if (compra.isPresent()) {
-			loadCompra(compra.get());
-		} else {
-			tfProveedorID.requestFocus();
+		try {
+			Optional<Compra> compra = compraService.findById(id);
+			if (compra.isPresent()) {
+				loadCompra(compra.get());
+			} else {
+				tfProveedorID.requestFocus();
+			}			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-
 	}
 
 	private void loadCompra(Compra c) {
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
 		tfFactura.setText(c.getFactura());
 		tfFechaCompra.setText(c.getFechaCompra() == null ? "" : String.valueOf(c.getFechaCompra()));
-		//tfCondicion.setSelectedItem(String.valueOf(c.getCondicion()));
+		// tfCondicion.setSelectedItem(String.valueOf(c.getCondicion()));
 		if (c.getCondicion() == 0)
 			tfCondicion.setSelectedIndex(0);
 		else
@@ -1939,7 +1806,7 @@ public class CompraLocalPanel extends JFrame
 	@Override
 	public void getEntity(CondicionPago condicionPago) {
 		if (condicionPago != null) {
-			//tfCondicion.setText(String.valueOf(condicionPago.getCantDia()));
+			// tfCondicion.setText(String.valueOf(condicionPago.getCantDia()));
 			// tfFlete.requestFocus();
 		}
 	}
@@ -1959,7 +1826,7 @@ public class CompraLocalPanel extends JFrame
 	public void setCompraSeleccionado(Compra compraSeleccionado) {
 		this.compraSeleccionado = compraSeleccionado;
 	}
-	
+
 	public JTextField getTfProveedorID() {
 		return tfProveedorID;
 	}

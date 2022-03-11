@@ -20,9 +20,9 @@ public class ProductoValidator extends ValidationSupport implements Validator<Pr
         else if (isNullOrEmptyString(product.getReferencia())) {
         	msg="Referencia de producto es ";
         	return Optional.of(new ValidationError(msg+REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA));
-        }else if (isNullOrEmptyString(product.getDescripcionFiscal())) {
-        	msg="Descripción Fiscal es ";
-        	return Optional.of(new ValidationError(msg+REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA));
+        //}else if (isNullOrEmptyString(product.getDescripcionFiscal())) {
+        //	msg="Descripción Fiscal es ";
+        //	return Optional.of(new ValidationError(msg+REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA));
         }else if (isNullOrEmptyString(String.valueOf(product.getPeso()))) {
         	msg="Peso es ";
         	return Optional.of(new ValidationError(msg+REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA));

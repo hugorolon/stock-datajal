@@ -54,6 +54,8 @@ public class Producto {
 	private Double cantidadPorCaja;
 	
 	private String seccion;
+	
+	@Column(name = "regimen")
 	private String regimen;
 	
 	@Column(name = "precio_costo")
