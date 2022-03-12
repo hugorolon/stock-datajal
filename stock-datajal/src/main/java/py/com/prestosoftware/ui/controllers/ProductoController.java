@@ -378,11 +378,11 @@ public class ProductoController extends AbstractFrameController {
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
             productService.save(product);
-            productoPanel.getInterfaz().getEntity(product);
             if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
             	cleanInputs();
             }else {
+            	productoPanel.getInterfaz().getEntity(product);
             	setProducto(product);
             	productoPanel.dispose();	
             }

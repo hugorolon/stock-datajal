@@ -124,8 +124,6 @@ public class ProductoPanel extends JDialog {
 	private JLabel label_1;
 	private JComboBox<Ncm> cbNcm;
 	private JLabel label_2;
-	private JLabel label_3;
-	private JTextField tfStock;
 	private JTextField tfCosto;
 	private JComboBox<String> cbRegimen;
 	private JLabel label_4;
@@ -169,6 +167,7 @@ public class ProductoPanel extends JDialog {
 
 	private SubgrupoService subgrupoService;
 	private ProductoInterfaz interfaz;
+	private JTextField tfDep01;
 
 	@Autowired
 	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel,
@@ -240,7 +239,7 @@ public class ProductoPanel extends JDialog {
 		
 		
 		JLabel lblNombre = new JLabel("Descripción");
-		lblNombre.setBounds(16, 120, 98, 21);
+		lblNombre.setBounds(16, 91, 98, 21);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setNextFocusableComponent(tfDesFiscal);
@@ -250,7 +249,7 @@ public class ProductoPanel extends JDialog {
 				tfDescripcion.selectAll();
 			}
 		});
-		tfDescripcion.setBounds(118, 120, 227, 21);
+		tfDescripcion.setBounds(118, 91, 237, 21);
 		((AbstractDocument) tfDescripcion.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDescripcion.addKeyListener(new KeyAdapter() {
 			@Override
@@ -271,7 +270,7 @@ public class ProductoPanel extends JDialog {
 				tfDesFiscal.selectAll();
 			}
 		});
-		tfDesFiscal.setBounds(159, 145, 186, 21);
+		tfDesFiscal.setBounds(159, 120, 196, 21);
 		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDesFiscal.addKeyListener(new KeyAdapter() {
 			@Override
@@ -284,10 +283,10 @@ public class ProductoPanel extends JDialog {
 		tfDesFiscal.setColumns(10);
 
 		JLabel lblDescFiscal = new JLabel("Desc. Fiscal:");
-		lblDescFiscal.setBounds(16, 145, 98, 21);
+		lblDescFiscal.setBounds(16, 120, 98, 21);
 
 		JLabel lblSubreferencia = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.lblSubreferencia.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		lblSubreferencia.setBounds(16, 198, 98, 24);
+		lblSubreferencia.setBounds(16, 170, 98, 24);
 
 		tfSubreferencia = new JTextField();
 		tfDesFiscal.setNextFocusableComponent(tfPrecioA);
@@ -297,7 +296,7 @@ public class ProductoPanel extends JDialog {
 				tfSubreferencia.selectAll();
 			}
 		});
-		tfSubreferencia.setBounds(118, 198, 129, 24);
+		tfSubreferencia.setBounds(118, 170, 237, 24);
 		((AbstractDocument) tfSubreferencia.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfSubreferencia.addKeyListener(new KeyAdapter() {
 			@Override
@@ -309,7 +308,7 @@ public class ProductoPanel extends JDialog {
 		});
 
 		JLabel lblReferencia = new JLabel("Referencia");
-		lblReferencia.setBounds(16, 170, 98, 24);
+		lblReferencia.setBounds(16, 145, 98, 24);
 
 		tfReferencia = new JTextField();
 		tfReferencia.addFocusListener(new FocusAdapter() {
@@ -318,7 +317,7 @@ public class ProductoPanel extends JDialog {
 				tfReferencia.selectAll();
 			}
 		});
-		tfReferencia.setBounds(118, 170, 227, 24);
+		tfReferencia.setBounds(118, 145, 237, 24);
 		((AbstractDocument) tfReferencia.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfReferencia.addKeyListener(new KeyAdapter() {
 			@Override
@@ -337,7 +336,7 @@ public class ProductoPanel extends JDialog {
 				tfPeso.requestFocus();
 			}
 		});
-		tfPeso.setBounds(521, 198, 129, 24);
+		tfPeso.setBounds(521, 198, 163, 24);
 		tfPeso.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -580,7 +579,7 @@ public class ProductoPanel extends JDialog {
 				Util.validateNumero(e);
 			}
 		});
-		tfCantidadPorCaja.setBounds(521, 170, 114, 24);
+		tfCantidadPorCaja.setBounds(521, 170, 163, 24);
 		tfCantidadPorCaja.setColumns(10);
 		pnlDatosPersonal.add(tfCantidadPorCaja);
 
@@ -625,11 +624,11 @@ public class ProductoPanel extends JDialog {
 		label_16.setHorizontalAlignment(SwingConstants.CENTER);
 		label_16.setForeground(java.awt.Color.RED);
 		label_16.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_16.setBounds(96, 170, 18, 25);
+		label_16.setBounds(96, 145, 18, 25);
 		pnlDatosPersonal.add(label_16);
 		
 		cbDescripcionFiscal = new JCheckBox();
-		cbDescripcionFiscal.setBounds(118, 147, 28, 21);
+		cbDescripcionFiscal.setBounds(118, 120, 28, 21);
 		cbDescripcionFiscal.addItemListener(new ItemListener() {    
             public void itemStateChanged(ItemEvent e) {                 
             	tfDesFiscal.setText(e.getStateChange()==1?"EN CUMPLIMIENTO DE LA RES. 39/2020, DETALLAMOS LAS SIGUIENTES INFORMACIONES COMPLEMENTARIAS: REGISTRO"
@@ -637,6 +636,16 @@ public class ProductoPanel extends JDialog {
             }    
          });  
 		pnlDatosPersonal.add(cbDescripcionFiscal);
+		
+		tfDep01 = new JTextField();
+		tfDep01.setEditable(false);
+		tfDep01.setColumns(10);
+		tfDep01.setBounds(118, 198, 237, 23);
+		pnlDatosPersonal.add(tfDep01);
+		
+		JLabel label_3 = new JLabel("Saldo Disp.");
+		label_3.setBounds(16, 198, 51, 23);
+		pnlDatosPersonal.add(label_3);
 
 		JPanel pnlInfo = new JPanel();
 		tabbedPane.addTab("Info", null, pnlInfo, "");
@@ -801,14 +810,6 @@ public class ProductoPanel extends JDialog {
 
 		label_2 = new JLabel("Medio CIF");
 		pnlInfo.add(label_2, "cell 2 6,grow");
-
-		label_3 = new JLabel("Saldo Disp.");
-		pnlInfo.add(label_3, "cell 2 5,alignx left,growy");
-
-		tfStock = new JTextField();
-		tfStock.setEditable(false);
-		tfStock.setColumns(10);
-		pnlInfo.add(tfStock, "cell 3 5,grow");
 
 		tfCosto = new JTextField();
 		tfCosto.setEditable(false);
@@ -1097,7 +1098,6 @@ public class ProductoPanel extends JDialog {
 		tfProductoId.setText(product.getId() + "");
 		// tfNombre.setText(product.getNombre());
 		tfDescripcion.setText(product.getDescripcion());
-		
 		tfReferencia.setText(product.getReferencia());
 		tfSubreferencia.setText(product.getSubreferencia());
 		cbRegimen.setSelectedItem(product.getRegimen());
@@ -1105,7 +1105,7 @@ public class ProductoPanel extends JDialog {
 		tfCosto.setText(
 				product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
 		tfPeso.setText(product.getPeso() != null ? FormatearValor.doubleAString(product.getPeso()) : "");
-		tfStock.setText(product.getStock() != null ? FormatearValor.doubleAString(product.getStock()) : "");
+		tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
 		tfCantidadPorCaja.setText(
 				product.getCantidadPorCaja() != null ? FormatearValor.doubleAString(product.getCantidadPorCaja()) : "");
 
@@ -1159,7 +1159,9 @@ public class ProductoPanel extends JDialog {
 		if (!tfProductoId.getText().isEmpty()) {
 			product.setId(Long.parseLong(tfProductoId.getText()));
 		}
-
+		if(!tfDep01.getText().isEmpty()) {
+			product.setDepO1(Double.valueOf(tfDep01.getText()));			
+		}
 		// product.setNombre(tfNombre.getText());
 		product.setDescripcion(tfDescripcion.getText());
 		product.setReferencia(tfReferencia.getText());
@@ -1209,7 +1211,7 @@ public class ProductoPanel extends JDialog {
 		tfSeccion.setText("");
 		tfCosto.setText("");
 		tfPeso.setText("");
-		tfStock.setText("");
+		tfDep01.setText("");
 		tfCantidadPorCaja.setText("");
 		tfUltimoPrecioCompra.setText("");
 		tfPrecioPromedio.setText("");

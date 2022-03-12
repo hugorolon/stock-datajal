@@ -29,5 +29,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/numeroScriptlet.jar"/>
+	<classpathentry kind="lib" path="lib/epson.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

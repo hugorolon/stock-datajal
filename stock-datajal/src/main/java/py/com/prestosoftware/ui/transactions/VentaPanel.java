@@ -1719,17 +1719,23 @@ public class VentaPanel extends JFrame
 	}
 
 	private void calculatePrecioTotal() {
-		Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
-		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
-		Double precioTotal = cantidad * precioUnit;
-		tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
-		if (this.precioCompra> precioUnit) {
-			Notifications.showAlert("No puede vender a bajo del precio de compra!");
-			tfPrecio.requestFocus();
-		}else {
-				tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
-				btnAdd.requestFocus();
+		try {
+			Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
+			Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
+			Double precioTotal = cantidad * precioUnit;
+			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
+			if (this.precioCompra> precioUnit) {
+				Notifications.showAlert("No puede vender a bajo del precio de compra!");
+				tfPrecio.requestFocus();
+			}else {
+					tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
+					btnAdd.requestFocus();
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Verficar datos de producto, cantidad o precio!");
+			tfProductoID.requestFocus();
 		}
+		
 	}
 
 	private void showDialog(int code) {
@@ -2711,7 +2717,7 @@ public class VentaPanel extends JFrame
 				tfStock.setText(FormatearValor.doubleAString(producto.getDepO1()));
 			}
 		} catch (Exception e) {
-			Notifications.showAlert("Problemas con el producto, intente nuevamente!");
+			Notifications.showAlert("Producto sin Stock, verifique datos del producto!");
 		}
 	}
 
