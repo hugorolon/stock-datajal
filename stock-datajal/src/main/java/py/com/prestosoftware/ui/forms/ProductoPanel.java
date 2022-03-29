@@ -123,8 +123,6 @@ public class ProductoPanel extends JDialog {
 	private JComboBox<Categoria> cbCategoria;
 	private JLabel label_1;
 	private JComboBox<Ncm> cbNcm;
-	private JLabel label_2;
-	private JTextField tfCosto;
 	private JComboBox<String> cbRegimen;
 	private JLabel label_4;
 	private JLabel label_5;
@@ -190,7 +188,7 @@ public class ProductoPanel extends JDialog {
 		this.depositoTableModel = depositoTableModel;
 		this.productTableModel = productTableModel;
 		this.subgrupoService = subgrupoService;
-
+		
 		initComponents();
 		Util.setupScreen(this);
 	}
@@ -714,7 +712,6 @@ public class ProductoPanel extends JDialog {
 				.getString("ProductoPanel.lblPrecioCompra.text"));
 
 		tfUltimoPrecioCompra = new JTextField();
-		tfUltimoPrecioCompra.setEditable(false);
 		tfUltimoPrecioCompra.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -731,7 +728,6 @@ public class ProductoPanel extends JDialog {
 		tfUltimoPrecioCompra.setColumns(10);
 
 		tfPrecioPromedio = new JTextField();
-		tfPrecioPromedio.setEditable(false);
 		tfPrecioPromedio.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -807,14 +803,6 @@ public class ProductoPanel extends JDialog {
 
 		cbNcm = new JComboBox<Ncm>(ncmComboBoxModel);
 		pnlInfo.add(cbNcm, "cell 3 3,grow");
-
-		label_2 = new JLabel("Medio CIF");
-		pnlInfo.add(label_2, "cell 2 6,grow");
-
-		tfCosto = new JTextField();
-		tfCosto.setEditable(false);
-		tfCosto.setColumns(10);
-		pnlInfo.add(tfCosto, "cell 3 6,grow");
 
 		cbRegimen = new JComboBox<String>();
 		cbRegimen.setModel(new DefaultComboBoxModel<String>(new String[] { "GENERAL", "TURISMO" }));
@@ -1102,8 +1090,10 @@ public class ProductoPanel extends JDialog {
 		tfSubreferencia.setText(product.getSubreferencia());
 		cbRegimen.setSelectedItem(product.getRegimen());
 		tfSeccion.setText(product.getSeccion());
-		tfCosto.setText(
+		tfUltimoPrecioCompra.setText(
 				product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
+		tfPrecioPromedio.setText(
+				product.getPrecioCostoPromedio() != null ? FormatearValor.doubleAString(product.getPrecioCostoPromedio()) : "0");
 		tfPeso.setText(product.getPeso() != null ? FormatearValor.doubleAString(product.getPeso()) : "");
 		tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
 		tfCantidadPorCaja.setText(
@@ -1133,7 +1123,7 @@ public class ProductoPanel extends JDialog {
 		// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
 		chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
 		tfDesFiscal.setText(product.getDescripcionFiscal());
-		cbDescripcionFiscal.setSelected(product.getDescripcionFiscal().isEmpty()?false:true);
+		cbDescripcionFiscal.setSelected(product.getDescripcionFiscal().trim().toString().length()==0||product.getDescripcionFiscal().isEmpty()?false:true);
 		
 		chActivo.setSelected(product.getActivo() == 1 ? true : false);
 
@@ -1160,7 +1150,8 @@ public class ProductoPanel extends JDialog {
 			product.setId(Long.parseLong(tfProductoId.getText()));
 		}
 		if(!tfDep01.getText().isEmpty()) {
-			product.setDepO1(Double.valueOf(tfDep01.getText()));			
+			Double cantidad = FormatearValor.stringADouble(tfDep01.getText());
+			product.setDepO1(cantidad);			
 		}
 		// product.setNombre(tfNombre.getText());
 		product.setDescripcion(tfDescripcion.getText());
@@ -1209,7 +1200,6 @@ public class ProductoPanel extends JDialog {
 		tfReferencia.setText("");
 		tfSubreferencia.setText("");
 		tfSeccion.setText("");
-		tfCosto.setText("");
 		tfPeso.setText("");
 		tfDep01.setText("");
 		tfCantidadPorCaja.setText("");
@@ -1326,6 +1316,16 @@ public class ProductoPanel extends JDialog {
 
 	public JTable getTbProducto() {
 		return tbProducto;
+	}
+
+	
+	
+	public ProductTableModel getProductTableModel() {
+		return productTableModel;
+	}
+
+	public void setProductTableModel(ProductTableModel productTableModel) {
+		this.productTableModel = productTableModel;
 	}
 
 	private void visualizarImagen() {

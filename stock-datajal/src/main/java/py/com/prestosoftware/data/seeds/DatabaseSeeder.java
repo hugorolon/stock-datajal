@@ -309,7 +309,7 @@ public class DatabaseSeeder {
 		productoRepository.save(new Producto("PRODUCTO DESCRI", "PRODUCTO DESCRI FISCAL", 
 				"REF-001", "SUB-REF001", new Grupo(1L), new Subgrupo(1L), new Marca(1L), new Color(1L),
 				 new Tamanho(1L), new UnidadMedida(1L), new Impuesto(1L), new Categoria(1L), new Ncm(1L), 
-				100d, 90d, 80d, 70d, 60d));
+				100d, 90d, 80d, 70d, 60d, null, null));
 	}
 	
 	private void seedCondicionPagoTable() {

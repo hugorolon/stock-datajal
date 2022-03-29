@@ -7,11 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
-import javax.swing.JTextField;
-import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -93,6 +90,8 @@ public class ProductoController extends AbstractFrameController {
     private ProductoDepositoTableModel depositoTableModel;
     private String origen;
     private Producto producto;
+    private List<Producto> productos;
+    private DefaultTableModel table1;
     
     @Autowired
     public ProductoController(ProductoPanel productFrame, ProductTableModel productTableModel, ProductoService productService, 
@@ -143,16 +142,16 @@ public class ProductoController extends AbstractFrameController {
         	@Override
 			public void keyTyped(KeyEvent e) {}
 			
-			@Override
+			/*@Override
 			public void keyReleased(KeyEvent e) {
 				JTextField textField = (JTextField) e.getSource();
 				String text = textField.getText();
 				textField.setText(text.toUpperCase());
-				DefaultTableModel table1 = (DefaultTableModel) productoPanel.getTbProducto().getModel();
+				table1 = (DefaultTableModel) productoPanel.getTbProducto().getModel();
 				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
 				productoPanel.getTbProducto().setRowSorter(tr);
 				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
-			}
+			}*/
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -160,6 +159,12 @@ public class ProductoController extends AbstractFrameController {
 					String name = productoPanel.getTfBuscador().getText();
 					findByName(name.toUpperCase());
 				}
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
         
@@ -221,9 +226,9 @@ public class ProductoController extends AbstractFrameController {
     }
 
     private void loadProducts() {
-        List<Producto> productos = productService.findAllByNombre();
-        productTableModel.clear();
-        productTableModel.addEntities(productos);
+        this.productos = productService.findAllByNombre();
+        productoPanel.getProductTableModel().clear();
+        productoPanel.getProductTableModel().addEntities(this.productos);
     }
 
     private void loadCategorias() {
@@ -329,16 +334,15 @@ public class ProductoController extends AbstractFrameController {
     }
     
     private void findByName(String name) {
-    	List<Producto> productos;
-    	
     	if (name.isEmpty()) {
     		productos = productService.findAll();
 		} else {
 			productos = productService.findByNombre(name);		
 		}
-    	
-        productTableModel.clear();
-        productTableModel.addEntities(productos);
+    	productoPanel.getProductTableModel().clear();
+    	productoPanel.getProductTableModel().addEntities(productos);
+//    	productTableModel.clear();
+//        productTableModel.addEntities(productos);
     }
 
     private void findById(String id) {
@@ -367,6 +371,15 @@ public class ProductoController extends AbstractFrameController {
     
     public ProductoInterfaz getInterfaz() {
 		return productoPanel.getInterfaz();
+	}
+
+    
+	public List<Producto> getProductos() {
+		return productos;
+	}
+
+	public void setProductos(List<Producto> productos) {
+		this.productos = productos;
 	}
 
 	private void save() {
@@ -401,14 +414,19 @@ public class ProductoController extends AbstractFrameController {
     }
     
     private void setData() {
-        int selectedRow = productoPanel.getTbProducto().getSelectedRow();
-        
-        if (selectedRow != -1) {
-        	Producto product = productTableModel.getEntityByRow(selectedRow);
+        int[] selectedRow = productoPanel.getTbProducto().getSelectedRows();
+        System.out.println("selected "+selectedRow.length);
+        if (selectedRow.length>0 && selectedRow[0] != -1) {
+        	Long selectedId = (Long) productoPanel.getTbProducto().getValueAt(selectedRow[0], 0);
+        	//Producto product =(Producto) this.getTable1().getEntityByRow(selectedRow);
+        	Producto product= this.productos.stream().filter(pro -> pro.getId().equals(selectedId.longValue()))
+  				  .findAny()
+  				  .orElse(null);
+        	//Producto product =(Producto) this.getTable1().getEntityByRow(selectedRow);
         	productoPanel.setProductForm(product);  
-        	List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(product);
+        	/*List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(product);
         	depositoTableModel.clear();
-        	depositoTableModel.addEntities(listProductoDeposito);
+        	depositoTableModel.addEntities(listProductoDeposito);*/
         }
     }
 
@@ -426,6 +444,22 @@ public class ProductoController extends AbstractFrameController {
 
 	public void setProducto(Producto producto) {
 		this.producto = producto;
+	}
+
+	public DefaultTableModel getTable1() {
+		return table1;
+	}
+
+	public void setTable1(DefaultTableModel table1) {
+		this.table1 = table1;
+	}
+
+	public ProductTableModel getProductTableModel() {
+		return productTableModel;
+	}
+
+	public void setProductTableModel(ProductTableModel productTableModel) {
+		this.productTableModel = productTableModel;
 	}
 
     

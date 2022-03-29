@@ -225,7 +225,7 @@ public class Producto {
 	
 	public Producto(String descripcion, String descriFiscal, String referencia, String subreferencia,
 			Grupo grupo, Subgrupo subgrupo, Marca marca, Color color, Tamanho tamanho, UnidadMedida uom, Impuesto imp,
-			Categoria categoria, Ncm ncm, Double precioA, Double precioB, Double precioC, 
+			Categoria categoria, Ncm ncm, Double precioCosto,Double precioCostoPromedio, Double precioA, Double precioB, Double precioC, 
 			Double precioD, Double precioE) {
 		//this.nombre = nombre; String nombre, 
 		this.descripcion = descripcion;
@@ -241,6 +241,8 @@ public class Producto {
 		this.impuesto = imp;
 		this.categoria = categoria;
 		this.ncm = ncm;
+		this.precioCosto=precioCosto;
+		this.precioCostoPromedio=precioCostoPromedio;
 		this.precioVentaA = precioA;
 		this.precioVentaB = precioB;
 		this.precioVentaC = precioC;
