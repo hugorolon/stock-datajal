@@ -3019,7 +3019,7 @@ public class VentaPanel extends JFrame
 	@Override
 	public void imprimirNota() {
 		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
-				clienteSeleccionado.getCelular(), tfClienteDireccion.getText(), tfVentaId.getText(),
+				"000", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
 				itemTableModel.getEntities(), this.fechaImpresion);
