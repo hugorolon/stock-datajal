@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportMovimientoProveedorCuenta" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -23,13 +23,15 @@
 	</parameter>
 	<queryString>
 		<![CDATA[SELECT cap_fecha as fecha, cap_hora as hora, icp_vencimiento as vencimiento, cap_numero as numero, cap_proceso as proceso, 
-						  cap_boleta as boleta, icp_monto as monto, coalesce((SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores 
-where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_secuencia),0, (SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores 
+						  cap_boleta as boleta, icp_monto as monto, 
+						  coalesce((SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_secuencia),0, (SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores 
 where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_secuencia)) as pago, 0.00 as saldo, 
 						  id_proveedor as cproveedor, p.nombre,  icp_secuencia as secuencia, icp_documento as recibo, 'Compra#' as operacion, icp_documento, p.direccion, p.celular  
 						  FROM cuenta_a_pagar, item_cuenta_a_pagar, proveedores p
 						  WHERE cap_numero = icp_cuenta 
 						  and id_proveedor=p.id and cap_situacion = 0 
+						  and coalesce((SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_secuencia),0, (SELECT SUM(ipp_monto) AS pagado from pago_proveedores, item_pago_proveedores 
+where ipp_numero = ppr_numero and ppr_situacion=0 and ipp_secuencia_cuenta =icp_secuencia))  < icp_monto
 	  $P!{fechaFiltro1}
 	  $P!{idProveedor}
 	  $P!{orden}]]>

@@ -363,6 +363,38 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		tfDescuentos = new JTextField();
 		tfDescuentos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfDescuentos.setBounds(116, 171, 163, 30);
+		tfDescuentos.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfDescuentos.selectAll();
+			}
+		});
+		tfDescuentos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+						tfRecargos.setText("0");
+						calculateMontoTotal(0);
+					} else {
+						Notifications.showAlert("Digite el monto a descontar");
+						tfDescuentos.requestFocus();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					tfRecargos.requestFocus();
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+		});
 		panel_2.add(tfDescuentos);
 		tfDescuentos.setColumns(10);
 
@@ -370,9 +402,41 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		tfRecargos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfRecargos.setColumns(10);
 		tfRecargos.setBounds(289, 171, 163, 30);
+		tfRecargos.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfRecargos.selectAll();
+			}
+		});
+		tfRecargos.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+						calculateMontoTotal(1);
+						tfDescuentos.setText("0");
+					} else {
+						Notifications.showAlert("Digite el monto a recargar");
+						tfRecargos.requestFocus();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					tfRecargos.requestFocus();
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+
+			}
+		});
 		panel_2.add(tfRecargos);
 
-		JLabel lblRecargos = new JLabel("DESCUENTOS");
+		JLabel lblRecargos = new JLabel("RECARGOS");
 		lblRecargos.setBounds(289, 156, 79, 14);
 		panel_2.add(lblRecargos);
 
@@ -948,7 +1012,40 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 
 	}
 	
-	
+	private void calculateMontoTotal(int origen) {
+		try {
+			Double aCobrar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
+			if(aCobrar>0) {
+				Double totalCta = FormatearValor.stringToDouble(tfSaldo.getText());
+				Double descuento =0d;
+				Double recargo =  0d;
+				if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+					descuento = FormatearValor.stringToDouble(tfDescuentos.getText());
+					tfDescuentos.setText(FormatearValor.doubleAString(descuento));
+					btnGuardar.requestFocus();
+				}
+				if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+				    recargo = FormatearValor.stringToDouble(tfRecargos.getText());
+				    tfRecargos.setText(FormatearValor.doubleAString(recargo));
+				    btnGuardar.requestFocus();
+				}
+				totalCalculado = totalCta - descuento + recargo;
+				tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
+				if(origen==0) 
+					tfRecargos.requestFocus();
+				else
+					tfMontoACobrar.requestFocus();
+
+			}else {
+				tfRecargos.setText("0");
+				tfDescuentos.setText("0");
+				Notifications.showAlert("Debe cargar primero los datos a pagar.!");
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
 
 	private void abandonarNota() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "ABANDONAR MOVIMIENTO.?", "AVISO",
