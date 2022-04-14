@@ -3,6 +3,26 @@ package py.com.prestosoftware.ui.main;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
+import py.com.prestosoftware.domain.services.CajaService;
+import py.com.prestosoftware.domain.services.ClientePaisService;
+import py.com.prestosoftware.domain.services.ClienteService;
+import py.com.prestosoftware.domain.services.CondicionPagoService;
+import py.com.prestosoftware.domain.services.ConfiguracionService;
+import py.com.prestosoftware.domain.services.CuentaARecibirService;
+import py.com.prestosoftware.domain.services.DepositoService;
+import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
+import py.com.prestosoftware.domain.services.MovimientoCajaService;
+import py.com.prestosoftware.domain.services.MovimientoEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoIngresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
+import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
+import py.com.prestosoftware.domain.services.ProcesoCobroVentasService;
+import py.com.prestosoftware.domain.services.ProductoService;
+import py.com.prestosoftware.domain.services.UsuarioRolService;
+import py.com.prestosoftware.domain.services.UsuarioService;
+import py.com.prestosoftware.domain.services.VentaService;
+import py.com.prestosoftware.domain.validations.VentaValidator;
 import py.com.prestosoftware.ui.controllers.CajaController;
 import py.com.prestosoftware.ui.controllers.CategoriaController;
 import py.com.prestosoftware.ui.controllers.CiudadController;
@@ -30,20 +50,27 @@ import py.com.prestosoftware.ui.controllers.TamanhoController;
 import py.com.prestosoftware.ui.controllers.UnidadMedidaController;
 import py.com.prestosoftware.ui.controllers.UsuarioController;
 import py.com.prestosoftware.ui.controllers.UsuarioRolController;
+import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.reports.InformeAgrupadoIngresoEgresoCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeResumenCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeStockDeposito;
 import py.com.prestosoftware.ui.reports.UtilidadProductoDialog;
+import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
+import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
 import py.com.prestosoftware.ui.search.CuentaPagarDialog;
 import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
+import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
+import py.com.prestosoftware.ui.search.ProductoVistaDialog;
+import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.CompraPanel;
+import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaCreditoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaDebitoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
@@ -199,7 +226,65 @@ public class MainController extends AbstractFrameController {
 	private CobroClientePanel cobroClientePanel;
 	@Autowired
 	private PagarProveedorPanel pagarProveedorPanel;
-
+	@Autowired
+	private ProductoVistaDialog productoDialogV;
+	@Autowired
+	private VentaService ventaService;
+	@Autowired
+	private ClienteService clienteService;
+	@Autowired
+	private VentaItemTableModel itemTableModel;
+	@Autowired
+	private ConsultaCliente clientDialog;
+	@Autowired
+	private VendedorDialog vendedorDialog;
+	@Autowired
+	private DepositoDialog depositoDialog;
+	@Autowired
+	private VentaValidator ventaValidator;
+	@Autowired
+	private ClientePaisService clientePaisService;
+	@Autowired
+	private UsuarioService vendedorService;
+	@Autowired
+	private UsuarioRolService usuarioRolService;
+	@Autowired
+	private DepositoService depositoService;
+	@Autowired
+	private ProductoService productoService;
+	@Autowired
+	private CondicionPagoDialog condicionDialog;
+	@Autowired
+	private ConsultaSaldoDeposito saldoDeposito;
+	@Autowired
+	private CondicionPagoService condicionPagoService;
+	@Autowired
+	private ConfiguracionService configService;
+	@Autowired
+	private AperturaCierreCajaService movCajaService;
+	@Autowired
+	private CajaService cajaService;
+	@Autowired
+	private MovimientoCajaService pagoService;
+	@Autowired
+	private ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog;
+	@Autowired
+	private MovimientoIngresoService movimientoIngresoService;
+	@Autowired
+	private MovimientoEgresoService movimientoEgresoService;
+	@Autowired
+	private MovimientoItemIngresoService movimientoItemIngresoService;
+	@Autowired
+	private MovimientoItemEgresoService movimientoItemEgresoService;
+	@Autowired
+	private ProcesoCobroVentasService procesoCobroVentasService;
+	@Autowired
+	private CuentaARecibirService cuentaARecibirService;
+	@Autowired
+	private ItemCuentaARecibirService itemCuentaARecibirService;
+	@Autowired
+	private ClienteAddPanel clienteAddPanel;
+	
 	public MainController() {
 	}
 
@@ -555,6 +640,8 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openVenta() {
+		//inicializaVenta();
+		ventaPanel = new VentaPanel(itemTableModel, clientDialog, vendedorDialog, depositoDialog, productoDialogV, ventaValidator, ventaService, clienteService, clientePaisService, vendedorService, usuarioRolService, depositoService, productoService, condicionDialog, saldoDeposito, condicionPagoService, configService, movCajaService, cajaService, pagoService, consultaVentasDelDiaDialog, movimientoIngresoService, movimientoEgresoService, movimientoItemIngresoService, movimientoItemEgresoService, procesoCobroVentasService, cuentaARecibirService, itemCuentaARecibirService, clienteAddPanel);
 		ventaPanel.clearForm();
 		ventaPanel.getConfig();
 		ventaPanel.setVisible(true);
@@ -562,6 +649,51 @@ public class MainController extends AbstractFrameController {
 		ventaPanel.vistaDescuentoItem();
 		ventaPanel.newVenta();
 	}
+	/*
+	VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
+	DepositoDialog depositoDialog, ProductoVistaDialog productoDialog, VentaValidator ventaValidator,
+	VentaService ventaService, ClienteService clienteService, ClientePaisService clientePaisService,
+	UsuarioService vendedorService, UsuarioRolService usuarioRolService, DepositoService depositoService,
+	ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
+	CondicionPagoService condicionPagoService, ConfiguracionService configService,
+	AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
+	ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog, MovimientoIngresoService movimientoIngresoService,
+	MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
+	MovimientoItemEgresoService movimientoItemEgresoService,
+	ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
+	ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel
+	
+	private void inicializaVenta() {
+		this.itemTableModel = new VentaItemTableModel();
+		this.vendedorDialog = vendedorDialog;
+		this.depositoDialog = depositoDialog;
+		this.ventaValidator = new VentaValidator();
+		//this.ventaService = ventaService;
+		this.clienteService = new ClienteService(clienteRepository);
+		
+		this.clientePaisService = clientePaisService;
+		this.vendedorService = vendedorService;
+		this.depositoService = depositoService;
+		this.productoService = productoService;
+		this.saldoDeposito = saldoDeposito;
+		this.condicionPagoService = condicionPagoService;
+		this.condicionDialog = condicionDialog;
+		this.configService = configService;
+		this.usuarioRolService = usuarioRolService;
+		this.movCajaService = movCajaService;
+		this.cajaService = cajaService;
+		this.pagoService = pagoService;
+		this.cuentaARecibirService = cuentaARecibirService;
+		this.consultaVentasDelDiaDialog = consultaVentasDelDiaDialog;
+		this.movimientoIngresoService = movimientoIngresoService;
+		this.movimientoEgresoService = movimientoEgresoService;
+		this.movimientoItemIngresoService = movimientoItemIngresoService;
+		this.movimientoItemEgresoService = movimientoItemEgresoService;
+		this.procesoCobroVentasService = procesoCobroVentasService;
+		this.cuentaARecibirService = cuentaARecibirService;
+		this.itemCuentaARecibirService = itemCuentaARecibirService;
+		this.clienteAddPanel = clienteAddPanel;
+	}*/
 
 	private void openCompraLocal() {
 		compraLocalPanel.getConfig();
@@ -585,4 +717,6 @@ public class MainController extends AbstractFrameController {
 		pagarProveedorPanel.setVisible(true);
 		pagarProveedorPanel.newMov();
 	}
+	
+	
 }
