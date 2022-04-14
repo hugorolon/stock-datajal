@@ -1636,6 +1636,7 @@ public class VentaPanel extends JFrame
 		tfCondicionPago.setEnabled(true);
 		tfClienteID.requestFocus();
 		tfCuotaCant.setEnabled(true);
+		lblDescripcionFiscal.setText("");
 
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
@@ -1724,12 +1725,17 @@ public class VentaPanel extends JFrame
 			Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 			Double precioTotal = cantidad * precioUnit;
 			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
-			if (this.precioCompra> precioUnit) {
+			if (this.precioCompra>0 && this.precioCompra> precioUnit) {
 				Notifications.showAlert("No puede vender a bajo del precio de compra!");
 				tfPrecio.requestFocus();
 			}else {
+				if(this.precioCompra==0) {
+					Notifications.showAlert("Verificar el precio de compra, esta en 0!");
+					tfProductoID.requestFocus();
+				}else {
 					tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
 					btnAdd.requestFocus();
+				}
 			}
 		} catch (Exception e) {
 			Notifications.showAlert("Verficar datos de producto, cantidad o precio!");
@@ -2703,7 +2709,7 @@ public class VentaPanel extends JFrame
 				this.precioB = producto.getPrecioVentaB();
 				this.precioC = producto.getPrecioVentaC();
 				this.impuesto = producto.getImpuesto().getPorcentaje().intValue();
-				this.precioCompra= producto.getPrecioCosto();
+				this.precioCompra= producto.getPrecioCosto()==null?0:producto.getPrecioCosto();
 				// setProductoSeleccionado(producto);
 
 				tfProductoID.setText(String.valueOf(producto.getId()));

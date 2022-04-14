@@ -118,7 +118,6 @@ public class ProductoPanel extends JDialog {
 	private ProductoDepositoTableModel depositoTableModel;
 	private JLabel lblEsServicio;
 	private JCheckBox chServicio;
-	private JCheckBox cbDescripcionFiscal;
 	private JLabel label;
 	private JComboBox<Categoria> cbCategoria;
 	private JLabel label_1;
@@ -268,7 +267,7 @@ public class ProductoPanel extends JDialog {
 				tfDesFiscal.selectAll();
 			}
 		});
-		tfDesFiscal.setBounds(159, 120, 196, 21);
+		tfDesFiscal.setBounds(118, 120, 237, 21);
 		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDesFiscal.addKeyListener(new KeyAdapter() {
 			@Override
@@ -624,16 +623,6 @@ public class ProductoPanel extends JDialog {
 		label_16.setFont(new Font("Dialog", Font.BOLD, 20));
 		label_16.setBounds(96, 145, 18, 25);
 		pnlDatosPersonal.add(label_16);
-		
-		cbDescripcionFiscal = new JCheckBox();
-		cbDescripcionFiscal.setBounds(118, 120, 28, 21);
-		cbDescripcionFiscal.addItemListener(new ItemListener() {    
-            public void itemStateChanged(ItemEvent e) {                 
-            	tfDesFiscal.setText(e.getStateChange()==1?"EN CUMPLIMIENTO DE LA RES. 39/2020, DETALLAMOS LAS SIGUIENTES INFORMACIONES COMPLEMENTARIAS: REGISTRO"
-            			+ " DE IMPORTADOR N° 1489, REGISTRO DE ENTIDAD COMERCIAL ANTE SENAVE: N° 216, REGISTRO DEL PRODUCTO EN SENAVE N° 608 ":" ");    
-            }    
-         });  
-		pnlDatosPersonal.add(cbDescripcionFiscal);
 		
 		tfDep01 = new JTextField();
 		tfDep01.setEditable(false);
@@ -1123,7 +1112,6 @@ public class ProductoPanel extends JDialog {
 		// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
 		chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
 		tfDesFiscal.setText(product.getDescripcionFiscal());
-		cbDescripcionFiscal.setSelected(product.getDescripcionFiscal().trim().toString().length()==0||product.getDescripcionFiscal().isEmpty()?false:true);
 		
 		chActivo.setSelected(product.getActivo() == 1 ? true : false);
 
@@ -1167,7 +1155,8 @@ public class ProductoPanel extends JDialog {
 		product.setActivo(chActivo.isSelected() ? 1 : 0);
 		product.setImagenUrl(imagenUrl);
 		product.setDescripcionFiscal(tfDesFiscal.getText());
-
+		product.setPrecioCosto(FormatearValor.stringADouble(tfUltimoPrecioCompra.getText()));
+		product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
 		product.setCategoria(categoriaComboBoxModel.getSelectedItem());
 		product.setGrupo(grupoComboBoxModel.getSelectedItem());
 		product.setSubgrupo(subgrupoComboBoxModel.getSelectedItem());
@@ -1214,7 +1203,6 @@ public class ProductoPanel extends JDialog {
 		cbNcm.setSelectedIndex(0);
 		cbSubgrupo.setSelectedIndex(0);
 		cbImpuesto.setSelectedIndex(0);
-		cbDescripcionFiscal.setSelected(false);
 		pnlImagenView = new JPanel();
 		pnlImagenView.repaint();
 		pnlImagen = new JPanel();

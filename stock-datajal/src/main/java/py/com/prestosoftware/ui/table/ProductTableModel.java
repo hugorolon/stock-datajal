@@ -12,7 +12,7 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] {"CODIGO", "DESCRIPCION", "SALDO", "BLOQ.", "PRECIO A", "PRECIO B", "PRECIO C" };
+        return new String[] {"CODIGO", "DESCRIPCION", "SALDO", "COSTO", "PRECIO A", "PRECIO B", "PRECIO C" };
     }
 
     @Override
@@ -40,7 +40,8 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
     	Double totalDepBloq = depBloq01 + depBloq02 + depBloq03 + depBloq04 + depBloq05;
     	
     	Double salPend = product.getSalidaPend() != null ? product.getSalidaPend():0;
-    	Double entPend = product.getEntPendiente() != null ? product.getEntPendiente():0;
+    	Double precioCosto = product.getPrecioCosto() != null ? product.getPrecioCosto():0;
+    	
 
         switch (columnIndex) {
             case 0:
@@ -50,7 +51,7 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
             case 2:      	
                 return (Object) FormatearValor.doubleAString(totalDep - (totalDepBloq + salPend));
             case 3:
-                return (Object) FormatearValor.doubleAString(totalDepBloq);
+                return (Object) FormatearValor.doubleAString(precioCosto);
             case 4:
                 return (Object) FormatearValor.doubleAString(precioA);
             case 5:
