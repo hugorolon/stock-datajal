@@ -188,8 +188,8 @@ public class ClienteController extends AbstractFrameController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			int i= 10 /0 ;
-			System.out.println("div cero");
+			//int i= 10 /0 ;
+			//System.out.println("div cero");
 			cleanInputs();
 			loadClients();
 		}
