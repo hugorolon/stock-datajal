@@ -1399,7 +1399,7 @@ public class VentaPanel extends JFrame
 		}
 
 		Long productoId = Long.valueOf(tfProductoID.getText());
-		Double cantidad = FormatearValor.stringADouble(tfCantidad.getText());
+		Double cantidad = FormatearValor.stringADoubleFormat(tfCantidad.getText());
 
 		Producto p = productoService.getStockDepositoByProductoId(productoId);
 		int depositoId = Integer.parseInt(tfDepositoID.getText());
@@ -1465,7 +1465,7 @@ public class VentaPanel extends JFrame
 			Notifications.showAlert("Digite la cantidad");
 			tfCantidad.requestFocus();
 			return false;
-		} else if (!tfCantidad.getText().isEmpty() && FormatearValor.stringADouble(tfCantidad.getText()) <= 0) {
+		} else if (!tfCantidad.getText().isEmpty() && FormatearValor.stringADoubleFormat(tfCantidad.getText()) <= 0) {
 			Notifications.showAlert("La cantidad debe ser mayor a cero");
 			tfCantidad.requestFocus();
 			return false;
@@ -2879,7 +2879,7 @@ public class VentaPanel extends JFrame
 				Long productoId = tfProductoID.getText().isEmpty() ? 1 : Long.valueOf(tfProductoID.getText());
 				int depositoId = tfDepositoID.getText().isEmpty() ? 1 : Integer.parseInt(tfDepositoID.getText());
 				Double cantidad = tfCantidad.getText().isEmpty() ? 0
-						: FormatearValor.stringADouble(tfCantidad.getText());
+						: FormatearValor.stringADoubleFormat(tfCantidad.getText());
 
 				if (conf != null && conf.getPermiteItemDuplicado() == 1) {
 					itemTableModel.addEntity(getItem());
