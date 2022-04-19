@@ -23,6 +23,8 @@ public class VentaDetalle {
 	@Transient
 	private Double stock;
 	@Transient
+	private Double precioCosto;
+	@Transient
 	private String descripcionFiscal;
 	
 	@Column(name = "precio_fob")
@@ -110,6 +112,14 @@ public class VentaDetalle {
 
 	public void setCostoFob(Double costoFob) {
 		this.costoFob = costoFob;
+	}
+	
+	public Double getPrecioCosto() {
+		return precioCosto;
+	}
+
+	public void setPrecioCosto(Double precioCosto) {
+		this.precioCosto = precioCosto;
 	}
 
 	public Double getCostoCif() {

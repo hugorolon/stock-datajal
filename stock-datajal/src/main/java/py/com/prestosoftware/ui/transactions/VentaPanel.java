@@ -1282,7 +1282,8 @@ public class VentaPanel extends JFrame
 
 		if (selectedRow != -1) {
 			VentaDetalle item = itemTableModel.getEntityByRow(selectedRow);
-
+			
+			this.precioCompra= item.getPrecioCosto()==null?0:item.getPrecioCosto();
 			tfProductoID.setText(String.valueOf(item.getProductoId()));
 			tfCantidad.setText(FormatearValor.doubleAString(item.getCantidad()));
 			tfDescripcion.setText(String.valueOf(item.getProducto()));
@@ -1576,6 +1577,7 @@ public class VentaPanel extends JFrame
 		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
 		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
+		item.setPrecioCosto(this.precioCompra);
 		// item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
 		Integer iva = impuesto;
 		item.setIva(iva);
@@ -1721,7 +1723,7 @@ public class VentaPanel extends JFrame
 
 	private void calculatePrecioTotal() {
 		try {
-			Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
+			Double cantidad = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
 			Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 			Double precioTotal = cantidad * precioUnit;
 			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
@@ -1876,8 +1878,8 @@ public class VentaPanel extends JFrame
 		try {
 			tfVentaId.setText(v.getId().toString());
 			tfClienteID.setText(String.valueOf(v.getCliente().getId()));
-			tfClienteNombre.setText(v.getClienteNombre());
-			tfClienteRuc.setText(v.getClienteRuc());
+			tfClienteNombre.setText(v.getCliente().getNombre());
+			tfClienteRuc.setText(v.getCliente().getCiruc());
 			tfDvRuc.setText(v.getCliente().getDvruc());
 			tfClienteDireccion.setText(v.getCliente().getDireccion());
 			tfTotalItems.setText(String.valueOf(v.getCantItem()));
@@ -1886,33 +1888,48 @@ public class VentaPanel extends JFrame
 			else
 				tfCondicionPago.setSelectedIndex(1);
 
-			if (v.getSituacion().contentEquals("ANULADO"))
+			if (v.getSituacion().equalsIgnoreCase("1")||v.getSituacion().contentEquals("ANULADO"))
 				btnAnular.setVisible(false);
 			else
 				btnAnular.setVisible(true);
 
 			tfDepositoID.setText(String.valueOf(v.getDeposito().getId()));
 			tfDeposito.setText(v.getDeposito().getNombre());
-			tfDescuento.setText(String.valueOf(v.getTotalDescuento()));
+			tfDescuento.setText(String.valueOf(v.getTotalDescuento()==null?0:v.getTotalDescuento()));
 			// tfSubtotal.setText(String.valueOf(v.getTotalGravada10()));
 			tfTotal.setText(FormatearValor.doubleAString((v.getTotalGeneral())));
-			tfObs.setText(String.valueOf(v.getObs()));
-			lblSituacion.setText(v.getSituacion());
+			tfObs.setText(String.valueOf(v.getObs()==null?"":v.getObs()));
+			if(v.getSituacion().equalsIgnoreCase("0")||v.getSituacion().equalsIgnoreCase("1")) {
+				lblSituacion.setText(v.getSituacion().equalsIgnoreCase("0")?"VIGENTE":"ANULADO");					
+			}else {
+				lblSituacion.setText(v.getSituacion());				
+			}
 			List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
 			List<Object[]> listaItems = ventaService.retriveVentaDetalleByIdVenta(v.getId());
 			// venta_id, cantidad, precio, producto, producto_id, subtotal, id, iva
+			Double cantItem = 0d;
+			Double total = 0d;
 			for (Object[] object : listaItems) {
 				VentaDetalle det = new VentaDetalle();
 				det.setCantidad(Double.valueOf(object[1].toString()));
 				det.setPrecio(Double.valueOf(object[2].toString()));
-				det.setProducto(object[3].toString());
+				if(object[3]==null) {
+					Producto p= findProductoReturn(object[4].toString());
+					det.setProducto(p.getDescripcion());
+					det.setSubtotal(det.getCantidad()*det.getPrecio());
+				}else {
+					det.setProducto(object[3].toString());
+					det.setSubtotal(Double.valueOf(object[5].toString()));
+				}
 				det.setProductoId(Long.valueOf(object[4].toString()));
-				det.setSubtotal(Double.valueOf(object[5].toString()));
 				det.setIva(Integer.valueOf(object[7].toString()));
 				det.setDescripcionFiscal(object[8].toString());
+				cantItem+=det.getCantidad();
+				total+=det.getSubtotal();
 
 				listaDetalles.add(det);
 			}
+			setTotals(cantItem, total);
 			v.setItems(new ArrayList<VentaDetalle>());
 			v.setItems(listaDetalles);
 			itemTableModel.clear();
@@ -2675,6 +2692,19 @@ public class VentaPanel extends JFrame
 		} catch (Exception e) {
 			Notifications.showAlert("Problemas con el Producto, intente nuevamente!");
 		}
+	}
+	
+	private Producto findProductoReturn(String id) {
+		Optional<Producto> producto = null;
+		try {
+			producto = productoService.findById(Long.valueOf(id.trim()));
+			if (!producto.isPresent()) {
+				Notifications.showAlert("No existe producto informado. Verifique por favor.!");
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas con el Producto, intente nuevamente!");
+		}
+		return producto.get();		
 	}
 
 	private void findVenta(String id) {
