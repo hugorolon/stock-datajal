@@ -1572,9 +1572,9 @@ public class VentaPanel extends JFrame
 		VentaDetalle item = new VentaDetalle();
 		item.setProductoId(Long.valueOf(tfProductoID.getText()));
 		item.setProducto(tfDescripcion.getText());
-		item.setCantidad(FormatearValor.stringToDouble(tfCantidad.getText()));
+		item.setCantidad(FormatearValor.stringToDoubleFormat(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
-		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
+		item.setSubtotal(FormatearValor.stringToDoubleFormat(tfPrecioTotal.getText()));
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
 		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
 		item.setPrecioCosto(this.precioCompra);
