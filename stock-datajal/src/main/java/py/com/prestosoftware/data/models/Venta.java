@@ -94,7 +94,7 @@ public class Venta {
 	private Double totalFlete;
 	
 	@Column(name = "total_item")
-	private Integer cantItem;
+	private Double cantItem;
 	
 	private Date vencimiento;
 	private String obs;
@@ -266,11 +266,11 @@ public class Venta {
 		this.totalFlete = totalFlete;
 	}
 
-	public Integer getCantItem() {
+	public Double getCantItem() {
 		return cantItem;
 	}
 
-	public void setCantItem(Integer cantItem) {
+	public void setCantItem(Double cantItem) {
 		this.cantItem = cantItem;
 	}
 

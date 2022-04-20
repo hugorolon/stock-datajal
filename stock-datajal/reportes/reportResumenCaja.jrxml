@@ -32,21 +32,46 @@ sum(MII_MONTO) AS INGRESO, (select sum(MIE_MONTO) AS EGRESO
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero and meg_caja=1 and meg_situacion=0 and meg_fecha<date($P{fechaInicio})) AS EGRESO
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi where min_numero=mii_numero and min_caja=1 and min_situacion=0 and min_fecha<date($P{fechaInicio})
 UNION
-select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, MIN_HORA AS HORA, MIN_PROCESO AS PROCESO,  mii_ingreso as tipo,
-CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'#',min_proceso)  as nombreProceso,
-MII_MONTO AS INGRESO, 0 AS EGRESO
-			 FROM public.movimiento_ingresos , item_movimientoingresos imi where min_numero=mii_numero and min_caja=1 and min_situacion=0
+select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, min_hora AS HORA, 11 AS PROCESO,  11 as tipo,
+CONCAT('VENTA CONTADO' ,'-',min_numero,'- ',c.nombre)  as nombreProceso,
+sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
+			 FROM public.movimiento_ingresos , item_movimientoingresos imi, ventas v, clientes c 
+			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
+			 and (mii_ingreso=1 or mii_ingreso=11)
+			 and v.cliente_id=c.id
+			 and v.id::character varying=min_documento AND v.condicion=0
 			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
-			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
+			  GROUP BY 1, 4, 2, 3, 4,5, 6
+UNION
+select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, min_hora AS HORA, 11 AS PROCESO,  MII_INGRESO as tipo,
+CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'#',min_proceso)  as nombreProceso,
+sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
+			 FROM public.movimiento_ingresos , item_movimientoingresos imi
+			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
+			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>30)
+			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
+			  GROUP BY 1, 4, 2, 3, 4,5, 6			  
+UNION
+SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, 1 AS PROCESO, 1 as tipo,
+concat('COMPRAS','#',meg_NUMERO,'-',p.nombre) as nombreProceso
+ ,  0 AS INGRESO, sum(MIE_MONTO) AS EGRESO 
+			 FROM public.movimiento_Egresos , item_movimientoEgresos imi, proveedores p
+			 where meg_numero=mie_numero
+			 and meg_caja=1 and meg_situacion=0 
+			 and p.id::character varying=meg_entidad
+			 and (mie_egreso = 1 or mie_egreso=4)
+			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
+			  GROUP BY 1, 4, 2, 3, 4,5, 6,7
 UNION
 SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, MEG_PROCESO AS PROCESO, mie_egreso as tipo,
 concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',meg_proceso) as nombreProceso
  ,  0 AS INGRESO, MIE_MONTO AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero
 			 and meg_caja=1 and meg_situacion=0
+			 and (mie_egreso <> 1 and mie_egreso<>4 and mie_egreso<>31)
 			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
-			  ORDER BY 2,3,5 ASC]]>
+			  ORDER BY 2,6 ASC]]>
 	</queryString>
 	<field name="NUMERO" class="java.lang.Integer"/>
 	<field name="FECHA" class="java.sql.Date"/>

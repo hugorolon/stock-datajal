@@ -784,7 +784,7 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		venta.setObs("PDV");
 		venta.setSituacion("PROCESADO");
 		venta.setCaja(new Caja(Long.valueOf(tfCajaID.getText())));
-		venta.setCantItem(tfTotalItems.getText().isEmpty() ? 1 : Integer.parseInt(tfTotalItems.getText()));
+		venta.setCantItem(tfTotalItems.getText().isEmpty() ? 1 : Double.parseDouble(tfTotalItems.getText()));
 		venta.setTotalGravada10(
 				lblTotalGs.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(lblTotalGs.getText())); // SUBTOTAL
 		venta.setTotalGeneral(lblTotalGs.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(lblTotalGs.getText())); // TOTAL
