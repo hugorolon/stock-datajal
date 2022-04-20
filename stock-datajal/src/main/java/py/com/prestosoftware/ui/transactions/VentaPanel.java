@@ -10,10 +10,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.swing.DefaultComboBoxModel;
@@ -1399,7 +1402,7 @@ public class VentaPanel extends JFrame
 		}
 
 		Long productoId = Long.valueOf(tfProductoID.getText());
-		Double cantidad = FormatearValor.stringADoubleFormat(tfCantidad.getText());
+		Double cantidad = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
 
 		Producto p = productoService.getStockDepositoByProductoId(productoId);
 		int depositoId = Integer.parseInt(tfDepositoID.getText());
@@ -1465,8 +1468,8 @@ public class VentaPanel extends JFrame
 			Notifications.showAlert("Digite la cantidad");
 			tfCantidad.requestFocus();
 			return false;
-		} else if (!tfCantidad.getText().isEmpty() && FormatearValor.stringADoubleFormat(tfCantidad.getText()) <= 0) {
-			Notifications.showAlert("La cantidad debe ser mayor a cero");
+		} else if (!tfCantidad.getText().isEmpty() && FormatearValor.stringToDoubleFormat(tfCantidad.getText()) <= 0.00d) {
+			Notifications.showAlert("La cantidad debe ser mayor a cero punto 00");
 			tfCantidad.requestFocus();
 			return false;
 		} else if (tfPrecio.getText().isEmpty()) {
@@ -1528,7 +1531,15 @@ public class VentaPanel extends JFrame
 		venta.setObs(tfObs.getText());
 		String valorItem = tfTotalItems.getText().isEmpty() ? "1"
 				: FormatearValor.sinSeparadorDeMiles(tfTotalItems.getText().toString());
-		venta.setCantItem(Integer.valueOf(valorItem));
+		//NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+		//Double d=format.pa(valorItem);
+		try {
+			venta.setCantItem(FormatearValor.parseDecimal(valorItem));
+		} catch (ParseException e) {
+			venta.setCantItem(null);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// totales
 		venta.setTotalGravada10(tfTotal.getText().isEmpty() ? 0
@@ -2750,7 +2761,8 @@ public class VentaPanel extends JFrame
 				tfCantidad.setText("1");
 				// tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
 				tfCantidad.requestFocus();
-				tfStock.setText(FormatearValor.doubleAString(producto.getDepO1()));
+				Double cantStock=FormatearValor.stringToDoubleFormat(producto.getDepO1().toString());
+				tfStock.setText(FormatearValor.doubleAString(cantStock));
 			}
 		} catch (Exception e) {
 			Notifications.showAlert("Producto sin Stock, verifique datos del producto!");
@@ -2879,7 +2891,7 @@ public class VentaPanel extends JFrame
 				Long productoId = tfProductoID.getText().isEmpty() ? 1 : Long.valueOf(tfProductoID.getText());
 				int depositoId = tfDepositoID.getText().isEmpty() ? 1 : Integer.parseInt(tfDepositoID.getText());
 				Double cantidad = tfCantidad.getText().isEmpty() ? 0
-						: FormatearValor.stringADoubleFormat(tfCantidad.getText());
+						: FormatearValor.stringToDoubleFormat(tfCantidad.getText());
 
 				if (conf != null && conf.getPermiteItemDuplicado() == 1) {
 					itemTableModel.addEntity(getItem());
