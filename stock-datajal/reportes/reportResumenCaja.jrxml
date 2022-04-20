@@ -48,7 +48,7 @@ CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'
 sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi
 			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
-			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>30)
+			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>2)
 			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6			  
 UNION
