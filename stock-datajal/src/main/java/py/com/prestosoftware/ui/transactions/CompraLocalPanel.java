@@ -994,9 +994,9 @@ public class CompraLocalPanel extends JFrame
 		compra.setFechaCompra(Fechas.stringToDate(tfFechaCompra.getText()));
 		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			compra.setVencimiento(Fechas.sumarFecha(30, 0, 0, tfFechaCompra.getText()));
-			compra.setCondicion(30);
+			compra.setCondicion(2);
 		} else {
-			compra.setCondicion(0);
+			compra.setCondicion(1);
 		}
 		compra.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
 		compra.setCaja(new Caja(1L));

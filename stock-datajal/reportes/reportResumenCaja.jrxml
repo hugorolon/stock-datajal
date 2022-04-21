@@ -39,7 +39,7 @@ sum(MII_MONTO) AS INGRESO, 0 AS EGRESO
 			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
 			 and (mii_ingreso=1 or mii_ingreso=11)
 			 and v.cliente_id=c.id
-			 and v.id::character varying=min_documento AND v.condicion=0
+			 and v.id::character varying=min_documento AND v.condicion=1
 			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6
 UNION
@@ -48,16 +48,17 @@ CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'
 sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi
 			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
-			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>2)
+			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>30)
 			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6			  
 UNION
 SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, 1 AS PROCESO, 1 as tipo,
 concat('COMPRAS','#',meg_NUMERO,'-',p.nombre) as nombreProceso
  ,  0 AS INGRESO, sum(MIE_MONTO) AS EGRESO 
-			 FROM public.movimiento_Egresos , item_movimientoEgresos imi, proveedores p
+			 FROM public.movimiento_Egresos , item_movimientoEgresos imi, proveedores p, compras c
 			 where meg_numero=mie_numero
 			 and meg_situacion=0 
+			 and c.id=meg_proceso and c.condicion=1
 			 and p.id::character varying=meg_entidad
 			 and (mie_egreso = 1 or mie_egreso=4)
 			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
@@ -86,7 +87,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		<initialValueExpression><![CDATA[1]]></initialValueExpression>
 	</variable>
 	<variable name="totalSaldo" class="java.lang.Double">
-		<variableExpression><![CDATA[$P{saldo}+$P{saldoAnterior}]]></variableExpression>
+		<variableExpression><![CDATA[$V{Debe}+$P{saldoAnterior}]]></variableExpression>
 	</variable>
 	<variable name="INGRESO1" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{INGRESO}]]></variableExpression>
@@ -103,7 +104,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		</band>
 	</background>
 	<title>
-		<band height="72" splitType="Stretch">
+		<band height="120" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText" x="116" y="14" width="314" height="22" uuid="e164876a-de06-4c77-bf95-0cd0c733fc56"/>
 				<box>
@@ -188,7 +189,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		</band>
 	</title>
 	<pageHeader>
-		<band height="30" splitType="Stretch">
+		<band height="62" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="2" y="0" width="68" height="30" uuid="070a269c-d130-464c-94dc-b9c9ebfcb33e">
@@ -225,6 +226,36 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[EGRESOS]]></text>
+			</staticText>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="350" y="30" width="80" height="30" uuid="a565f42a-5411-4e81-8760-40396bc863b2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{entradaAnterior}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="440" y="30" width="92" height="30" uuid="ec6c563e-4c53-46ef-bd5a-48d275a6ef27"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{salidaAnterior}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="30" width="531" height="1" uuid="3e62eeda-6bb7-49f1-b9bd-9a42097f85ce">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="0" y="61" width="531" height="1" uuid="5f81d89b-5beb-4d98-acba-4512453d31e2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="72" y="31" width="207" height="30" uuid="659f1871-0ed7-4ae1-af05-4620fb4742f1">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO ANTERIOR]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -293,7 +324,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="44" splitType="Stretch">
+		<band height="85" splitType="Stretch">
 			<staticText>
 				<reportElement x="190" y="0" width="53" height="13" uuid="a09022ae-e26a-4845-a7be-fb1edb518dd3"/>
 				<textElement>
@@ -326,12 +357,29 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 				<text><![CDATA[Saldo]]></text>
 			</staticText>
 			<textField pattern="#,##0;(#,##0-)">
-				<reportElement x="310" y="22" width="113" height="22" uuid="5aa3cbc5-8083-4456-9fa8-25c8aebb438a">
+				<reportElement x="330" y="22" width="93" height="22" uuid="5aa3cbc5-8083-4456-9fa8-25c8aebb438a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{Debe}]]></textFieldExpression>
 			</textField>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="326" y="50" width="100" height="20" uuid="4b95f586-8c22-441b-ac64-f1ab27bcc4ed"/>
+				<textElement textAlignment="Right">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{totalSaldo}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="190" y="49" width="110" height="22" uuid="bb2a8a09-644c-4b62-9fdb-f992f52523a2">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total Acumulado]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

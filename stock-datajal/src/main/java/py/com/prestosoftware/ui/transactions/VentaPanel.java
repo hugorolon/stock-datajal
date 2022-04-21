@@ -1494,10 +1494,10 @@ public class VentaPanel extends JFrame
 		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
 			venta.setVencimiento(
 					Fechas.sumarFecha(Integer.valueOf(30), 0, 0, Fechas.dateUtilAStringDDMMAAAA(new Date())));
-			venta.setCondicion(30);
+			venta.setCondicion(2);
 		} else {
 			venta.setVencimiento(new Date());
-			venta.setCondicion(0);
+			venta.setCondicion(1);
 		}
 
 		venta.setComprobante("SIN COMPROBANTE");
