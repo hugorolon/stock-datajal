@@ -30,12 +30,12 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha = ?2 AND situacion = ?3", nativeQuery = true)
 	Optional<MovimientoCaja> getTotalsEntradaCaja(Caja caja, Date fecha, String situacion);
 	
-	@Query(value = "select SUM(VALOR_M01) "
-			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha < ?2 and tipo_operacion = 'E' and situacion='PAGADO'", nativeQuery = true)
+	@Query(value = "select sum(MII_MONTO) AS INGRESO FROM public.movimiento_ingresos , item_movimientoingresos imi "
+			+ "			 where min_numero=mii_numero and min_caja=?1 and min_situacion=0 and min_fecha< ?2 ", nativeQuery = true)
 	Optional<Double> getTotalsEntradaAnterior(Caja caja, Date fecha);
 	
-	@Query(value = "select SUM(VALOR_M01) "
-			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha < ?2 and tipo_operacion = 'S' and situacion='PAGADO'", nativeQuery = true)
+	@Query(value = "select sum(MIE_MONTO) AS EGRESO FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero "
+			+ "and meg_caja=?1 and meg_situacion=0 and meg_fecha< ?2 ", nativeQuery = true)
 	Optional<Double> getTotalsSalidaAnterior(Caja caja, Date fecha);
 	
 	@Query(value = "select SUM(VALOR_M01) "
