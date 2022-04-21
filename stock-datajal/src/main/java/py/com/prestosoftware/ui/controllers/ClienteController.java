@@ -130,7 +130,7 @@ public class ClienteController extends AbstractFrameController {
 
 	public void addNewCliente() {
 		long id = clientService.addNewClient();
-		clientFrame.setNewClient(id + 1);
+		clientFrame.setNewClient(id);
 	}
 
 	private void loadClients() {
