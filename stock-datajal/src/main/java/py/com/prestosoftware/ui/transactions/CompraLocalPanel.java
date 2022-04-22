@@ -1632,9 +1632,15 @@ public class CompraLocalPanel extends JFrame
 			Integer respuesta = JOptionPane.showConfirmDialog(null,
 					"Registro ya existe en la grilla, desea actualizar los datos?");
 			if (respuesta == 0) {
-				if (isValidItem()) {
+				//Double cantAnterior = Double.valueOf(String.valueOf(tbProductos.getValueAt(fila, 1)));
+
+				itemTableModel.removeRow(fila);
+				itemTableModel.addEntity(getItem());
+				calculateItem();
+				//addItemCantBloq(productoId, cantidad, cantAnterior, depositoId);
+				/*if (isValidItem()) {
 					actualizarRegristroGrilla(fila, String.valueOf(tbProductos.getValueAt(fila, 1)));
-				}
+				}*/
 			}
 		} else {
 			itemTableModel.addEntity(getItem());
