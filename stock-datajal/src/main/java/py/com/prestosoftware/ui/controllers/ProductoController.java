@@ -393,13 +393,13 @@ public class ProductoController extends AbstractFrameController {
             productService.save(product);
             if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
-            	cleanInputs();
+            	
             }else {
             	productoPanel.getInterfaz().getEntity(product);
             	setProducto(product);
             	productoPanel.dispose();	
             }
-            	
+            cleanInputs();	
         }
     }
 
