@@ -80,7 +80,7 @@ public class ProductoPanel extends JDialog {
 	private static final long serialVersionUID = 1L;
 
 	private JTextField tfDescripcion, tfDesFiscal;
-	private JTextField tfPrecioPromedio, tfProductoId;
+	private JTextField tfProductoId;
 	private JCheckBox chActivo;
 	private JButton btnGuardar, btnCancelar, btnCerrar;
 	private JComboBox<Marca> cbMarca;
@@ -530,7 +530,7 @@ public class ProductoPanel extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tfPrecioPromedio.requestFocus();
+					chActivo.requestFocus();
 				} else {
 					if (e.getKeyCode() == KeyEvent.VK_UP) {
 						tfOtrasReferencias.requestFocus();
@@ -539,31 +539,6 @@ public class ProductoPanel extends JDialog {
 			}
 		});
 		pnlInfo.add(cbImpuesto, "cell 1 2,grow");
-		
-				JLabel lblPrecioPromedio = new JLabel("P. Promedio");
-				pnlInfo.add(lblPrecioPromedio, "cell 0 3,grow");
-		
-				tfPrecioPromedio = new JTextField();
-				tfPrecioPromedio.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-								|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-							chActivo.requestFocus();
-						} else {
-							if (e.getKeyCode() == KeyEvent.VK_UP) {
-								tfOtrasReferencias.requestFocus();
-							}
-						}
-					}
-
-					@Override
-					public void keyTyped(KeyEvent e) {
-						Util.validateNumero(e);
-					}
-				});
-				tfPrecioPromedio.setColumns(10);
-				pnlInfo.add(tfPrecioPromedio, "cell 1 3,grow");
 		pnlInfo.add(lblActivo, "cell 0 7,grow");
 		pnlInfo.add(chActivo, "cell 1 7,grow");
 
@@ -658,9 +633,7 @@ public class ProductoPanel extends JDialog {
 		tfOtrasReferencias.setText(product.getSubreferencia());
 		tfPrecioCompra.setText(
 				product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
-		tfPrecioPromedio.setText(product.getPrecioCostoPromedio() != null
-				? FormatearValor.doubleAString(product.getPrecioCostoPromedio())
-				: "0");
+		
 		// tfPeso.setText(product.getPeso() != null ?
 		// FormatearValor.doubleAString(product.getPeso()) : "");
 		tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
@@ -729,7 +702,7 @@ public class ProductoPanel extends JDialog {
 		product.setImagenUrl(imagenUrl);
 		product.setDescripcionFiscal(tfDesFiscal.getText());
 		product.setPrecioCosto(FormatearValor.stringADouble(tfPrecioCompra.getText()));
-		product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
+		//product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
 		product.setCategoria(categoriaComboBoxModel.getSelectedItem());
 		product.setGrupo(grupoComboBoxModel.getSelectedItem());
 		product.setSubgrupo(subgrupoComboBoxModel.getSelectedItem());
@@ -759,7 +732,6 @@ public class ProductoPanel extends JDialog {
 		tfDep01.setText("");
 		tfPrecioCompra.setText("");
 		// tfUltimoPrecioCompra.setText("");
-		tfPrecioPromedio.setText("");
 		cbMarca.setSelectedIndex(0);
 		cbImpuesto.setSelectedIndex(0);
 
