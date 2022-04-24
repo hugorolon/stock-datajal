@@ -29,14 +29,25 @@ public class MovimientoCajaService {
     	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
     }
     
-    public Optional<Double> totalEntradaAnterior(Date fecha, Caja caja) {
-    	return repository.getTotalsEntradaAnterior(caja, fecha);
+    public Date findLastDateMov(Date fecha) {
+    	return repository.findLastDateMov(fecha);
     }
     
-    public Optional<Double> totalSalidaAnterior(Date fecha, Caja caja) {
-    	return repository.getTotalsSalidaAnterior(caja, fecha);
+    public Optional<Double> totalVentaContado(Date fecha) {
+    	return repository.getTotalsVentaContado(fecha);
     }
     
+    public Optional<Double> totalOtrosIngresos(Date fecha, Caja caja) {
+    	return repository.getTotalsOtrosIngresos(caja, fecha);
+    }
+    
+    public Optional<Double> totalCompraContado(Date fecha, Caja caja) {
+    	return repository.getTotalsCompraContado(fecha);
+    }
+ 
+    public Optional<Double> totalOtrosEgresos(Date fecha, Caja caja) {
+    	return repository.getTotalsOtrosEgresos(caja, fecha);
+    }
     public Optional<Double> totalEntrada(Date fechaInicial, Date fechaFinal, Caja caja) {
     	return repository.getTotalsEntrada(caja, fechaInicial, fechaFinal);
     }

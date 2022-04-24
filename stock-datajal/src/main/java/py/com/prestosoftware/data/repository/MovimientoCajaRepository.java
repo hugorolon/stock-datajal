@@ -30,13 +30,36 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha = ?2 AND situacion = ?3", nativeQuery = true)
 	Optional<MovimientoCaja> getTotalsEntradaCaja(Caja caja, Date fecha, String situacion);
 	
-	@Query(value = "select sum(MII_MONTO) AS INGRESO FROM public.movimiento_ingresos , item_movimientoingresos imi "
-			+ "			 where min_numero=mii_numero and min_caja=?1 and min_situacion=0 and min_fecha< ?2 ", nativeQuery = true)
-	Optional<Double> getTotalsEntradaAnterior(Caja caja, Date fecha);
+	@Query(value = "select max(min_fecha) "
+			+ "			 FROM public.movimiento_ingresos "
+			+ "			  where  min_fecha < ?1 ", nativeQuery = true)
+	Date findLastDateMov(Date fecha);
 	
-	@Query(value = "select sum(MIE_MONTO) AS EGRESO FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero "
-			+ "and meg_caja=?1 and meg_situacion=0 and meg_fecha< ?2 ", nativeQuery = true)
-	Optional<Double> getTotalsSalidaAnterior(Caja caja, Date fecha);
+	@Query(value = "select coalesce(sum(total_general - total_descuento),0) AS INGRESO "
+			+ "			 FROM public.ventas v  "
+			+ "			 where v.condicion=1 and situacion<>'ANULADO' "
+			+ "			  and fecha= ?1 ", nativeQuery = true)
+	Optional<Double> getTotalsVentaContado(Date fecha);
+
+	@Query(value = "select coalesce(sum(MII_MONTO),0) AS INGRESO "
+			+ "			 FROM public.movimiento_ingresos , item_movimientoingresos imi "
+			+ "			 where min_numero=mii_numero and min_caja= ?1 and min_situacion=0 "
+			+ "			 and (mii_ingreso <> 1 and mii_ingreso <> 11 and  mii_ingreso <> 30) "
+			+ "			  and min_fecha= ?2 ", nativeQuery = true)
+	Optional<Double> getTotalsOtrosIngresos(Caja caja, Date fecha);
+	
+	
+	@Query(value = "select coalesce(sum(total_general),0) AS INGRESO "
+			+ "			 FROM public.compras c  "
+			+ "			 where c.condicion=1 and situacion<>'ANULADO' "
+			+ " and fecha = ?1 ", nativeQuery = true)
+	Optional<Double> getTotalsCompraContado(Date fecha);
+	
+	@Query(value = "SELECT  coalesce(sum(MIE_MONTO),0) AS EGRESO "
+			+ "			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero "
+			+ "			 and (mie_egreso <> 1 and mie_egreso<>4 and mie_egreso<>31) "
+			+ "and meg_caja=?1 and meg_situacion=0 and meg_fecha= ?2 ", nativeQuery = true)
+	Optional<Double> getTotalsOtrosEgresos(Caja caja, Date fecha);
 	
 	@Query(value = "select SUM(VALOR_M01) "
 			+ "FROM movimiento_cajas " + "WHERE caja_id = ?1 AND fecha >= ?2 and fecha <= ?3 and tipo_operacion = 'E' and situacion='PAGADO'", nativeQuery = true)

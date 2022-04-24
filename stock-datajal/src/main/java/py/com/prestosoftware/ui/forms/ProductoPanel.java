@@ -194,6 +194,7 @@ public class ProductoPanel extends JDialog {
 		lblCodigo.setBounds(16, 4, 98, 25);
 
 		tfProductoId = new JTextField();
+		tfProductoId.setEditable(false);
 		tfProductoId.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfProductoId.setBounds(118, 4, 79, 25);
 
@@ -208,7 +209,7 @@ public class ProductoPanel extends JDialog {
 				tfDescripcion.selectAll();
 			}
 		});
-		tfDescripcion.setBounds(118, 39, 237, 21);
+		tfDescripcion.setBounds(118, 39, 566, 21);
 		((AbstractDocument) tfDescripcion.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDescripcion.addKeyListener(new KeyAdapter() {
 			@Override
@@ -229,7 +230,7 @@ public class ProductoPanel extends JDialog {
 				tfDesFiscal.selectAll();
 			}
 		});
-		tfDesFiscal.setBounds(118, 68, 237, 21);
+		tfDesFiscal.setBounds(118, 68, 566, 21);
 		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDesFiscal.addKeyListener(new KeyAdapter() {
 			@Override
