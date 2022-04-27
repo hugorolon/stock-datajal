@@ -38,11 +38,20 @@ sum(MII_MONTO) AS INGRESO, 0 AS EGRESO
 			  GROUP BY 1, 4, 2, 3, 4,5, 6
 UNION
 select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, min_hora AS HORA, 11 AS PROCESO,  MII_INGRESO as tipo,
+CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'#',min_proceso,'#', cli.nombre)  as nombreProceso,
+sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
+			 FROM public.movimiento_ingresos , item_movimientoingresos imi, clientes cli
+			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 and min_entidad::integer=cli.id
+			 and (mii_ingreso=2)
+			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
+			  GROUP BY 1, 4, 2, 3, 4,5, 6
+UNION
+select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, min_hora AS HORA, 11 AS PROCESO,  MII_INGRESO as tipo,
 CONCAT((SELECT ing_descripcion FROM ingresos WHERE ing_ingreso = mii_ingreso) ,'#',min_proceso)  as nombreProceso,
 sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi
 			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
-			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>30)
+			 and (mii_ingreso<>1 and mii_ingreso<>11 and mii_ingreso<>30 and mii_ingreso<>2)
 			  and min_fecha>=date($P{fechaInicio}) and min_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6			  
 UNION
