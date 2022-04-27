@@ -611,6 +611,7 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openMarca() {
+		marcaController.setOrigen("MENU");
 		marcaController.prepareAndOpenFrame();
 	}
 

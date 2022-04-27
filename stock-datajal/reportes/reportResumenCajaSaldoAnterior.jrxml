@@ -107,7 +107,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		</band>
 	</background>
 	<title>
-		<band height="75" splitType="Stretch">
+		<band height="120" splitType="Stretch">
 			<staticText>
 				<reportElement key="staticText" x="116" y="14" width="314" height="22" uuid="e164876a-de06-4c77-bf95-0cd0c733fc56"/>
 				<box>
@@ -192,7 +192,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 		</band>
 	</title>
 	<pageHeader>
-		<band height="31" splitType="Stretch">
+		<band height="62" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement x="2" y="0" width="68" height="30" uuid="070a269c-d130-464c-94dc-b9c9ebfcb33e">
@@ -230,11 +230,36 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 				</textElement>
 				<text><![CDATA[EGRESOS]]></text>
 			</staticText>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="350" y="30" width="80" height="30" uuid="a565f42a-5411-4e81-8760-40396bc863b2"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{entradaAnterior}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="437" y="30" width="92" height="30" uuid="ec6c563e-4c53-46ef-bd5a-48d275a6ef27"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{salidaAnterior}]]></textFieldExpression>
+			</textField>
 			<line>
 				<reportElement x="0" y="30" width="531" height="1" uuid="3e62eeda-6bb7-49f1-b9bd-9a42097f85ce">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>
+			<line>
+				<reportElement x="0" y="61" width="531" height="1" uuid="5f81d89b-5beb-4d98-acba-4512453d31e2">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="72" y="31" width="207" height="30" uuid="659f1871-0ed7-4ae1-af05-4620fb4742f1">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO ANTERIOR]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -353,6 +378,37 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 				</reportElement>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$V{Debe}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="61" width="190" height="22" uuid="bb2a8a09-644c-4b62-9fdb-f992f52523a2">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL ACUMULADO]]></text>
+			</staticText>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="324" y="22" width="100" height="18" uuid="01778ee7-8528-4fe9-bfbd-cda638324ee2"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{saldoAnterior}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="110" y="20" width="207" height="19" uuid="d4661054-8eda-4c7b-a9d0-5978c2fe3f8e">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALDO ANTERIOR]]></text>
+			</staticText>
+			<textField pattern="#,##0;(#,##0-)">
+				<reportElement x="326" y="60" width="100" height="21" uuid="9c3d3654-5c65-4154-8511-39ecfc49cc5f"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{ACUMULADO}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

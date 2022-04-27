@@ -1,25 +1,30 @@
 package py.com.prestosoftware.ui.forms;
 
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Marca;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.search.MarcaInterfaz;
+import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.shared.FormBtnPanel;
 import py.com.prestosoftware.util.Borders;
-import java.awt.BorderLayout;
-import javax.swing.JCheckBox;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JButton;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 
 @Component
-public class MarcaPanel extends JPanel {
+public class MarcaPanel extends JPanel implements MarcaInterfaz{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -34,6 +39,7 @@ public class MarcaPanel extends JPanel {
     private JButton btnGuardar;
     private JButton btnCancelar;
     private JButton btnCerrar;
+    private MarcaInterfaz interfaz;
 
     @Autowired
     public MarcaPanel(FormBtnPanel formBtnPanel) {
@@ -139,6 +145,14 @@ public class MarcaPanel extends JPanel {
         pnlBotonera.add(btnCerrar);
     }
     
+    public MarcaInterfaz getInterfaz() {
+		return interfaz;
+	}
+
+	public void setInterfaz(MarcaInterfaz interfaz) {
+		this.interfaz = interfaz;
+	}
+    
     public void setFormValue(Marca marca) {
     	tfId.setText(marca.getId() + "");
     	tfNombre.setText(marca.getNombre());
@@ -182,5 +196,11 @@ public class MarcaPanel extends JPanel {
 
 	public void setNewMarca(long id) {
 		tfId.setText(String.valueOf(id));
+	}
+
+	@Override
+	public void getEntity(Marca marca) {
+		// TODO Auto-generated method stub
+		
 	}
 }

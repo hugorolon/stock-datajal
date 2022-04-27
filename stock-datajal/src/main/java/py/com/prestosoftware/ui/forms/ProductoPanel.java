@@ -3,23 +3,17 @@ package py.com.prestosoftware.ui.forms;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -32,32 +26,25 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
 
-import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.miginfocom.swing.MigLayout;
-import py.com.prestosoftware.data.models.Categoria;
-import py.com.prestosoftware.data.models.Color;
-import py.com.prestosoftware.data.models.Grupo;
 import py.com.prestosoftware.data.models.Impuesto;
 import py.com.prestosoftware.data.models.ListaPrecio;
 import py.com.prestosoftware.data.models.Marca;
-import py.com.prestosoftware.data.models.Ncm;
 import py.com.prestosoftware.data.models.Producto;
-import py.com.prestosoftware.data.models.Subgrupo;
-import py.com.prestosoftware.data.models.Tamanho;
-import py.com.prestosoftware.data.models.UnidadMedida;
 import py.com.prestosoftware.domain.services.SubgrupoService;
+import py.com.prestosoftware.ui.controllers.MarcaController;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.ImagenPanel;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
+import py.com.prestosoftware.ui.search.MarcaInterfaz;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.table.CategoriaComboBoxModel;
 import py.com.prestosoftware.ui.table.ColorComboBoxModel;
@@ -75,10 +62,11 @@ import py.com.prestosoftware.ui.table.UnidadMedidaComboBoxModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class ProductoPanel extends JDialog {
+public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 	private static final long serialVersionUID = 1L;
 
+	private static final int MARCA_CODE = 1;
 	private JTextField tfDescripcion, tfDesFiscal;
 	private JTextField tfProductoId;
 	private JCheckBox chActivo;
@@ -130,7 +118,9 @@ public class ProductoPanel extends JDialog {
 	private JTextField tfDep01;
 	private JLabel lblNewLabel_1;
 	private JTextField tfOtrasReferencias;
-
+	private JButton btnNewMarcas;
+	private MarcaController marcaController;
+ 
 	@Autowired
 	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel,
 			CategoriaComboBoxModel categoriaComboBoxModel, ImpuestoComboBoxModel impuestoComboBoxModel,
@@ -138,7 +128,7 @@ public class ProductoPanel extends JDialog {
 			SubgrupoComboBoxModel subgrupoComboBoxModel, TamanhoComboBoxModel tamanhoComboBoxModel,
 			UnidadMedidaComboBoxModel unidadMedidaComboBoxModel, ListaPrecioComboBoxModel listaComboBoxModel,
 			ProductoPrecioTableModel precioTableModel, ProductoDepositoTableModel depositoTableModel,
-			ProductTableModel productTableModel, SubgrupoService subgrupoService) {
+			ProductTableModel productTableModel, SubgrupoService subgrupoService, MarcaController marcaController) {
 		this.grupoComboBoxModel = grupoComboBoxModel;
 		this.ncmComboBoxModel = ncmComboBoxModel;
 		this.categoriaComboBoxModel = categoriaComboBoxModel;
@@ -152,6 +142,7 @@ public class ProductoPanel extends JDialog {
 		this.depositoTableModel = depositoTableModel;
 		this.productTableModel = productTableModel;
 		this.subgrupoService = subgrupoService;
+		this.marcaController= marcaController;
 
 		initComponents();
 		Util.setupScreen(this);
@@ -459,17 +450,6 @@ public class ProductoPanel extends JDialog {
 
 		JLabel lblMarca = new JLabel("Marca");
 
-		cbMarca = new JComboBox<Marca>(marcaComboBoxModel);
-		cbMarca.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tfOtrasReferencias.requestFocus();
-				}
-			}
-		});
-
 		chActivo = new JCheckBox();
 		chActivo.addKeyListener(new KeyAdapter() {
 			@Override
@@ -483,63 +463,81 @@ public class ProductoPanel extends JDialog {
 		chActivo.setSelected(true);
 
 		JLabel lblActivo = new JLabel("Activo");
-		pnlInfo.setLayout(new MigLayout("", "[105px][294.00px,grow][159.00px][163px]",
-				"[30px][30px][30px][30px][30px][30px][30px][30px]"));
-		pnlInfo.add(lblMarca, "cell 0 0,grow");
-		pnlInfo.add(cbMarca, "cell 1 0,grow");
+		pnlInfo.setLayout(new MigLayout("", "[114.00px][240.00px,grow][159.00px][163px]", "[30px][30px][30px][30px][30px][30px][30px][30px]"));
+		pnlInfo.add(lblMarca, "flowy,cell 0 0,alignx left,aligny center");
+		
+				cbMarca = new JComboBox<Marca>(marcaComboBoxModel);
+				cbMarca.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
+								|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
+							tfOtrasReferencias.requestFocus();
+						}
+					}
+				});
+				pnlInfo.add(cbMarca, "cell 1 0,grow");
+		
+		btnNewMarcas = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.btnNewButton.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		btnNewMarcas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(MARCA_CODE);
+			}
+		});
+		pnlInfo.add(btnNewMarcas, "cell 2 0,alignx left,aligny center");
 
 		lblNewLabel_1 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ProductoPanel.lblNewLabel_1.text")); //$NON-NLS-1$
 		pnlInfo.add(lblNewLabel_1, "cell 0 1,alignx left");
-
-		tfOtrasReferencias = new JTextField();
-		((AbstractDocument) tfOtrasReferencias.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfOtrasReferencias.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfOtrasReferencias.requestFocus();
-			}
-		});
-		tfOtrasReferencias.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					cbImpuesto.requestFocus();
-				} else {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						cbMarca.requestFocus();
+		
+				tfOtrasReferencias = new JTextField();
+				((AbstractDocument) tfOtrasReferencias.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+				tfOtrasReferencias.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusGained(FocusEvent e) {
+						tfOtrasReferencias.requestFocus();
 					}
-				}
-			}
+				});
+				tfOtrasReferencias.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
+								|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
+							cbImpuesto.requestFocus();
+						} else {
+							if (e.getKeyCode() == KeyEvent.VK_UP) {
+								cbMarca.requestFocus();
+							}
+						}
+					}
 
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// Util.validateNumero(e);
-			}
-		});
-		pnlInfo.add(tfOtrasReferencias, "cell 1 1,grow");
-		tfOtrasReferencias.setColumns(10);
+					@Override
+					public void keyTyped(KeyEvent e) {
+						// Util.validateNumero(e);
+					}
+				});
+				pnlInfo.add(tfOtrasReferencias, "cell 1 1,grow");
+				tfOtrasReferencias.setColumns(10);
 
 		JLabel lblImpuesto = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
 				.getString("ProductoPanel.lblImpuesto.text"));
 		pnlInfo.add(lblImpuesto, "cell 0 2,grow");
-
-		cbImpuesto = new JComboBox<Impuesto>(impuestoComboBoxModel);
-		cbImpuesto.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					chActivo.requestFocus();
-				} else {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						tfOtrasReferencias.requestFocus();
+		
+				cbImpuesto = new JComboBox<Impuesto>(impuestoComboBoxModel);
+				cbImpuesto.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
+								|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
+							chActivo.requestFocus();
+						} else {
+							if (e.getKeyCode() == KeyEvent.VK_UP) {
+								tfOtrasReferencias.requestFocus();
+							}
+						}
 					}
-				}
-			}
-		});
-		pnlInfo.add(cbImpuesto, "cell 1 2,grow");
+				});
+				pnlInfo.add(cbImpuesto, "cell 1 2,grow");
 		pnlInfo.add(lblActivo, "cell 0 7,grow");
 		pnlInfo.add(chActivo, "cell 1 7,grow");
 
@@ -848,6 +846,21 @@ public class ProductoPanel extends JDialog {
 			e.printStackTrace();
 		}
 	}
+	
+	private void showDialog(int code) {
+		switch (code) {
+		case MARCA_CODE:
+			marcaController.setInterfaz(this);
+			marcaController.setOrigen("Productos");;
+			marcaController.prepareAndOpenFrame();
+			//marcaController.setOrigen("PRODUCTO");
+			break;
+		default:
+			break;
+		}
+	}
+
+	
 
 	public ProductoInterfaz getInterfaz() {
 		return interfaz;
@@ -855,5 +868,11 @@ public class ProductoPanel extends JDialog {
 
 	public void setInterfaz(ProductoInterfaz interfaz) {
 		this.interfaz = interfaz;
+	}
+
+	@Override
+	public void getEntity(Marca marca) {
+		// TODO Auto-generated method stub
+		
 	}
 }

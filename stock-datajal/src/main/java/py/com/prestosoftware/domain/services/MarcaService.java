@@ -17,7 +17,7 @@ public class MarcaService {
     }
 
     public List<Marca> findAll() {
-        return repository.findAll();
+        return repository.findAllByOrderByNombreAsc();
     }
 
     public void save(Marca marca) {

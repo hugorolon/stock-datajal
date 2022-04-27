@@ -4,17 +4,23 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import py.com.prestosoftware.data.models.Marca;
+import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.domain.services.MarcaService;
 import py.com.prestosoftware.domain.validations.MarcaValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.forms.MarcaFrame;
 import py.com.prestosoftware.ui.forms.MarcaPanel;
+import py.com.prestosoftware.ui.search.MarcaInterfaz;
+import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.TableSearchPanel;
 import py.com.prestosoftware.ui.table.MarcaTableModel;
@@ -27,7 +33,9 @@ public class MarcaController extends AbstractFrameController {
     private MarcaTableModel tableModel;
     private MarcaService service;
     private MarcaValidator validator;
-   
+    private String origen;
+  
+    private Marca marca;
     @Autowired
     public MarcaController(MarcaFrame frame, MarcaTableModel tableModel, 
     		MarcaService service, MarcaValidator validator) {
@@ -83,7 +91,7 @@ public class MarcaController extends AbstractFrameController {
         tableModel.addEntities(marcas);
     }
     
-    private void getRowCount() {
+    public void getRowCount() {
     	long max = service.getRowMax();
     	frame.getFormPanel().setNewMarca(max + 1);
     }
@@ -111,15 +119,38 @@ public class MarcaController extends AbstractFrameController {
         } else {
             service.save(marca);
             loadMarcas();
+            if(!origen.equalsIgnoreCase("MENU")) {
+            	formPanel.getInterfaz().getEntity(marca);
+            	setMarca(marca);
+            	frame.dispose();	
+            }
+            
+            
             cleanInputs();
         }
     }
+    
+    public void setInterfaz(MarcaInterfaz marcaInterfaz) {
+    	frame.getFormPanel().setInterfaz(marcaInterfaz);
+    }
+    
+    public MarcaInterfaz getInterfaz() {
+		return frame.getFormPanel().getInterfaz();
+	}
     
     private void showFrame() {
         frame.setVisible(true);
         frame.getFormPanel().getTfNombre().requestFocus();
     }
 
+    public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca producto) {
+		this.marca= producto;
+	}
+    
     private void cleanInputs() {
     	frame.getFormPanel().clearForm();
     	frame.getFormPanel().getTfNombre().requestFocus();
@@ -130,7 +161,15 @@ public class MarcaController extends AbstractFrameController {
     	frame.closeWindow();
     }
     
-    private void setData() {
+    public String getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+
+	private void setData() {
         int selectedRow = frame.getTablePanel().getTable().getSelectedRow();
         
         if (selectedRow != -1) {
