@@ -81,6 +81,7 @@ import py.com.prestosoftware.ui.transactions.CompraLocalPanel;
 import py.com.prestosoftware.ui.transactions.ConfiguracionPanel;
 import py.com.prestosoftware.ui.transactions.DevolucionPanel;
 import py.com.prestosoftware.ui.transactions.EntregaBoletaPanel;
+import py.com.prestosoftware.ui.transactions.FacturaLegalPanel;
 import py.com.prestosoftware.ui.transactions.LanzamientoCaja;
 import py.com.prestosoftware.ui.transactions.MovimientoEgresoPanel;
 import py.com.prestosoftware.ui.transactions.MovimientoIngresoPanel;
@@ -180,6 +181,8 @@ public class MainController extends AbstractFrameController {
 
 	@Autowired
 	private VentaPanel ventaPanel;
+	@Autowired
+	private FacturaLegalPanel facturaLegaPanel;
 	@Autowired
 	private CompraLocalPanel compraLocalPanel;
 	@Autowired
@@ -327,6 +330,7 @@ public class MainController extends AbstractFrameController {
 //		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
 //		registerOpenMenu(mainMenuFrame.getMnuTransferencia(), (e) -> openTransferencia());
 		registerOpenMenu(mainMenuFrame.getMnuTransformacion(), (e) -> openTransformacion());
+		registerOpenMenu(mainMenuFrame.getMnuFacturacion(), (e) -> openFacturacion());
 //		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
 //		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
 //		registerOpenMenu(mainMenuFrame.getMnuMoneda(), (e) -> openMoneda());
@@ -535,6 +539,10 @@ public class MainController extends AbstractFrameController {
 		transformacionPanel.newTransf();
 	}
 
+	private void openFacturacion() {
+		facturaLegaPanel.setVisible(true);
+		facturaLegaPanel.newVenta();
+	}
 
 	private void openDevolucionVenta() {
 		devolucionPanel.setVisible(true);

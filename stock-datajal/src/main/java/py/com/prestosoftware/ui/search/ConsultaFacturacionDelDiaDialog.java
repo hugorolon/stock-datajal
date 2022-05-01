@@ -2,8 +2,6 @@ package py.com.prestosoftware.ui.search;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,37 +9,36 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.transaction.Transactional;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import py.com.prestosoftware.data.models.Venta;
-import py.com.prestosoftware.domain.services.VentaService;
+import py.com.prestosoftware.data.models.VentaTemporal;
+import py.com.prestosoftware.domain.services.VentaTemporalService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
-import py.com.prestosoftware.ui.table.VentaTableModel;
-import py.com.prestosoftware.ui.viewmodel.ConsultaNota;
+import py.com.prestosoftware.ui.table.VentaTemporalTableModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JLabel;
+import java.awt.FlowLayout;
+import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import java.awt.Font;
+import javax.swing.DefaultComboBoxModel;
 
 @Component
-public class ConsultaVentasDelDiaDialog extends JDialog {
+public class ConsultaFacturacionDelDiaDialog extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JButton btnAceptar;
@@ -49,11 +46,11 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 	private JTable table;
 	private JScrollPane scrollPane;
 
-	private VentaService service;
-	private VentaTableModel tableModel;
-	private VentaInterfaz interfaz;
+	private VentaTemporalService service;
+	private VentaTemporalTableModel tableModel;
+	private VentaTemporalInterfaz interfaz;
 
-	private List<Venta> ventas;
+	private List<VentaTemporal> ventas;
 	private JLabel lblFecha;
 	private JTextField textField;
 	private JLabel lblNewLabel;
@@ -63,15 +60,14 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 	private JXDatePicker dtpFecha;
 	private JXDatePicker dtpFechaFin;
 	private JLabel lblFechaFin;
-	private JButton btnBuscar;
 
 	@Autowired
-	public ConsultaVentasDelDiaDialog(VentaService service, VentaTableModel tableModel) {
+	public ConsultaFacturacionDelDiaDialog(VentaTemporalService service, VentaTemporalTableModel tableModel) {
 		this.service = service;
 		this.tableModel = tableModel;
 
-		setTitle("CONSULTA DE VENTAS DEL DIA");
-		setSize(985, 557);
+		setTitle("CONSULTA DE FACTURACIONES DEL DIA");
+		setSize(822, 467);
 		setModal(true);
 		getContentPane().setLayout(new BorderLayout());
 
@@ -84,12 +80,7 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 		pnlBuscador.add(lblNewLabel);
 		
 		tfSituacion = new JComboBox<String>();
-		tfSituacion.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-				//setVentasDelDia();
-			}
-		});
-		tfSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "VIGENTE"}));
+		tfSituacion.setModel(new DefaultComboBoxModel(new String[] {"VIGENTE", "PAGADO", "ANULADO", "PROCESADO"}));
 		tfSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBuscador.add(tfSituacion);
 		
@@ -97,10 +88,6 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 		pnlBuscador.add(lblFormaCobro);
 		
 		tfCondicionPago = new JComboBox<String>();
-		tfCondicionPago.addPropertyChangeListener(new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent evt) {
-			}
-		});
 		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] {"Contado", "30 días"}));
 		tfCondicionPago.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBuscador.add(tfCondicionPago);
@@ -120,14 +107,6 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 		dtpFechaFin.setDate(new Date());
 
 		pnlBuscador.add(dtpFechaFin);
-		
-		btnBuscar = new JButton("Buscar");
-		btnBuscar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setVentasDelDia();
-			}
-		});
-		pnlBuscador.add(btnBuscar);
 
 		scrollPane = new JScrollPane();
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -207,39 +186,29 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 			}
 		});
 		pnlBotonera.add(btnCancelar);
-		setVentasDelDia();
+		setVentasTemporalDelDia();
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 	}
 
 	@Transactional
-	public VentaInterfaz getInterfaz() {
+	public VentaTemporalInterfaz getInterfaz() {
 		return interfaz;
 	}
 
 	@Transactional
-	public void setInterfaz(VentaInterfaz interfaz) {
+	public void setInterfaz(VentaTemporalInterfaz interfaz) {
 		this.interfaz = interfaz;
 	}
 
 	@Transactional
-	public void setVentasDelDia() {
+	public void setVentasTemporalDelDia() {
 		String situacion= tfSituacion.getSelectedItem().toString();
 		int forma=2;
 		if(tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
 			forma=1;
-		//List<Venta> listado= 
-				ventas=service.getVentasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);
-//		ventas = new ArrayList<Venta>();
-//		for (ConsultaNota consultaNota : listado) {
-//			Venta v=new Venta();
-//			v.setOperacion(Integer.valueOf(consultaNota.getOperacion()));
-//			v.setFecha(consultaNota.getFecha());
-//			//v.setCliente(consultaNota.get);
-//			ventas.add(v);
-//		}
-		
+		ventas = service.getNotasPorFechas(dtpFecha.getDate(), dtpFechaFin.getDate());
 		tableModel.clear();
 		tableModel.addEntities(ventas);
 		table.requestFocus();

@@ -10,13 +10,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.swing.DefaultComboBoxModel;
@@ -38,55 +35,25 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
 
-import py.com.prestosoftware.data.models.AperturaCierreCaja;
-import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Ciudad;
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.ClientePais;
 import py.com.prestosoftware.data.models.CondicionPago;
-import py.com.prestosoftware.data.models.Configuracion;
-import py.com.prestosoftware.data.models.CuentaARecibir;
 import py.com.prestosoftware.data.models.Departamento;
-import py.com.prestosoftware.data.models.Deposito;
-import py.com.prestosoftware.data.models.Empresa;
-import py.com.prestosoftware.data.models.ItemCuentaARecibir;
 import py.com.prestosoftware.data.models.ListaPrecio;
-import py.com.prestosoftware.data.models.Moneda;
-import py.com.prestosoftware.data.models.MovimientoCaja;
-import py.com.prestosoftware.data.models.MovimientoEgreso;
-import py.com.prestosoftware.data.models.MovimientoIngreso;
-import py.com.prestosoftware.data.models.MovimientoItemEgreso;
-import py.com.prestosoftware.data.models.MovimientoItemIngreso;
 import py.com.prestosoftware.data.models.Pais;
-import py.com.prestosoftware.data.models.ProcesoCobroVentas;
 import py.com.prestosoftware.data.models.Producto;
-import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.data.models.Venta;
-import py.com.prestosoftware.data.models.VentaDetalle;
-import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
-import py.com.prestosoftware.domain.services.CajaService;
+import py.com.prestosoftware.data.models.VentaDetalleTemporal;
+import py.com.prestosoftware.data.models.VentaTemporal;
 import py.com.prestosoftware.domain.services.ClientePaisService;
 import py.com.prestosoftware.domain.services.ClienteService;
-import py.com.prestosoftware.domain.services.CondicionPagoService;
-import py.com.prestosoftware.domain.services.ConfiguracionService;
-import py.com.prestosoftware.domain.services.CuentaARecibirService;
-import py.com.prestosoftware.domain.services.DepositoService;
-import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
-import py.com.prestosoftware.domain.services.MovimientoCajaService;
-import py.com.prestosoftware.domain.services.MovimientoEgresoService;
-import py.com.prestosoftware.domain.services.MovimientoIngresoService;
-import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
-import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
-import py.com.prestosoftware.domain.services.ProcesoCobroVentasService;
 import py.com.prestosoftware.domain.services.ProductoService;
-import py.com.prestosoftware.domain.services.UsuarioRolService;
-import py.com.prestosoftware.domain.services.UsuarioService;
-import py.com.prestosoftware.domain.services.VentaService;
+import py.com.prestosoftware.domain.services.VentaTemporalService;
 import py.com.prestosoftware.domain.validations.ValidationError;
-import py.com.prestosoftware.domain.validations.VentaValidator;
+import py.com.prestosoftware.domain.validations.VentaTemporalValidator;
 import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
-import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
@@ -98,25 +65,20 @@ import py.com.prestosoftware.ui.reports.ReImpresionPanel;
 import py.com.prestosoftware.ui.reports.ReImpresionPanelInterfaz;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.ClientePaisInterfaz;
-import py.com.prestosoftware.ui.search.CondicionPagoDialog;
-import py.com.prestosoftware.ui.search.CondicionPagoInterfaz;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
-import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
+import py.com.prestosoftware.ui.search.ConsultaFacturacionDelDiaDialog;
 import py.com.prestosoftware.ui.search.DepositoDialog;
-import py.com.prestosoftware.ui.search.DepositoInterfaz;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.search.ProductoVistaDialog;
-import py.com.prestosoftware.ui.search.VendedorDialog;
-import py.com.prestosoftware.ui.search.VendedorInterfaz;
-import py.com.prestosoftware.ui.search.VentaInterfaz;
-import py.com.prestosoftware.ui.table.VentaItemTableModel;
+import py.com.prestosoftware.ui.search.VentaTemporalInterfaz;
+import py.com.prestosoftware.ui.table.VentaItemTemporalTableModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class VentaPanel extends JFrame
-		implements ClienteInterfaz, ClientePaisInterfaz, VendedorInterfaz, DepositoInterfaz, ProductoInterfaz,
-		VentaInterfaz, CondicionPagoInterfaz, ImpresionPanelInterfaz, ReImpresionPanelInterfaz {
+public class FacturaLegalPanel extends JFrame
+		implements ClienteInterfaz, ClientePaisInterfaz, ProductoInterfaz,
+		VentaTemporalInterfaz,  ImpresionPanelInterfaz, ReImpresionPanelInterfaz {
 
 	private static final long serialVersionUID = 1L;
 
@@ -129,60 +91,40 @@ public class VentaPanel extends JFrame
 	private static final int VENTA_CODE = 7;
 	private static final int CLIENTE_ADD_CODE = 8;
 
-	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc;
-	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
-	private JTextField tfClienteID, tfPrecioTotal, tfPrecio, tfVendedorID;
-	private JTextField tfCantidad, tfTotalItems, tfVence, tfDescuento, tfObs;
-	private JTextField tfTotal, tfDepositoID, tfDeposito, tfClienteRuc; // tfSubtotal,
-	private JTextField tfClienteDireccion, tfCuotaCant, tfProductoID, tfStock;
-	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer;
-	private JComboBox<String> tfCondicionPago;
+	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas;
+	private JTextField tfClienteNombre, tfDescripcion, tfVentaId;
+	private JTextField tfClienteID, tfPrecioTotal, tfPrecio;
+	private JTextField tfCantidad, tfTotalItems;
+	private JTextField tfTotal, tfClienteRuc; // tfSubtotal,
+	private JTextField tfClienteDireccion, tfProductoID, tfStock;
+	private JButton btnAdd, btnRemove, btnGuardar, btnCancelar, btnCerrar, btnVer;
 	private JPanel pnlTotales;
 	private JTable tbProductos;
 	private JLabel label;
 	private JLabel label_1;
-	private JLabel label_2;
-	private JLabel label_3;
 	private JLabel label_4;
 	private JLabel lblCamposObligatorios;
 	private JLabel label_5;
 	private JLabel lblSituacion;
 	private JTextField tfDvRuc;
 	private JButton btnReimpresion;
+	private JComboBox<String> tfCondicionPago;
 
 	private ConsultaCliente clientDialog;
-	private VendedorDialog vendedorDialog;
-	private DepositoDialog depositoDialog;
-	private CondicionPagoDialog condicionDialog;
 	private ProductoVistaDialog productoDialog;
-	private ConsultaSaldoDeposito saldoDeposito;
 	private ClienteAddPanel clienteAddPanel;
-	private ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog;
+	private ConsultaFacturacionDelDiaDialog consultaVentasDelDiaDialog;
 
-	private VentaService ventaService;
-	private UsuarioRolService usuarioRolService;
-	private VentaValidator ventaValidator;
-	private VentaItemTableModel itemTableModel;
+	private VentaTemporalService ventaService;
+	private VentaTemporalValidator ventaValidator;
+	private VentaItemTemporalTableModel itemTableModel;
 
 	private ClienteService clienteService;
 	private ClientePaisService clientePaisService;
-	private UsuarioService vendedorService;
-	private DepositoService depositoService;
 	private ProductoService productoService;
-	private CondicionPagoService condicionPagoService;
-	private ConfiguracionService configService;
 
-	private AperturaCierreCajaService movCajaService;
-	private CajaService cajaService;
-	private MovimientoCajaService pagoService;
-	private MovimientoIngresoService movimientoIngresoService;
-	private MovimientoEgresoService movimientoEgresoService;
-	private MovimientoItemIngresoService movimientoItemIngresoService;
-	private MovimientoItemEgresoService movimientoItemEgresoService;
-	private ProcesoCobroVentasService procesoCobroVentasService;
-	private CuentaARecibirService cuentaARecibirService;
-	private ItemCuentaARecibirService itemCuentaARecibirService;
 
+	
 	private boolean isProductService;
 	private String nivelPrecio;
 	private Producto productoSeleccionado;
@@ -191,57 +133,30 @@ public class VentaPanel extends JFrame
 	private Double precioC;
 	private int impuesto;
 	private Double precioCompra;
-	private Venta ventaSeleccionado;
+	private VentaTemporal ventaSeleccionado;
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
 	private Date fechaImpresion;
 	private int cant;
 
-	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
-			DepositoDialog depositoDialog, ProductoVistaDialog productoDialog, VentaValidator ventaValidator,
-			VentaService ventaService, ClienteService clienteService, ClientePaisService clientePaisService,
-			UsuarioService vendedorService, UsuarioRolService usuarioRolService, DepositoService depositoService,
-			ProductoService productoService, CondicionPagoDialog condicionDialog, ConsultaSaldoDeposito saldoDeposito,
-			CondicionPagoService condicionPagoService, ConfiguracionService configService,
-			AperturaCierreCajaService movCajaService, CajaService cajaService, MovimientoCajaService pagoService,
-			ConsultaVentasDelDiaDialog consultaVentasDelDiaDialog, MovimientoIngresoService movimientoIngresoService,
-			MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
-			MovimientoItemEgresoService movimientoItemEgresoService,
-			ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
-			ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel) {
+	public FacturaLegalPanel(VentaItemTemporalTableModel itemTableModel, ConsultaCliente clientDialog,
+			DepositoDialog depositoDialog, ProductoVistaDialog productoDialog, VentaTemporalValidator ventaValidator,
+			VentaTemporalService ventaService, ClienteService clienteService, ClientePaisService clientePaisService,
+			ProductoService productoService,  ConsultaSaldoDeposito saldoDeposito,
+			ConsultaFacturacionDelDiaDialog consultaVentasDelDiaDialog, ClienteAddPanel clienteAddPanel) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
-		this.vendedorDialog = vendedorDialog;
-		this.depositoDialog = depositoDialog;
 		this.productoDialog = productoDialog;
 		this.ventaValidator = ventaValidator;
 		this.ventaService = ventaService;
 		this.clienteService = clienteService;
 		this.clientePaisService = clientePaisService;
-		this.vendedorService = vendedorService;
-		this.depositoService = depositoService;
 		this.productoService = productoService;
-		this.saldoDeposito = saldoDeposito;
-		this.condicionPagoService = condicionPagoService;
-		this.condicionDialog = condicionDialog;
-		this.configService = configService;
-		this.usuarioRolService = usuarioRolService;
-		this.movCajaService = movCajaService;
-		this.cajaService = cajaService;
-		this.pagoService = pagoService;
-		this.cuentaARecibirService = cuentaARecibirService;
 		this.consultaVentasDelDiaDialog = consultaVentasDelDiaDialog;
-		this.movimientoIngresoService = movimientoIngresoService;
-		this.movimientoEgresoService = movimientoEgresoService;
-		this.movimientoItemIngresoService = movimientoItemIngresoService;
-		this.movimientoItemEgresoService = movimientoItemEgresoService;
-		this.procesoCobroVentasService = procesoCobroVentasService;
-		this.cuentaARecibirService = cuentaARecibirService;
-		this.itemCuentaARecibirService = itemCuentaARecibirService;
 		this.clienteAddPanel = clienteAddPanel;
 
 		setSize(1079, 672);
-		setTitle("REGISTRO DE VENTAS");
+		setTitle("FACTURACION");
 
 		initComponents();
 		Util.setupScreen(this);
@@ -381,14 +296,7 @@ public class VentaPanel extends JFrame
 				if (e.getKeyCode() == KeyEvent.VK_F4) {
 					showDialog(PRODUCTO_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-
-					if (tfCondicionPago.isEnabled())
-						tfCondicionPago.requestFocus();
-					else if (tfCuotaCant.isEnabled())
-						tfCuotaCant.requestFocus();
-					else if (tfDescuento.isEnabled())
-						tfDescuento.requestFocus();
-
+					btnCancelar.requestFocus();
 				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
 					abandonarNota();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -496,9 +404,7 @@ public class VentaPanel extends JFrame
 					if (!tfCantidad.getText().isEmpty()) {
 						if (!tfProductoID.getText().isEmpty()) {
 							if (!isProductService) {
-								if (validateCantidad()) {
 									tfPrecio.requestFocus();
-								}
 							} else {
 								tfPrecio.requestFocus();
 							}
@@ -671,99 +577,6 @@ public class VentaPanel extends JFrame
 		pnlCliente.add(tfClienteNombre);
 		tfClienteNombre.setColumns(10);
 
-		JLabel lblVendedor = new JLabel("VENDEDOR");
-		lblVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVendedor.setBounds(253, 42, 103, 30);
-		pnlCliente.add(lblVendedor);
-
-		tfVendedorID = new JTextField();
-		tfVendedorID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfVendedorID.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfVendedorID.selectAll();
-			}
-		});
-		tfVendedorID.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(VENDEDOR_CODE);
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfVendedorID.getText().isEmpty()) {
-						findVendedorById(Long.valueOf(tfVendedorID.getText()));
-					} else {
-						showDialog(VENDEDOR_CODE);
-					}
-					if (tfVendedorID.getText().isEmpty()) {
-						tfVendedorID.requestFocus();
-					} else {
-						tfProductoID.requestFocus();
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfVendedorID.setBounds(398, 42, 47, 30);
-		pnlCliente.add(tfVendedorID);
-		tfVendedorID.setColumns(10);
-
-		tfVendedor = new JTextField();
-		tfVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfVendedor.setEditable(false);
-		tfVendedor.setBounds(448, 42, 273, 30);
-		pnlCliente.add(tfVendedor);
-		tfVendedor.setToolTipText("Nombre del Vendedor");
-		tfVendedor.setColumns(10);
-
-		JLabel lblDeposito = new JLabel("DEP.:");
-		lblDeposito.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDeposito.setBounds(731, 45, 40, 30);
-		pnlCliente.add(lblDeposito);
-
-		tfDepositoID = new JTextField();
-		tfDepositoID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfDepositoID.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfDepositoID.selectAll();
-			}
-		});
-		tfDepositoID.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_F4) {
-					showDialog(DEPOSITO_CODE);
-				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfDepositoID.getText().isEmpty()) {
-						findDepositoById(Long.parseLong(tfDepositoID.getText()));
-					} else {
-						showDialog(DEPOSITO_CODE);
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfDepositoID.setColumns(10);
-		tfDepositoID.setBounds(804, 42, 27, 30);
-		pnlCliente.add(tfDepositoID);
-
-		tfDeposito = new JTextField();
-		tfDeposito.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfDeposito.setEditable(false);
-		tfDeposito.setToolTipText("Nombre del Vendedor");
-		tfDeposito.setColumns(10);
-		tfDeposito.setBounds(841, 42, 139, 30);
-		pnlCliente.add(tfDeposito);
-
 		lblRuc = new JLabel("RUC:");
 		lblRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblRuc.setBounds(0, 42, 42, 30);
@@ -787,14 +600,7 @@ public class VentaPanel extends JFrame
 						findClientByRuc(tfClienteRuc.getText());
 					// tfDvRuc.setText(String.valueOf(Util.calculateRucDV(tfClienteRuc.getText())));
 
-					if (conf != null) {
-						if (tfVendedorID.getText().isEmpty() && conf.getPideVendedor() == 1)
-							tfVendedorID.requestFocus();
-						else if (!tfDepositoID.getText().isEmpty() && conf.getPideDeposito() == 1)
-							tfDepositoID.requestFocus();
-						else
 							tfProductoID.requestFocus();
-					}
 				}
 			}
 		});
@@ -895,15 +701,6 @@ public class VentaPanel extends JFrame
 		label_1.setBounds(378, 42, 14, 30);
 		pnlCliente.add(label_1);
 
-		label_3 = new JLabel("*");
-		label_3.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_3.setToolTipText("Campos obligatorios");
-		label_3.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3.setForeground(Color.RED);
-		label_3.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3.setBounds(768, 42, 14, 30);
-		pnlCliente.add(label_3);
-
 		tfDvRuc = new JTextField();
 		tfDvRuc.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		tfDvRuc.setEnabled(false);
@@ -927,7 +724,7 @@ public class VentaPanel extends JFrame
 		pnlCliente.add(lblSituacion);
 
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(9, 578, 1009, 35);
+		pnlBotonera.setBounds(9, 578, 1046, 35);
 		getContentPane().add(pnlBotonera);
 
 		btnGuardar = new JButton("Guardar");
@@ -951,28 +748,6 @@ public class VentaPanel extends JFrame
 		});
 		pnlBotonera.add(btnGuardar);
 
-		btnAnular = new JButton("Anular");
-		btnAnular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnAnular.setVisible(false);
-		btnAnular.setMnemonic('A');
-		btnAnular.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				anular();
-			}
-		});
-		btnAnular.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					anular();
-				}
-				if (e.getKeyCode() == KeyEvent.VK_F5) {
-					anular();
-				}
-			}
-
-		});
-
 		btnReimpresion = new JButton("Re Impresión");
 		btnReimpresion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnReimpresion.setMnemonic('R');
@@ -983,7 +758,6 @@ public class VentaPanel extends JFrame
 		});
 		btnReimpresion.setVisible(false);
 		pnlBotonera.add(btnReimpresion);
-		pnlBotonera.add(btnAnular);
 
 		btnCancelar = new JButton("Cancelar");
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1023,7 +797,7 @@ public class VentaPanel extends JFrame
 		pnlBotonera.add(btnCerrar);
 
 		pnlTotales = new JPanel();
-		pnlTotales.setBounds(12, 468, 1006, 88);
+		pnlTotales.setBounds(12, 478, 1043, 90);
 		getContentPane().add(pnlTotales);
 		pnlTotales.setLayout(null);
 
@@ -1035,154 +809,10 @@ public class VentaPanel extends JFrame
 
 		tfTotalItems = new JTextField();
 		tfTotalItems.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfTotalItems.setBounds(95, 12, 55, 30);
+		tfTotalItems.setBounds(105, 12, 121, 30);
 		pnlTotales.add(tfTotalItems);
 		tfTotalItems.setEditable(false);
 		tfTotalItems.setColumns(10);
-
-		JLabel lblCondicin = new JLabel("Cond. Pag:");
-		lblCondicin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCondicin.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCondicin.setBounds(0, 46, 74, 30);
-		pnlTotales.add(lblCondicin);
-
-		tfCondicionPago = new JComboBox<String>();
-		tfCondicionPago.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] { "Contado", "30 días" }));
-		tfCondicionPago.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Date today = new Date();
-				Calendar calendar = Calendar.getInstance();
-				calendar.setTime(today);
-				if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
-					findCondicionPago(Integer.valueOf("0"));
-					btnGuardar.requestFocus();
-				} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-					findCondicionPago(Integer.valueOf(30));
-					tfCuotaCant.setText("1");
-					tfCuotaCant.setEnabled(false);
-				}
-			}
-		});
-
-		tfCondicionPago.setBounds(95, 46, 121, 30);
-		pnlTotales.add(tfCondicionPago);
-
-		JLabel lblCuotaCant = new JLabel("CuotaCant:");
-		lblCuotaCant.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCuotaCant.setBounds(399, 46, 143, 30);
-		pnlTotales.add(lblCuotaCant);
-
-		JLabel lblVence = new JLabel("Vence:");
-		lblVence.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVence.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblVence.setBounds(215, 45, 50, 30);
-		pnlTotales.add(lblVence);
-
-		tfCuotaCant = new JTextField();
-		tfCuotaCant.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCuotaCant.setText("0");
-		tfCuotaCant.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfCuotaCant.selectAll();
-			}
-		});
-		tfCuotaCant.setBounds(542, 46, 105, 30);
-		pnlTotales.add(tfCuotaCant);
-		tfCuotaCant.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfCuotaCant.getText().isEmpty() && Integer.valueOf(tfCuotaCant.getText()).intValue() >= 0) {
-						btnGuardar.requestFocus();
-					} else {
-						Notifications.showAlert("Debes digital valor valido para la cuota.!");
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-
-		});
-		tfCuotaCant.setColumns(10);
-
-		tfVence = new JTextField();
-		tfVence.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfVence.setEditable(false);
-		tfVence.setBounds(275, 45, 113, 30);
-		pnlTotales.add(tfVence);
-		tfVence.setColumns(10);
-
-		lblDesc = new JLabel("Desc.:");
-		lblDesc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDesc.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDesc.setBounds(456, 12, 86, 30);
-		pnlTotales.add(lblDesc);
-
-		JLabel lblObs = new JLabel("Obs.:");
-		lblObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblObs.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblObs.setBounds(639, 46, 51, 30);
-		pnlTotales.add(lblObs);
-
-		tfDescuento = new JTextField();
-		tfDescuento.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfDescuento.setText("0");
-		tfDescuento.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfDescuento.selectAll();
-			}
-		});
-		tfDescuento.setBounds(542, 12, 105, 30);
-		pnlTotales.add(tfDescuento);
-		tfDescuento.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-//					if (!tfDescuento.getText().isEmpty()) {
-//						Double subtotal = tfSubtotal.getText().isEmpty() ? 0
-//								: FormatearValor.stringToDouble(tfSubtotal.getText());
-//						setTotals(0d, subtotal);
-//						tfObs.requestFocus();
-//					} else {
-//						Notifications.showAlert("Debes digitar descuento.!");
-//					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				// Util.validateNumero(e);
-			}
-		});
-		tfDescuento.setColumns(10);
-
-		tfObs = new JTextField();
-		tfObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfObs.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfObs.selectAll();
-			}
-		});
-		tfObs.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					btnGuardar.requestFocus();
-				}
-			}
-		});
-		tfObs.setBounds(701, 46, 250, 30);
-		pnlTotales.add(tfObs);
-		tfObs.setColumns(10);
 
 //		JLabel lblSubTotal = new JLabel("Sub Total:");
 //		lblSubTotal.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -1208,15 +838,27 @@ public class VentaPanel extends JFrame
 		tfTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfTotal.setForeground(Color.RED);
 		tfTotal.setColumns(10);
-
-		label_2 = new JLabel("*");
-		label_2.setBounds(77, 46, 14, 30);
-		pnlTotales.add(label_2);
+		
+		JLabel lblCondicin = new JLabel("Cond. Pag:");
+		lblCondicin.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblCondicin.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblCondicin.setBounds(0, 52, 84, 30);
+		pnlTotales.add(lblCondicin);
+		
+		JLabel label_2 = new JLabel("*");
 		label_2.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_2.setToolTipText("Campos obligatorios");
 		label_2.setHorizontalAlignment(SwingConstants.CENTER);
 		label_2.setForeground(Color.RED);
 		label_2.setFont(new Font("Dialog", Font.BOLD, 20));
+		label_2.setBounds(87, 52, 14, 30);
+		pnlTotales.add(label_2);
+		
+		tfCondicionPago = new JComboBox<String>();
+		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] {"Contado", "30 días"}));
+		tfCondicionPago.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tfCondicionPago.setBounds(105, 52, 121, 30);
+		pnlTotales.add(tfCondicionPago);
 
 		label_4 = new JLabel("*");
 		label_4.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -1266,25 +908,13 @@ public class VentaPanel extends JFrame
 //
 //	}
 
-	public void vistaDescuentoTotal() {
-		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESCUENTO TOTAL")) {
-			tfDescuento.setVisible(false);
-			lblDesc.setVisible(false);
-		}
-	}
-
-	public void vistaDescuentoItem() {
-		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESC. ITEM")) {
-//			tfDescuentoItem.setVisible(false);
-//			lblDescItem.setVisible(false);
-		}
-	}
+	
 
 	private void getItemSelected() {
 		int selectedRow = tbProductos.getSelectedRow();
 
 		if (selectedRow != -1) {
-			VentaDetalle item = itemTableModel.getEntityByRow(selectedRow);
+			VentaDetalleTemporal item = itemTableModel.getEntityByRow(selectedRow);
 			
 			this.precioCompra= item.getPrecioCosto()==null?0:item.getPrecioCosto();
 			tfProductoID.setText(String.valueOf(item.getProductoId()));
@@ -1310,141 +940,8 @@ public class VentaPanel extends JFrame
 //		tbProductos.getColumnModel().getColumn(4).setMaxWidth(160);
 //	}
 
-	private Configuracion conf;
 
-	public void getConfig() {
-		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
 
-		if (config.isPresent()) {
-			this.conf = config.get();
-
-			if (conf.getPideVendedor() == 0) {
-				Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
-				tfVendedorID.setText(usuario.get().getId().toString());
-				tfVendedor.setText(usuario.get().getUsuario());
-				tfVendedorID.setEnabled(false);
-				tfVendedor.setEnabled(false);
-			}
-
-//			if (conf.getPideFlete() == 0)
-//				tfFlete.setEnabled(false);
-
-			if (conf.getPideDescuento() == 0)
-				tfDescuento.setEnabled(false);
-
-//			if (conf.getDefineDepositoVenta() != 0) {
-//				configService.findByUserId(new Usuario(GlobalVars.USER_ID));
-//				tfDepositoID.setEnabled(false);
-//				findDepositoById(conf.getDefineDepositoVenta());
-//			}
-
-			if (conf.getPideDeposito() == 0) {
-				Optional<Deposito> deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
-				tfDepositoID.setText(String.valueOf(deposito.get().getId()));
-				tfDeposito.setText(deposito.get().getNombre());
-				tfDepositoID.setEnabled(false);
-				tfDeposito.setEnabled(false);
-			}
-
-		}
-	}
-
-	private boolean getStockDisp(Double cantDep, Double cant) {
-		boolean result = false;
-
-		if (cantDep != null) {
-			if (cantDep < cant) {
-				Notifications.showAlert(
-						"Disponibilidad de " + FormatearValor.doubleAString(cantDep) + " piezas en el stock");
-				result = false;
-			} else {
-				result = true;
-			}
-		}
-
-		return result;
-	}
-
-//	
-//	public Optional<Producto> getProducto() {
-//		return producto;
-//	}
-//
-//	public void setProducto(Optional<Producto> producto) {
-//		this.producto = producto;
-//	}
-
-	private void findCondicionPago(int cantDia) {
-		Optional<CondicionPago> condicionPago = condicionPagoService.findByCantDia(cantDia);
-		if (condicionPago.isPresent()) {
-			// tfCondicionPago.setText(String.valueOf(cantDia));
-			if (cantDia > 0)
-				calculateVencimiento();
-
-			if (conf != null) {
-				if (conf.getPideDescuento() == 1) {
-					tfDescuento.requestFocus();
-				} else {
-					tfObs.requestFocus();
-				}
-			}
-		} else {
-			showDialog(CONDICION_PAGO_CODE);
-		}
-	}
-
-	private boolean validateCantidad() {
-		boolean result = false;
-
-		if (tfDepositoID.getText().isEmpty()) {
-			Notifications.showAlert("Debes ingresar deposito");
-			return false;
-		}
-
-		Long productoId = Long.valueOf(tfProductoID.getText());
-		Double cantidad = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
-
-		Producto p = productoService.getStockDepositoByProductoId(productoId);
-		int depositoId = Integer.parseInt(tfDepositoID.getText());
-		Double salPend = 0d;
-		Double depBlo = 0d;
-		if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
-			salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
-
-		switch (depositoId) {
-		case 1:
-			Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
-			depBlo = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
-			// result = getStockDisp(dep01 - salPend - depBlo, cantidad);
-			result = getStockDisp(dep01, cantidad);
-			break;
-		case 2:
-
-			Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-			depBlo = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
-			result = getStockDisp(dep02, cantidad);
-			break;
-		case 3:
-			Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-			depBlo = p.getDepO3Bloq() != null ? p.getDepO3Bloq() : 0;
-			result = getStockDisp(dep03 - salPend - depBlo, cantidad);
-			break;
-		case 4:
-			Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-			depBlo = p.getDepO4Bloq() != null ? p.getDepO4Bloq() : 0;
-			result = getStockDisp(dep04 - salPend - depBlo, cantidad);
-			break;
-		case 5:
-			Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-			depBlo = p.getDepO5Bloq() != null ? p.getDepO5Bloq() : 0;
-			result = getStockDisp(dep05 - salPend - depBlo, cantidad);
-			break;
-		default:
-			break;
-		}
-
-		return result;
-	}
 
 	private void abandonarNota() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "ABANDONAR NOTA.?", "AVISO",
@@ -1485,50 +982,34 @@ public class VentaPanel extends JFrame
 		return true;
 	}
 
-	private Venta getVentaFrom() {
-		Venta venta = new Venta();
+	private VentaTemporal getVentaFrom() {
+		VentaTemporal venta = new VentaTemporal();
 		venta.setFecha(new Date());
 		this.setFechaImpresion(new Date());
 		venta.setHora(new Date());
 
 		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			venta.setVencimiento(
-					Fechas.sumarFecha(Integer.valueOf(30), 0, 0, Fechas.dateUtilAStringDDMMAAAA(new Date())));
 			venta.setCondicion(2);
 		} else {
-			venta.setVencimiento(new Date());
 			venta.setCondicion(1);
 		}
 
 		venta.setComprobante("SIN COMPROBANTE");
 
-		if (!tfVendedorID.getText().isEmpty())
-			venta.setVendedor(new Usuario(Long.valueOf(tfVendedorID.getText())));
-		else
-			venta.setVendedor(new Usuario(GlobalVars.USER_ID));
-
-		if (!tfDepositoID.getText().isEmpty())
-			venta.setDeposito(new Deposito(Long.valueOf(tfDepositoID.getText())));
-		else
-			venta.setDeposito(new Deposito(GlobalVars.DEPOSITO_ID));
+		
 
 		venta.setCliente(new Cliente(Long.valueOf(tfClienteID.getText())));
 		venta.setClienteNombre(tfClienteNombre.getText());
 		venta.setClienteRuc(tfClienteRuc.getText());
 		venta.setClienteDireccion(tfClienteDireccion.getText());
 
-		if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
-			venta.setSituacion("PENDIENTE");
-		else {
 			if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
 				venta.setSituacion("PAGADO");
 				venta.setTotalPagado(
 						tfTotal.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotal.getText()));
 			} else
 				venta.setSituacion("PROCESADO");
-		}
-
-		venta.setObs(tfObs.getText());
+		
 		String valorItem = tfTotalItems.getText().isEmpty() ? "1"
 				: FormatearValor.sinSeparadorDeMiles(tfTotalItems.getText().toString());
 		//NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
@@ -1542,50 +1023,25 @@ public class VentaPanel extends JFrame
 		}
 
 		// totales
-		venta.setTotalGravada10(tfTotal.getText().isEmpty() ? 0
-				: Double.valueOf(Math.round(FormatearValor.stringToDouble(tfTotal.getText()) / 11))); // SUBTOTAL
-		venta.setTotalDescuento(
-				tfDescuento.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfDescuento.getText())); // DESCUENTO
 		venta.setTotalGeneral(tfTotal.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotal.getText())); // TOTAL
-																													// GENERAL
-		// venta.setTotalFlete(tfFlete.getText().isEmpty() ? 0 :
-		// FormatearValor.stringToDouble(tfFlete.getText())); // FLETE
 
-		List<VentaDetalle> detalles = new ArrayList<>();
-
-		if (!tfDescuento.getText().isEmpty()) { // !tfFlete.getText().isEmpty() ||
-			// update precio fob
-			// Double desc = tfDescuento.getText().isEmpty() ? 0 :
-			// FormatearValor.stringToDouble(tfDescuento.getText());
-			// Double gastos = tfFlete.getText().isEmpty() ? 0 :
-			// FormatearValor.stringToDouble(tfFlete.getText());
-			// Double total = tfTotal.getText().isEmpty() ? 0 :
-			// FormatearValor.stringToDouble(tfTotal.getText());
-
-			// Double costoCif = ((total + gastos) - (-desc)) / total;
-
-			for (VentaDetalle item : itemTableModel.getEntities()) {
-				item.setPrecioFob(item.getPrecio());
-				// item.setPrecio(item.getPrecio() + costoCif);
-
+		List<VentaDetalleTemporal> detalles = new ArrayList<>();
+			for (VentaDetalleTemporal item : itemTableModel.getEntities()) {
 				detalles.add(item);
 			}
 
 			venta.setItems(detalles);
-		} else {
-			venta.setItems(itemTableModel.getEntities());
-		}
-
+		
 		return venta;
 	}
 
-	private VentaDetalle getItem() {
-		VentaDetalle item = new VentaDetalle();
+	private VentaDetalleTemporal getItem() {
+		VentaDetalleTemporal item = new VentaDetalleTemporal();
 		item.setProductoId(Long.valueOf(tfProductoID.getText()));
 		item.setProducto(tfDescripcion.getText());
 		item.setCantidad(FormatearValor.stringToDoubleFormat(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
-		item.setSubtotal(FormatearValor.stringToDoubleFormat(tfPrecioTotal.getText()));
+		//item.setSubtotal(FormatearValor.stringToDoubleFormat(tfPrecioTotal.getText()));
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
 		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
 		item.setPrecioCosto(this.precioCompra);
@@ -1608,12 +1064,8 @@ public class VentaPanel extends JFrame
 	}
 
 	private void setTotals(Double cantItem, Double total) {
-		Double descuento = tfDescuento.getText().isEmpty() ? 0d : FormatearValor.stringToDouble(tfDescuento.getText());
-		// Double flete = tfFlete.getText().isEmpty() ? 0d :
-		// FormatearValor.stringToDouble(tfFlete.getText());
-		Double totalGeneral = (total) - descuento; // (total + flete)
+		Double totalGeneral = (total) ; // (total + flete)
 
-		// tfSubtotal.setText(FormatearValor.doubleAString(total));
 		tfTotal.setText(FormatearValor.doubleAString(totalGeneral));
 
 		if (cantItem != 0) {
@@ -1627,38 +1079,23 @@ public class VentaPanel extends JFrame
 		tfClienteRuc.setText("");
 		tfDvRuc.setText("");
 		tfClienteDireccion.setText("");
-		// tfVendedorID.setText("");
-		// tfVendedor.setText("");
-		// tfDeposito.setText("");
 		tfProductoID.setText("");
 		tfCantidad.setText("");
 		tfDescripcion.setText("");
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
-		tfObs.setText("");
 		tfTotal.setText("0");
 		tfTotalItems.setText("0");
-		tfDescuento.setText("0");
-		// tfDescuentoItem.setText("0");
-		tfCuotaCant.setText("0");
-		tfVence.setText("");
-		tfCondicionPago.setSelectedIndex(0);
 		tfStock.setText("");
 		tfClienteNombre.setEnabled(false);
 		tfClienteDireccion.setEnabled(false);
-		tfCondicionPago.setEnabled(true);
+		//tfCondicionPago.setEnabled(true);
 		tfClienteID.requestFocus();
-		tfCuotaCant.setEnabled(true);
 		lblDescripcionFiscal.setText("");
 
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
 		}
-
-		// tfDepositoID.setEditable(true);
-		// tfDepositoID.setText("");
-
-		calculateVencimiento();
 
 		newVenta();
 	}
@@ -1671,9 +1108,6 @@ public class VentaPanel extends JFrame
 		return tfVentaId;
 	}
 
-	public JTextField getTfVendedorID() {
-		return tfVendedorID;
-	}
 
 	public JTextField getTfProductoID() {
 		return tfProductoID;
@@ -1687,17 +1121,6 @@ public class VentaPanel extends JFrame
 		return tfPrecio;
 	}
 
-	public JTextField getTfDepositoID() {
-		return tfDepositoID;
-	}
-
-	public JTextField getTfDescuento() {
-		return tfDescuento;
-	}
-
-	public JTextField getTfCuotaCant() {
-		return tfCuotaCant;
-	}
 
 	public JButton getBtnAdd() {
 		return btnAdd;
@@ -1717,19 +1140,6 @@ public class VentaPanel extends JFrame
 
 	public JButton getBtnCerrar() {
 		return btnCerrar;
-	}
-
-	public JButton getBtnAnular() {
-		return btnAnular;
-	}
-
-	private void calculateVencimiento() {
-		// if (!cbCondPago.getText().isEmpty()) {
-		String fecha = Fechas.dateUtilAStringDDMMAAAA(new Date());
-		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			Date fechaVenc = Fechas.sumarFecha(Integer.valueOf(30), 0, 0, fecha);
-			tfVence.setText(Fechas.formatoDDMMAAAA(fechaVenc));
-		}
 	}
 
 	private void calculatePrecioTotal() {
@@ -1764,31 +1174,15 @@ public class VentaPanel extends JFrame
 			clientDialog.setInterfaz(this);
 			clientDialog.setVisible(true);
 			break;
-		case VENDEDOR_CODE:
-			vendedorDialog.setInterfaz(this);
-			vendedorDialog.setVisible(true);
-			break;
-		case DEPOSITO_CODE:
-			depositoDialog.setInterfaz(this);
-			depositoDialog.setVisible(true);
-			break;
 		case PRODUCTO_CODE:
 			productoDialog.setInterfaz(this);
 			productoDialog.getProductos();
 			productoDialog.limpiaDatosComplementarios();
 			productoDialog.setVisible(true);
 			break;
-		case SALDO_PRODUCTO_CODE:
-			saldoDeposito.loadProductos("");
-			saldoDeposito.setVisible(true);
-			break;
-		case CONDICION_PAGO_CODE:
-			condicionDialog.setInterfaz(this);
-			condicionDialog.setVisible(true);
-			break;
 		case VENTA_CODE:
 			consultaVentasDelDiaDialog.setInterfaz(this);
-			consultaVentasDelDiaDialog.setVentasDelDia();
+			consultaVentasDelDiaDialog.setVentasTemporalDelDia();
 			consultaVentasDelDiaDialog.setVisible(true);
 			break;
 		case CLIENTE_ADD_CODE:
@@ -1825,34 +1219,6 @@ public class VentaPanel extends JFrame
 
 	}
 
-	@Override
-	public void getEntity(Usuario usuario) {
-		try {
-			if (usuario != null) {
-				tfVendedorID.setText(String.valueOf(usuario.getId()));
-				tfVendedor.setText(usuario.getUsuario());
-				tfDepositoID.requestFocus();
-			}
-		} catch (Exception e) {
-			Notifications.showAlert("Hubo problemas con el usuario, intente nuevamente!");
-			// TODO: handle exception
-		}
-
-	}
-
-	@Override
-	public void getEntity(Deposito deposito) {
-		try {
-			if (deposito != null) {
-				tfDepositoID.setText(String.valueOf(deposito.getId()));
-				tfDeposito.setText(deposito.getNombre());
-				tfProductoID.requestFocus();
-			}
-		} catch (Exception e) {
-			Notifications.showAlert("Hubo problemas con el Deposito, intente nuevamente!");
-			// TODO: handle exception
-		}
-	}
 
 	@Override
 	public void getEntity(Producto producto) {
@@ -1866,7 +1232,7 @@ public class VentaPanel extends JFrame
 
 	@Override
 	@Transactional
-	public void getEntity(Venta v) {
+	public void getEntity(VentaTemporal v) {
 		try {
 			if (v != null) {
 				btnGuardar.setVisible(false);
@@ -1875,7 +1241,7 @@ public class VentaPanel extends JFrame
 				btnRemove.setEnabled(false);
 				setVenta(v);
 				tbProductos.disable();
-				tfCondicionPago.setEnabled(false);
+				//tfCondicionPago.setEnabled(false);
 			} else {
 				Notifications.showAlert("Hubo problemas con el Producto, intente nuevamente!");
 			}
@@ -1885,7 +1251,7 @@ public class VentaPanel extends JFrame
 		}
 	}
 
-	public void setVenta(Venta v) {
+	public void setVenta(VentaTemporal v) {
 		try {
 			tfVentaId.setText(v.getId().toString());
 			tfClienteID.setText(String.valueOf(v.getCliente().getId()));
@@ -1894,34 +1260,24 @@ public class VentaPanel extends JFrame
 			tfDvRuc.setText(v.getCliente().getDvruc());
 			tfClienteDireccion.setText(v.getCliente().getDireccion());
 			tfTotalItems.setText(String.valueOf(v.getCantItem()));
-			if (v.getCondicion() == 1)
-				tfCondicionPago.setSelectedIndex(0);
-			else
-				tfCondicionPago.setSelectedIndex(1);
+//			if (v.getCondicion() == 0)
+//				tfCondicionPago.setSelectedIndex(0);
+//			else
+//				tfCondicionPago.setSelectedIndex(1);
 
-			if (v.getSituacion().equalsIgnoreCase("1")||v.getSituacion().contentEquals("ANULADO"))
-				btnAnular.setVisible(false);
-			else
-				btnAnular.setVisible(true);
-
-			tfDepositoID.setText(String.valueOf(v.getDeposito().getId()));
-			tfDeposito.setText(v.getDeposito().getNombre());
-			tfDescuento.setText(String.valueOf(v.getTotalDescuento()==null?0:v.getTotalDescuento()));
-			// tfSubtotal.setText(String.valueOf(v.getTotalGravada10()));
 			tfTotal.setText(FormatearValor.doubleAString((v.getTotalGeneral())));
-			tfObs.setText(String.valueOf(v.getObs()==null?"":v.getObs()));
 			if(v.getSituacion().equalsIgnoreCase("0")||v.getSituacion().equalsIgnoreCase("1")) {
 				lblSituacion.setText(v.getSituacion().equalsIgnoreCase("0")?"VIGENTE":"ANULADO");					
 			}else {
 				lblSituacion.setText(v.getSituacion());				
 			}
-			List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
-			List<Object[]> listaItems = ventaService.retriveVentaDetalleByIdVenta(v.getId());
+			List<VentaDetalleTemporal> listaDetalles = new ArrayList<VentaDetalleTemporal>();
+			List<Object[]> listaItems = ventaService.retriveVentaTemporalDetalleByIdVentaTemporal(v.getId());
 			// venta_id, cantidad, precio, producto, producto_id, subtotal, id, iva
 			Double cantItem = 0d;
 			Double total = 0d;
 			for (Object[] object : listaItems) {
-				VentaDetalle det = new VentaDetalle();
+				VentaDetalleTemporal det = new VentaDetalleTemporal();
 				det.setCantidad(Double.valueOf(object[1].toString()));
 				det.setPrecio(Double.valueOf(object[2].toString()));
 				if(object[3]==null) {
@@ -1941,166 +1297,25 @@ public class VentaPanel extends JFrame
 				listaDetalles.add(det);
 			}
 			setTotals(cantItem, total);
-			v.setItems(new ArrayList<VentaDetalle>());
+			v.setItems(new ArrayList<VentaDetalleTemporal>());
 			v.setItems(listaDetalles);
 			itemTableModel.clear();
 			itemTableModel.addEntities(listaDetalles);
-			setVentaSeleccionado(v);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
 
-	@Transactional
-	private void updateStockProduct(List<VentaDetalle> items) {
-		List<Producto> productos = new ArrayList<>();
-		int habilitaLanzamientoCaja = 0;
-		if (conf != null && conf.getHabilitaLanzamientoCaja() != 0)
-			habilitaLanzamientoCaja = conf.getHabilitaLanzamientoCaja();
-		for (VentaDetalle e : items) {
-			Optional<Producto> pOptional = productoService.findById(e.getProductoId());
-
-			if (pOptional.isPresent()) {
-				Producto p = pOptional.get();
-
-				int depesitoId = tfDepositoID.getText().isEmpty() ? 0 : Integer.parseInt(tfDepositoID.getText());
-				Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
-				Double cantItem = e.getCantidad();
-				if (habilitaLanzamientoCaja == 1) {
-					switch (depesitoId) {
-					case 1:
-						Double depBloq = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
-						p.setDepO1Bloq(depBloq - cantItem);
-						p.setSalidaPend(salPend + cantItem);
-						break;
-					case 2:
-						Double depBloq02 = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
-						p.setDepO2Bloq(depBloq02 - cantItem);
-						p.setSalidaPend(salPend + cantItem);
-						break;
-					case 3:
-						Double depBloq03 = p.getDepO3Bloq() != null ? p.getDepO3Bloq() : 0;
-						p.setDepO3Bloq(depBloq03 - cantItem);
-						p.setSalidaPend(salPend + cantItem);
-						break;
-					case 4:
-						Double depBloq04 = p.getDepO4Bloq() != null ? p.getDepO4Bloq() : 0;
-						p.setDepO4Bloq(depBloq04 - cantItem);
-						p.setSalidaPend(salPend + cantItem);
-						break;
-					case 5:
-						Double depBloq05 = p.getDepO5Bloq() != null ? p.getDepO5Bloq() : 0;
-						p.setDepO5Bloq(depBloq05 - cantItem);
-						p.setSalidaPend(salPend + cantItem);
-						break;
-					default:
-						break;
-					}
-				} else {
-					switch (depesitoId) {
-					case 1:
-						Double depBloq = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
-						Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
-						p.setDepO1Bloq(depBloq - cantItem);
-						p.setDepO1(dep01 - cantItem);
-						break;
-					case 2:
-						Double depBloq02 = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
-						Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-						p.setDepO2Bloq(depBloq02 - cantItem);
-						p.setDepO2(dep02 - cantItem);
-						break;
-					case 3:
-						Double depBloq03 = p.getDepO3Bloq() != null ? p.getDepO3Bloq() : 0;
-						Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-						p.setDepO3Bloq(depBloq03 - cantItem);
-						p.setDepO3(dep03 - cantItem);
-						break;
-					case 4:
-						Double depBloq04 = p.getDepO4Bloq() != null ? p.getDepO4Bloq() : 0;
-						Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-						p.setDepO4Bloq(depBloq04 - cantItem);
-						p.setDepO4(dep04 - cantItem);
-						break;
-					case 5:
-						Double depBloq05 = p.getDepO5Bloq() != null ? p.getDepO5Bloq() : 0;
-						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-						p.setDepO5Bloq(depBloq05 - cantItem);
-						p.setDepO5(dep05 - cantItem);
-						break;
-					default:
-						break;
-					}
-				}
-
-				productos.add(p);
-			}
-		}
-
-		productoService.updateStock(productos);
-	}
-
-	private void updateStockProductRemoved(List<VentaDetalle> items) {
-		List<Producto> productos = new ArrayList<>();
-		int habilitaLanzamientoCaja = 0;
-		if (conf != null && conf.getHabilitaLanzamientoCaja() != 0)
-			habilitaLanzamientoCaja = conf.getHabilitaLanzamientoCaja();
-		for (VentaDetalle e : items) {
-			Optional<Producto> pOptional = productoService.findById(e.getProductoId());
-
-			if (pOptional.isPresent()) {
-				Producto p = pOptional.get();
-
-				int depesitoId = tfDepositoID.getText().isEmpty() ? 0 : Integer.parseInt(tfDepositoID.getText());
-				Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
-				Double cantItem = e.getCantidad();
-				if (habilitaLanzamientoCaja == 1) {
-					p.setSalidaPend(salPend - cantItem);
-				} else {
-					switch (depesitoId) {
-					case 1:
-						Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
-						p.setDepO1(dep01 + cantItem);
-						break;
-					case 2:
-						Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-						p.setDepO2(dep02 + cantItem);
-						break;
-					case 3:
-						Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-						p.setDepO3(dep03 + cantItem);
-						break;
-					case 4:
-						Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-						p.setDepO4(dep04 + cantItem);
-						break;
-					case 5:
-						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-						p.setDepO5(dep05 + cantItem);
-						break;
-					default:
-						break;
-					}
-				}
-
-				productos.add(p);
-			}
-		}
-
-		productoService.updateStock(productos);
-	}
 
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this,
-				"CONFIRMAR SI ESTA SEGURO LA CONDICIÓN DE PAGO " + tfCondicionPago.getSelectedItem().toString(),
+				"CONFIRMAR FACTURACIÓN " ,
 				"AVISO - AGROPROGRESO", JOptionPane.OK_CANCEL_OPTION);
 		Integer print=null;
 		if (respuesta == 0) {
 			if (validateCabezera()) { // && validateItems(itemTableModel.getEntities())
-				lanzamientoCaja();
-				Venta venta = getVentaFrom();
-				venta.setCaja(new Caja(Long.valueOf(1)));
-
+				VentaTemporal venta = getVentaFrom();
+				
 				Cliente clienteNuevo = new Cliente();
 				Optional<ValidationError> errors = ventaValidator.validate(venta);
 
@@ -2124,20 +1339,17 @@ public class VentaPanel extends JFrame
 						venta.setCliente(clienteNuevo);
 					}
 					
-					if (conf != null) {
-						int lanzCaja = conf.getHabilitaLanzamientoCaja();
 						try {
-						Venta v = ventaService.save(lanzCaja, venta, clienteNuevo, tfCondicionPago.getSelectedItem().toString());
+						VentaTemporal v = ventaService.save(venta, clienteNuevo, tfCondicionPago.getSelectedItem().toString());
 							Notifications.showAlert("Venta registrado con exito.!");
 							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AGROPROGRESO",
 									JOptionPane.OK_CANCEL_OPTION);
 						} catch (Exception e) {
-							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
+							Notifications.showAlert("Ocurrió un error en VentaTemporal!, intente nuevamente");
 							
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					}
 					
 
 					if (print == 0)
@@ -2153,244 +1365,7 @@ public class VentaPanel extends JFrame
 		}
 	}
 
-	private void openMovimientoEgreso(CuentaARecibir c) {
-		MovimientoEgreso movEgreso = new MovimientoEgreso();
-		movEgreso.setFecha(new Date());
-		movEgreso.setHora(new Date());
-		movEgreso.setMegProceso(c.getCarNumero());
-		movEgreso.setMegTipoProceso(31);
-		movEgreso.setMegEntidad(c.getIdEntidad().toString());
-		movEgreso.setMegSituacion(0);
-		movEgreso.setMegDocumento(c.getNroBoleta());
-		movEgreso = movimientoEgresoService.save(movEgreso);
-		MovimientoItemEgreso movItemEgreso = new MovimientoItemEgreso();
-		movItemEgreso.setMieNumero(movEgreso.getMegNumero());
-		movItemEgreso.setMieEgreso(31);
-		movItemEgreso.setMieMonto(c.getMonto());
-		movItemEgreso.setMieDescripcion("Egreso de efectivo - Venta Crédito");
-		movimientoItemEgresoService.save(movItemEgreso);
-	}
 
-	private void movimientoIngresoProcesoCobroVenta(Venta venta) {
-		MovimientoIngreso m = new MovimientoIngreso();
-		m.setFecha(new Date());
-		m.setHora(new Date());
-		m.setMinCaja(1);
-		m.setMinDocumento(venta.getId().toString());
-		m.setMinEntidad(venta.getCliente().getId().toString());
-		m.setMinProceso(Integer.valueOf(venta.getId().toString()));
-		m.setMinTipoProceso(1);
-		m.setMinTipoEntidad(Integer.valueOf(clienteSeleccionado.getTipoEntidad()));
-		m.setMinSituacion(0);
-		m = movimientoIngresoService.save(m);
-
-		MovimientoItemIngreso mii = new MovimientoItemIngreso();
-		mii.setMiiNumero(m.getMinNumero());
-		mii.setMiiIngreso(1);
-		double monto = (double) Math.round(venta.getTotalGeneral() / 11);
-		mii.setMiiMonto(monto);
-		movimientoItemIngresoService.save(mii);
-
-		MovimientoItemIngreso miiva = new MovimientoItemIngreso();
-		miiva.setMiiNumero(m.getMinNumero());
-		miiva.setMiiIngreso(11);
-		miiva.setMiiMonto(venta.getTotalGeneral() - monto);
-		movimientoItemIngresoService.save(miiva);
-
-		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
-		pcv.setPveVenta(venta.getId().intValue());
-		pcv.setPveIngresoegreso(1);
-		pcv.setPveTipoproceso(31);
-		pcv.setPveProceso(m.getMinNumero());
-		pcv.setPveFlag(1);
-		procesoCobroVentasService.save(pcv);
-	}
-
-	private void removeMovimientoIngresoProcesoCobroVenta(Venta venta) {
-		try {
-			MovimientoIngreso m = movimientoIngresoService.findByMinProceso(Integer.valueOf(venta.getId().toString()));
-			Integer cabId = m.getMinNumero();
-			movimientoIngresoService.remove(m);
-
-			List<MovimientoItemIngreso> mii = movimientoItemIngresoService.findByCabId(cabId);
-			for (MovimientoItemIngreso movimientoItemIngreso : mii) {
-				movimientoItemIngresoService.remove(movimientoItemIngreso);
-			}
-			ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(cabId);
-			procesoCobroVentasService.remove(pcv);
-
-		} catch (Exception e) {
-
-		}
-	}
-
-	private CuentaARecibir cuentaARecibirProcesoCobroVenta(Venta venta) {
-		CuentaARecibir cuentaARecibir = new CuentaARecibir();
-
-		cuentaARecibir.setFecha(new Date());
-		cuentaARecibir.setHora(new Date());
-		cuentaARecibir.setNroBoleta(venta.getComprobante());
-		cuentaARecibir.setIdEntidad(venta.getCliente().getId());
-		cuentaARecibir.setTipoEntidad(2);
-		cuentaARecibir.setMonto(venta.getTotalGeneral());
-		cuentaARecibir.setCarProceso(venta.getId().intValue());
-		cuentaARecibir.setCarSituacion(0);
-		cuentaARecibir = cuentaARecibirService.save(cuentaARecibir);
-
-		List<ItemCuentaARecibir> listaItemCuentaARecibir = new ArrayList<ItemCuentaARecibir>();
-
-		int cant = 0;
-		int cantDias = 0;
-		Date fechaVencimiento = new Date();
-		Calendar cal = Calendar.getInstance();
-		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			cant = Integer.valueOf(1);
-			cantDias = 30;
-		}
-		Double valorTotal = venta.getTotalGeneral() / cant;
-		for (int i = 0; i < cant; i++) {
-			ItemCuentaARecibir itemCuentaARecibir = new ItemCuentaARecibir();
-			cal.add(Calendar.MONTH, 1);
-			itemCuentaARecibir.setIcaCuenta(cuentaARecibir.getCarNumero());
-			itemCuentaARecibir.setIcaMonto(valorTotal);
-			itemCuentaARecibir.setIcaSituacion(0);
-			itemCuentaARecibir.setIcaDocumento(cant + "/" + (i + 1));
-			itemCuentaARecibir.setIcaIva(0d);
-//			if (!tfCondicionPago.getText().equalsIgnoreCase("100"))
-//				itemCuentaARecibir.setIcaVencimiento(fechaVencimiento);
-//			else
-			itemCuentaARecibir.setIcaVencimiento(cal.getTime());
-			itemCuentaARecibir.setIcaDias(cantDias);
-
-			listaItemCuentaARecibir.add(itemCuentaARecibir);
-		}
-		itemCuentaARecibirService.save(listaItemCuentaARecibir);
-		// Proceso Cobro ventas
-		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
-		pcv.setPveVenta(venta.getId().intValue());
-		pcv.setPveIngresoegreso(2);
-		pcv.setPveTipoproceso(31);
-		pcv.setPveProceso(cuentaARecibir.getCarNumero());
-		pcv.setPveFlag(1);
-		procesoCobroVentasService.save(pcv);
-
-		return cuentaARecibir;
-	}
-
-	private void anular() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
-				JOptionPane.OK_CANCEL_OPTION);
-		if (respuesta == 0) {
-			if (!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
-				updateStockProductRemoved(ventaSeleccionado.getItems());
-				ventaSeleccionado.setSituacion("ANULADO");
-				ventaService.save(ventaSeleccionado);
-
-				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
-					removeMovCaja(ventaSeleccionado);
-					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
-					try {
-						if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-							Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
-							removeMovimientoEgreso(cuentaARecibir);
-						}
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-
-				}
-
-				newVenta();
-			}
-		}
-		tfProductoID.requestFocus();
-	}
-
-	private void lanzamientoCaja() {
-		Optional<Caja> caja = cajaService.findById(1l);
-		if (caja.isPresent()) {
-			Caja ca = caja.get();
-			Optional<AperturaCierreCaja> movCaja = movCajaService.findByCajaAndFechaApertura(ca, new Date());
-			if (!movCaja.isPresent()) {
-				AperturaCierreCaja newMov = movCajaService.save(new AperturaCierreCaja(ca, new Date(), 0d));
-				String msg = "";
-				if (newMov != null) {
-					msg = "Apertura de Caja correctamente.!";
-				} else {
-					msg = "Lo sentimos. No se pudo abrir la caja correctamente.!";
-				}
-				Notifications.showAlert(msg);
-			}
-		}
-	}
-
-	private void openMovCaja(Venta venta) {
-		cant = 0;
-		// cierre de caja del dia anterio
-		MovimientoCaja movCaja = new MovimientoCaja();
-		movCaja.setCaja(new Caja(1l));
-		movCaja.setFecha(new Date());
-		movCaja.setMoneda(new Moneda(1l));
-		movCaja.setNotaNro(venta.getId().toString());
-		movCaja.setNotaReferencia(venta.getClienteNombre());
-		movCaja.setNotaValor(venta.getTotalGeneral());
-		movCaja.setPlanCuentaId(1);
-		movCaja.setTipoOperacion("E");
-		movCaja.setUsuario(GlobalVars.USER_ID);
-		movCaja.setValorM01(venta.getTotalGeneral());
-		if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
-			movCaja.setObs("Pagado en caja 01 ");
-			movCaja.setSituacion("PAGADO");
-		} else if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			cant = 1;// Integer.valueOf(tfCuotaCant.getText());
-			movCaja.setObs("Crédito a cuotas :" + cant);
-			movCaja.setSituacion("PROCESADO");
-		} else {
-			movCaja.setObs("Crédito a " + tfCondicionPago.getSelectedItem().toString() + " días");
-			movCaja.setSituacion("PROCESADO");
-			cant = 1;
-		}
-		pagoService.save(movCaja);
-	}
-
-	private void removeMovCaja(Venta venta) {
-		// cierre de caja del dia anterio
-		Optional<MovimientoCaja> movimientoCaja = pagoService.findByIdVenta(venta.getId().toString());
-		if (movimientoCaja.isPresent()) {
-			MovimientoCaja mc = movimientoCaja.get();
-			mc.setObs("VENTA ANULADO");
-			mc.setSituacion("ANULADO");
-			pagoService.save(mc);
-		}
-		// remover los otros movimientos insertados
-	}
-
-	private Integer removeCuentaARecibirProcesoCobroVenta(Venta venta) {
-		CuentaARecibir cuentaARecibir = cuentaARecibirService
-				.findByCarProceso(Integer.valueOf(venta.getId().toString()));
-		Integer cabId = cuentaARecibir.getCarNumero();
-		cuentaARecibirService.remove(cuentaARecibir);
-
-		List<ItemCuentaARecibir> listaItemCuentaARecibir = itemCuentaARecibirService.findByCabId(cabId);
-		for (ItemCuentaARecibir itemCuentaARecibir : listaItemCuentaARecibir) {
-			itemCuentaARecibirService.remove(itemCuentaARecibir);
-		}
-
-		// Proceso Cobro ventas
-		ProcesoCobroVentas pcv = procesoCobroVentasService.findByPveVenta(Integer.valueOf(venta.getId().toString()));
-		procesoCobroVentasService.remove(pcv);
-
-		return cabId;
-	}
-
-	private void removeMovimientoEgreso(Integer carNumero) {
-		MovimientoEgreso movEgreso = movimientoEgresoService.findByMegProceso(carNumero);
-		List<MovimientoItemEgreso> movItemEgreso = movimientoItemEgresoService.findByCabId(movEgreso.getMegNumero());
-		for (MovimientoItemEgreso movimientoItemEgreso : movItemEgreso) {
-			movimientoItemEgresoService.remove(movimientoItemEgreso);
-		}
-		movimientoEgresoService.remove(movEgreso);
-	}
 
 	private ImpresionPanel panel = null;
 
@@ -2415,28 +1390,14 @@ public class VentaPanel extends JFrame
 		panelReImpresion.setVisible(true);
 	}
 
-	private void removeItemBloq() {
-		// remueve los Items bloqueados
-//		for (VentaDetalle item : itemTableModel.getEntities()) {
-//			int depositoId = Integer.parseInt(tfDepositoID.getText());
-		// removeItemDepBloq(item.getCantidad(), item.getProductoId(), depositoId);
-//		}
-	}
+	
 
 	private boolean validateCabezera() {
 		if (tfClienteID.getText().isEmpty()) {
 			Notifications.showAlert("El codigo del Cliente es obligatorio");
 			tfClienteID.requestFocus();
 			return false;
-		} else if (tfVendedorID.getText().isEmpty() && conf != null && conf.getPideVendedor() == 1) {
-			Notifications.showAlert("El codigo del Vendedor es obligatorio");
-			tfVendedorID.requestFocus();
-			return false;
-		} else if (tfDepositoID.getText().isEmpty() && conf != null && conf.getPideDeposito() == 1) {
-			Notifications.showAlert("El codigo del Deposito es obligatorio");
-			tfDepositoID.requestFocus();
-			return false;
-		}
+		} 
 
 		if (!tfClienteID.getText().equalsIgnoreCase("999")) {
 			Optional<Cliente> cliente = clienteService.findById(Long.valueOf(tfClienteID.getText()));
@@ -2448,79 +1409,23 @@ public class VentaPanel extends JFrame
 			}
 		}
 
-		Optional<Usuario> usuairo;
-
-		if (!tfVendedorID.getText().isEmpty())
-			usuairo = vendedorService.findById(Long.valueOf(tfVendedorID.getText()));
-		else
-			usuairo = vendedorService.findById(GlobalVars.USER_ID);
-
-		if (!usuairo.isPresent()) {
-			Notifications.showAlert("El codigo del Vendedor no existe.!");
-			tfVendedorID.requestFocus();
-			return false;
-		}
-
-		Optional<Deposito> deposito;
-
-		if (!tfDepositoID.getText().isEmpty())
-			deposito = depositoService.findById(Long.valueOf(tfDepositoID.getText()));
-		else
-			deposito = depositoService.findById(GlobalVars.DEPOSITO_ID);
-
-		if (!deposito.isPresent()) {
-			Notifications.showAlert("El codigo del Deposito no existe.!");
-			tfDepositoID.requestFocus();
-			return false;
-		}
-//		if (tfCondicionPago.getText().equalsIgnoreCase("1" + "00")) {
-//			if (tfCuotaCant.getText().isEmpty() || Integer.valueOf(tfCuotaCant.getText()) <= 0) {
-//				Notifications.showAlert("La cantidad de cuota debe ser mayor a 0(cero) !");
-//				return false;
-//			}
-//		}
-
+		
 		return true;
 	}
 
-//	private boolean validateItems(List<VentaDetalle> items) {
-//		items.forEach(e -> {
-//			Optional<Producto> producto = productoService.findById(e.getProductoId());
-//			
-//			boolean isValid = validateCantidad(e.getProductoId(), e.getCantidad());
-//
-//			if (isValid) {
-//				// verificar la cantidad
-//				Double stock = producto.get().getStock();
-//
-//				if (stock < e.getCantidad()) {
-//					isValid = true;
-//					Notifications.showAlert("Insuficiente Stock para el Item: " + producto.get().getDescripcion()
-//							+ ". Stock Actual: " + producto.get().getStock());
-//					
-//					return;
-//				}
-//			}
-//
-//		});
-//
-//		return true;
-//	}
 
 	public void newVenta() {
 		long max = ventaService.getRowCount();
 		tfVentaId.setText(String.valueOf(max + 1));
 		resetCliente();
 		resetVenta();
-		btnAnular.setVisible(false);
 		btnGuardar.setVisible(true);
 		btnReimpresion.setVisible(false);
 		btnAdd.setEnabled(true);
 		btnRemove.setEnabled(true);
 		tfClienteID.requestFocus();
-		tfCuotaCant.setEnabled(false);
 		tbProductos.enable();
-		tfCondicionPago.setEnabled(true);
+		//tfCondicionPago.setEnabled(true);
 	}
 
 	private void resetVenta() {
@@ -2528,16 +1433,10 @@ public class VentaPanel extends JFrame
 		tfDescripcion.setText("");
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
-		tfObs.setText("");
 		tfTotal.setText("0");
 		tfTotalItems.setText("0");
-		tfDescuento.setText("0");
 		// tfDescuentoItem.setText("0");
 		lblSituacion.setText("VIGENTE");
-		tfCuotaCant.setText("0");
-		tfVence.setText("");
-		tfCondicionPago.setSelectedIndex(0);
-		tfCondicionPago.setEnabled(true);
 		tbProductos.enable();
 		tfClienteNombre.setEnabled(false);
 		tfStock.setText("");
@@ -2596,12 +1495,7 @@ public class VentaPanel extends JFrame
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());
-			if (conf.getPermitePrecioPorCliente() == 1 && cliente.getListaPrecio() != null)
-				nivelPrecio = cliente.getListaPrecio().getNombre();
-			else {
-				nivelPrecio = conf.getPrecioDefinido();
-			}
-
+	
 			if (cliente.getId() == 0) {
 				// habilitar nombre, ruc, direccion
 				tfClienteNombre.setEnabled(false);
@@ -2609,10 +1503,9 @@ public class VentaPanel extends JFrame
 				tfClienteDireccion.setEnabled(true);
 				tfProductoID.requestFocus();
 
-				tfCondicionPago.setEnabled(false);
-				tfCondicionPago.setSelectedIndex(0);
+//				tfCondicionPago.setEnabled(false);
+//				tfCondicionPago.setSelectedIndex(0);
 
-				calculateVencimiento();
 			}
 		}
 	}
@@ -2638,60 +1531,19 @@ public class VentaPanel extends JFrame
 			tfClienteDireccion.setText("");
 			tfDvRuc.setText(clientePai.get().getDvruc());
 			nivelPrecio = "Precio B";
-			tfCondicionPago.setEnabled(false);
-			tfCondicionPago.setSelectedIndex(0);
+//			tfCondicionPago.setEnabled(false);
+//			tfCondicionPago.setSelectedIndex(0);
 			// tfClienteID.setEnabled(false);
 			tfClienteNombre.setEnabled(false);
 		}
 	}
 
-	private void findVendedorById(Long id) {
-		try {
-			Optional<Usuario> usuario = vendedorService.findById(id);
-			if (usuario.isPresent()) {
-				String nombre = usuario.get().getUsuario();
-				tfVendedor.setText(nombre);
-
-				if (conf != null) {
-					if (conf.getPideDeposito() == 1)
-						tfDepositoID.requestFocus();
-					else
-						tfProductoID.requestFocus();
-				} else {
-					tfDepositoID.requestFocus();
-				}
-
-			} else {
-				Notifications.showAlert("No existe Vendedor con este codigo.!");
-			}
-		} catch (Exception e) {
-			Notifications.showAlert("Problemas con el vendedor!");
-		}
-	}
-
-	private void findDepositoById(Long id) {
-		try {
-			Optional<Deposito> deposito = depositoService.findById(id);
-
-			if (deposito.isPresent()) {
-				tfDepositoID.setEditable(false);
-				tfDepositoID.setText(deposito.get().getId().toString());
-				tfDeposito.setText(deposito.get().getNombre());
-				tfProductoID.requestFocus();
-			} else {
-				Notifications.showAlert("No existe Deposito con este codigo.!");
-			}
-		} catch (Exception e) {
-			Notifications.showAlert("Problemas con el Deposito, intente nuevamente!");
-		}
-	}
 
 	private void findProducto(String id) {
 		try {
 			Optional<Producto> producto = null;
 			producto = productoService.findById(Long.valueOf(id.trim()));
 			if (!producto.isPresent()) {
-				if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
 					producto = productoService.findByReferencia(id);
 			}
 
@@ -2720,7 +1572,7 @@ public class VentaPanel extends JFrame
 
 	private void findVenta(String id) {
 		try {
-			Optional<Venta> venta = null;
+			Optional<VentaTemporal> venta = null;
 			venta = ventaService.findById(Long.valueOf(id.trim()));
 			if (venta.isPresent()) {
 				setVenta(venta.get());
@@ -2729,7 +1581,7 @@ public class VentaPanel extends JFrame
 				btnAdd.setEnabled(false);
 				btnRemove.setEnabled(false);
 				tbProductos.disable();
-				tfCondicionPago.setEnabled(false);
+				//tfCondicionPago.setEnabled(false);
 			} else {
 				Notifications.showAlert("No existe venta informado. Verifique por favor.!");
 			}
@@ -2745,7 +1597,7 @@ public class VentaPanel extends JFrame
 				if (producto.getSubgrupo().getTipo().equals("S"))
 					isProductService = true;
 
-				precioInicial = setPrecioByCliente(nivelPrecio, producto);
+				precioInicial =  producto.getPrecioVentaC();
 				this.precioA = producto.getPrecioVentaA();
 				this.precioB = producto.getPrecioVentaB();
 				this.precioC = producto.getPrecioVentaC();
@@ -2887,18 +1739,12 @@ public class VentaPanel extends JFrame
 
 	private void addItem() {
 		try {
-			if (isValidItem() && validateCantidad()) {
+			if (isValidItem()) {
 				Long productoId = tfProductoID.getText().isEmpty() ? 1 : Long.valueOf(tfProductoID.getText());
-				int depositoId = tfDepositoID.getText().isEmpty() ? 1 : Integer.parseInt(tfDepositoID.getText());
 				Double cantidad = tfCantidad.getText().isEmpty() ? 0
 						: FormatearValor.stringToDoubleFormat(tfCantidad.getText());
 
-				if (conf != null && conf.getPermiteItemDuplicado() == 1) {
-					itemTableModel.addEntity(getItem());
-					calculateItem();
-					addItemCantBloq(productoId, cantidad, 0d, depositoId);
-					tfProductoID.requestFocus();
-				} else {
+				
 					int fila = getDuplicateItemIndex();
 
 					if (fila != -1) {
@@ -2913,17 +1759,14 @@ public class VentaPanel extends JFrame
 							itemTableModel.addEntity(getItem());
 
 							calculateItem();
-							addItemCantBloq(productoId, cantidad, cantAnterior, depositoId);
 						} else {
 							tfProductoID.requestFocus();
 						}
 					} else {
 						itemTableModel.addEntity(getItem());
 						calculateItem();
-						addItemCantBloq(productoId, cantidad, 0d, depositoId);
 						tfProductoID.requestFocus();
 					}
-				}
 
 				clearItem();
 			} else {
@@ -2942,7 +1785,7 @@ public class VentaPanel extends JFrame
 			int selectedRow = tbProductos.getSelectedRow();
 
 			if (selectedRow != -1) {
-				// VentaDetalle item = itemTableModel.getEntityByRow(selectedRow);
+				// VentaDetalleTemporalTemporal item = itemTableModel.getEntityByRow(selectedRow);
 				itemTableModel.removeRow(selectedRow);
 
 //				if (!isProductService) {
@@ -2961,41 +1804,6 @@ public class VentaPanel extends JFrame
 		}
 	}
 
-	private void removeItemDepBloq(Double cantBloq, Long productoId, int depositoId) {
-		Optional<Producto> p = productoService.findById(productoId);
-
-		if (p.isPresent()) {
-			Producto producto = p.get();
-
-			switch (depositoId) {
-			case 1:
-				Double stockDepBloq = p.get().getDepO1Bloq() != null ? p.get().getDepO1Bloq() : 0;
-				producto.setDepO1Bloq(stockDepBloq - cantBloq);
-				break;
-			case 2:
-				Double stockDep02Bloq = p.get().getDepO2Bloq() != null ? p.get().getDepO2Bloq() : 0;
-				producto.setDepO2Bloq(stockDep02Bloq - cantBloq);
-				break;
-			case 3:
-				Double stockDep03Bloq = p.get().getDepO3Bloq() != null ? p.get().getDepO3Bloq() : 0;
-				producto.setDepO3Bloq(stockDep03Bloq - cantBloq);
-				break;
-			case 4:
-				Double stockDep04Bloq = p.get().getDepO4Bloq() != null ? p.get().getDepO4Bloq() : 0;
-				producto.setDepO4Bloq(stockDep04Bloq - cantBloq);
-				break;
-			case 5:
-				Double stockDep05Bloq = p.get().getDepO5Bloq() != null ? p.get().getDepO5Bloq() : 0;
-				producto.setDepO5Bloq(stockDep05Bloq - cantBloq);
-				break;
-
-			default:
-				break;
-			}
-
-			productoService.save(producto);
-		}
-	}
 
 	public Producto getProductoSeleccionado() {
 		return productoSeleccionado;
@@ -3005,11 +1813,11 @@ public class VentaPanel extends JFrame
 		this.productoSeleccionado = productoSeleccionado;
 	}
 
-	public Venta getVentaSeleccionado() {
+	public VentaTemporal getVentaSeleccionado() {
 		return ventaSeleccionado;
 	}
 
-	public void setVentaSeleccionado(Venta ventaSeleccionado) {
+	public void setVentaSeleccionado(VentaTemporal ventaSeleccionado) {
 		this.ventaSeleccionado = ventaSeleccionado;
 	}
 
@@ -3034,8 +1842,8 @@ public class VentaPanel extends JFrame
 //		Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
 		Double cantItem = 0d;
 		Double total = 0d;
-		List<VentaDetalle> listVentaDetalle = itemTableModel.getEntities();
-		for (VentaDetalle ventaDetalle : listVentaDetalle) {
+		List<VentaDetalleTemporal> listVentaDetalleTemporal = itemTableModel.getEntities();
+		for (VentaDetalleTemporal ventaDetalle : listVentaDetalleTemporal) {
 			ventaDetalle.setSubtotal(ventaDetalle.getCantidad() * ventaDetalle.getPrecio());
 			cantItem += ventaDetalle.getCantidad();
 			total += ventaDetalle.getSubtotal();
@@ -3044,43 +1852,17 @@ public class VentaPanel extends JFrame
 		setTotals(cantItem, total);
 	}
 
-	@Override
-	public void getEntity(CondicionPago condicionPago) {
-		if (condicionPago != null) {
-			if (conf != null && conf.getPideDescuento() == 1)
-				tfDescuento.requestFocus();
-			else
-				tfObs.requestFocus();
-		} else {
-			Notifications.showAlert("Hubo problemas con condicion de pago, intente nuevamente!");
-		}
-	}
+	
+	
 
-	@Override
-	public void imprimirTicket() {
-		ImpresionUtil.performTicket(itemTableModel.getEntities(),
-				tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("0") ? "CONTADO" : "CREDITO",
-				tfVentaId.getText(), tfTotal.getText());
-		clearForm();
-	}
-
-	@Override
-	public void imprimirNota() {
-		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
-				"000", tfClienteDireccion.getText(), tfVentaId.getText(),
-				tfCondicionPago.getSelectedItem().toString(),
-				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion);
-		clearForm();
-	}
 
 	@Override
 	public void imprimirFactura() {
 
-		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
+		ImpresionUtil.performFacturaTemporal(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
-				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
+				GlobalVars.USER , tfTotal.getText(),
 				itemTableModel.getEntities(), this.fechaImpresion);
 		clearForm();
 	}
@@ -3149,5 +1931,17 @@ public class VentaPanel extends JFrame
 
 	public void setImpuesto(int impuesto) {
 		this.impuesto = impuesto;
+	}
+
+	@Override
+	public void imprimirTicket() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void imprimirNota() {
+		// TODO Auto-generated method stub
+		
 	}
 }

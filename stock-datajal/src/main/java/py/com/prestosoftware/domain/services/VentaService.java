@@ -96,8 +96,8 @@ public class VentaService {
 		return repository.findByClienteAndFechaBetween(cliente, fechaIni, fechaFin);
 	}
 
-	public List<Venta> getNotasPorFechas(Date fechaIni, Date fechaFin) {
-		return repository.findByFechaBetween(fechaIni, fechaFin);
+	public List<Venta> getVentasFiltro(Date fechaIni, Date fechaFin, String situacion, int formaPago) {
+		return repository.getVentasFiltro(fechaIni, fechaFin, situacion, formaPago);
 	}
 
 	@Transactional(rollbackFor = RuntimeException.class)

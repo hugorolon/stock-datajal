@@ -130,6 +130,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuPDV;
 	private JMenuItem mnuConfig;
 	private JMenuItem mnuCondicionDePago;
+	private JMenuItem mnuFacturacion;
 
 	/**
 	 * Create the frame.
@@ -325,6 +326,10 @@ public class MainFrame extends JFrame {
 		mnuTransformacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuTransformacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
 		mnuMovimientos.add(mnuTransformacion);
+		
+		mnuFacturacion = new JMenuItem("FACTURACIÓN");
+		mnuFacturacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		mnuMovimientos.add(mnuFacturacion);
 		
 //		mnuDevolucionVenta = new JMenuItem("VENTAS");
 //		mnuDevolucion.add(mnuDevolucionVenta);
@@ -995,5 +1000,14 @@ public class MainFrame extends JFrame {
 	public void setMnuMovCuentaARecibirCobroCliente(JMenuItem mnuMovCuentaARecibirCobroCliente) {
 		this.mnuMovCuentaARecibirCobroCliente = mnuMovCuentaARecibirCobroCliente;
 	}
+
+	public JMenuItem getMnuFacturacion() {
+		return mnuFacturacion;
+	}
+
+	public void setMnuFacturacion(JMenuItem mnuFacturacion) {
+		this.mnuFacturacion = mnuFacturacion;
+	}
+	
 	
 }

@@ -25,6 +25,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import py.com.prestosoftware.data.models.VentaDetalle;
+import py.com.prestosoftware.data.models.VentaDetalleTemporal;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
@@ -172,6 +173,91 @@ public class ImpresionUtil {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
+				Double iva10 = (vd.getIva().intValue()==10?vd.getCantidad()*vd.getPrecio():0d);
+				if(iva10>0) {
+					vd.setIva10(iva10);
+					subTotalIva10=subTotalIva10+iva10;
+					iva10= (double) Math.round(iva10/11);
+					totalIva10=totalIva10+iva10;
+				}else {
+					vd.setIva10(iva10);
+				}
+				Double iva5 = (vd.getIva().intValue()==5?vd.getCantidad()*vd.getPrecio():0d);
+				if(iva5>0) {
+					vd.setIva5(iva5);
+					subTotalIva5=subTotalIva5+iva5;
+					iva5= (double)Math.round(iva5/21);
+					totalIva5=totalIva5+iva5;
+				}else {
+					vd.setIva5(iva5);
+				}
+				Double exentas = (vd.getIva().intValue()==0?vd.getCantidad()*vd.getPrecio():0d);
+				vd.setExenta(exentas);
+				if(exentas>0)
+					totalExenta=totalExenta+totalExenta;
+				//total= total + FormatearValor.doubleAString(Double.valueOf(vd.getIva10())+Double.valueOf(vd.getIva5())+Double.valueOf(vd.getExenta()));
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		Map<String, String> parametros = new HashMap<String, String>();
+		Locale espanol = new Locale("es","ES");
+		SimpleDateFormat sd=new SimpleDateFormat("dd ' de ' MMMM ' de ' yyyy", espanol);
+		String fecha= sd.format(fechaImpresion);
+		parametros.put("fecha", fecha);
+		int totalInt= Integer.valueOf(FormatearValor.sinSeparadorDeMiles(total));
+		String p=MontoEnLetras.convertir("18000",",","",true);
+		parametros.put("montoEnLetras", MontoEnLetras.convertir(String.valueOf(totalInt),",","",true));
+		parametros.put("clienteNombre", cliente);
+	    parametros.put("clienteRucDv", ruc);
+	    parametros.put("clienteCelular", telefono);
+	    parametros.put("clienteDireccion", direccion);
+	    parametros.put("comprobante", nroVenta);
+	    
+	    String condicionValue = "";
+	    
+	    if (condicion.equalsIgnoreCase("contado")) {
+	    	parametros.put("contado", "X");
+	    	parametros.put("credito", "");
+	    	condicionValue = "CONTADO";
+	    } else {
+	    	parametros.put("credito", "X");
+	    	parametros.put("contado", "");
+	    	condicionValue = "CREDITO";
+	    }
+	    parametros.put("condicion", condicionValue);
+	    parametros.put("empleadoNombre", vendedor);
+	    parametros.put("subTotalExenta",FormatearValor.doubleAString(totalExenta));
+	    parametros.put("subTotalIva5", FormatearValor.doubleAString(subTotalIva5));
+	    parametros.put("subTotalIva10", FormatearValor.doubleAString(subTotalIva10));
+	    parametros.put("totalIva5", FormatearValor.doubleAString(totalIva5));
+	    parametros.put("totalIva10", FormatearValor.doubleAString(totalIva10));
+	    parametros.put("totalIva", FormatearValor.doubleAString(totalIva5+totalIva10));
+	    parametros.put("totalGeneral", total);
+	    //parametrosObj.putAll(parametros);
+	    try {
+//	    	if (this.boletaRemision.compareTo("REMISION") == 0) {
+//	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
+//	    				this.lbTotalGeneralLetras.getText());
+//	    		dataSourteReport(lista, parametros, "remisionFactura");
+//	    	} else {
+//	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
+//	    				this.lbTotalGeneralLetras.getText());
+	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"facturaLegal.jrxml";
+			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
+
+	        		dataSourteReport(items, parametros, ruta);
+//	    	}
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	}
+	
+	public static void performFacturaTemporal(String cliente, String ruc, String telefono, String direccion, String nroVenta,
+			String condicion, String vendedor, String  total, List<VentaDetalleTemporal> items, Date fechaImpresion) {
+		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
+		try {
+			for (VentaDetalleTemporal vd : items) {
 				Double iva10 = (vd.getIva().intValue()==10?vd.getCantidad()*vd.getPrecio():0d);
 				if(iva10>0) {
 					vd.setIva10(iva10);

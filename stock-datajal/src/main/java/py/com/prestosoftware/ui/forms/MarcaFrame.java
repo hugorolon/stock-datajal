@@ -12,8 +12,8 @@ public class MarcaFrame extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final int DEFAULT_WIDTH = 500;
-    private static final int DEFAULT_HEIGHT = 300;
+	private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 600;
 
     private TableSearchPanel searchPanel;
     private MarcaTablePanel tablePanel;
@@ -37,9 +37,9 @@ public class MarcaFrame extends JDialog {
     }
 
     private void initComponents() {
-    	add(searchPanel, BorderLayout.NORTH);
-    	add(tablePanel, BorderLayout.CENTER);
-    	add(formPanel, BorderLayout.SOUTH); 
+//    	add(searchPanel, BorderLayout.NORTH);
+//    	add(tablePanel, BorderLayout.CENTER);
+//    	add(formPanel, BorderLayout.SOUTH); 
     }
     
     public MarcaTablePanel getTablePanel() {

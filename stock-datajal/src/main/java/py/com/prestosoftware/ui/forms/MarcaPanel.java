@@ -21,6 +21,8 @@ import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.search.MarcaInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.shared.FormBtnPanel;
+import py.com.prestosoftware.ui.shared.TableSearchPanel;
+import py.com.prestosoftware.ui.table.MarcaTablePanel;
 import py.com.prestosoftware.util.Borders;
 
 @Component
@@ -40,11 +42,13 @@ public class MarcaPanel extends JPanel implements MarcaInterfaz{
     private JButton btnCancelar;
     private JButton btnCerrar;
     private MarcaInterfaz interfaz;
+    private TableSearchPanel searchPanel;
+    private MarcaTablePanel tablePanel;
 
     @Autowired
-    public MarcaPanel(FormBtnPanel formBtnPanel) {
+    public MarcaPanel(FormBtnPanel formBtnPanel, TableSearchPanel searchPanel,MarcaTablePanel tablePanel) {
     	this.formBtnPanel = formBtnPanel;
-    	this.setSize(400, 200);
+    	this.setSize(835, 505);
         setPanelUp();
         initComponents();
     }
@@ -54,7 +58,8 @@ public class MarcaPanel extends JPanel implements MarcaInterfaz{
     }
 
     private void initComponents() {
-        add(formBtnPanel, BorderLayout.SOUTH);
+//        add(formBtnPanel, BorderLayout.SOUTH);
+        add(formBtnPanel);
         setLayout(new BorderLayout(0, 0));
         
         pnlCrud = new JPanel();
@@ -95,7 +100,7 @@ public class MarcaPanel extends JPanel implements MarcaInterfaz{
         gl_pnlCrud.setHorizontalGroup(
         	gl_pnlCrud.createParallelGroup(Alignment.LEADING)
         		.addGroup(gl_pnlCrud.createSequentialGroup()
-        			.addGap(5)
+        			.addContainerGap()
         			.addGroup(gl_pnlCrud.createParallelGroup(Alignment.LEADING)
         				.addGroup(gl_pnlCrud.createSequentialGroup()
         					.addComponent(lblCodigo, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
@@ -108,12 +113,13 @@ public class MarcaPanel extends JPanel implements MarcaInterfaz{
         				.addGroup(gl_pnlCrud.createSequentialGroup()
         					.addComponent(lblActivo, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
         					.addGap(13)
-        					.addComponent(chActivo, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE))))
+        					.addComponent(chActivo, GroupLayout.PREFERRED_SIZE, 128, GroupLayout.PREFERRED_SIZE)))
+        			.addContainerGap(219, Short.MAX_VALUE))
         );
         gl_pnlCrud.setVerticalGroup(
         	gl_pnlCrud.createParallelGroup(Alignment.LEADING)
-        		.addGroup(gl_pnlCrud.createSequentialGroup()
-        			.addGap(6)
+        		.addGroup(Alignment.TRAILING, gl_pnlCrud.createSequentialGroup()
+        			.addContainerGap(156, Short.MAX_VALUE)
         			.addGroup(gl_pnlCrud.createParallelGroup(Alignment.LEADING)
         				.addComponent(lblCodigo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
         				.addComponent(tfId, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
@@ -128,7 +134,8 @@ public class MarcaPanel extends JPanel implements MarcaInterfaz{
         				.addComponent(lblActivo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
         				.addGroup(gl_pnlCrud.createSequentialGroup()
         					.addGap(1)
-        					.addComponent(chActivo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))))
+        					.addComponent(chActivo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)))
+        			.addGap(18))
         );
         pnlCrud.setLayout(gl_pnlCrud);
         
