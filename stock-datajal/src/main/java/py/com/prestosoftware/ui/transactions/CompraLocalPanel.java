@@ -67,9 +67,7 @@ import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.CuentaAPagarService;
-import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
-import py.com.prestosoftware.domain.services.MonedaService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
 import py.com.prestosoftware.domain.services.MovimientoEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
@@ -94,6 +92,7 @@ import py.com.prestosoftware.ui.search.CompraInterfaz;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoInterfaz;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
+import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
@@ -101,8 +100,7 @@ import py.com.prestosoftware.ui.shared.PanelCompraInterfaz;
 import py.com.prestosoftware.ui.table.CompraItemTableModel;
 import py.com.prestosoftware.util.Notifications;
 
-@Component("compraLocal")
-@Primary
+@Component
 public class CompraLocalPanel extends JFrame
 		implements ProveedorInterfaz, ProductoInterfaz, PanelCompraInterfaz, CompraInterfaz, CondicionPagoInterfaz {
 
@@ -163,11 +161,10 @@ public class CompraLocalPanel extends JFrame
 	private Proveedor proveedorSeleccionado;
 	private Compra compraSeleccionado;
 	private ProductoController productoController;
-
+	
 	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
 			ProveedorAddPanel proveedorAddPanel, CompraDialog compraDialog, ProductoVistaDialog productoDialog,
-			CompraService compraService, ProveedorService proveedorService, MonedaService monedaService,
-			DepositoService depositoService, CompraValidator compraValidator, ProductoService productoService,
+			CompraService compraService, ProveedorService proveedorService, CompraValidator compraValidator, ProductoService productoService,
 			CondicionPagoDialog condicionPagoDialog, CondicionPagoService condicionPagoService,
 			ConfiguracionService configService, AperturaCierreCajaService movCajaService, CajaService cajaService,
 			MovimientoCajaService pagoService, MovimientoIngresoService movimientoIngresoService,
@@ -207,6 +204,7 @@ public class CompraLocalPanel extends JFrame
 		initComponents();
 		Util.setupScreen(this);
 	}
+
 
 	@SuppressWarnings("serial")
 	private void initComponents() {
@@ -1752,9 +1750,10 @@ public class CompraLocalPanel extends JFrame
 	private void loadCompra(Compra c) {
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
 		tfFactura.setText(c.getFactura());
+		tfCompraId.setText(c.getId().toString());
 		tfFechaCompra.setText(c.getFechaCompra() == null ? "" : String.valueOf(c.getFechaCompra()));
 		// tfCondicion.setSelectedItem(String.valueOf(c.getCondicion()));
-		if (c.getCondicion() == 0)
+		if (c.getCondicion() == 1)
 			tfCondicion.setSelectedIndex(0);
 		else
 			tfCondicion.setSelectedIndex(1);
@@ -1771,8 +1770,7 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	public void newCompra() {
-		long max = compraService.getRowCount();
-		long newId = max + 1;
+		long newId = compraService.getRowCount();
 		resetProveedor();
 		resetCompra();
 		tfCompraId.setText(String.valueOf(newId));

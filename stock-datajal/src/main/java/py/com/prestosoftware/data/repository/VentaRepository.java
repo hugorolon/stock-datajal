@@ -37,7 +37,8 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 
 	Optional<Venta> findByIdAndCliente(Long id, Cliente cliente);
 	
-	@Query("SELECT coalesce(max(id), 0) FROM Venta e")
+	//@Query("SELECT coalesce(max(id), 0) FROM Venta e")
+	@Query(value="select nextval('ventas_id_seq')", nativeQuery=true)
 	Long getMaxId();
 	
 	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, vd.precio"

@@ -55,7 +55,6 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 
 	private List<Venta> ventas;
 	private JLabel lblFecha;
-	private JTextField textField;
 	private JLabel lblNewLabel;
 	private JComboBox<String> tfSituacion;
 	private JLabel lblFormaCobro;
@@ -229,17 +228,7 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 		int forma=2;
 		if(tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
 			forma=1;
-		//List<Venta> listado= 
-				ventas=service.getVentasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);
-//		ventas = new ArrayList<Venta>();
-//		for (ConsultaNota consultaNota : listado) {
-//			Venta v=new Venta();
-//			v.setOperacion(Integer.valueOf(consultaNota.getOperacion()));
-//			v.setFecha(consultaNota.getFecha());
-//			//v.setCliente(consultaNota.get);
-//			ventas.add(v);
-//		}
-		
+				ventas=service.getVentasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);		
 		tableModel.clear();
 		tableModel.addEntities(ventas);
 		table.requestFocus();

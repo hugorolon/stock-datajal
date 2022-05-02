@@ -7,10 +7,13 @@ import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
 import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.ClientePaisService;
 import py.com.prestosoftware.domain.services.ClienteService;
+import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
+import py.com.prestosoftware.domain.services.CuentaAPagarService;
 import py.com.prestosoftware.domain.services.CuentaARecibirService;
 import py.com.prestosoftware.domain.services.DepositoService;
+import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
 import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
 import py.com.prestosoftware.domain.services.MovimientoEgresoService;
@@ -18,10 +21,14 @@ import py.com.prestosoftware.domain.services.MovimientoIngresoService;
 import py.com.prestosoftware.domain.services.MovimientoItemEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
 import py.com.prestosoftware.domain.services.ProcesoCobroVentasService;
+import py.com.prestosoftware.domain.services.ProcesoPagoComprasService;
+import py.com.prestosoftware.domain.services.ProcesoPagoProveedoresService;
 import py.com.prestosoftware.domain.services.ProductoService;
+import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.domain.services.VentaService;
+import py.com.prestosoftware.domain.validations.CompraValidator;
 import py.com.prestosoftware.domain.validations.VentaValidator;
 import py.com.prestosoftware.ui.controllers.CajaController;
 import py.com.prestosoftware.ui.controllers.CategoriaController;
@@ -51,10 +58,12 @@ import py.com.prestosoftware.ui.controllers.UnidadMedidaController;
 import py.com.prestosoftware.ui.controllers.UsuarioController;
 import py.com.prestosoftware.ui.controllers.UsuarioRolController;
 import py.com.prestosoftware.ui.forms.ClienteAddPanel;
+import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.reports.InformeAgrupadoIngresoEgresoCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeResumenCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeStockDeposito;
 import py.com.prestosoftware.ui.reports.UtilidadProductoDialog;
+import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
@@ -67,9 +76,12 @@ import py.com.prestosoftware.ui.search.DepositoDialog;
 import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.search.ProductoVistaDialog;
+import py.com.prestosoftware.ui.search.ProveedorDialog;
 import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
-import py.com.prestosoftware.ui.shared.CompraPanel;
+//import py.com.prestosoftware.ui.shared.CompraPanel;
+import py.com.prestosoftware.ui.table.CompraItemTableModel;
+import py.com.prestosoftware.ui.table.CompraTableModel;
 import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaCreditoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaDebitoPanel;
@@ -176,8 +188,8 @@ public class MainController extends AbstractFrameController {
 	private DevolucionPanel devolucionPanel;
 	@Autowired
 	private AjusteStockPanel ajusteStockPanel;
-	@Autowired
-	private CompraPanel panelCompra;
+//	@Autowired
+//	private CompraPanel panelCompra;
 
 	@Autowired
 	private VentaPanel ventaPanel;
@@ -198,6 +210,8 @@ public class MainController extends AbstractFrameController {
 
 	// Dialogs
 	@Autowired
+	private CompraDialog compraDialog;
+	@Autowired
 	private ConsultaBoletaDialog boletaPanel;
 	@Autowired
 	private ConsultaSaldoDeposito saldoDepositoPanel;
@@ -210,7 +224,7 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private ConsultaCliente consultaCliente;
 	@Autowired
-	private ProductoDialog productoDialog;
+	private ProductoVistaDialog productoDialog;
 	@Autowired
 	private InformeStockDeposito informeStockDeposito;
 	@Autowired
@@ -237,6 +251,24 @@ public class MainController extends AbstractFrameController {
 	private ClienteService clienteService;
 	@Autowired
 	private VentaItemTableModel itemTableModel;
+	@Autowired
+	private CompraItemTableModel compraItemTableModel;
+	@Autowired
+	private ConsultaProveedor proveedorDialog;
+	@Autowired
+	private CompraTableModel compraTableModel;
+	
+	@Autowired
+	private ProveedorAddPanel proveedorAddPanel;
+	@Autowired
+	private CompraService compraService;
+	@Autowired
+	private ProveedorService proveedorService;
+	@Autowired
+	private CondicionPagoDialog condicionPagoDialog;
+	@Autowired
+	private CompraValidator compraValidator;
+	
 	@Autowired
 	private ConsultaCliente clientDialog;
 	@Autowired
@@ -287,7 +319,18 @@ public class MainController extends AbstractFrameController {
 	private ItemCuentaARecibirService itemCuentaARecibirService;
 	@Autowired
 	private ClienteAddPanel clienteAddPanel;
-	
+	@Autowired
+	private ProcesoPagoComprasService procesoPagoComprasService;
+	@Autowired
+	private ProcesoPagoProveedoresService procesoPagoProveedoresService;
+	@Autowired
+	private CuentaAPagarService cuentaAPagarService;
+	@Autowired
+	private ItemCuentaAPagarService itemCuentaAPagarService;
+	@Autowired
+	private ProductoController productoController;
+
+
 	public MainController() {
 	}
 
@@ -521,7 +564,7 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openCompra() {
-		panelCompra.setVisible(true);
+		//panelCompra.setVisible(true);
 	}
 
 	private void openPresupuesto() {
@@ -650,13 +693,14 @@ public class MainController extends AbstractFrameController {
 
 	private void openVenta() {
 		//inicializaVenta();
+		itemTableModel= new VentaItemTableModel();
 		ventaPanel = new VentaPanel(itemTableModel, clientDialog, vendedorDialog, depositoDialog, productoDialogV, ventaValidator, ventaService, clienteService, clientePaisService, vendedorService, usuarioRolService, depositoService, productoService, condicionDialog, saldoDeposito, condicionPagoService, configService, movCajaService, cajaService, pagoService, consultaVentasDelDiaDialog, movimientoIngresoService, movimientoEgresoService, movimientoItemIngresoService, movimientoItemEgresoService, procesoCobroVentasService, cuentaARecibirService, itemCuentaARecibirService, clienteAddPanel);
 		ventaPanel.clearForm();
 		ventaPanel.getConfig();
 		ventaPanel.setVisible(true);
 		ventaPanel.vistaDescuentoTotal();
 		ventaPanel.vistaDescuentoItem();
-		ventaPanel.newVenta();
+		//ventaPanel.newVenta();
 	}
 	/*
 	VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
@@ -705,6 +749,13 @@ public class MainController extends AbstractFrameController {
 	}*/
 
 	private void openCompraLocal() {
+		compraItemTableModel= new CompraItemTableModel();
+		compraDialog = new CompraDialog(compraService, compraTableModel);
+		compraLocalPanel = new CompraLocalPanel(compraItemTableModel, proveedorDialog, proveedorAddPanel, compraDialog, productoDialog, 
+				compraService, proveedorService, compraValidator, productoService, 
+				 condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
+				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
+					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoController);
 		compraLocalPanel.getConfig();
 		compraLocalPanel.clearForm();
 		compraLocalPanel.newCompra();

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.data.models.Proveedor;
+import py.com.prestosoftware.data.models.Venta;
 
 @Repository
 public interface CompraRepository extends JpaRepository<Compra, Long> {
@@ -33,7 +34,11 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 	
 	Optional<Compra> findByIdAndProveedor(Long id, Proveedor proveedor);
 	
-	@Query("SELECT coalesce(max(id), 0) FROM Compra c")
+	//@Query("SELECT coalesce(max(id), 0) FROM Compra c")
+	@Query(value="select nextval('compras_id_seq')", nativeQuery=true)
 	Long getMaxId();
 
+	@Query(value =  "SELECT * "
+			+ " FROM compras c WHERE c.fecha between ?1 and ?2 and c.situacion= ?3 and condicion= ?4 ORDER BY c.id ASC", nativeQuery = true)
+	List<Compra> getComprasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma);
 }

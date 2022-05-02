@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 
+import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,11 @@ import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.domain.services.CompraService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.table.CompraTableModel;
+import javax.swing.JLabel;
+import java.awt.FlowLayout;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 
 @Component
 public class CompraDialog extends JDialog {
@@ -42,6 +48,17 @@ public class CompraDialog extends JDialog {
 	private CompraInterfaz interfaz;
 	
 	private List<Compra> compras;
+	private JLabel lblSituacion;
+	private JComboBox cmbSituacion;
+	private JLabel lblForma;
+	private JComboBox cmbForma;
+	private JLabel lblFecha;
+	private JTextField textField;
+	private JLabel lblFechaFin;
+	private JTextField textField_1;
+	private JButton btnBuscar;
+	private JXDatePicker dtpFecha;
+	private JXDatePicker dtpFechaFin;
 
 	@Autowired
 	public CompraDialog(CompraService service, CompraTableModel tableModel) {
@@ -49,13 +66,56 @@ public class CompraDialog extends JDialog {
 		this.tableModel = tableModel;
 		
 		this.setTitle("BUSCADOR DE COMPRAS");
-		this.setSize(600, 300);
+		this.setSize(807, 494);
 		this.setModal(true);
 		
 		getContentPane().setLayout(new BorderLayout());
 		
 		JPanel pnlBuscador = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) pnlBuscador.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
+		
+		lblSituacion = new JLabel("  Situación  "); //$NON-NLS-1$ //$NON-NLS-2$
+		pnlBuscador.add(lblSituacion);
+		
+		cmbSituacion = new JComboBox();
+		cmbSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "VIGENTE"}));
+		pnlBuscador.add(cmbSituacion);
+		
+		lblForma = new JLabel(" Forma Pago :"); //$NON-NLS-1$ //$NON-NLS-2$
+		pnlBuscador.add(lblForma);
+		
+		cmbForma = new JComboBox();
+		cmbForma.setModel(new DefaultComboBoxModel(new String[] {"Contado", "30 días"}));
+		pnlBuscador.add(cmbForma);
+		
+		lblFecha = new JLabel("Fecha Inicial"); //$NON-NLS-1$ //$NON-NLS-2$
+		pnlBuscador.add(lblFecha);
+		
+		dtpFecha = new JXDatePicker();
+		dtpFecha.setFormats("dd/MM/yyyy");
+		dtpFecha.setDate(new Date());
+		
+		pnlBuscador.add(dtpFecha);
+		//textField.setColumns(10);
+		
+		lblFechaFin = new JLabel("Fecha Fin"); //$NON-NLS-1$ //$NON-NLS-2$
+		pnlBuscador.add(lblFechaFin);
+		
+		dtpFechaFin = new JXDatePicker();
+		dtpFechaFin.setFormats("dd/MM/yyyy");
+		dtpFechaFin.setDate(new Date());
+		pnlBuscador.add(dtpFechaFin);
+		//textField_1.setColumns(10);
+		
+		btnBuscar = new JButton("Buscar"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnBuscar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadCompras();
+			}
+		});
+		pnlBuscador.add(btnBuscar);
 		
 		scrollPane = new JScrollPane();
 		getContentPane().add(scrollPane, BorderLayout.CENTER);
@@ -151,7 +211,11 @@ public class CompraDialog extends JDialog {
 	}
 	
 	public void loadCompras() {
-		compras = service.getNotasPorFechas(new Date(), new Date());
+		String situacion= cmbSituacion.getSelectedItem().toString();
+		int forma=2;
+		if(cmbForma.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
+			forma=1;
+		compras = service.getComprasFiltro(new Date(), new Date(), situacion, forma);
 		tableModel.clear();
         tableModel.addEntities(compras);
     }

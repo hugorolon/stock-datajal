@@ -1453,7 +1453,7 @@ public class VentaPanel extends JFrame
 		if (respuesta == 0) {
 			// removeItemBloq();
 			clearForm();
-			newVenta();
+			//newVenta();
 		} else {
 			tfProductoID.requestFocus();
 		}
@@ -1651,9 +1651,9 @@ public class VentaPanel extends JFrame
 		tfCuotaCant.setEnabled(true);
 		lblDescripcionFiscal.setText("");
 
-		while (itemTableModel.getRowCount() > 0) {
+		/*while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
-		}
+		}*/
 
 		// tfDepositoID.setEditable(true);
 		// tfDepositoID.setText("");
@@ -2508,8 +2508,8 @@ public class VentaPanel extends JFrame
 //	}
 
 	public void newVenta() {
-		long max = ventaService.getRowCount();
-		tfVentaId.setText(String.valueOf(max + 1));
+		Long max = ventaService.getRowCount();
+		tfVentaId.setText(String.valueOf(max));
 		resetCliente();
 		resetVenta();
 		btnAnular.setVisible(false);
@@ -2541,7 +2541,7 @@ public class VentaPanel extends JFrame
 		tbProductos.enable();
 		tfClienteNombre.setEnabled(false);
 		tfStock.setText("");
-
+		//itemTableModel = new VentaItemTableModel();
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
 		}

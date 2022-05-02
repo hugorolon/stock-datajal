@@ -151,7 +151,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		this.itemCobroClienteService =itemCobroClienteService;
 		this.itemCuentaARecibirService =itemCuentaARecibirService;
 
-		setSize(907, 666);
+		setSize(914, 684);
 		setTitle("COBRO CLIENTE");
 		setLocationRelativeTo(null);
 		setResizable(false);

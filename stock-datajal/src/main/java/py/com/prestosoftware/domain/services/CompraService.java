@@ -82,6 +82,10 @@ public class CompraService {
     public List<Compra> getNotasPorFechas(Date fechaIni, Date fechaFin) {
     	return repository.findByFechaBetween(fechaIni, fechaFin);
     }
+    
+    public List<Compra> getComprasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma) {
+    	return repository.getComprasFiltro(fechaIni, fechaFin, situacion, forma);
+    }
 
     @Transactional(rollbackFor = RuntimeException.class)
     public Compra save(int lanzamientoCaja, Compra compra, String condicion) {
