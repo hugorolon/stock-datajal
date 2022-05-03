@@ -1770,7 +1770,7 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	public void newCompra() {
-		long newId = compraService.getRowCount();
+		long newId = compraService.getRowCount()+1;
 		resetProveedor();
 		resetCompra();
 		tfCompraId.setText(String.valueOf(newId));

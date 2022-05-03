@@ -34,8 +34,7 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 	
 	Optional<Compra> findByIdAndProveedor(Long id, Proveedor proveedor);
 	
-	//@Query("SELECT coalesce(max(id), 0) FROM Compra c")
-	@Query(value="select nextval('compras_id_seq')", nativeQuery=true)
+	@Query("SELECT coalesce(max(id), 0) FROM Compra c")
 	Long getMaxId();
 
 	@Query(value =  "SELECT * "

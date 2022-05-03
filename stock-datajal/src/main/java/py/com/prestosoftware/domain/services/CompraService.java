@@ -90,6 +90,7 @@ public class CompraService {
     @Transactional(rollbackFor = RuntimeException.class)
     public Compra save(int lanzamientoCaja, Compra compra, String condicion) {
     	Compra c = new Compra();
+    	compra.setId(getRowCount()+1);
     	c= repository.save(compra);
     	if (lanzamientoCaja == 0) {
 			

@@ -2508,7 +2508,7 @@ public class VentaPanel extends JFrame
 //	}
 
 	public void newVenta() {
-		Long max = ventaService.getRowCount();
+		Long max = ventaService.getRowCount()+1;
 		tfVentaId.setText(String.valueOf(max));
 		resetCliente();
 		resetVenta();
