@@ -137,7 +137,7 @@
 				<textElement>
 					<font fontName="Arial Narrow" size="8"/>
 				</textElement>
-				<text><![CDATA[Registro SENAVE 1843]]></text>
+				<text><![CDATA[REGISTRO SENAVE 1843]]></text>
 			</staticText>
 		</band>
 	</pageHeader>

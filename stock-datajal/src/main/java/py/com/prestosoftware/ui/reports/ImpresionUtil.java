@@ -204,7 +204,7 @@ public class ImpresionUtil {
 		Locale espanol = new Locale("es","ES");
 		SimpleDateFormat sd=new SimpleDateFormat("dd ' de ' MMMM ' de ' yyyy", espanol);
 		String fecha= sd.format(fechaImpresion);
-		parametros.put("fecha", fecha);
+		parametros.put("fecha", fecha.toUpperCase());
 		int totalInt= Integer.valueOf(FormatearValor.sinSeparadorDeMiles(total));
 		String p=MontoEnLetras.convertir("18000",",","",true);
 		parametros.put("montoEnLetras", MontoEnLetras.convertir(String.valueOf(totalInt),",","",true));
@@ -289,7 +289,7 @@ public class ImpresionUtil {
 		Locale espanol = new Locale("es","ES");
 		SimpleDateFormat sd=new SimpleDateFormat("dd ' de ' MMMM ' de ' yyyy", espanol);
 		String fecha= sd.format(fechaImpresion);
-		parametros.put("fecha", fecha);
+		parametros.put("fecha", fecha.toUpperCase());
 		int totalInt= Integer.valueOf(FormatearValor.sinSeparadorDeMiles(total));
 		String p=MontoEnLetras.convertir("18000",",","",true);
 		parametros.put("montoEnLetras", MontoEnLetras.convertir(String.valueOf(totalInt),",","",true));
