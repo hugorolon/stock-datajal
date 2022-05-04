@@ -748,7 +748,6 @@ public class CompraLocalPanel extends JFrame
 
 		tfCompraId = new JTextField();
 		tfCompraId.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCompraId.setEditable(false);
 		tfCompraId.setBounds(73, 3, 76, 32);
 		pnlCliente.add(tfCompraId);
 		tfCompraId.addKeyListener(new KeyAdapter() {

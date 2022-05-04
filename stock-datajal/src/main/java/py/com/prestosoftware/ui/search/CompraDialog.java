@@ -215,7 +215,7 @@ public class CompraDialog extends JDialog {
 		int forma=2;
 		if(cmbForma.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
 			forma=1;
-		compras = service.getComprasFiltro(new Date(), new Date(), situacion, forma);
+		compras = service.getComprasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);
 		tableModel.clear();
         tableModel.addEntities(compras);
     }
