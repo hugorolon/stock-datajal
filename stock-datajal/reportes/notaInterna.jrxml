@@ -124,27 +124,18 @@
 				<textFieldExpression><![CDATA[$P{condicion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="150" y="78" width="348" height="17" uuid="1f2cf607-4c29-47e0-bf4b-3041c29f5517"/>
+				<reportElement x="150" y="67" width="348" height="17" uuid="1f2cf607-4c29-47e0-bf4b-3041c29f5517"/>
 				<textElement>
-					<font fontName="Arial Narrow" size="9"/>
+					<font fontName="Arial Narrow" size="11"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteNombre}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="150" y="94" width="100" height="13" uuid="fc401503-f57c-4908-a331-34c72ce06b8c"/>
+				<reportElement x="320" y="90" width="258" height="13" uuid="fc401503-f57c-4908-a331-34c72ce06b8c"/>
 				<textElement>
 					<font fontName="Arial Narrow" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteDireccion}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="354" y="94" width="150" height="15" uuid="9a7c4915-0fb0-4019-8655-9de40d1e4cd9">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Arial Narrow" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{clienteCelular}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="507" y="11" width="71" height="13" uuid="66689c7a-7645-4708-90f1-53913c4cd21a">
@@ -194,7 +185,7 @@
 				<text><![CDATA[KRESSBURGO - ITAPUA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="24" y="78" width="120" height="15" uuid="77727cf2-da23-4878-95ba-a0cad9baf9da">
+				<reportElement x="24" y="67" width="120" height="15" uuid="77727cf2-da23-4878-95ba-a0cad9baf9da">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -213,7 +204,7 @@
 				<text><![CDATA[VENTA NRO.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="24" y="92" width="120" height="15" uuid="7dcca5f6-1804-48bb-941c-0845271bcfb3">
+				<reportElement x="262" y="88" width="58" height="15" uuid="7dcca5f6-1804-48bb-941c-0845271bcfb3">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -221,16 +212,6 @@
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<text><![CDATA[DIRECCIÓN :]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="294" y="94" width="60" height="15" uuid="369594bc-c58d-449c-83d4-be5b25734c24">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font fontName="Arial Narrow" size="9" isBold="false"/>
-				</textElement>
-				<text><![CDATA[CELULAR :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="440" y="24" width="58" height="13" uuid="1466d7a4-6061-4e41-a73c-9f1af9be829e">
@@ -284,6 +265,25 @@
 					<font fontName="Arial Narrow"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{vencimiento}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="25" y="87" width="120" height="15" uuid="10f599cd-3e1c-4f3a-92fd-13a241b2a687">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font fontName="Arial Narrow" size="9" isBold="false"/>
+				</textElement>
+				<text><![CDATA[RUC :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="150" y="87" width="100" height="15" uuid="d7224629-d72e-4797-b738-a6acd0918ac9">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font fontName="Arial Narrow"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{clienteRucDv}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
