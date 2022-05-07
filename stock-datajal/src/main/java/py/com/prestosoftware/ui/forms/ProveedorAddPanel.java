@@ -33,25 +33,28 @@ import py.com.prestosoftware.domain.services.EmpresaService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.validations.ProveedorValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.controllers.CiudadController;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
+import py.com.prestosoftware.ui.search.CiudadInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorInterfaz;
 import py.com.prestosoftware.ui.table.CiudadComboBoxModel;
 import py.com.prestosoftware.ui.table.EmpresaComboBoxModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class ProveedorAddPanel extends JDialog {
+public class ProveedorAddPanel extends JDialog implements CiudadInterfaz{
 
 	private static final long serialVersionUID = 1L;
+	private static final int CIUDAD_CODE = 1;
 	private JLabel lblCodigo;
 	private JTextField tfNombre, tfRazonSocial, tfCiruc, tfDvRuc, tfDireccion;
-	private JTextField tfProveedorId, tfPlazo, tfClase;
+	private JTextField tfProveedorId;
 	private JButton btnGuardar, btnCancelar;
 
 	private JComboBox<Ciudad> cbCiudad;
-	private JComboBox<Empresa> cbEmpresa;
 	private JComboBox<String> cbTipo;
+	private CiudadController ciudadController;
 
 	private CiudadComboBoxModel ciudadComboBoxModel;
 	private EmpresaComboBoxModel empresaComboBoxModel;
@@ -70,13 +73,14 @@ public class ProveedorAddPanel extends JDialog {
 	@Autowired
 	public ProveedorAddPanel(CiudadComboBoxModel ciudadCboxModel, EmpresaComboBoxModel empresaCboxModel,
 			ProveedorValidator proveedorValidator, ProveedorService proveedorService, CiudadService ciudadService,
-			EmpresaService empresaService) {
+			EmpresaService empresaService,CiudadController ciudadController) {
 		this.ciudadComboBoxModel = ciudadCboxModel;
 		this.empresaComboBoxModel = empresaCboxModel;
 		this.proveedorValidator = proveedorValidator;
 		this.proveedorService = proveedorService;
 		this.empresaService = empresaService;
 		this.ciudadService = ciudadService;
+		this.ciudadController= ciudadController;
 		setSize(1070, 421);
 
 		initComponents();
@@ -179,11 +183,11 @@ public class ProveedorAddPanel extends JDialog {
 
 		cbCiudad = new JComboBox<>(ciudadComboBoxModel);
 		cbCiudad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cbCiudad.setBounds(514, 8, 156, 30);
+		cbCiudad.setBounds(514, 8, 180, 30);
 		cbCiudad.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				cbEmpresa.requestFocus();
+				tfCelular.requestFocus();
 			}
 		});
 
@@ -215,58 +219,6 @@ public class ProveedorAddPanel extends JDialog {
 		});
 		tfDireccion.setColumns(10);
 
-		tfPlazo = new JTextField();
-		tfPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfPlazo.setBounds(514, 122, 114, 30);
-		tfPlazo.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfPlazo.setColumns(10);
-
-		JLabel lblObs = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
-				.getString("ProveedorPanel.lblObs.text"));
-		lblObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblObs.setBounds(416, 122, 67, 30);
-
-		tfClase = new JTextField();
-		tfClase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfClase.setBounds(514, 84, 114, 30);
-		((AbstractDocument) tfClase.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfClase.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfPlazo.requestFocus();
-				}
-			}
-		});
-		tfClase.setColumns(10);
-
-		JLabel lblClase = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
-				.getString("ProveedorPanel.lblClase.text"));
-		lblClase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblClase.setBounds(416, 84, 67, 30);
-
-		cbEmpresa = new JComboBox<Empresa>(empresaComboBoxModel);
-		cbEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cbEmpresa.setBounds(514, 46, 156, 30);
-		cbEmpresa.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfClase.requestFocus();
-				}
-			}
-		});
-
-		JLabel lblEmpresa = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
-				.getString("ProveedorPanel.lblEmpresa.text"));
-		lblEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmpresa.setBounds(416, 46, 67, 30);
-
 		tfProveedorId = new JTextField();
 		tfProveedorId.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfProveedorId.setBounds(122, 8, 104, 30);
@@ -290,16 +242,10 @@ public class ProveedorAddPanel extends JDialog {
 		pnlDatosPersonal.add(tfDireccion);
 		pnlDatosPersonal.add(lblTipo);
 		pnlDatosPersonal.add(cbTipo);
-		pnlDatosPersonal.add(lblEmpresa);
-		pnlDatosPersonal.add(cbEmpresa);
 		pnlDatosPersonal.add(lblRaznSocial);
 		pnlDatosPersonal.add(tfRazonSocial);
-		pnlDatosPersonal.add(lblObs);
-		pnlDatosPersonal.add(tfPlazo);
 		pnlDatosPersonal.add(lblNombre);
 		pnlDatosPersonal.add(tfNombre);
-		pnlDatosPersonal.add(lblClase);
-		pnlDatosPersonal.add(tfClase);
 
 		label_1 = new JLabel("*");
 		label_1.setBounds(102, 84, 18, 30);
@@ -335,18 +281,18 @@ public class ProveedorAddPanel extends JDialog {
 		
 		JLabel lblCelular = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProveedorAddPanel.lblCelular.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lblCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCelular.setBounds(416, 160, 67, 30);
+		lblCelular.setBounds(416, 48, 67, 30);
 		pnlDatosPersonal.add(lblCelular);
 		
 		tfCelular = new JTextField();
 		tfCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCelular.setBounds(514, 160, 114, 30);
+		tfCelular.setBounds(514, 48, 114, 30);
 		pnlDatosPersonal.add(tfCelular);
 		tfCelular.setColumns(10);
 		
 		JLabel lblEmail = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProveedorAddPanel.lblEmail.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmail.setBounds(416, 198, 67, 30);
+		lblEmail.setBounds(416, 84, 67, 30);
 		pnlDatosPersonal.add(lblEmail);
 		
 		JLabel label_3_1 = new JLabel("*");
@@ -354,22 +300,23 @@ public class ProveedorAddPanel extends JDialog {
 		label_3_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3_1.setForeground(Color.RED);
 		label_3_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3_1.setBounds(486, 160, 18, 30);
+		label_3_1.setBounds(486, 48, 18, 30);
 		pnlDatosPersonal.add(label_3_1);
-		
-		JLabel label_3_2 = new JLabel("*");
-		label_3_2.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_3_2.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3_2.setForeground(Color.RED);
-		label_3_2.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3_2.setBounds(486, 198, 18, 30);
-		pnlDatosPersonal.add(label_3_2);
 		
 		tfEmail = new JTextField();
 		tfEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfEmail.setBounds(514, 198, 114, 30);
+		tfEmail.setBounds(514, 84, 114, 30);
 		pnlDatosPersonal.add(tfEmail);
 		tfEmail.setColumns(10);
+		
+		JButton btnNuevaCiudad = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnNuevaCiudad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(CIUDAD_CODE);
+			}
+		});
+		btnNuevaCiudad.setBounds(732, 8, 46, 30);
+		pnlDatosPersonal.add(btnNuevaCiudad);
 
 		
 		JPanel pnlBotonera = new JPanel();
@@ -403,8 +350,6 @@ public class ProveedorAddPanel extends JDialog {
 		tfCiruc.setText(proveedor.getRuc());
 		tfDvRuc.setText(proveedor.getDvruc());
 		tfDireccion.setText(proveedor.getDireccion());
-		tfClase.setText(proveedor.getClase());
-		tfPlazo.setText(proveedor.getPlazo() + "");
 		tfEmail.setText(proveedor.getEmail());
 		tfCelular.setText(proveedor.getCelular());
 
@@ -425,8 +370,6 @@ public class ProveedorAddPanel extends JDialog {
 		proveedor.setRuc(tfCiruc.getText());
 		proveedor.setDvruc(tfDvRuc.getText());
 		proveedor.setDireccion(tfDireccion.getText());
-		proveedor.setClase(tfClase.getText());
-		proveedor.setPlazo(tfPlazo.getText().equalsIgnoreCase("") ? 0 : Integer.parseInt(tfPlazo.getText()));
 		proveedor.setCiudad((Ciudad) ciudadComboBoxModel.getSelectedItem());
 		proveedor.setEmpresa((Empresa) empresaComboBoxModel.getSelectedItem());
 		proveedor.setTipo((String) cbTipo.getSelectedItem());
@@ -492,16 +435,26 @@ public class ProveedorAddPanel extends JDialog {
 		tfCiruc.setText("");
 		tfDvRuc.setText("");
 		tfDireccion.setText("");
-		tfClase.setText("");
-		tfPlazo.setText("");
-		tfPlazo.setText("");
 		tfCelular.setText("");
 		tfEmail.setText("");
 		cbCiudad.setSelectedIndex(0);
-		cbEmpresa.setSelectedIndex(0);
+		//cbEmpresa.setSelectedIndex(0);
 		cbTipo.setSelectedIndex(0);
 	}
 
+	private void showDialog(int code) {
+		switch (code) {
+		case CIUDAD_CODE:
+			ciudadController.setInterfaz(this);
+			ciudadController.setOrigen("Proveedor");;
+			ciudadController.prepareAndOpenFrame();
+			//marcaController.setOrigen("PRODUCTO");
+			break;
+		default:
+			break;
+		}
+	}
+	
 	public JButton getBtnGuardar() {
 		return btnGuardar;
 	}
@@ -516,5 +469,11 @@ public class ProveedorAddPanel extends JDialog {
 
 	public void setNewProveedor(long id) {
 		tfProveedorId.setText(String.valueOf(id));
+	}
+
+	@Override
+	public void getEntity(Ciudad ciudad) {
+		ciudadComboBoxModel.addElement(ciudad);
+		ciudadComboBoxModel.setSelectedItem(ciudad);
 	}
 }

@@ -90,7 +90,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performNota(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalle> items,Date fechaImpresion) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items,Date fechaImpresion, boolean impresora) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -159,17 +159,14 @@ public class ImpresionUtil {
 	    parametros.put("totalGeneral", total);
 	    try {
 	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"notaInterna.jrxml";
-			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"notaInterna.jrxml";
-
-	        		dataSourteReport(items, parametros, ruta);
-//	    	}
+      		dataSourteReport(items, parametros, ruta, impresora);
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }
 	}
 	
 	public static void performFactura(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion, boolean impresora) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -234,27 +231,17 @@ public class ImpresionUtil {
 	    parametros.put("totalIva10", FormatearValor.doubleAString(totalIva10));
 	    parametros.put("totalIva", FormatearValor.doubleAString(totalIva5+totalIva10));
 	    parametros.put("totalGeneral", total);
-	    //parametrosObj.putAll(parametros);
 	    try {
-//	    	if (this.boletaRemision.compareTo("REMISION") == 0) {
-//	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
-//	    				this.lbTotalGeneralLetras.getText());
-//	    		dataSourteReport(lista, parametros, "remisionFactura");
-//	    	} else {
-//	    		parametros.put("totalLetras", VariablesGlobales.monedaSimbolo + " " + 
-//	    				this.lbTotalGeneralLetras.getText());
 	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"facturaLegal.jrxml";
-			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
 
-	        		dataSourteReport(items, parametros, ruta);
-//	    	}
+	        		dataSourteReport(items, parametros, ruta, impresora);
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }
 	}
 	
 	public static void performFacturaTemporal(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalleTemporal> items, Date fechaImpresion) {
+			String condicion, String vendedor, String  total, List<VentaDetalleTemporal> items, Date fechaImpresion, boolean impresora) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalleTemporal vd : items) {
@@ -331,20 +318,21 @@ public class ImpresionUtil {
 	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"facturaLegal.jrxml";
 			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
 
-	        		dataSourteReport(items, parametros, ruta);
+	        		dataSourteReport(items, parametros, ruta, impresora);
 //	    	}
 	    } catch (Exception e) {
 	      e.printStackTrace();
 	    }
 	}
 	
-	private static void dataSourteReport(List lista, Map parametros, String ruta) {
+	private static void dataSourteReport(List lista, Map parametros, String ruta, boolean impresora) {
 		try {
 	        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
 	        JasperDesign jasperDesign = JRXmlLoader.load(ruta);
 	        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, beanColDataSource);
-	        JasperPrintManager.printReport(jasperPrint, true);
+	        
+	        JasperPrintManager.printReport(jasperPrint, !impresora);
 			} catch (JRException e) {
 				e.printStackTrace();
 			} 

@@ -37,9 +37,9 @@ public class MarcaFrame extends JDialog {
     }
 
     private void initComponents() {
-//    	add(searchPanel, BorderLayout.NORTH);
-//    	add(tablePanel, BorderLayout.CENTER);
-//    	add(formPanel, BorderLayout.SOUTH); 
+    	add(searchPanel, BorderLayout.NORTH);
+    	add(tablePanel, BorderLayout.CENTER);
+    	add(formPanel, BorderLayout.SOUTH); 
     }
     
     public MarcaTablePanel getTablePanel() {

@@ -1,27 +1,31 @@
 package py.com.prestosoftware.ui.forms;
 
+import java.awt.BorderLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.AbstractDocument;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Ciudad;
 import py.com.prestosoftware.data.models.Departamento;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.search.CiudadInterfaz;
 import py.com.prestosoftware.ui.table.DepartamentoComboBoxModel;
 import py.com.prestosoftware.util.Borders;
-import java.awt.BorderLayout;
-import javax.swing.JCheckBox;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 
 @Component
-public class CiudadPanel extends JPanel {
+public class CiudadPanel extends JPanel implements CiudadInterfaz{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -31,6 +35,7 @@ public class CiudadPanel extends JPanel {
     private JPanel panel, panel_1;
     private JButton btnGuardar, btnCancelar, btnCerrar;
     private JComboBox<Departamento> cbDep;
+    private CiudadInterfaz interfaz;
     
     private DepartamentoComboBoxModel depComboBoxModel;
 
@@ -182,7 +187,17 @@ public class CiudadPanel extends JPanel {
     	chActivo.setSelected(true);
     }
     
-    public JButton getBtnGuardar() {
+    
+    
+    public CiudadInterfaz getInterfaz() {
+		return interfaz;
+	}
+
+	public void setInterfaz(CiudadInterfaz interfaz) {
+		this.interfaz = interfaz;
+	}
+
+	public JButton getBtnGuardar() {
 		return btnGuardar;
 	}
     
@@ -200,6 +215,12 @@ public class CiudadPanel extends JPanel {
 	
 	public JTextField getTfNombre() {
 		return tfNombre;
+	}
+
+	@Override
+	public void getEntity(Ciudad ciudad) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

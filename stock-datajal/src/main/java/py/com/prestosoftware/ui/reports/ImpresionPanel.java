@@ -14,11 +14,12 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.JCheckBox;
 
 public class ImpresionPanel extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	
+	private JCheckBox chkBoxImpresion;
 	private ImpresionPanelInterfaz panelInterfaz = null;
 	
 	public void setPanelInterfaz(ImpresionPanelInterfaz panelInterfaz) {
@@ -28,6 +29,8 @@ public class ImpresionPanel extends JDialog {
 	public ImpresionPanelInterfaz getPanelInterfaz() {
 		return panelInterfaz;
 	}
+	
+	
 
 	/**
 	 * Create the dialog.
@@ -35,7 +38,7 @@ public class ImpresionPanel extends JDialog {
 	public ImpresionPanel() {
 		setTitle("OPCIONES DE IMPRESIÓN");
 		setModal(true);
-		setBounds(100, 100, 608, 223);
+		setBounds(100, 100, 635, 245);
 		getContentPane().setLayout(null);
 		
 		JButton btnFactura = new JButton("Factura");
@@ -44,14 +47,14 @@ public class ImpresionPanel extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-					panelInterfaz.imprimirFactura();
+					panelInterfaz.imprimirFactura(chkBoxImpresion.isSelected());
 					dispose();
 				}
 			}
 		});
 		btnFactura.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelInterfaz.imprimirFactura();
+				panelInterfaz.imprimirFactura(chkBoxImpresion.isSelected());
 				dispose();
 			}
 		});
@@ -64,14 +67,14 @@ public class ImpresionPanel extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-					panelInterfaz.imprimirNota();
+					panelInterfaz.imprimirNota(chkBoxImpresion.isSelected());
 					dispose();
 				}
 			}
 		});
 		btnRemision.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				panelInterfaz.imprimirNota();
+				panelInterfaz.imprimirNota(chkBoxImpresion.isSelected());
 				dispose();
 			}
 		});
@@ -81,7 +84,7 @@ public class ImpresionPanel extends JDialog {
 		JLabel lblImpresionFactura = new JLabel("SELECCIONAR / CANCELAR");
 		lblImpresionFactura.setFont(new Font("Verdana", Font.BOLD, 20));
 		lblImpresionFactura.setHorizontalAlignment(SwingConstants.CENTER);
-		lblImpresionFactura.setBounds(10, 11, 545, 52);
+		lblImpresionFactura.setBounds(10, 11, 574, 52);
 		getContentPane().add(lblImpresionFactura);
 		
 		JButton btnCancelar = new JButton("Cancelar");
@@ -103,6 +106,10 @@ public class ImpresionPanel extends JDialog {
 		btnCancelar.setFont(new Font("Verdana", Font.BOLD, 14));
 		btnCancelar.setBounds(433, 80, 131, 52);
 		getContentPane().add(btnCancelar);
+		
+		chkBoxImpresion = new JCheckBox("Imprimir directo en impresora predeterminada");
+		chkBoxImpresion.setBounds(40, 167, 524, 21);
+		getContentPane().add(chkBoxImpresion);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize(); 

@@ -6,9 +6,9 @@ public interface ReImpresionPanelInterfaz {
 
 	void cargaFecha(Date fecha);
 	
-	void imprimirNota();
+	void imprimirNota(boolean impresora);
 	
-	void imprimirFactura();
+	void imprimirFactura(boolean impresora);
 	
 	void cancelarImpresion();
 

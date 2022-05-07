@@ -984,7 +984,7 @@ public class CompraLocalPanel extends JFrame
 
 	private Compra getCompra() {
 		Compra compra = new Compra();
-		compra.setComprobante("SIN COMPROBANTE");
+		compra.setComprobante(tfFactura.getText());
 		compra.setFecha(new Date());
 		compra.setTipoCompra("LOCAL");
 		compra.setFactura(tfFactura.getText());

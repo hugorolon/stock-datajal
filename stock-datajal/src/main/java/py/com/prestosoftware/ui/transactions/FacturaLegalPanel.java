@@ -1857,13 +1857,13 @@ public class FacturaLegalPanel extends JFrame
 
 
 	@Override
-	public void imprimirFactura() {
+	public void imprimirFactura(boolean impresora) {
 
 		ImpresionUtil.performFacturaTemporal(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				GlobalVars.USER , tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion);
+				itemTableModel.getEntities(), this.fechaImpresion, true);
 		clearForm();
 	}
 
@@ -1940,7 +1940,7 @@ public class FacturaLegalPanel extends JFrame
 	}
 
 	@Override
-	public void imprimirNota() {
+	public void imprimirNota(boolean impresora) {
 		// TODO Auto-generated method stub
 		
 	}

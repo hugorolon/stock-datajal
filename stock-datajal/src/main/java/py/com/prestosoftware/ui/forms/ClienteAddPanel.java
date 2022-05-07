@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Date;
@@ -11,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -22,39 +23,43 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.AbstractDocument;
 
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.miginfocom.swing.MigLayout;
 import py.com.prestosoftware.data.models.Ciudad;
-import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.Cliente;
+import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.domain.services.CiudadService;
-import py.com.prestosoftware.domain.services.EmpresaService;
 import py.com.prestosoftware.domain.services.ClienteService;
+import py.com.prestosoftware.domain.services.EmpresaService;
 import py.com.prestosoftware.domain.validations.ClienteValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.controllers.CiudadController;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
+import py.com.prestosoftware.ui.search.CiudadInterfaz;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.table.CiudadComboBoxModel;
+import py.com.prestosoftware.ui.table.ClienteComboBoxModel;
 import py.com.prestosoftware.ui.table.EmpresaComboBoxModel;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class ClienteAddPanel extends JDialog {
+public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemListener {
 
 	private static final long serialVersionUID = 1L;
+	private static final int CIUDAD_CODE = 1;
 	private JLabel lblCodigo;
 	private JTextField tfNombre, tfRazonSocial, tfCiruc, tfDvRuc, tfDireccion;
-	private JTextField tfClienteId, tfPlazo, tfieldPlazo;
+	private JTextField tfClienteId;
 	private JButton btnGuardar, btnCancelar;
 
 	private JComboBox<Ciudad> cbCiudad;
-	private JComboBox<Empresa> cbEmpresa;
-	private JComboBox<String> cbTipo;
-
+	private CiudadController ciudadController;
 	private CiudadComboBoxModel ciudadComboBoxModel;
+	private ClienteComboBoxModel clienteComboBoxModel;
 	private EmpresaComboBoxModel empresaComboBoxModel;
 	private JLabel label_1;
 	private JLabel label_2;
@@ -67,20 +72,26 @@ public class ClienteAddPanel extends JDialog {
 	private ClienteInterfaz interfaz;
 	private JTextField tfCelular;
 	private JTextField tfEmail;
+	private JComboBox cbCliente;
 
 	@Autowired
 	public ClienteAddPanel(CiudadComboBoxModel ciudadCboxModel, EmpresaComboBoxModel empresaCboxModel,
 			ClienteValidator clienteValidator, ClienteService clienteService, CiudadService ciudadService,
-			EmpresaService empresaService) {
+			EmpresaService empresaService, CiudadController ciudadController, ClienteComboBoxModel clienteComboBoxModel) {
 		this.ciudadComboBoxModel = ciudadCboxModel;
 		this.empresaComboBoxModel = empresaCboxModel;
 		this.clienteValidator = clienteValidator;
 		this.clienteService = clienteService;
 		this.empresaService = empresaService;
 		this.ciudadService = ciudadService;
+		this.clienteComboBoxModel =clienteComboBoxModel;
+		this.ciudadController=ciudadController;
 		setSize(1070, 421);
 
 		initComponents();
+		AutoCompleteDecorator.decorate(cbCliente);
+		AutoCompleteDecorator.decorate(cbCiudad);
+
 
 		Util.setupScreen(this);
 	}
@@ -94,15 +105,6 @@ public class ClienteAddPanel extends JDialog {
 
 		JPanel pnlDatosPersonal = new JPanel();
 		tabbedPane.addTab("Datos Personales", null, pnlDatosPersonal, null);
-
-		JLabel lblTipo = new JLabel("TIPO");
-		lblTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblTipo.setBounds(6, 46, 98, 30);
-
-		cbTipo = new JComboBox<String>();
-		cbTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cbTipo.setBounds(122, 46, 163, 30);
-		cbTipo.setModel(new DefaultComboBoxModel<String>(new String[] { "FISICO", "JURIDICO", "EXTRANJERO" }));
 
 		JLabel lblNombre = new JLabel("Nombre");
 		lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -179,7 +181,7 @@ public class ClienteAddPanel extends JDialog {
 		cbCiudad.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
-				cbEmpresa.requestFocus();
+				tfCelular.requestFocus();
 			}
 		});
 
@@ -209,65 +211,16 @@ public class ClienteAddPanel extends JDialog {
 		});
 		tfDireccion.setColumns(10);
 
-		tfPlazo = new JTextField();
-		tfPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfPlazo.setBounds(514, 122, 114, 30);
-		tfPlazo.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		tfPlazo.setColumns(10);
-
-		JLabel lblObs = new JLabel("OBS");
-		lblObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblObs.setBounds(416, 122, 67, 30);
-
-		tfieldPlazo = new JTextField();
-		tfieldPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfieldPlazo.setBounds(514, 84, 114, 30);
-		((AbstractDocument) tfieldPlazo.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfieldPlazo.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfPlazo.requestFocus();
-				}
-			}
-		});
-		tfieldPlazo.setColumns(10);
-
-		JLabel lblPlazo = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblClase.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		lblPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPlazo.setBounds(416, 84, 67, 30);
-
-		cbEmpresa = new JComboBox<Empresa>(empresaComboBoxModel);
-		cbEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cbEmpresa.setBounds(514, 46, 156, 30);
-		cbEmpresa.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfieldPlazo.requestFocus();
-				}
-			}
-		});
-
-		JLabel lblEmpresa = new JLabel("Empresa");
-		lblEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmpresa.setBounds(416, 46, 67, 30);
-
 		tfClienteId = new JTextField();
 		tfClienteId.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfClienteId.setBounds(122, 8, 104, 30);
+		tfClienteId.setBounds(122, 44, 104, 30);
 		tfClienteId.setEditable(false);
 		tfClienteId.setColumns(10);
 		pnlDatosPersonal.setLayout(null);
 
 		lblCodigo = new JLabel("Codigo");
 		lblCodigo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCodigo.setBounds(6, 8, 98, 30);
+		lblCodigo.setBounds(6, 44, 98, 30);
 		pnlDatosPersonal.add(lblCodigo);
 		pnlDatosPersonal.add(tfClienteId);
 		pnlDatosPersonal.add(lblCiudad);
@@ -278,18 +231,10 @@ public class ClienteAddPanel extends JDialog {
 		pnlDatosPersonal.add(tfDvRuc);
 		pnlDatosPersonal.add(lblDireccin);
 		pnlDatosPersonal.add(tfDireccion);
-		pnlDatosPersonal.add(lblTipo);
-		pnlDatosPersonal.add(cbTipo);
-		pnlDatosPersonal.add(lblEmpresa);
-		pnlDatosPersonal.add(cbEmpresa);
 		pnlDatosPersonal.add(lblRaznSocial);
 		pnlDatosPersonal.add(tfRazonSocial);
-		pnlDatosPersonal.add(lblObs);
-		pnlDatosPersonal.add(tfPlazo);
 		pnlDatosPersonal.add(lblNombre);
 		pnlDatosPersonal.add(tfNombre);
-		pnlDatosPersonal.add(lblPlazo);
-		pnlDatosPersonal.add(tfieldPlazo);
 
 		label_1 = new JLabel("*");
 		label_1.setBounds(102, 84, 18, 30);
@@ -325,18 +270,18 @@ public class ClienteAddPanel extends JDialog {
 		
 		JLabel lblCelular = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblCelular.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lblCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCelular.setBounds(416, 160, 67, 30);
+		lblCelular.setBounds(416, 48, 67, 30);
 		pnlDatosPersonal.add(lblCelular);
 		
 		tfCelular = new JTextField();
 		tfCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCelular.setBounds(514, 160, 114, 30);
+		tfCelular.setBounds(514, 48, 114, 30);
 		pnlDatosPersonal.add(tfCelular);
 		tfCelular.setColumns(10);
 		
 		JLabel lblEmail = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblEmail.text")); //$NON-NLS-1$ //$NON-NLS-2$
 		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmail.setBounds(416, 198, 67, 30);
+		lblEmail.setBounds(416, 86, 67, 30);
 		pnlDatosPersonal.add(lblEmail);
 		
 		JLabel label_3_1 = new JLabel("*");
@@ -344,22 +289,42 @@ public class ClienteAddPanel extends JDialog {
 		label_3_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3_1.setForeground(Color.RED);
 		label_3_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3_1.setBounds(486, 160, 18, 30);
+		label_3_1.setBounds(486, 48, 18, 30);
 		pnlDatosPersonal.add(label_3_1);
-		
-		JLabel label_3_2 = new JLabel("*");
-		label_3_2.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_3_2.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3_2.setForeground(Color.RED);
-		label_3_2.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3_2.setBounds(486, 198, 18, 30);
-		pnlDatosPersonal.add(label_3_2);
 		
 		tfEmail = new JTextField();
 		tfEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfEmail.setBounds(514, 198, 114, 30);
+		tfEmail.setBounds(514, 86, 114, 30);
 		pnlDatosPersonal.add(tfEmail);
 		tfEmail.setColumns(10);
+		
+		JLabel lblNombreCliente = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblNombreCliente.text")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
+		lblNombreCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblNombreCliente.setBounds(6, 10, 110, 30);
+		pnlDatosPersonal.add(lblNombreCliente);
+		
+		cbCliente = new JComboBox<>(clienteComboBoxModel);
+		cbCliente.addItemListener(new ItemListener() {
+			  public void itemStateChanged(ItemEvent itemEvent) {
+				  traeCliente();
+				  }
+				});
+//		cbCliente.addPropertyChangeListener(new PropertyChangeListener() {
+//			public void propertyChange(PropertyChangeEvent evt) {
+//				
+//			}
+//		});
+		cbCliente.setBounds(122, 8, 251, 30);
+		pnlDatosPersonal.add(cbCliente);
+		
+		JButton btnNuevaCiudad = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnNuevaCiudad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(CIUDAD_CODE);
+			}
+		});
+		btnNuevaCiudad.setBounds(723, 8, 49, 30);
+		pnlDatosPersonal.add(btnNuevaCiudad);
 
 		
 		JPanel pnlBotonera = new JPanel();
@@ -383,6 +348,7 @@ public class ClienteAddPanel extends JDialog {
 		});
 		btnCancelar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBotonera.add(btnCancelar);
+		loadClients();
 	}
 
 	public void setClienteForm(Cliente cliente) {
@@ -392,14 +358,11 @@ public class ClienteAddPanel extends JDialog {
 		tfCiruc.setText(cliente.getCiruc());
 		tfDvRuc.setText(cliente.getDvruc());
 		tfDireccion.setText(cliente.getDireccion());
-		tfieldPlazo.setText(cliente.getPlazo()+"");
-		tfPlazo.setText(cliente.getPlazo() + "");
 		tfEmail.setText(cliente.getEmail());
 		tfCelular.setText(cliente.getCelular());
 
 		ciudadComboBoxModel.setSelectedItem(cliente.getCiudad());
 		empresaComboBoxModel.setSelectedItem(cliente.getEmpresa());
-		cbTipo.setSelectedItem(cliente.getTipo());
 	}
 
 	public Cliente getClienteFrom() {
@@ -414,11 +377,8 @@ public class ClienteAddPanel extends JDialog {
 		cliente.setCiruc(tfCiruc.getText());
 		cliente.setDvruc(tfDvRuc.getText());
 		cliente.setDireccion(tfDireccion.getText());
-		cliente.setClase(tfieldPlazo.getText());
-		cliente.setPlazo(tfPlazo.getText().equalsIgnoreCase("") ? 0 : Integer.parseInt(tfPlazo.getText()));
 		cliente.setCiudad((Ciudad) ciudadComboBoxModel.getSelectedItem());
 		cliente.setEmpresa((Empresa) empresaComboBoxModel.getSelectedItem());
-		cliente.setTipo((String) cbTipo.getSelectedItem());
 		cliente.setEmail(tfEmail.getText());
 		cliente.setCelular(tfCelular.getText());
 		cliente.setTipoEntidad(1);
@@ -478,10 +438,27 @@ public class ClienteAddPanel extends JDialog {
 	}
 
 	public void addNewCliente() {
+		clearForm();
 		long Id = clienteService.addNewClient();
 		this.setNewCliente(Id);
+		cbCliente.setSelectedItem("");
 	}
 
+	private void traeCliente() {
+		if(cbCliente!=null&&cbCliente.getSelectedItem()!=null && cbCliente.getSelectedItem().toString().length()>0) {
+			Cliente c=clienteService.findByNombreEquals(cbCliente.getSelectedItem().toString().toUpperCase());
+			tfClienteId.setText(c.getId().toString());
+			tfNombre.setText(c.getNombre());
+			tfRazonSocial.setText(c.getRazonSocial());
+			tfCiruc.setText(c.getCiruc());
+			tfDvRuc.setText(c.getDvruc());
+			tfDireccion.setText(c.getDireccion());
+			tfCelular.setText(c.getCelular());
+			tfEmail.setText(c.getEmail());
+			cbCiudad.setSelectedItem(c.getCiudad());	
+		}		
+	}
+	
 	public void clearForm() {
 		tfClienteId.setText("");
 		tfNombre.setText("");
@@ -489,14 +466,29 @@ public class ClienteAddPanel extends JDialog {
 		tfCiruc.setText("");
 		tfDvRuc.setText("");
 		tfDireccion.setText("");
-		tfieldPlazo.setText("");
-		tfPlazo.setText("");
-		tfPlazo.setText("");
 		tfCelular.setText("");
 		tfEmail.setText("");
 		cbCiudad.setSelectedIndex(0);
-		cbEmpresa.setSelectedIndex(0);
-		cbTipo.setSelectedIndex(0);
+		cbCliente.setSelectedItem("");
+	}
+	
+	private void showDialog(int code) {
+		switch (code) {
+		case CIUDAD_CODE:
+			ciudadController.setInterfaz(this);
+			ciudadController.setOrigen("Proveedor");;
+			ciudadController.prepareAndOpenFrame();
+			//marcaController.setOrigen("PRODUCTO");
+			break;
+		default:
+			break;
+		}
+	}
+	
+	@Override
+	public void getEntity(Ciudad ciudad) {
+		ciudadComboBoxModel.addElement(ciudad);
+		ciudadComboBoxModel.setSelectedItem(ciudad);
 	}
 
 	public JButton getBtnGuardar() {
@@ -514,4 +506,28 @@ public class ClienteAddPanel extends JDialog {
 	public void setNewCliente(long id) {
 		tfClienteId.setText(String.valueOf(id));
 	}
+	private void loadClients() {
+		List<Cliente> clientes = clienteService.findAll();
+		clienteComboBoxModel.clear();
+		for (Cliente cliente : clientes) {
+			clienteComboBoxModel.addElement(cliente.getNombre());	
+		}
+		
+	}
+
+	public JComboBox getCbCliente() {
+		return cbCliente;
+	}
+
+	public void setCbCliente(JComboBox cbCliente) {
+		this.cbCliente = cbCliente;
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+		traeCliente();
+	}
+	
+	
 }

@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import org.jdesktop.swingx.JXDatePicker;
+import javax.swing.JCheckBox;
 
 public class ReImpresionPanel extends JDialog {
 
@@ -22,6 +23,7 @@ public class ReImpresionPanel extends JDialog {
 	
 	private ReImpresionPanelInterfaz panelInterfaz = null;
 	private JXDatePicker dtpFecha;
+	private JCheckBox chkImpresion;
 	
 	public void setPanelInterfaz(ReImpresionPanelInterfaz panelInterfaz) {
 		this.panelInterfaz = panelInterfaz;
@@ -37,7 +39,7 @@ public class ReImpresionPanel extends JDialog {
 	public ReImpresionPanel() {
 		setTitle("OPCIONES DE REIMPRESIÓN");
 		setModal(true);
-		setBounds(100, 100, 570, 178);
+		setBounds(100, 100, 671, 266);
 		getContentPane().setLayout(null);
 		
 		JButton btnFactura = new JButton("FACTURA");
@@ -47,7 +49,7 @@ public class ReImpresionPanel extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					panelInterfaz.cargaFecha(dtpFecha.getDate());
-					panelInterfaz.imprimirFactura();
+					panelInterfaz.imprimirFactura(chkImpresion.isSelected());
 					dispose();
 				}
 			}
@@ -55,11 +57,11 @@ public class ReImpresionPanel extends JDialog {
 		btnFactura.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelInterfaz.cargaFecha(dtpFecha.getDate());
-				panelInterfaz.imprimirFactura();
+				panelInterfaz.imprimirFactura(chkImpresion.isSelected());
 				dispose();
 			}
 		});
-		btnFactura.setBounds(222, 80, 139, 52);
+		btnFactura.setBounds(246, 80, 139, 52);
 		getContentPane().add(btnFactura);
 		
 		JButton btnRemision = new JButton("Nota Interna");
@@ -69,7 +71,7 @@ public class ReImpresionPanel extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					panelInterfaz.cargaFecha(dtpFecha.getDate());
-					panelInterfaz.imprimirNota();
+					panelInterfaz.imprimirNota(chkImpresion.isSelected());
 					dispose();
 				}
 			}
@@ -77,11 +79,11 @@ public class ReImpresionPanel extends JDialog {
 		btnRemision.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelInterfaz.cargaFecha(dtpFecha.getDate());
-				panelInterfaz.imprimirNota();
+				panelInterfaz.imprimirNota(chkImpresion.isSelected());
 				dispose();
 			}
 		});
-		btnRemision.setBounds(6, 80, 139, 52);
+		btnRemision.setBounds(41, 80, 139, 52);
 		getContentPane().add(btnRemision);
 		
 		JLabel lblImpresionFactura = new JLabel("Fecha Factura");
@@ -115,6 +117,10 @@ public class ReImpresionPanel extends JDialog {
 		dtpFecha.setFormats("dd/MM/yyyy");
 		dtpFecha.setDate(new Date());
 		getContentPane().add(dtpFecha);
+		
+		chkImpresion = new JCheckBox("Imprimir directo en impresora predeterminada");
+		chkImpresion.setBounds(100, 155, 391, 21);
+		getContentPane().add(chkImpresion);
 		//dtpFecha.setColumns(10);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();

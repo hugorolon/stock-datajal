@@ -208,7 +208,7 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
-					<font fontName="Arial Narrow" size="8" isBold="false" isItalic="true"/>
+					<font fontName="Arial Narrow" size="8" isBold="false" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{iva101}]]></textFieldExpression>
 			</textField>
@@ -234,7 +234,7 @@
 			<textField evaluationTime="Page" pattern="#,##0.###;(#,##0.###-)">
 				<reportElement x="450" y="24" width="110" height="18" uuid="3e4df70d-4da9-4edb-b277-d2efb2ba9188"/>
 				<textElement textAlignment="Right">
-					<font fontName="Arial Narrow" size="8" isBold="false" isItalic="true"/>
+					<font fontName="Arial Narrow" size="10" isBold="false" isItalic="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumaTotalPagina}]]></textFieldExpression>
 			</textField>

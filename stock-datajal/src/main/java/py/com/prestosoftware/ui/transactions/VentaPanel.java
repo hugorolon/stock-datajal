@@ -255,7 +255,7 @@ public class VentaPanel extends JFrame
 		getContentPane().setLayout(null);
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tabbedPane.setBounds(12, 106, 1043, 325);
+		tabbedPane.setBounds(12, 106, 1043, 391);
 		getContentPane().add(tabbedPane);
 
 		JPanel pnlProducto = new JPanel();
@@ -438,7 +438,7 @@ public class VentaPanel extends JFrame
 		pnlProducto.add(btnRemove);
 
 		JScrollPane scrollProducto = new JScrollPane();
-		scrollProducto.setBounds(6, 81, 1022, 205);
+		scrollProducto.setBounds(6, 81, 1022, 269);
 		pnlProducto.add(scrollProducto);
 
 		tbProductos = new JTable(itemTableModel) {
@@ -927,7 +927,7 @@ public class VentaPanel extends JFrame
 		pnlCliente.add(lblSituacion);
 
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(9, 578, 1009, 35);
+		pnlBotonera.setBounds(21, 590, 1034, 35);
 		getContentPane().add(pnlBotonera);
 
 		btnGuardar = new JButton("Guardar");
@@ -1023,7 +1023,7 @@ public class VentaPanel extends JFrame
 		pnlBotonera.add(btnCerrar);
 
 		pnlTotales = new JPanel();
-		pnlTotales.setBounds(12, 468, 1006, 88);
+		pnlTotales.setBounds(22, 497, 1033, 88);
 		getContentPane().add(pnlTotales);
 		pnlTotales.setLayout(null);
 
@@ -1071,7 +1071,7 @@ public class VentaPanel extends JFrame
 		JLabel lblCuotaCant = new JLabel("CuotaCant:");
 		lblCuotaCant.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCuotaCant.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblCuotaCant.setBounds(399, 46, 143, 30);
+		lblCuotaCant.setBounds(399, 46, 86, 30);
 		pnlTotales.add(lblCuotaCant);
 
 		JLabel lblVence = new JLabel("Vence:");
@@ -1089,7 +1089,7 @@ public class VentaPanel extends JFrame
 				tfCuotaCant.selectAll();
 			}
 		});
-		tfCuotaCant.setBounds(542, 46, 105, 30);
+		tfCuotaCant.setBounds(495, 46, 98, 30);
 		pnlTotales.add(tfCuotaCant);
 		tfCuotaCant.addKeyListener(new KeyAdapter() {
 			@Override
@@ -1121,13 +1121,13 @@ public class VentaPanel extends JFrame
 		lblDesc = new JLabel("Desc.:");
 		lblDesc.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblDesc.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblDesc.setBounds(456, 12, 86, 30);
+		lblDesc.setBounds(412, 12, 74, 30);
 		pnlTotales.add(lblDesc);
 
 		JLabel lblObs = new JLabel("Obs.:");
 		lblObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblObs.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblObs.setBounds(639, 46, 51, 30);
+		lblObs.setBounds(603, 46, 50, 30);
 		pnlTotales.add(lblObs);
 
 		tfDescuento = new JTextField();
@@ -1139,7 +1139,7 @@ public class VentaPanel extends JFrame
 				tfDescuento.selectAll();
 			}
 		});
-		tfDescuento.setBounds(542, 12, 105, 30);
+		tfDescuento.setBounds(496, 12, 98, 30);
 		pnlTotales.add(tfDescuento);
 		tfDescuento.addKeyListener(new KeyAdapter() {
 			@Override
@@ -1180,7 +1180,7 @@ public class VentaPanel extends JFrame
 				}
 			}
 		});
-		tfObs.setBounds(701, 46, 250, 30);
+		tfObs.setBounds(656, 46, 340, 30);
 		pnlTotales.add(tfObs);
 		tfObs.setColumns(10);
 
@@ -1198,11 +1198,11 @@ public class VentaPanel extends JFrame
 		JLabel lblTotal = new JLabel("Total:");
 		lblTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblTotal.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblTotal.setBounds(639, 12, 51, 30);
+		lblTotal.setBounds(604, 12, 42, 30);
 		pnlTotales.add(lblTotal);
 
 		tfTotal = new JTextField();
-		tfTotal.setBounds(701, 12, 130, 30);
+		tfTotal.setBounds(656, 12, 98, 30);
 		pnlTotales.add(tfTotal);
 		tfTotal.setEditable(false);
 		tfTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1217,20 +1217,20 @@ public class VentaPanel extends JFrame
 		label_2.setHorizontalAlignment(SwingConstants.CENTER);
 		label_2.setForeground(Color.RED);
 		label_2.setFont(new Font("Dialog", Font.BOLD, 20));
+		
+				lblCamposObligatorios = new JLabel("Campos Obligatorios");
+				lblCamposObligatorios.setBounds(791, 10, 205, 25);
+				pnlTotales.add(lblCamposObligatorios);
+				lblCamposObligatorios.setFont(new Font("Dialog", Font.BOLD, 20));
 
 		label_4 = new JLabel("*");
+		label_4.setBounds(767, 13, 14, 25);
+		pnlTotales.add(label_4);
 		label_4.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_4.setHorizontalAlignment(SwingConstants.CENTER);
 		label_4.setToolTipText("Campos obligatorios");
 		label_4.setForeground(Color.RED);
 		label_4.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_4.setBounds(12, 443, 14, 25);
-		getContentPane().add(label_4);
-
-		lblCamposObligatorios = new JLabel("Campos Obligatorios");
-		lblCamposObligatorios.setFont(new Font("Dialog", Font.BOLD, 20));
-		lblCamposObligatorios.setBounds(32, 443, 299, 25);
-		getContentPane().add(lblCamposObligatorios);
 		// vistaDescuentoTotal();
 	}
 
@@ -2128,6 +2128,7 @@ public class VentaPanel extends JFrame
 						int lanzCaja = conf.getHabilitaLanzamientoCaja();
 						try {
 						Venta v = ventaService.save(lanzCaja, venta, clienteNuevo, tfCondicionPago.getSelectedItem().toString());
+						tfVentaId.setText(v.getId()+"");
 							Notifications.showAlert("Venta registrado con exito.!");
 							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AGROPROGRESO",
 									JOptionPane.OK_CANCEL_OPTION);
@@ -3065,23 +3066,23 @@ public class VentaPanel extends JFrame
 	}
 
 	@Override
-	public void imprimirNota() {
+	public void imprimirNota(boolean impresora) {
 		ImpresionUtil.performNota(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"000", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion);
+				itemTableModel.getEntities(), this.fechaImpresion, impresora);
 		clearForm();
 	}
 
 	@Override
-	public void imprimirFactura() {
+	public void imprimirFactura(boolean impresora) {
 
 		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion);
+				itemTableModel.getEntities(), this.fechaImpresion, impresora);
 		clearForm();
 	}
 
@@ -3150,4 +3151,16 @@ public class VentaPanel extends JFrame
 	public void setImpuesto(int impuesto) {
 		this.impuesto = impuesto;
 	}
+
+//	@Override
+//	public void imprimirNota(boolean impresora) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void imprimirFactura(boolean impresora) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

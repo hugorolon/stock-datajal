@@ -4,9 +4,9 @@ public interface ImpresionPanelInterfaz {
 
 	void imprimirTicket();
 	
-	void imprimirNota();
+	void imprimirNota(boolean impresora);
 	
-	void imprimirFactura();
+	void imprimirFactura(boolean impresora);
 	
 	void cancelarImpresion();
 

@@ -29,6 +29,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AbstractDocument;
 
+import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -145,6 +146,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		this.marcaController= marcaController;
 
 		initComponents();
+		AutoCompleteDecorator.decorate(cbMarca);
 		Util.setupScreen(this);
 	}
 
@@ -869,9 +871,20 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	public void setInterfaz(ProductoInterfaz interfaz) {
 		this.interfaz = interfaz;
 	}
+	
+	
+	public MarcaComboBoxModel getMarcaComboBoxModel() {
+		return marcaComboBoxModel;
+	}
+
+	public void setMarcaComboBoxModel(MarcaComboBoxModel marcaComboBoxModel) {
+		this.marcaComboBoxModel = marcaComboBoxModel;
+	}
 
 	@Override
 	public void getEntity(Marca marca) {
+		marcaComboBoxModel.addElement(marca);
+		marcaComboBoxModel.setSelectedItem(marca);
 		// TODO Auto-generated method stub
 		
 	}

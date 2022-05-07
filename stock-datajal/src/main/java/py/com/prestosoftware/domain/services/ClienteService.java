@@ -41,6 +41,10 @@ public class ClienteService {
     	return repository.findByNombreContaining(name);
     }
 
+    public Cliente findByNombreEquals(String name) {
+    	return repository.findByNombreEquals(name);
+    }
+    
     // Utilice el atributo rollbackFor de la anotación @Transactional para especificar una excepción específica, los datos se retrotraen.
     @Transactional
     // A Proxy is Created that wraps the function insert

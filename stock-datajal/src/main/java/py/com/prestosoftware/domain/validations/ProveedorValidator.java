@@ -17,7 +17,6 @@ public class ProveedorValidator extends ValidationSupport implements Validator<P
                 isNullOrEmptyString(proveedor.getRazonSocial()) ||
                 isNullOrEmptyString(proveedor.getRuc()) ||
                 isNullOrEmptyString(proveedor.getCelular()) ||
-                isNullOrEmptyString(proveedor.getEmail()) ||
                 isNullOrEmptyString(proveedor.getDireccion())) {
             return Optional.of(new ValidationError(REQUIRED_DATA_NOT_FILLED_OR_BAD_DATA));
         }

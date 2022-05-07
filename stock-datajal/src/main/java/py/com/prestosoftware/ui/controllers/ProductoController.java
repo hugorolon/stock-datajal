@@ -400,6 +400,7 @@ public class ProductoController extends AbstractFrameController {
             	productoPanel.dispose();	
             }
             cleanInputs();	
+            productoPanel.getMarcaComboBoxModel().setSelectedItem(product.getMarca());
         }
     }
 

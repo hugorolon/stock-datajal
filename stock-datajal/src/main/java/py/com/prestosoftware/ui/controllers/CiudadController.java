@@ -4,11 +4,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.Optional;
+
 import javax.annotation.PostConstruct;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 import py.com.prestosoftware.data.models.Ciudad;
 import py.com.prestosoftware.data.models.Departamento;
 import py.com.prestosoftware.domain.services.CiudadService;
@@ -17,6 +20,7 @@ import py.com.prestosoftware.domain.validations.CiudadValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.forms.CiudadFrame;
 import py.com.prestosoftware.ui.forms.CiudadPanel;
+import py.com.prestosoftware.ui.search.CiudadInterfaz;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 import py.com.prestosoftware.ui.shared.TableSearchPanel;
 import py.com.prestosoftware.ui.table.CiudadTableModel;
@@ -32,6 +36,8 @@ public class CiudadController extends AbstractFrameController {
     private CiudadService service;
     private DepartamentoComboBoxModel depComboModel;
     private DepartamentoService depService;
+    private String origen;
+    private Ciudad ciudad;
    
     @Autowired
     public CiudadController(CiudadFrame frame, CiudadTableModel tableModel, 
@@ -133,6 +139,12 @@ public class CiudadController extends AbstractFrameController {
             ValidationError validationError = errors.get();
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
+        	if(!origen.equalsIgnoreCase("MENU")) {
+            	formPanel.getInterfaz().getEntity(ciudad);
+            	setCiudad(ciudad);
+            	frame.dispose();	
+            }
+        	
             service.save(ciudad);
             tableModel.fireTableDataChanged();
             cleanInputs();
@@ -150,7 +162,32 @@ public class CiudadController extends AbstractFrameController {
     	frame.closeWindow();
     }
     
-    private void setData() {
+    
+    public Ciudad getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(Ciudad ciudad) {
+		this.ciudad = ciudad;
+	}
+
+	public void setInterfaz(CiudadInterfaz ciudadInterfaz) {
+    	frame.getFormPanel().setInterfaz(ciudadInterfaz);
+    }
+    
+    public CiudadInterfaz getInterfaz() {
+		return frame.getFormPanel().getInterfaz();
+	}
+	
+	public String getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+
+	private void setData() {
         int selectedRow = frame.getTablePanel().getTable().getSelectedRow();
         
         if (selectedRow != -1) {
