@@ -85,7 +85,7 @@
 					<text><![CDATA[P. UNIT.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="496" y="14" width="93" height="15" uuid="11a86221-be94-4d2e-b261-624ba0ae85fc"/>
+					<reportElement x="488" y="14" width="90" height="15" uuid="11a86221-be94-4d2e-b261-624ba0ae85fc"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" isBold="false"/>
 					</textElement>
@@ -124,21 +124,11 @@
 				<textFieldExpression><![CDATA[$P{condicion}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="228" y="78" width="270" height="17" uuid="1f2cf607-4c29-47e0-bf4b-3041c29f5517"/>
+				<reportElement x="150" y="78" width="348" height="17" uuid="1f2cf607-4c29-47e0-bf4b-3041c29f5517"/>
 				<textElement>
 					<font fontName="Arial Narrow" size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteNombre}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="150" y="78" width="74" height="15" uuid="91317290-5eec-4e86-9f92-a0ce59b80014">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.y" value="cm"/>
-				</reportElement>
-				<textElement>
-					<font fontName="Arial Narrow" size="9"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{clienteRucDv}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="150" y="94" width="100" height="13" uuid="fc401503-f57c-4908-a331-34c72ce06b8c"/>
@@ -211,7 +201,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[RUC - CLIENTE :]]></text>
+				<text><![CDATA[CLIENTE :]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="440" y="11" width="58" height="13" uuid="b266c550-e2b6-4f10-9a7b-8a380cc8a656">
@@ -336,7 +326,7 @@
 				<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.###;(#,##0.###-)">
-				<reportElement x="493" y="0" width="93" height="15" uuid="06242d85-7582-4e74-b19c-679d3dba2096">
+				<reportElement x="493" y="0" width="85" height="15" uuid="06242d85-7582-4e74-b19c-679d3dba2096">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Right">
@@ -367,7 +357,7 @@
 				<text><![CDATA[Nota para simples control de stock, carece de valor fiscal. Agradecemos su preferencia.]]></text>
 			</staticText>
 			<textField pattern="#,##0.###;(#,##0.###-)">
-				<reportElement x="488" y="6" width="100" height="21" uuid="76ec3f67-e65a-4b8e-ab98-bcd135b35478"/>
+				<reportElement x="488" y="6" width="90" height="21" uuid="76ec3f67-e65a-4b8e-ab98-bcd135b35478"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="10"/>
 				</textElement>

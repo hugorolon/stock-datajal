@@ -30,7 +30,7 @@
 				 FROM productos p, categorias a, marcas f, ventas v, venta_detalles i 
 				 WHERE 
 				 v.id = i.venta_id AND i.producto_id = p.id 
-				 AND v.situacion = 'PAGADO' 
+				 AND (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO') 
 				 AND p.marca_id = f.id 
 				 $P!{fechaFiltro}
 				
