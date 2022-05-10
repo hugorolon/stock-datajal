@@ -346,7 +346,7 @@ public class ImpresionUtil {
 	        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, beanColDataSource);
 	        
-	        JasperPrintManager.printReport(jasperPrint, false);
+	        JasperPrintManager.printReport(jasperPrint, true);
 			} catch (JRException e) {
 				e.printStackTrace();
 			} 
