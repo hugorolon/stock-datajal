@@ -1863,7 +1863,7 @@ public class FacturaLegalPanel extends JFrame
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				GlobalVars.USER , tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion, true);
+				itemTableModel.getEntities(), this.fechaImpresion, false);
 		clearForm();
 	}
 
