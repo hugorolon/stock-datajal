@@ -318,7 +318,8 @@ public class ImpresionUtil {
 	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"facturaLegal.jrxml";
 			//String ruta=new File("\\server")+File.separator+"reportes"+File.separator+"facturaLegal.jrxml";
 
-	        		dataSourteReport(items, parametros, ruta, impresora);
+	    	dataSourteReportFacturacion(items, parametros, ruta);
+	        		
 //	    	}
 	    } catch (Exception e) {
 	      e.printStackTrace();
@@ -333,6 +334,19 @@ public class ImpresionUtil {
 	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, beanColDataSource);
 	        
 	        JasperPrintManager.printReport(jasperPrint, !impresora);
+			} catch (JRException e) {
+				e.printStackTrace();
+			} 
+	}
+	
+	private static void dataSourteReportFacturacion(List lista, Map parametros, String ruta) {
+		try {
+	        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
+	        JasperDesign jasperDesign = JRXmlLoader.load(ruta);
+	        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+	        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, beanColDataSource);
+	        
+	        JasperPrintManager.printReport(jasperPrint, false);
 			} catch (JRException e) {
 				e.printStackTrace();
 			} 
