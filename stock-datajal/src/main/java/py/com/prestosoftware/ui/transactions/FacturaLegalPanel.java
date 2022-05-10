@@ -101,7 +101,6 @@ public class FacturaLegalPanel extends JFrame
 	private JPanel pnlTotales;
 	private JTable tbProductos;
 	private JLabel label;
-	private JLabel label_1;
 	private JLabel label_4;
 	private JLabel lblCamposObligatorios;
 	private JLabel label_5;
@@ -170,7 +169,7 @@ public class FacturaLegalPanel extends JFrame
 		getContentPane().setLayout(null);
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tabbedPane.setBounds(12, 106, 1043, 325);
+		tabbedPane.setBounds(12, 106, 1043, 373);
 		getContentPane().add(tabbedPane);
 
 		JPanel pnlProducto = new JPanel();
@@ -346,7 +345,7 @@ public class FacturaLegalPanel extends JFrame
 		pnlProducto.add(btnRemove);
 
 		JScrollPane scrollProducto = new JScrollPane();
-		scrollProducto.setBounds(6, 81, 1022, 205);
+		scrollProducto.setBounds(6, 81, 1022, 251);
 		pnlProducto.add(scrollProducto);
 
 		tbProductos = new JTable(itemTableModel) {
@@ -692,15 +691,6 @@ public class FacturaLegalPanel extends JFrame
 		label.setBounds(378, 6, 14, 30);
 		pnlCliente.add(label);
 
-		label_1 = new JLabel("*");
-		label_1.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_1.setToolTipText("Campos obligatorios");
-		label_1.setHorizontalAlignment(SwingConstants.CENTER);
-		label_1.setForeground(Color.RED);
-		label_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_1.setBounds(378, 42, 14, 30);
-		pnlCliente.add(label_1);
-
 		tfDvRuc = new JTextField();
 		tfDvRuc.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		tfDvRuc.setEnabled(false);
@@ -861,18 +851,18 @@ public class FacturaLegalPanel extends JFrame
 		pnlTotales.add(tfCondicionPago);
 
 		label_4 = new JLabel("*");
+		label_4.setBounds(649, 52, 14, 25);
+		pnlTotales.add(label_4);
 		label_4.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_4.setHorizontalAlignment(SwingConstants.CENTER);
 		label_4.setToolTipText("Campos obligatorios");
 		label_4.setForeground(Color.RED);
 		label_4.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_4.setBounds(12, 443, 14, 25);
-		getContentPane().add(label_4);
 
 		lblCamposObligatorios = new JLabel("Campos Obligatorios");
+		lblCamposObligatorios.setBounds(669, 52, 299, 25);
+		pnlTotales.add(lblCamposObligatorios);
 		lblCamposObligatorios.setFont(new Font("Dialog", Font.BOLD, 20));
-		lblCamposObligatorios.setBounds(32, 443, 299, 25);
-		getContentPane().add(lblCamposObligatorios);
 		// vistaDescuentoTotal();
 	}
 
