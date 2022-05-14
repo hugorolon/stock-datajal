@@ -370,12 +370,12 @@ public class MainController extends AbstractFrameController {
 //		registerOpenMenu(mainMenuFrame.getMnuLanzamiento(), (e) -> openLanzamientoCaja());
 		registerOpenMenu(mainMenuFrame.getMnuVenta(), (e) -> openVenta());
 		registerOpenMenu(mainMenuFrame.getMnuCompra(), (e) -> openCompraLocal());
-//		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
+		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
 //		registerOpenMenu(mainMenuFrame.getMnuTransferencia(), (e) -> openTransferencia());
 		registerOpenMenu(mainMenuFrame.getMnuTransformacion(), (e) -> openTransformacion());
 		registerOpenMenu(mainMenuFrame.getMnuFacturacion(), (e) -> openFacturacion());
-//		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
-//		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
+		registerOpenMenu(mainMenuFrame.getMnuDevolucionCompra(), (e) -> openDevolucionCompra());
+		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
 //		registerOpenMenu(mainMenuFrame.getMnuMoneda(), (e) -> openMoneda());
 //		registerOpenMenu(mainMenuFrame.getMnuCotizacion(), (e) -> openCotizacion());
 //		registerOpenMenu(mainMenuFrame.getMnuPlanDeCuenta(), (e) -> openPlanCuenta());

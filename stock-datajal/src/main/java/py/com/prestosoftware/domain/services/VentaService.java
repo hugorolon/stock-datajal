@@ -104,7 +104,7 @@ public class VentaService {
 	public Venta save(int lanzamientoCaja, Venta venta, Cliente clienteNuevo, String condicion) throws RuntimeException{
 		Venta v=new Venta();
 		venta.setId(getRowCount()+1);
-			if (clienteNuevo != null && clienteNuevo.getId()!=null && clienteNuevo.getId().intValue() == Long.valueOf(999).intValue()) {
+			if (clienteNuevo != null && clienteNuevo.getId()!=null && clienteNuevo.getId().intValue() == Long.valueOf(999999).intValue()) {
 				clienteNuevo.setId(null);
 				Cliente n = this.repositoryCliente.save(clienteNuevo);
 				venta.setCliente(n);

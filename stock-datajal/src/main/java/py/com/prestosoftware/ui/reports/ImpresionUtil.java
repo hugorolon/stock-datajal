@@ -24,6 +24,8 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import py.com.prestosoftware.data.models.CompraDetalle;
+import py.com.prestosoftware.data.models.PresupuestoDetalle;
 import py.com.prestosoftware.data.models.VentaDetalle;
 import py.com.prestosoftware.data.models.VentaDetalleTemporal;
 import py.com.prestosoftware.ui.helpers.Fechas;
@@ -326,6 +328,87 @@ public class ImpresionUtil {
 	    }
 	}
 	
+	public static void performPresupuesto(String cliente, String ruc, String telefono, String direccion, String nroVenta,
+			String vendedor, List<PresupuestoDetalle> items) {
+		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
+		try {
+			for (PresupuestoDetalle vd : items) {
+				vd.setSubtotal(vd.getCantidad()*vd.getPrecio());
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		Map<String, String> parametros = new HashMap<String, String>();
+		Locale espanol = new Locale("es","ES");
+		SimpleDateFormat sd=new SimpleDateFormat("dd ' de ' MMMM ' de ' yyyy", espanol);
+		String fecha= sd.format(new Date());
+		parametros.put("fecha", fecha.toUpperCase());
+		parametros.put("clienteNombre", cliente);
+	    parametros.put("clienteRucDv", ruc);
+	    parametros.put("clienteCelular", telefono);
+	    parametros.put("clienteDireccion", direccion);
+	    parametros.put("comprobante", nroVenta);
+	    
+	    parametros.put("empleadoNombre", vendedor);
+	    try {
+	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"presupuesto.jrxml";
+	    	System.out.println("ruta "+ruta);
+	    	dataSourteReportFacturacion(items, parametros, ruta);
+	        		
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	}
+	
+	
+	public static void performCompra(String proveedor, String ruc, String telefono, String direccion, String nroCompra,
+			String condicion, String vendedor, String  total, List<CompraDetalle> items) {
+		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
+		Map<String, String> parametros = new HashMap<String, String>();
+		SimpleDateFormat sd=new SimpleDateFormat("dd/MM/yyyy");
+		String fecha= sd.format(new Date());
+		parametros.put("fecha", fecha);
+	    parametros.put("clienteNombre", proveedor);
+	    parametros.put("clienteRucDv", ruc);
+	    parametros.put("clienteCelular", telefono);
+	    parametros.put("clienteDireccion", direccion);
+	    parametros.put("comprobante", nroCompra);
+	    
+	    String condicionValue = "";
+	    Calendar cal = Calendar.getInstance();
+	    cal.add(Calendar.MONTH, 1);
+	    Date fechaVencimiento=cal.getTime();
+	    String vencimiento="";
+	    SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+	    if (condicion.equalsIgnoreCase("contado")) {
+	    	parametros.put("contado", "X");
+	    	parametros.put("credito", "");
+	    	condicionValue = "CONTADO";
+	    } else {
+	    	parametros.put("credito", "X");
+	    	parametros.put("contado", "");
+	    	condicionValue = "CREDITO";
+	    	vencimiento="Vence  :"+sdf.format(fechaVencimiento);
+	    }
+	    parametros.put("vencimiento", vencimiento);
+	    parametros.put("condicion", condicionValue);
+	    parametros.put("empleadoNombre", vendedor);
+//	    parametros.put("subTotalExenta",FormatearValor.doubleAString(totalExenta));
+//	    parametros.put("subTotalIva5", FormatearValor.doubleAString(subTotalIva5));
+//	    parametros.put("subTotalIva10", FormatearValor.doubleAString(subTotalIva10));
+//	    parametros.put("totalIva5", FormatearValor.doubleAString(totalIva5));
+//	    parametros.put("totalIva10", FormatearValor.doubleAString(totalIva10));
+//	    parametros.put("totalIva", FormatearValor.doubleAString(totalIva5+totalIva10));
+	    parametros.put("totalGeneral", total);
+	    try {
+	    	String ruta = new File("reportes").getAbsolutePath() + File.separator+"notaCompra.jrxml";
+      		dataSourteReport(items, parametros, ruta, false);
+	    } catch (Exception e) {
+	      e.printStackTrace();
+	    }
+	}
+	
+	
 	private static void dataSourteReport(List lista, Map parametros, String ruta, boolean impresora) {
 		try {
 	        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(lista);
@@ -351,5 +434,6 @@ public class ImpresionUtil {
 				e.printStackTrace();
 			} 
 	}
+
 	
 }

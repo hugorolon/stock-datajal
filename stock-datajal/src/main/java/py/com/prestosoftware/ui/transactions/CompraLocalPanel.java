@@ -38,6 +38,7 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
 import javax.transaction.Transactional;
 
+import org.eclipse.swt.internal.C;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
@@ -87,6 +88,7 @@ import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
+import py.com.prestosoftware.ui.reports.ImpresionUtil;
 import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CompraInterfaz;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
@@ -131,6 +133,7 @@ public class CompraLocalPanel extends JFrame
 	private JLabel label_4;
 	private JLabel label_5;
 	private JLabel label_6;
+	private JLabel lblSituacion;
 	protected Action addAction;
 
 	private CompraService compraService;
@@ -484,7 +487,7 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblProveedor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblProveedor.text")); //$NON-NLS-1$
 		lblProveedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblProveedor.setBounds(185, 8, 76, 30);
+		lblProveedor.setBounds(276, 5, 76, 30);
 		pnlCliente.add(lblProveedor);
 
 		tfProveedorID = new JTextField();
@@ -520,14 +523,14 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfProveedorID.setText("");
 
-		tfProveedorID.setBounds(321, 4, 68, 30);
+		tfProveedorID.setBounds(404, 6, 53, 30);
 		pnlCliente.add(tfProveedorID);
 		tfProveedorID.setColumns(10);
 
 		tfNombre = new JTextField();
 		tfNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfNombre.setEditable(false);
-		tfNombre.setBounds(399, 4, 177, 30);
+		tfNombre.setBounds(467, 6, 381, 30);
 		pnlCliente.add(tfNombre);
 		tfNombre.setColumns(10);
 
@@ -535,14 +538,14 @@ public class CompraLocalPanel extends JFrame
 		tfRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfRuc.setEditable(false);
 		tfRuc.setColumns(10);
-		tfRuc.setBounds(784, 4, 86, 30);
+		tfRuc.setBounds(329, 38, 128, 30);
 		pnlCliente.add(tfRuc);
 
 		tfDireccion = new JTextField();
 		tfDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDireccion.setEditable(false);
 		tfDireccion.setColumns(10);
-		tfDireccion.setBounds(586, 4, 194, 30);
+		tfDireccion.setBounds(467, 38, 381, 30);
 		pnlCliente.add(tfDireccion);
 
 		tfFactura = new JTextField();
@@ -558,12 +561,12 @@ public class CompraLocalPanel extends JFrame
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfProveedorID.getText().isEmpty() && !tfFactura.getText().isEmpty()) {
-						if (validateFactura(tfProveedorID.getText(), tfFactura.getText())) {
+						//if (validateFactura(tfProveedorID.getText(), tfFactura.getText())) {
 							// Notifications.showAlert("Proveedor y Nro. de Factura ya han sido cargados.");
-							if (conf != null) {
-								tfProductoID.requestFocus();
-							}
-						}
+//							if (conf != null) {
+//								tfProductoID.requestFocus();
+//							}
+						//}
 						tfProductoID.requestFocus();
 					} else {
 						Notifications.showAlert("Debes ingresar Proveedor y/o Factura Nro.");
@@ -578,13 +581,13 @@ public class CompraLocalPanel extends JFrame
 		});
 
 		tfFactura.setColumns(10);
-		tfFactura.setBounds(321, 39, 68, 30);
+		tfFactura.setBounds(205, 38, 60, 30);
 		pnlCliente.add(tfFactura);
 
 		JLabel lblFactura = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblFactura.text")); //$NON-NLS-1$
 		lblFactura.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblFactura.setBounds(185, 38, 79, 30);
+		lblFactura.setBounds(145, 38, 79, 30);
 		pnlCliente.add(lblFactura);
 
 		tfFechaCompra = new JFormattedTextField(getFormatoFecha());
@@ -613,7 +616,7 @@ public class CompraLocalPanel extends JFrame
 
 		tfFechaCompra.setColumns(8);
 		tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
-		tfFechaCompra.setBounds(73, 38, 102, 30);
+		tfFechaCompra.setBounds(49, 38, 86, 30);
 		pnlCliente.add(tfFechaCompra);
 
 		JLabel lblFCompra = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -679,6 +682,7 @@ public class CompraLocalPanel extends JFrame
 		btnReimpresion.setMnemonic('R');
 		btnReimpresion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				imprimirFactura(false);
 			}
 		});
 		btnReimpresion.setBounds(289, 5, 101, 34);
@@ -748,7 +752,7 @@ public class CompraLocalPanel extends JFrame
 
 		tfCompraId = new JTextField();
 		tfCompraId.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCompraId.setBounds(73, 3, 76, 32);
+		tfCompraId.setBounds(52, 3, 83, 32);
 		pnlCliente.add(tfCompraId);
 		tfCompraId.addKeyListener(new KeyAdapter() {
 			@Override
@@ -776,13 +780,13 @@ public class CompraLocalPanel extends JFrame
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setForeground(Color.RED);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		label.setBounds(308, 2, 14, 30);
+		label.setBounds(390, 4, 15, 30);
 		pnlCliente.add(label);
 
 		JButton btnVer = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraLocalPanel.btnNewButton.text")); //$NON-NLS-1$
 		btnVer.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnVer.setBounds(152, 8, 23, 23);
+		btnVer.setBounds(145, 9, 30, 23);
 		pnlCliente.add(btnVer);
 
 		JButton btnAddProveedor = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -792,8 +796,18 @@ public class CompraLocalPanel extends JFrame
 			}
 		});
 		btnAddProveedor.setFont(new Font("Dialog", Font.BOLD, 18));
-		btnAddProveedor.setBounds(255, 4, 43, 30);
+		btnAddProveedor.setBounds(351, 6, 43, 30);
 		pnlCliente.add(btnAddProveedor);
+		
+		lblSituacion = new JLabel("VIGENTE"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblSituacion.setBounds(184, 5, 92, 24);
+		pnlCliente.add(lblSituacion);
+		
+		JLabel lblRucProveedor = new JLabel("RUC :"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblRucProveedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblRucProveedor.setBounds(276, 37, 55, 30);
+		pnlCliente.add(lblRucProveedor);
 		btnVer.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -1130,6 +1144,7 @@ public class CompraLocalPanel extends JFrame
 							Compra c = compraService.save(lanzCaja, compra, tfCondicion.getSelectedItem().toString());
 							if (c != null) {
 								Notifications.showAlert("Compra registrado correctamente.!");
+								imprimirFactura(false);
 							}
 						}catch (Exception e) {
 							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
@@ -1251,6 +1266,15 @@ public class CompraLocalPanel extends JFrame
 		}
 
 		productoService.updateStock(productos);
+	}
+	
+	public void imprimirFactura(boolean impresora) {
+		ImpresionUtil.performCompra(tfNombre.getText(), tfRuc.getText() ,
+				"(0983) 518 217", tfDireccion.getText(), tfCompraId.getText(),
+				tfCondicion.getSelectedItem().toString(),
+				GlobalVars.USER , tfTotalGeneral.getText(),
+				itemTableModel.getEntities());
+		clearForm();
 	}
 
 	private void removeMovCaja(Compra compra) {
@@ -1706,11 +1730,7 @@ public class CompraLocalPanel extends JFrame
 	public void getEntity(Compra c) {
 		if (c != null) {
 			setCompraSeleccionado(c);
-			btnAnular.setVisible(true);
-			btnReimpresion.setVisible(true);
-			btnGuardar.setVisible(false);
-			btnAdd.setEnabled(false);
-			btnRemove.setEnabled(false);
+			habilitaReimpresion(c.getSituacion());
 			loadCompra(c);
 		}
 	}
@@ -1737,7 +1757,9 @@ public class CompraLocalPanel extends JFrame
 		try {
 			Optional<Compra> compra = compraService.findById(id);
 			if (compra.isPresent()) {
+				setCompraSeleccionado(compra.get());
 				loadCompra(compra.get());
+				habilitaReimpresion(compra.get().getSituacion());
 			} else {
 				tfProveedorID.requestFocus();
 			}			
@@ -1745,6 +1767,23 @@ public class CompraLocalPanel extends JFrame
 			// TODO: handle exception
 		}
 	}
+
+	private void habilitaReimpresion(String situacion) {
+		if(!situacion.equalsIgnoreCase("ANULADO")) {
+			btnAnular.setVisible(true);
+			btnReimpresion.setVisible(true);
+			btnGuardar.setVisible(false);
+			
+		}else {
+			btnAnular.setVisible(false);
+			btnReimpresion.setVisible(false);
+			btnGuardar.setVisible(false);
+		}
+		lblSituacion.setText(situacion);
+		btnAdd.setEnabled(false);
+		btnRemove.setEnabled(false);
+	}
+
 
 	private void loadCompra(Compra c) {
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
@@ -1779,6 +1818,7 @@ public class CompraLocalPanel extends JFrame
 		btnAnular.setVisible(false);
 		btnReimpresion.setVisible(false);
 		btnGuardar.setVisible(true);
+		lblSituacion.setText("VIGENTE");
 		tfProveedorID.requestFocus();
 	}
 
@@ -1804,8 +1844,15 @@ public class CompraLocalPanel extends JFrame
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
 		}
+		btnAnular.setVisible(false);
+		btnReimpresion.setVisible(false);
+		btnGuardar.setVisible(true);
+		btnAdd.setEnabled(true);
+		btnRemove.setEnabled(true);
 	}
 
+	
+	
 	@Override
 	public void getEntity(CondicionPago condicionPago) {
 		if (condicionPago != null) {

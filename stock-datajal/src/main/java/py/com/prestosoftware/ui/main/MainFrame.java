@@ -131,6 +131,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuConfig;
 	private JMenuItem mnuCondicionDePago;
 	private JMenuItem mnuFacturacion;
+	private JMenuItem mntmNewMenuItem;
 
 	/**
 	 * Create the frame.
@@ -268,13 +269,13 @@ public class MainFrame extends JFrame {
 		mnuMovimientos.add(mnuCompra);
 //		mnuPDV = new JMenuItem("PDV");
 //		mnuMovimientos.add(mnuPDV);
-//		mnuMovimientos.addSeparator();
+		mnuMovimientos.addSeparator();
 		
-//		mnuPresupuesto = new JMenuItem("PRESUPUESTOS");
-//		mnuPresupuesto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
+		mnuPresupuesto = new JMenuItem("PRESUPUESTOS");
+		mnuPresupuesto.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_U, InputEvent.ALT_MASK));
 //		
-//		mnuMovimientos.add(mnuPresupuesto);
-//		mnuMovimientos.addSeparator();
+		mnuMovimientos.add(mnuPresupuesto);
+		mnuMovimientos.addSeparator();
 		
 		//mnuMovimientos.addSeparator();
 		
@@ -319,9 +320,14 @@ public class MainFrame extends JFrame {
 //		mnuTransferencia = new JMenuItem("TRANSFERENCIA");
 //		mnuTransferencia.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.ALT_MASK));
 //		mnuMovimientos.add(mnuTransferencia);
-//		mnuMovimientos.addSeparator();
-//		mnuMovimientos.add(mnuDevolucion);
-//		mnuMovimientos.addSeparator();
+		mnuMovimientos.add(mnuDevolucion);
+		mnuDevolucionVenta = new JMenuItem("VENTAS");
+		mnuDevolucion.add(mnuDevolucionVenta);
+		mnuDevolucion.addSeparator();
+		mnuDevolucionCompra = new JMenuItem("COMPRAS");
+		mnuDevolucion.add(mnuDevolucionCompra);
+
+		mnuMovimientos.addSeparator();
 		mnuTransformacion = new JMenuItem("TRANSFORMACION DE PRODUCTOS");
 		mnuTransformacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuTransformacion.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.ALT_MASK));
@@ -331,11 +337,7 @@ public class MainFrame extends JFrame {
 		mnuFacturacion.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuMovimientos.add(mnuFacturacion);
 		
-//		mnuDevolucionVenta = new JMenuItem("VENTAS");
-//		mnuDevolucion.add(mnuDevolucionVenta);
-//		mnuDevolucion.addSeparator();
-//		mnuDevolucionCompra = new JMenuItem("COMPRAS");
-//		mnuDevolucion.add(mnuDevolucionCompra);
+		
 		
 //		mnAjustes = new JMenu("AJUSTES STOCK");
 //		mnuMovimientos.add(mnAjustes);

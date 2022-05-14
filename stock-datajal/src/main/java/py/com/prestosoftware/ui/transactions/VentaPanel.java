@@ -2108,8 +2108,8 @@ public class VentaPanel extends JFrame
 					ValidationError validationError = errors.get();
 					Notifications.showFormValidationAlert(validationError.getMessage());
 				} else {
-					if (tfClienteID.getText().equalsIgnoreCase("999")) {
-						clienteNuevo.setId(Long.valueOf(999));
+					if (tfClienteID.getText().equalsIgnoreCase("999999")) {
+						clienteNuevo.setId(999999l);
 						clienteNuevo.setActivo(1);
 						clienteNuevo.setCiruc(tfClienteRuc.getText());
 						clienteNuevo.setCiudad(new Ciudad(Long.valueOf(1)));
@@ -2439,7 +2439,7 @@ public class VentaPanel extends JFrame
 			return false;
 		}
 
-		if (!tfClienteID.getText().equalsIgnoreCase("999")) {
+		if (!tfClienteID.getText().equalsIgnoreCase("999999")) {
 			Optional<Cliente> cliente = clienteService.findById(Long.valueOf(tfClienteID.getText()));
 
 			if (!cliente.isPresent()) {
@@ -2578,10 +2578,15 @@ public class VentaPanel extends JFrame
 			} else {
 				Notifications.showAlert("Cliente no registrado, al confirmar la venta estará registrado!");
 				Optional<ClientePais> clientePais = Optional.of(clientePaisService.findByRuc(ciRuc));
-				setClienteSET(clientePais);
+				if (clientePais.isPresent())
+					setClienteSET(clientePais);
+					else
+						tfClienteID.requestFocus();
 			}
 		} catch (Exception e) {
 			Notifications.showAlert("Problemas en la busqueda, intente nuevamente!");
+			clearForm();
+			tfClienteRuc.requestFocus();
 		}
 	}
 
@@ -2633,8 +2638,9 @@ public class VentaPanel extends JFrame
 		tfDvRuc.setText("");
 		tfClienteDireccion.setText("");
 		if (clientePai.get() != null) {
-			tfClienteID.setText("999");
-			tfClienteNombre.setText(clientePai.get().getRazonSocial());
+			tfClienteID.setText("999999");
+			String[] razonS=clientePai.get().getRazonSocial().split(",");
+			tfClienteNombre.setText(razonS[1]+" "+razonS[0]);
 			tfClienteRuc.setText(clientePai.get().getCiruc());
 			tfClienteDireccion.setText("");
 			tfDvRuc.setText(clientePai.get().getDvruc());

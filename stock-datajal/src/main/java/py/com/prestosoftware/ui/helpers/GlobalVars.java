@@ -1,5 +1,7 @@
 package py.com.prestosoftware.ui.helpers;
 
+import java.io.File;
+
 public class GlobalVars {
 
 	public static Long USER_ID = 1L;
@@ -10,6 +12,7 @@ public class GlobalVars {
 	public static String EMPRESA_RUC = "";
 	public static String EMPRESA_TEL = "";
 	public static Long DEPOSITO_ID = 1L;
+	public static String PATH_REPORT = File.pathSeparator+"server"+File.pathSeparator+"reportes";
 	
 	//MONEDA BASE
 	public static Long BASE_MONEDA_ID;
