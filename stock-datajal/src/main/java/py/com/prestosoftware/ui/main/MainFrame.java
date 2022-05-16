@@ -132,6 +132,10 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuCondicionDePago;
 	private JMenuItem mnuFacturacion;
 	private JMenuItem mntmNewMenuItem;
+	private JMenu mnuInfProductosComprados;
+	private JMenuItem mnuComprasPorDeposito;
+	private JMenu mnuInfProductosVendidos;
+	private JMenuItem mnuVentasPorDeposito;
 
 	/**
 	 * Create the frame.
@@ -471,6 +475,19 @@ public class MainFrame extends JFrame {
 		mnuInfResumenUtilidadProducto.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfEstadoFinanciero.add(mnuInfResumenUtilidadProducto);
 		mnuRelatorios.add(mnuInfEstadoFinanciero);
+		
+		mnuInfProductosComprados = new JMenu("INFORME DE PRODUCTOS COMPRADOS");
+		mnuRelatorios.add(mnuInfProductosComprados);
+		
+		mnuComprasPorDeposito = new JMenuItem("POR DEPOSITO");
+		mnuInfProductosComprados.add(mnuComprasPorDeposito);
+		
+		mnuInfProductosVendidos = new JMenu("INFORME DE PRODUCTOS VENDIDOS");
+		mnuRelatorios.add(mnuInfProductosVendidos);
+		
+		mnuVentasPorDeposito = new JMenuItem("POR DEPOSITO");
+		mnuInfProductosVendidos.add(mnuVentasPorDeposito);
+		
 		mnuInfCajas = new JMenu("CAJAS");
 		mnuInfCajas.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuInfResumenCajas= new JMenuItem("RESUMEN DETALLADO DE INGRESO EGRESO CAJA");
@@ -1009,6 +1026,22 @@ public class MainFrame extends JFrame {
 
 	public void setMnuFacturacion(JMenuItem mnuFacturacion) {
 		this.mnuFacturacion = mnuFacturacion;
+	}
+
+	public JMenuItem getMnuComprasPorDeposito() {
+		return mnuComprasPorDeposito;
+	}
+
+	public void setMnuComprasPorDeposito(JMenuItem mnuComprasPorDeposito) {
+		this.mnuComprasPorDeposito = mnuComprasPorDeposito;
+	}
+
+	public JMenuItem getMnuVentasPorDeposito() {
+		return mnuVentasPorDeposito;
+	}
+
+	public void setMnuVentasPorDeposito(JMenuItem mnuVentasPorDeposito) {
+		this.mnuVentasPorDeposito = mnuVentasPorDeposito;
 	}
 	
 	

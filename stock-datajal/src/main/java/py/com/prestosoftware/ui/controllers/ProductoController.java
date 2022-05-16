@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -138,33 +141,33 @@ public class ProductoController extends AbstractFrameController {
   
         registerAction(productoPanel.getBtnBuscador(), (e) -> findByName(productoPanel.getTfBuscador().getText()));
         
+        registerSelectRow(productoPanel.getTbProducto().getSelectionModel(), (e) -> setData());
+        
         registerKeyEvent(productoPanel.getTfBuscador(), new KeyListener() {
         	@Override
 			public void keyTyped(KeyEvent e) {}
-			
-			/*@Override
-			public void keyReleased(KeyEvent e) {
-				JTextField textField = (JTextField) e.getSource();
-				String text = textField.getText();
-				textField.setText(text.toUpperCase());
-				table1 = (DefaultTableModel) productoPanel.getTbProducto().getModel();
-				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
-				productoPanel.getTbProducto().setRowSorter(tr);
-				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
-			}*/
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					String name = productoPanel.getTfBuscador().getText();
 					findByName(name.toUpperCase());
-				}
+				} else if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
+					productoPanel.dispose();
+			    } else if(e.getKeyCode()==KeyEvent.VK_DOWN) {
+			    	productoPanel.getTbProducto().requestFocus();
+			    } 
 			}
 
 			@Override
 			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				textField.setText(text.toUpperCase());
+				DefaultTableModel table1 = (DefaultTableModel) productoPanel.getTbProducto().getModel();
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+				productoPanel.getTbProducto().setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
 			}
 		});
         
@@ -430,6 +433,28 @@ public class ProductoController extends AbstractFrameController {
         	depositoTableModel.addEntities(listProductoDeposito);*/
         }
     }
+    
+    private void loadData() {
+		int[] selectedRow = productoPanel.getTbProducto().getSelectedRows();
+		if (selectedRow.length > 0) {
+			
+			Long selectedId = (Long) productoPanel.getTbProducto().getValueAt(selectedRow[0], 0);
+
+			Producto producto= productos.stream().filter(p -> p.getId().equals(selectedId.longValue()))
+					  .findAny()
+					  .orElse(null);
+			
+			
+//			Long productoId = tableModel.getEntityByRow(selectedRow).getId();
+//			Producto p = service.getStockDepositoByProductoId(productoId);
+//			
+			if (producto != null) {
+				getStockProductosByDeposito(producto);
+				//getPreciosByProducto(producto);
+				//getDatosComplementarios(producto);
+			}
+	    }
+	}
 
 	public String getOrigen() {
 		return origen;

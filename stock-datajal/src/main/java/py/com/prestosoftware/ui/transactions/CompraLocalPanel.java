@@ -10,6 +10,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.nio.channels.IllegalBlockingModeException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1769,7 +1770,7 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void habilitaReimpresion(String situacion) {
-		if(!situacion.equalsIgnoreCase("ANULADO")) {
+		if(!situacion.equalsIgnoreCase("ANULADO")&&!situacion.equalsIgnoreCase("DEVOLUCION")) {
 			btnAnular.setVisible(true);
 			btnReimpresion.setVisible(true);
 			btnGuardar.setVisible(false);
@@ -1786,6 +1787,7 @@ public class CompraLocalPanel extends JFrame
 
 
 	private void loadCompra(Compra c) {
+		lblSituacion.setText(c.getSituacion());
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
 		tfFactura.setText(c.getFactura());
 		tfCompraId.setText(c.getId().toString());

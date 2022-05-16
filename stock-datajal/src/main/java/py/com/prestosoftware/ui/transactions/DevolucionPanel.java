@@ -155,7 +155,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         this.compraService = compraService;
         this.proveedorService = proveedorService;
     	    	
-    	setSize(900, 550);
+    	setSize(914, 571);
     	setTitle("REGISTRO DE DEVOLUCIONES");
     	setLocationRelativeTo(null);
         setResizable(false);
@@ -460,7 +460,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         		Util.validateNumero(e);
         	}
         });
-        tfRefId.setBounds(481, 6, 73, 30);
+        tfRefId.setBounds(481, 6, 61, 30);
         pnlCliente.add(tfRefId);
         tfRefId.setColumns(10);
         
@@ -511,7 +511,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         		Util.validateNumero(e);
         	}
         });
-        tfVendedorID.setBounds(481, 42, 73, 30);
+        tfVendedorID.setBounds(481, 42, 61, 30);
         pnlCliente.add(tfVendedorID);
         tfVendedorID.setColumns(10);
         
@@ -850,18 +850,26 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     private void findNotaById(Long id) {
     	String situacion = "PENDIENTE";
     	if (getTypeDevolucion().equals("VENTA")) {
-			Optional<Venta> venta = ventaService.findNota(id, situacion);
+			Optional<Venta> venta = ventaService.findById(id);
 			
 			if (venta.isPresent()) {
-				setDataVenta(venta.get());
+				if(venta.get().getSituacion().equalsIgnoreCase("ANULADO")) {
+					Notifications.showAlert("Boleta anulado no puede ser devuelto!");
+				}else {
+					setDataVenta(venta.get());
+				}
 			} else {
 				Notifications.showAlert("No existe Nro. de Venta con este codigo.!");
 			}
 		} else { // COMPRA
-			Optional<Compra> compra = compraService.findNota(id, situacion);
+			Optional<Compra> compra = compraService.findById(id);
 			
 			if (compra.isPresent()) {
-				setDataCompra(compra.get());
+				if(compra.get().getSituacion().equalsIgnoreCase("ANULADO")) {
+					Notifications.showAlert("Boleta anulado no puede ser devuelto!");
+				}else {
+					setDataCompra(compra.get());
+				}
 			} else {
 				Notifications.showAlert("No existe Nro. de Compra con este codigo.!");
 			}
@@ -909,19 +917,41 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     	setVendedor(v.getVendedor());
     	setCliente(v.getCliente());
     	setDeposito(v.getDeposito());
-
-    	if (!v.getItems().isEmpty()) {
-    		for (VentaDetalle e : v.getItems()) {
-    			DevolucionDetalle de = new DevolucionDetalle();
-        		de.setProductoId(e.getProductoId());
-        		de.setProducto(e.getProducto());
-        		de.setCantidad(e.getCantidad());
-        		de.setCosto(e.getPrecio());
-        		de.setSubtotal(e.getSubtotal());
-        		
-        		itemTableModel.addEntity(de);
+		List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
+		List<Object[]> listaItems = ventaService.retriveVentaDetalleByIdVenta(v.getId());
+		// venta_id, cantidad, precio, producto, producto_id, subtotal, id, iva
+		Double cantItem = 0d;
+		Double total = 0d;
+		for (Object[] object : listaItems) {
+			VentaDetalle det = new VentaDetalle();
+			det.setCantidad(Double.valueOf(object[1].toString()));
+			det.setPrecio(Double.valueOf(object[2].toString()));
+			if(object[3]==null) {
+				Producto p=  findProductoByIdReturn(Long.valueOf(object[4].toString()));
+				det.setProducto(p.getDescripcion());
+				det.setSubtotal(det.getCantidad()*det.getPrecio());
+			}else {
+				det.setProducto(object[3].toString());
+				det.setSubtotal(Double.valueOf(object[5].toString()));
 			}
+			det.setProductoId(Long.valueOf(object[4].toString()));
+			det.setIva(Integer.valueOf(object[7].toString()));
+			det.setDescripcionFiscal(object[8].toString());
+			cantItem+=det.getCantidad();
+			total+=det.getSubtotal();
+
+			listaDetalles.add(det);
+			
+			DevolucionDetalle de = new DevolucionDetalle();
+    		de.setProductoId(det.getProductoId());
+    		de.setProducto(det.getProducto());
+    		de.setCantidad(det.getCantidad());
+    		de.setCosto(det.getPrecio());
+    		de.setSubtotal(det.getSubtotal());
+    		
+    		itemTableModel.addEntity(de);
 		}
+    	
     }
     
     private void setCliente(Cliente c) {
@@ -930,6 +960,11 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     }
     
     private void setVendedor(Usuario u) {
+    	tfVendedorID.setText(String.valueOf(u.getId()));
+    	tfVendedor.setText(u.getUsuario());
+    }
+    
+    private void setUsuario(Usuario u) {
     	tfVendedorID.setText(String.valueOf(u.getId()));
     	tfVendedor.setText(u.getUsuario());
     }
@@ -946,6 +981,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     
     	setDeposito(c.getDeposito());
     	setProveedor(c.getProveedor());
+    	setUsuario(c.getUsuario());
     
     	if (!c.getItems().isEmpty()) {
     		for (CompraDetalle e : c.getItems()) {
@@ -1152,12 +1188,12 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     		
     		if (pOptional.isPresent()) {
     			Producto p = pOptional.get();
-    			Double stock = p.getStock() != null ? p.getStock():0;
+    			Double stock = p.getDepO1() != null ? p.getDepO1():0;
     			Double newQty = 0d;
     			
     			newQty = getTypeDevolucion().equals("COMPRA") ? stock - e.getCantidad():stock + e.getCantidad();
     			
-				p.setStock(newQty);
+				p.setDepO1(newQty);
 				productos.add(p);
     		}				
 		}
@@ -1199,7 +1235,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 		    	d.setVendedor(tfVendedorID.getText().isEmpty() ? new Usuario(1L):new Usuario(Long.valueOf(tfVendedorID.getText())));
 		    	d.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
 		    	d.setCredito((String)cbCondicion.getSelectedItem());
-		    	d.setComprobante("SIN COMPROBANTE");
+		    	d.setComprobante(tfNotaNro.getText());
 		    	d.setFecha(new Date());
 		    	d.setVencimiento(new Date());
 		    	d.setSituacion("PENDIENTE");
@@ -1265,7 +1301,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     				Optional<Producto> producto = productoService.findById(ditem.getProductoId());
 	    		
 	    		if (producto.isPresent()) {
-	    			Double stock = producto.get().getStock() != null ? producto.get().getStock():0;
+	    			Double stock = producto.get().getDepO1() != null ? producto.get().getDepO1():0;
     			
 	    			if (stock < ditem.getCantidad()) {	
 	    				sinStock = true;
@@ -1294,6 +1330,16 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     	
     	if (producto.isPresent()) {
     		setProducto(producto);
+		}
+    }
+    
+    private Producto findProductoByIdReturn(Long id) {
+    	Optional<Producto> producto = productoService.findById(id);
+    	
+    	if (producto.isPresent()) {
+    		return producto.get();
+		}else {
+			return null;
 		}
     }
     

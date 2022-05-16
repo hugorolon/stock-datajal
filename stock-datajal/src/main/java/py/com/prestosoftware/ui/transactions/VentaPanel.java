@@ -1899,7 +1899,7 @@ public class VentaPanel extends JFrame
 			else
 				tfCondicionPago.setSelectedIndex(1);
 
-			if (v.getSituacion().equalsIgnoreCase("1")||v.getSituacion().contentEquals("ANULADO"))
+			if (v.getSituacion().equalsIgnoreCase("1")||v.getSituacion().contentEquals("ANULADO")||v.getSituacion().contentEquals("DEVOLUCION"))
 				btnAnular.setVisible(false);
 			else
 				btnAnular.setVisible(true);

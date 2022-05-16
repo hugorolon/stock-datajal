@@ -73,10 +73,10 @@ import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
 import py.com.prestosoftware.ui.search.CuentaPagarDialog;
 import py.com.prestosoftware.ui.search.CuentaRecibirDialog;
 import py.com.prestosoftware.ui.search.DepositoDialog;
+import py.com.prestosoftware.ui.search.HistoricoCompraDialog;
+import py.com.prestosoftware.ui.search.HistoricoVentaDialog;
 import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
-import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.search.ProductoVistaDialog;
-import py.com.prestosoftware.ui.search.ProveedorDialog;
 import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
 //import py.com.prestosoftware.ui.shared.CompraPanel;
@@ -215,6 +215,10 @@ public class MainController extends AbstractFrameController {
 	private ConsultaBoletaDialog boletaPanel;
 	@Autowired
 	private ConsultaSaldoDeposito saldoDepositoPanel;
+	@Autowired
+	private HistoricoCompraDialog historicoCompraDialog;
+	@Autowired
+	private HistoricoVentaDialog historicoVentaDialog;
 	@Autowired
 	private CuentaRecibirDialog cuentaRecibirDialog;
 	@Autowired
@@ -395,6 +399,8 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuMovCajaEgreso(), (e) -> openCajaMovimientoEgreso());
 		registerOpenMenu(mainMenuFrame.getMnuMovCuentaARecibirCobroCliente(), (e) -> openCobroCliente());
 		registerOpenMenu(mainMenuFrame.getMnuMovCuentaAPagarPagoProveedor(), (e) -> openPagarProveedor());
+		registerOpenMenu(mainMenuFrame.getMnuComprasPorDeposito(), (e) -> openHistoricoCompras());
+		registerOpenMenu(mainMenuFrame.getMnuVentasPorDeposito(), (e) -> openHistoricoVentas());
 //		registerOpenMenu(mainMenuFrame.getMnuAjusteEntrada(), (e) -> openAjusteEntrada());
 //		registerOpenMenu(mainMenuFrame.getMnuAjusteSalida(), (e) -> openAjusteSalida());
 //		registerOpenMenu(mainMenuFrame.getMnuDevolucionVenta(), (e) -> openDevolucionVenta());
@@ -417,6 +423,14 @@ public class MainController extends AbstractFrameController {
 		openLoginForm();
 	}
 
+	private void openHistoricoCompras() {
+		historicoCompraDialog.setVisible(true);
+	}
+
+	private void openHistoricoVentas() {
+		historicoVentaDialog.setVisible(true);
+	}
+	
 	private void openCondicionPago() {
 		condicionPagoController.prepareAndOpenFrame();
 	}

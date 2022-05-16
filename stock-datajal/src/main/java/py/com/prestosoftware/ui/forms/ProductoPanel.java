@@ -26,7 +26,10 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -168,7 +171,22 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 		tbProducto = new JTable(productTableModel);
 		tbProducto.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbProducto.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+               
+            }
+        });
+		tbProducto.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		DefaultTableCellRenderer alignRenderer= new DefaultTableCellRenderer();
+		alignRenderer.setHorizontalAlignment(JLabel.CENTER);
 		tbProducto.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		tbProducto.getColumnModel().getColumn(0).setPreferredWidth(75);
+		tbProducto.getColumnModel().getColumn(0).setCellRenderer(alignRenderer);
+		tbProducto.getColumnModel().getColumn(1).setPreferredWidth(275);
 		scrollProducto.setViewportView(tbProducto);
 
 		pnlBuscador = new JPanel();
@@ -309,55 +327,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		});
 		pnlDatosPersonal.add(tfPrecioC);
 
-//		tfPrecioB = new JTextField();
-//		tfPrecioB.setNextFocusableComponent(tfPrecioC);
-//		tfPrecioB.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				tfPrecioB.selectAll();
-//			}
-//		});
-//		tfPrecioB.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-//					tfPrecioC.requestFocus();
-//				}
-//			}
-//
-//			@Override
-//			public void keyTyped(KeyEvent e) {
-//				Util.validateNumero(e);
-//			}
-//		});
-//		tfPrecioB.setBounds(118, 154, 163, 25);
-//		tfPrecioB.setColumns(10);
-//		tfPrecioB.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				tfPrecioB.selectAll();
-//			}
-//		});
-//		tfPrecioB.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_RIGHT) {
-//					tfPrecioC.requestFocus();
-//					Double precioB = FormatearValor.stringToDouble(tfPrecioB.getText());
-//					 tfPrecioB.setText(FormatearValor.doubleAString(precioB));
-//				}else {
-//					 if (e.getKeyCode() == KeyEvent.VK_UP) {
-//						 tfPrecioA.requestFocus();
-//					 }
-//				}
-//			}
-//
-//			@Override
-//			public void keyTyped(KeyEvent e) {
-//				Util.validateNumero(e);
-//			}
-//		});
-//		pnlDatosPersonal.add(tfPrecioB);
 
 		tfPrecioA = new JTextField();
 		tfPrecioA.addFocusListener(new FocusAdapter() {
@@ -576,6 +545,15 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		panelBotonera.add(btnCerrar);
 
 		tfBuscador = new JTextField();
+		
+		tfBuscador.addKeyListener(new KeyAdapter() {
+			
+		});
+		tfBuscador.addFocusListener(new FocusAdapter() {
+
+		});
+//		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+//	
 //		tfBuscador.addFocusListener(new FocusAdapter() {
 //			@Override
 //			public void focusGained(FocusEvent e) {
@@ -628,10 +606,10 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	public void setProductForm(Producto product) {
 		tfProductoId.setText(product.getId() + "");
 		// tfNombre.setText(product.getNombre());
-		tfDescripcion.setText(product.getDescripcion());
+		tfDescripcion.setText(product.getDescripcion()==null?"":product.getDescripcion());
 //		tfReferencia.setText(product.getReferencia());
 //		tfSubreferencia.setText(product.getSubreferencia());
-		tfOtrasReferencias.setText(product.getSubreferencia());
+		tfOtrasReferencias.setText(product.getSubreferencia()==null?"":product.getSubreferencia());
 		tfPrecioCompra.setText(
 				product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
 		
