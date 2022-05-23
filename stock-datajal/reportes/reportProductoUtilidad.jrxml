@@ -75,6 +75,9 @@ order by v.fecha asc]]>
 		<variableExpression><![CDATA[$V{porcentaje}.doubleValue()]]></variableExpression>
 		<initialValueExpression><![CDATA[0d]]></initialValueExpression>
 	</variable>
+	<variable name="ganancia" class="java.lang.Double">
+		<variableExpression><![CDATA[($V{totaliza}.doubleValue()/$V{totalizaVentas}.doubleValue())*100]]></variableExpression>
+	</variable>
 	<group name="Grupo">
 		<groupExpression><![CDATA[$F{fecha}]]></groupExpression>
 		<groupHeader>
@@ -340,7 +343,7 @@ order by v.fecha asc]]>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="51" splitType="Stretch">
+		<band height="58" splitType="Stretch">
 			<staticText>
 				<reportElement x="170" y="0" width="53" height="20" uuid="a09022ae-e26a-4845-a7be-fb1edb518dd3"/>
 				<textElement verticalAlignment="Middle">
@@ -373,11 +376,9 @@ order by v.fecha asc]]>
 				<textFieldExpression><![CDATA[$V{totaliza}]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00;(###0.00)">
-				<reportElement x="490" y="0" width="44" height="20" uuid="89cc7a11-fe8a-4d5c-9c53-1f8a0d30f3b6">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
+				<reportElement x="490" y="0" width="44" height="20" uuid="6b961f3c-38f6-4f1e-9b38-9ce9ddc50aad"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$V{promedioPorcentaje}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$V{ganancia}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

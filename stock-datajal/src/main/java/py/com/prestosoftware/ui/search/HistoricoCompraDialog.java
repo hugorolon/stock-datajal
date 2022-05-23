@@ -358,7 +358,7 @@ public class HistoricoCompraDialog extends JDialog {
 		String sql = "SELECT pro.id, pro.id as codigoProducto, pro.descripcion, "
 				+ "sum(ico.cantidad) as stock,ico.precio, sum(ico.cantidad * ico.precio)	as subtotal, com.id as nro, com.fecha  "
 				+ "FROM		productos pro, compras com, compra_detalles ico  "
-				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO') AND  com.ID = ico.compra_id "
+				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO' or com.situacion = '1') AND  com.ID = ico.compra_id "
 				+ "AND pro.id = ico.producto_id  ";
 		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
 			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
@@ -415,7 +415,7 @@ public class HistoricoCompraDialog extends JDialog {
 		String sql = "SELECT pro.id, pro.id as codigoProducto, pro.descripcion, "
 				+ "sum(ico.cantidad) as stock,ico.precio, sum(ico.cantidad * ico.precio)	as subtotal, com.id as nro, com.fecha  "
 				+ "FROM		productos pro, compras com, compra_detalles ico  "
-				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO') AND  com.ID = ico.compra_id "
+				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO'  or com.situacion = '1') AND  com.ID = ico.compra_id "
 				+ "AND pro.id = ico.producto_id  ";
 		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
 			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();

@@ -11,7 +11,7 @@ public class DevolucionTableModel extends DefaultTableModel<DevolucionDetalle> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] {"COD.", "CANT.", "DESC.", "VALOR", "TOTAL"};
+        return new String[] {"COD.", "CANT.", "DESC.", "VALOR", "TOTAL", "CANT. DEV."};
     }
 
     @Override
@@ -29,6 +29,8 @@ public class DevolucionTableModel extends DefaultTableModel<DevolucionDetalle> {
                 return item.getCosto();
             case 4:
                 return item.getSubtotal();
+            case 5:
+                return item.getCantidaddev();    
             default:
                 return "";
         }

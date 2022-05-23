@@ -52,6 +52,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.ui.table.ClienteComboBoxModel;
 import py.com.prestosoftware.ui.table.ProductoComboBoxModel;
 import py.com.prestosoftware.util.ConnectionUtils;
+import java.awt.FlowLayout;
 
 @Component
 public class HistoricoVentaDialog extends JDialog {
@@ -78,6 +79,7 @@ public class HistoricoVentaDialog extends JDialog {
 	private ClienteComboBoxModel clienteComboBoxModel;
 	private ProductoComboBoxModel productoComboBoxModel;
 	private ProductoService productoService;
+	private JPanel panel;
 
 	@Autowired
 	public HistoricoVentaDialog(
@@ -89,62 +91,38 @@ public class HistoricoVentaDialog extends JDialog {
 		this.productoComboBoxModel=productoComboBoxModel;
 		this.productoService =productoService;
 		
-		this.setSize(754, 395);
+		this.setSize(566, 281);
 		this.setModal(true);
 		this.setTitle("Historico de ventas de productos");
-
-		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setLayout(null);
 
 		JPanel pnlBuscador = new JPanel();
-		getContentPane().add(pnlBuscador, BorderLayout.WEST);
-								GridBagLayout gbl_pnlBuscador = new GridBagLayout();
-								gbl_pnlBuscador.columnWidths = new int[]{34, 67, 63, 61, 54, 0};
-								gbl_pnlBuscador.rowHeights = new int[]{21, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-								gbl_pnlBuscador.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
-								gbl_pnlBuscador.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-								pnlBuscador.setLayout(gbl_pnlBuscador);
+		pnlBuscador.setBounds(0, 0, 355, 244);
+		getContentPane().add(pnlBuscador);
+																						pnlBuscador.setLayout(null);
 																						
-																						lblCliente = new JLabel("Cliente"); //$NON-NLS-1$ //$NON-NLS-2$
-																						GridBagConstraints gbc_lblCliente = new GridBagConstraints();
-																						gbc_lblCliente.anchor = GridBagConstraints.WEST;
-																						gbc_lblCliente.insets = new Insets(0, 0, 5, 5);
-																						gbc_lblCliente.gridx = 1;
-																						gbc_lblCliente.gridy = 1;
-																						pnlBuscador.add(lblCliente, gbc_lblCliente);
+																						lblCliente = new JLabel("Cliente");
+																						lblCliente.setBounds(10, 34, 55, 13);
+																						pnlBuscador.add(lblCliente);
 																						
 																						cbCliente = new JComboBox<String>(clienteComboBoxModel);
-																						GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
-																						gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
-																						gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
-																						gbc_comboBox_1.gridx = 2;
-																						gbc_comboBox_1.gridy = 1;
-																						pnlBuscador.add(cbCliente, gbc_comboBox_1);
+																						cbCliente.setBounds(102, 30, 207, 21);
+																						pnlBuscador.add(cbCliente);
 																						
-																						lblProducto = new JLabel("Producto"); //$NON-NLS-1$ //$NON-NLS-2$
-																						GridBagConstraints gbc_lblProducto = new GridBagConstraints();
-																						gbc_lblProducto.anchor = GridBagConstraints.WEST;
-																						gbc_lblProducto.insets = new Insets(0, 0, 5, 5);
-																						gbc_lblProducto.gridx = 1;
-																						gbc_lblProducto.gridy = 2;
-																						pnlBuscador.add(lblProducto, gbc_lblProducto);
+																						lblProducto = new JLabel("Producto");
+																						lblProducto.setBounds(10, 60, 78, 13);
+																						pnlBuscador.add(lblProducto);
 																						
 																						cbProducto = new JComboBox<Producto>(productoComboBoxModel);
-																						GridBagConstraints gbc_comboBox = new GridBagConstraints();
-																						gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-																						gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-																						gbc_comboBox.gridx = 2;
-																						gbc_comboBox.gridy = 2;
-																						pnlBuscador.add(cbProducto, gbc_comboBox);
+																						cbProducto.setBounds(102, 56, 207, 21);
+																						pnlBuscador.add(cbProducto);
 																				
-																						lblNewLabel = new JLabel("Periodo"); //$NON-NLS-1$
-																						GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
-																						gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-																						gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
-																						gbc_lblNewLabel.gridx = 1;
-																						gbc_lblNewLabel.gridy = 3;
-																						pnlBuscador.add(lblNewLabel, gbc_lblNewLabel);
+																						lblNewLabel = new JLabel("Periodo");
+																						lblNewLabel.setBounds(10, 85, 78, 13);
+																						pnlBuscador.add(lblNewLabel);
 																				
 																						cbPeriodo = new JComboBox<String>();
+																						cbPeriodo.setBounds(102, 82, 103, 19);
 																						cbPeriodo.setModel(new DefaultComboBoxModel(new String[] { "Hoy", "Este mes", "Este año" }));
 																						cbPeriodo.addActionListener(new ActionListener() {
 																							public void actionPerformed(ActionEvent arg0) {
@@ -178,66 +156,37 @@ public class HistoricoVentaDialog extends JDialog {
 																								}
 																							}
 																						});
-																						
-																								GridBagConstraints gbc_cbPeriodo = new GridBagConstraints();
-																								gbc_cbPeriodo.anchor = GridBagConstraints.WEST;
-																								gbc_cbPeriodo.insets = new Insets(0, 0, 5, 5);
-																								gbc_cbPeriodo.gridx = 2;
-																								gbc_cbPeriodo.gridy = 3;
-																								pnlBuscador.add(cbPeriodo, gbc_cbPeriodo);
+																								pnlBuscador.add(cbPeriodo);
 																								
 																										lblFechaInicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																												.getString("CuentaRecibirDialog.lblNewLabel_1.text")); //$NON-NLS-1$
-																										GridBagConstraints gbc_lblFechaInicio = new GridBagConstraints();
-																										gbc_lblFechaInicio.anchor = GridBagConstraints.WEST;
-																										gbc_lblFechaInicio.insets = new Insets(0, 0, 5, 5);
-																										gbc_lblFechaInicio.gridx = 1;
-																										gbc_lblFechaInicio.gridy = 4;
-																										pnlBuscador.add(lblFechaInicio, gbc_lblFechaInicio);
+																												.getString("CuentaRecibirDialog.lblNewLabel_1.text"));
+																										lblFechaInicio.setBounds(10, 110, 82, 13);
+																										pnlBuscador.add(lblFechaInicio);
 																								
 																										tfFechaInicial = new JXDatePicker();
 																										tfFechaInicial.setFormats("dd/MM/yyyy");
-																										// tfFechaInicial.setText(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages").getString("CuentaRecibirDialog.textField.text"));
-																										// //$NON-NLS-1$ //$NON-NLS-2$
-																										
-																										GridBagConstraints gbc_tfFechaInicial = new GridBagConstraints();
-																										gbc_tfFechaInicial.anchor = GridBagConstraints.NORTHWEST;
-																										gbc_tfFechaInicial.insets = new Insets(0, 0, 5, 5);
-																										gbc_tfFechaInicial.gridx = 2;
-																										gbc_tfFechaInicial.gridy = 4;
-																										pnlBuscador.add(tfFechaInicial, gbc_tfFechaInicial);
-																										tfFechaInicial.setBounds(100, 100, 50, 50);
+																										pnlBuscador.add(tfFechaInicial);
+																										tfFechaInicial.setBounds(102, 106, 103, 21);
 																										tfFechaInicial.setDate(new Date());
 																								
 																										lblFechaFin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																												.getString("CuentaRecibirDialog.lblFechaFin.text")); //$NON-NLS-1$
-																										GridBagConstraints gbc_lblFechaFin = new GridBagConstraints();
-																										gbc_lblFechaFin.anchor = GridBagConstraints.WEST;
-																										gbc_lblFechaFin.insets = new Insets(0, 0, 5, 5);
-																										gbc_lblFechaFin.gridx = 1;
-																										gbc_lblFechaFin.gridy = 5;
-																										pnlBuscador.add(lblFechaFin, gbc_lblFechaFin);
+																												.getString("CuentaRecibirDialog.lblFechaFin.text"));
+																										lblFechaFin.setBounds(10, 136, 68, 13);
+																										pnlBuscador.add(lblFechaFin);
 																								
 																										tfFechaFinal = new JXDatePicker();
+																										tfFechaFinal.setBounds(102, 132, 103, 21);
 																										tfFechaFinal.setFormats("dd/MM/yyyy");
-																										GridBagConstraints gbc_tfFechaFinal = new GridBagConstraints();
-																										gbc_tfFechaFinal.insets = new Insets(0, 0, 5, 5);
-																										gbc_tfFechaFinal.anchor = GridBagConstraints.NORTHWEST;
-																										gbc_tfFechaFinal.gridx = 2;
-																										gbc_tfFechaFinal.gridy = 5;
-																										pnlBuscador.add(tfFechaFinal, gbc_tfFechaFinal);
+																										pnlBuscador.add(tfFechaFinal);
 																										tfFechaFinal.setDate(new Date());
 																						
 																								lblOrdenadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																										.getString("CuentaRecibirDialog.lblOrdenadoPor.text")); //$NON-NLS-1$
-																								GridBagConstraints gbc_lblOrdenadoPor = new GridBagConstraints();
-																								gbc_lblOrdenadoPor.anchor = GridBagConstraints.WEST;
-																								gbc_lblOrdenadoPor.insets = new Insets(0, 0, 5, 5);
-																								gbc_lblOrdenadoPor.gridx = 1;
-																								gbc_lblOrdenadoPor.gridy = 6;
-																								pnlBuscador.add(lblOrdenadoPor, gbc_lblOrdenadoPor);
+																										.getString("CuentaRecibirDialog.lblOrdenadoPor.text"));
+																								lblOrdenadoPor.setBounds(10, 161, 96, 13);
+																								pnlBuscador.add(lblOrdenadoPor);
 																								
 																										cbOrden = new JComboBox<String>();
+																										cbOrden.setBounds(102, 158, 103, 19);
 																										cbOrden.setModel(new DefaultComboBoxModel(new String[] { "Codigo", "Nombre" }));
 																										cbOrden.addActionListener(new ActionListener() {
 																											public void actionPerformed(ActionEvent arg0) {
@@ -248,12 +197,7 @@ public class HistoricoVentaDialog extends JDialog {
 //				}
 																											}
 																										});
-																										GridBagConstraints gbc_cbOrden = new GridBagConstraints();
-																										gbc_cbOrden.anchor = GridBagConstraints.WEST;
-																										gbc_cbOrden.insets = new Insets(0, 0, 5, 5);
-																										gbc_cbOrden.gridx = 2;
-																										gbc_cbOrden.gridy = 6;
-																										pnlBuscador.add(cbOrden, gbc_cbOrden);
+																										pnlBuscador.add(cbOrden);
 
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();
@@ -263,57 +207,53 @@ public class HistoricoVentaDialog extends JDialog {
 		loadClientes();
 		AutoCompleteDecorator.decorate(cbCliente);
 		AutoCompleteDecorator.decorate(cbProducto);
-								btnPrevisualizar = new JButton("Previsualizar"); //$NON-NLS-1$ //$NON-NLS-2$
-								GridBagConstraints gbc_btnPrevisualizar = new GridBagConstraints();
-								gbc_btnPrevisualizar.insets = new Insets(0, 0, 0, 5);
-								gbc_btnPrevisualizar.gridx = 1;
-								gbc_btnPrevisualizar.gridy = 8;
-								pnlBuscador.add(btnPrevisualizar, gbc_btnPrevisualizar);
-								btnPrevisualizar.addKeyListener(new KeyAdapter() {
-									@Override
-									public void keyPressed(KeyEvent e) {
-										if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-											preview();
-										}
-									}
-								});
-								btnPrevisualizar.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										preview();
-									}
-								});
+						
+						panel = new JPanel();
+						panel.setBounds(365, 0, 173, 244);
+						getContentPane().add(panel);
+						panel.setLayout(null);
+						btnPrevisualizar = new JButton("Previsualizar");
+						btnPrevisualizar.setBounds(38, 58, 103, 21);
+						panel.add(btnPrevisualizar);
 						
 								btnImprimir = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-										.getString("CuentaRecibirDialog.btnImprimir.text")); //$NON-NLS-1$
-								GridBagConstraints gbc_btnImprimir = new GridBagConstraints();
-								gbc_btnImprimir.insets = new Insets(0, 0, 0, 5);
-								gbc_btnImprimir.gridx = 2;
-								gbc_btnImprimir.gridy = 8;
-								pnlBuscador.add(btnImprimir, gbc_btnImprimir);
+										.getString("CuentaRecibirDialog.btnImprimir.text"));
+								btnImprimir.setBounds(38, 108, 103, 21);
+								panel.add(btnImprimir);
+								
+										btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+												.getString("ClienteDialog.btnCancelar.text"));
+										btnCancelar.setBounds(38, 161, 103, 21);
+										panel.add(btnCancelar);
+										btnCancelar.addKeyListener(new KeyAdapter() {
+											@Override
+											public void keyPressed(KeyEvent e) {
+												if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+													dispose();
+												}
+											}
+										});
+										btnCancelar.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) {
+												dispose();
+											}
+										});
 								btnImprimir.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
 										print();
 									}
 								});
-				
-						btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-								.getString("ClienteDialog.btnCancelar.text")); //$NON-NLS-1$
-						GridBagConstraints gbc_btnCancelar = new GridBagConstraints();
-						gbc_btnCancelar.insets = new Insets(0, 0, 0, 5);
-						gbc_btnCancelar.gridx = 3;
-						gbc_btnCancelar.gridy = 8;
-						pnlBuscador.add(btnCancelar, gbc_btnCancelar);
-						btnCancelar.addKeyListener(new KeyAdapter() {
+						btnPrevisualizar.addKeyListener(new KeyAdapter() {
 							@Override
 							public void keyPressed(KeyEvent e) {
 								if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-									dispose();
+									preview();
 								}
 							}
 						});
-						btnCancelar.addActionListener(new ActionListener() {
+						btnPrevisualizar.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								dispose();
+								preview();
 							}
 						});
 	}
@@ -330,7 +270,7 @@ public class HistoricoVentaDialog extends JDialog {
 				+ "i.cantidad AS stock, i.cantidad * i.precio AS subtotal, v.fecha "
 				+ "FROM productos p, ventas v, venta_detalles i  "
 				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id "
-				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO') ";
+				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO'  or v.situacion = '1') ";
 		if (cbCliente.getSelectedItem() != null && cbCliente.getSelectedItem().toString().length() > 0) {
 			 String clienteNombre= cbCliente.getSelectedItem().toString();
 			 Cliente c = (Cliente)clienteService.findByNombreEquals(clienteNombre);
@@ -388,7 +328,7 @@ public class HistoricoVentaDialog extends JDialog {
 				+ "i.cantidad AS cantidad, i.cantidad * i.precio AS total "
 				+ "FROM productos p, ventas v, venta_detalles i  "
 				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id "
-				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO') ";
+				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO'  or v.situacion = '1') ";
 		if (cbCliente.getSelectedItem() != null && cbCliente.getSelectedItem().toString().length() > 0) {
 			Cliente c = (Cliente) cbCliente.getSelectedItem();
 			cliente = c.getId() + " - " + c.getNombre();

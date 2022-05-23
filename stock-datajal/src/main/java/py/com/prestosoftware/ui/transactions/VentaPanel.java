@@ -2522,6 +2522,7 @@ public class VentaPanel extends JFrame
 		tfCuotaCant.setEnabled(false);
 		tbProductos.enable();
 		tfCondicionPago.setEnabled(true);
+		tfClienteID.requestFocus();
 	}
 
 	private void resetVenta() {

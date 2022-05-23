@@ -1417,9 +1417,9 @@ public class CompraLocalPanel extends JFrame
 		CompraDetalle item = new CompraDetalle();
 		item.setProductoId(Long.valueOf(tfProductoID.getText()));
 		item.setProducto(tfDescripcion.getText());
-		item.setCantidad(FormatearValor.stringToDouble(tfCantidad.getText()));
+		item.setCantidad(FormatearValor.stringToDoubleFormat(tfCantidad.getText()));
 		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
-		item.setSubtotal(FormatearValor.stringToDouble(tfPrecioTotal.getText()));
+		item.setSubtotal(FormatearValor.stringToDoubleFormat(tfPrecioTotal.getText()));
 		item.setFecha(new Date());
 		item.setPrecioFob(FormatearValor.stringToDouble(tfPrecio.getText()));
 
@@ -1504,7 +1504,7 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void calculatePrecioTotal() {
-		Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
+		Double cantidad = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
 		Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 		// Double gastoUnit = FormatearValor.stringToDouble(!tfGasto.getText().isEmpty()
 		tfPrecio.setText(FormatearValor.doubleAString(precioUnit));

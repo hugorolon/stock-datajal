@@ -12,6 +12,7 @@ public class DevolucionDetalle {
 	private Double cantidad;
 	private Double costo;
 	private Double subtotal;
+	private Double cantidaddev;
 	
 	public DevolucionDetalle() {}
 
@@ -55,4 +56,14 @@ public class DevolucionDetalle {
 		this.producto = producto;
 	}
 
+	public Double getCantidaddev() {
+		return cantidaddev;
+	}
+
+	public void setCantidaddev(Double cantidaddev) {
+		this.cantidaddev = cantidaddev;
+	}
+	
+
+	
 }
