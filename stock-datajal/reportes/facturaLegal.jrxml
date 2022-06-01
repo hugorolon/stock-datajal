@@ -91,7 +91,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteNombre}]]></textFieldExpression>
 			</textField>
@@ -102,7 +102,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{clienteRucDv}]]></textFieldExpression>
 			</textField>
@@ -111,7 +111,7 @@
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{contado}]]></textFieldExpression>
 			</textField>
@@ -121,21 +121,21 @@
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{credito}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="69" y="108" width="231" height="14" uuid="30bc1cd3-9610-47e5-9c2e-90e64a7cc3dc"/>
 				<textElement>
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="318" y="150" width="154" height="13" uuid="4c5058f4-3c2f-44cb-8ab9-9b08c6650b13"/>
 				<textElement>
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<text><![CDATA[REGISTRO SENAVE 1843]]></text>
 			</staticText>

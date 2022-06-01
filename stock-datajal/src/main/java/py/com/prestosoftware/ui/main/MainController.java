@@ -28,7 +28,9 @@ import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.domain.services.VentaService;
+import py.com.prestosoftware.domain.services.VentaTemporalService;
 import py.com.prestosoftware.domain.validations.CompraValidator;
+import py.com.prestosoftware.domain.validations.VentaTemporalValidator;
 import py.com.prestosoftware.domain.validations.VentaValidator;
 import py.com.prestosoftware.ui.controllers.CajaController;
 import py.com.prestosoftware.ui.controllers.CategoriaController;
@@ -67,6 +69,7 @@ import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CondicionPagoDialog;
 import py.com.prestosoftware.ui.search.ConsultaBoletaDialog;
 import py.com.prestosoftware.ui.search.ConsultaCliente;
+import py.com.prestosoftware.ui.search.ConsultaFacturacionDelDiaDialog;
 import py.com.prestosoftware.ui.search.ConsultaProveedor;
 import py.com.prestosoftware.ui.search.ConsultaSaldoDeposito;
 import py.com.prestosoftware.ui.search.ConsultaVentasDelDiaDialog;
@@ -79,10 +82,13 @@ import py.com.prestosoftware.ui.search.MovimientoEgresoDialog;
 import py.com.prestosoftware.ui.search.ProductoVistaDialog;
 import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.shared.AbstractFrameController;
+import py.com.prestosoftware.ui.table.ClienteConsultaTableModel;
 //import py.com.prestosoftware.ui.shared.CompraPanel;
 import py.com.prestosoftware.ui.table.CompraItemTableModel;
 import py.com.prestosoftware.ui.table.CompraTableModel;
 import py.com.prestosoftware.ui.table.VentaItemTableModel;
+import py.com.prestosoftware.ui.table.VentaItemTemporalTableModel;
+import py.com.prestosoftware.ui.table.VentaTemporalTableModel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaCreditoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteCuentaDebitoPanel;
 import py.com.prestosoftware.ui.transactions.AjusteStockPanel;
@@ -252,9 +258,17 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private VentaService ventaService;
 	@Autowired
+	private VentaTemporalService ventaTemporalService;
+	@Autowired
 	private ClienteService clienteService;
 	@Autowired
 	private VentaItemTableModel itemTableModel;
+	@Autowired
+	private VentaItemTemporalTableModel itemTableModelFacturacion;
+	@Autowired
+	private ClienteConsultaTableModel consultaClienteTableModel;
+	@Autowired
+	private VentaTemporalTableModel tableModelVentaTemporal;
 	@Autowired
 	private CompraItemTableModel compraItemTableModel;
 	@Autowired
@@ -276,11 +290,15 @@ public class MainController extends AbstractFrameController {
 	@Autowired
 	private ConsultaCliente clientDialog;
 	@Autowired
+	private ConsultaFacturacionDelDiaDialog consultaFacturacionDelDiaDialog;
+	@Autowired
 	private VendedorDialog vendedorDialog;
 	@Autowired
 	private DepositoDialog depositoDialog;
 	@Autowired
 	private VentaValidator ventaValidator;
+	@Autowired
+	private VentaTemporalValidator ventaTemporalValidator;
 	@Autowired
 	private ClientePaisService clientePaisService;
 	@Autowired
@@ -597,6 +615,14 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openFacturacion() {
+		itemTableModelFacturacion= new VentaItemTemporalTableModel();
+		consultaClienteTableModel = new ClienteConsultaTableModel();
+		tableModelVentaTemporal = new VentaTemporalTableModel();
+		clientDialog = new ConsultaCliente(clienteService, consultaClienteTableModel);
+		consultaFacturacionDelDiaDialog = new ConsultaFacturacionDelDiaDialog(ventaTemporalService, tableModelVentaTemporal);
+		facturaLegaPanel = new FacturaLegalPanel(itemTableModelFacturacion, clientDialog, depositoDialog,  productoDialog, ventaTemporalValidator, 
+				ventaTemporalService, clienteService, clientePaisService, productoService,   saldoDeposito,
+				 consultaFacturacionDelDiaDialog, clienteAddPanel);
 		facturaLegaPanel.setVisible(true);
 		facturaLegaPanel.newVenta();
 	}
