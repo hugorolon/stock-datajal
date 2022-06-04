@@ -63,6 +63,7 @@ import py.com.prestosoftware.data.models.ProcesoPagoCompras;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.data.models.Usuario;
+import py.com.prestosoftware.data.models.VentaDetalle;
 import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
 import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.CompraService;
@@ -1705,8 +1706,16 @@ public class CompraLocalPanel extends JFrame
 
 	private void calculateItem() {
 		if (itemTableModel.getEntities().size() > 0) {
-			Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
-			Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+//			Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
+//			Double total = itemTableModel.getEntities().stream().mapToDouble(i -> i.getSubtotal()).sum();
+			Double cantItem = 0d;
+			Double total = 0d;
+			List<CompraDetalle> listCompraDetalle = itemTableModel.getEntities();
+			for (CompraDetalle compraDetalle : listCompraDetalle) {
+				compraDetalle.setSubtotal(compraDetalle.getCantidad() * compraDetalle.getPrecio());
+				cantItem += compraDetalle.getCantidad();
+				total += compraDetalle.getSubtotal();
+			}
 			setTotals(cantItem, total);
 		}
 	}
