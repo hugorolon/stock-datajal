@@ -1,13 +1,15 @@
 package py.com.prestosoftware.domain.services;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import py.com.prestosoftware.data.models.Devolucion;
-import py.com.prestosoftware.data.repository.DevolucionRepository;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import py.com.prestosoftware.data.models.Devolucion;
+import py.com.prestosoftware.data.models.DevolucionDetalle;
+import py.com.prestosoftware.data.repository.DevolucionRepository;
 
 @Service
 public class DevolucionService {
@@ -48,6 +50,10 @@ public class DevolucionService {
 
 	public List<Devolucion> getNotasPendientes(Date fecha, String situacion) {
 		return repository.findByFechaAndSituacion(fecha, situacion);
+	}
+	
+	public List<Object[]> getDetallesDevolucion(Long idDevolucion) {
+		return repository.getDevolucionDetallesByDevolucionId(idDevolucion);
 	}
 
 }

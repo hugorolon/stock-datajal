@@ -740,7 +740,8 @@ public class MainController extends AbstractFrameController {
 		ventaPanel.setVisible(true);
 		ventaPanel.vistaDescuentoTotal();
 		ventaPanel.vistaDescuentoItem();
-		//ventaPanel.newVenta();
+		
+		ventaPanel.getTfClienteID().requestFocus();
 	}
 	/*
 	VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,

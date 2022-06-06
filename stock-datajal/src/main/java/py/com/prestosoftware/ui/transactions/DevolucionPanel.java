@@ -1,12 +1,44 @@
 package py.com.prestosoftware.ui.transactions;
 
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.AbstractDocument;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Compra;
 import py.com.prestosoftware.data.models.CompraDetalle;
@@ -39,6 +71,8 @@ import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.CompraDialog;
 import py.com.prestosoftware.ui.search.CompraInterfaz;
 import py.com.prestosoftware.ui.search.DepositoInterfaz;
+import py.com.prestosoftware.ui.search.DevolucionDialog;
+import py.com.prestosoftware.ui.search.DevolucionInterfaz;
 import py.com.prestosoftware.ui.search.ProductoDialog;
 import py.com.prestosoftware.ui.search.ProductoInterfaz;
 import py.com.prestosoftware.ui.search.ProveedorDialog;
@@ -47,43 +81,12 @@ import py.com.prestosoftware.ui.search.VendedorDialog;
 import py.com.prestosoftware.ui.search.VendedorInterfaz;
 import py.com.prestosoftware.ui.search.VentaDialog;
 import py.com.prestosoftware.ui.search.VentaInterfaz;
+import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.DevolucionTableModel;
-import py.com.prestosoftware.ui.viewmodel.DetalleAPagarProveedorView;
 import py.com.prestosoftware.util.Notifications;
 
-import javax.swing.JTabbedPane;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.AbstractDocument;
-import javax.swing.JButton;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.JFrame;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import javax.swing.SwingConstants;
-import javax.swing.JComboBox;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-
 @Component
-public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInterfaz, 
+public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInterfaz, DevolucionInterfaz, 
 	ProductoInterfaz, ClienteInterfaz, ProveedorInterfaz, VendedorInterfaz, DepositoInterfaz {
 
 	private static final long serialVersionUID = 1L;
@@ -95,6 +98,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 	private final int VENDEDOR_CODE = 5;
 	private final int DEPOSITO_CODE = 6;
 	private final int PROVEEDOR_CODE = 7;
+	private final int DEVOLUCION_CODE = 8;
 	
 	private JLabel lblBuscadorDeVentas;
     private JTextField tfNotaReferencia, tfVendedor, tfDescripcion, tfDevId;
@@ -102,7 +106,8 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     private JTextField tfCantidad;
     private JTextField tfDepositoID, tfDeposito;
     private JTextField tfProductoID;
-    private JButton btnGuardar, btnCancelar, btnCerrar;
+    private JCheckBox chkDevolverTodos;
+    private JButton btnGuardar, btnCancelar, btnCerrar, btnVer;
     private JTable tbProductos;
     private JLabel lblNotaNro;
     private JTextField tfNotaNro;
@@ -111,8 +116,6 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     private String typeDevolucion = "";
     private JTextField tfTotalNota;
     private JLabel lblTotal;
-    private JComboBox<String> cbCondicion;
-    private JLabel lblCredito;
     private JLabel lblObs;
     private JTextField tfObs;
     private JPanel panel;
@@ -126,6 +129,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     private ClienteDialog clienteDialog;
     private ProveedorDialog proveedorDialog;
     private VendedorDialog vendedorDialog;
+    private DevolucionDialog devolucionDialog;
     
     private DevolucionService devolucionService;
     private ProductoService productoService;
@@ -153,7 +157,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     		ProductoDialog productoDialog, ClienteDialog clienteDialog, ClienteService clienteService, 
     		DevolucionValidator dValidator, DevolucionService devolucionService, VendedorDialog vendedorDialog,
     		ProductoService productoService, DepositoService depositoService, ProveedorDialog proveedorDialog,
-    		UsuarioService usuarioService, VentaService ventaService, CompraService compraService, ProveedorService proveedorService) {
+    		UsuarioService usuarioService, VentaService ventaService, CompraService compraService, ProveedorService proveedorService, DevolucionDialog devolucionDialog) {
     	this.itemTableModel = itemTableModel;
     	this.ventaDialog = ventaDialog;
     	this.compraDialog = compraDialog;
@@ -170,6 +174,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         this.ventaService = ventaService;
         this.compraService = compraService;
         this.proveedorService = proveedorService;
+        this.devolucionDialog=devolucionDialog;
     	    	
     	setSize(914, 571);
     	setTitle("REGISTRO DE DEVOLUCIONES");
@@ -426,7 +431,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         pnlProducto.add(tfCantDev);
         tfCantDev.setColumns(10);
         
-        JCheckBox chkDevolverTodos = new JCheckBox("Devolver Todos");
+        chkDevolverTodos = new JCheckBox("Devolver Todos");
         chkDevolverTodos.setBounds(741, 44, 117, 21);
         chkDevolverTodos.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -495,7 +500,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 					} else {
 						tfRefId.setText("0");
 						//cbCondicion.setEditable(false);
-						cbCondicion.setEnabled(false);
+						//cbCondicion.setEnabled(false);
 						tfVendedorID.requestFocus();
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
@@ -556,7 +561,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 						Notifications.showAlert("Este campo es obligatorio.!");
 					}
 					
-					habilitarCondicion(false);
+					//habilitarCondicion(false);
 				} 
         	}
         	@Override
@@ -635,6 +640,23 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         tfNotaNro.setBounds(110, 44, 175, 30);
         pnlCliente.add(tfNotaNro);
         
+        btnVer = new JButton("...");
+        btnVer.setBounds(311, 11, 30, 21);
+        btnVer.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					showDialog(DEVOLUCION_CODE);
+				}
+			}
+		});
+		btnVer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(DEVOLUCION_CODE);
+			}
+		});
+        pnlCliente.add(btnVer);
+        
         JPanel pnlBotonera = new JPanel();
         pnlBotonera.setBounds(9, 487, 885, 35);
         getContentPane().add(pnlBotonera);
@@ -661,12 +683,14 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         	public void keyPressed(KeyEvent e) {
         		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					clearForm();
+					newDevolucion();
 				}
         	}
         });
         btnCancelar.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		clearForm();
+        		newDevolucion();
         	}
         });
         pnlBotonera.add(btnCancelar);
@@ -692,32 +716,23 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         getContentPane().add(panel);
         panel.setLayout(null);
         
-        lblCredito = new JLabel("CREDITO:");
-        lblCredito.setBounds(6, 6, 66, 30);
-        panel.add(lblCredito);
-        
-        cbCondicion = new JComboBox<String>();
-        cbCondicion.setBounds(75, 6, 35, 30);
-        panel.add(cbCondicion);
-        cbCondicion.setModel(new DefaultComboBoxModel<String>(new String[] {"N", "S"}));
-        
         lblObs = new JLabel("OBS.:");
-        lblObs.setBounds(120, 6, 41, 30);
+        lblObs.setBounds(6, 7, 41, 30);
         panel.add(lblObs);
         
         tfObs = new JTextField();
         ((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-        tfObs.setBounds(171, 6, 151, 30);
+        tfObs.setBounds(75, 6, 146, 30);
         panel.add(tfObs);
         tfObs.setFont(new Font("Lucida Grande", Font.BOLD, 14));
         tfObs.setColumns(10);
         
         lblTotal = new JLabel("TOTAL:");
-        lblTotal.setBounds(349, 37, 56, 30);
+        lblTotal.setBounds(252, 38, 69, 30);
         panel.add(lblTotal);
         
         tfTotalNota = new JTextField();
-        tfTotalNota.setBounds(404, 37, 94, 30);
+        tfTotalNota.setBounds(349, 38, 94, 30);
         panel.add(tfTotalNota);
         tfTotalNota.setFont(new Font("Lucida Grande", Font.BOLD, 14));
         tfTotalNota.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -759,14 +774,14 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         tfDepositoID.setColumns(10);
         
         tfDeposito = new JTextField();
-        tfDeposito.setBounds(113, 37, 120, 30);
+        tfDeposito.setBounds(113, 37, 110, 30);
         panel.add(tfDeposito);
         tfDeposito.setEditable(false);
         tfDeposito.setToolTipText("");
         tfDeposito.setColumns(10);
         
-        lblCantItem = new JLabel("C. ITEM");
-        lblCantItem.setBounds(349, 6, 56, 30);
+        lblCantItem = new JLabel("CANTIDAD ITEM");
+        lblCantItem.setBounds(252, 7, 87, 30);
         panel.add(lblCantItem);
         
         tfCantItem = new JTextField();
@@ -774,31 +789,31 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         tfCantItem.setFont(new Font("Lucida Grande", Font.BOLD, 14));
         tfCantItem.setEditable(false);
         tfCantItem.setColumns(10);
-        tfCantItem.setBounds(404, 6, 94, 30);
+        tfCantItem.setBounds(349, 7, 94, 30);
         panel.add(tfCantItem);
         
         tfItemDevuelto = new JTextField();
         tfItemDevuelto.setHorizontalAlignment(SwingConstants.RIGHT);
         tfItemDevuelto.setFont(new Font("Dialog", Font.BOLD, 14));
         tfItemDevuelto.setEditable(false);
-        tfItemDevuelto.setBounds(573, 6, 96, 30);
+        tfItemDevuelto.setBounds(573, 8, 96, 30);
         panel.add(tfItemDevuelto);
         tfItemDevuelto.setColumns(10);
         
-        lblItemDevuelto = new JLabel("CANT. DEV.");
-        lblItemDevuelto.setBounds(503, 15, 60, 13);
+        lblItemDevuelto = new JLabel("CANTIDAD DEVUELTO");
+        lblItemDevuelto.setBounds(453, 17, 110, 13);
         panel.add(lblItemDevuelto);
         
         tfTotalDevolucion = new JTextField();
         tfTotalDevolucion.setHorizontalAlignment(SwingConstants.RIGHT);
         tfTotalDevolucion.setFont(new Font("Dialog", Font.BOLD, 14));
         tfTotalDevolucion.setEditable(false);
-        tfTotalDevolucion.setBounds(573, 37, 96, 30);
+        tfTotalDevolucion.setBounds(573, 39, 96, 30);
         panel.add(tfTotalDevolucion);
         tfTotalDevolucion.setColumns(10);
         
-        lblTotalDev = new JLabel("TOT. DEV.");
-        lblTotalDev.setBounds(503, 46, 66, 13);
+        lblTotalDev = new JLabel("TOTAL DEVUELTO");
+        lblTotalDev.setBounds(453, 48, 116, 13);
         panel.add(lblTotalDev);
         
         lblItemSaldo = new JLabel("ITEM SALDO");
@@ -881,9 +896,9 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 //		tbProductos.getColumnModel().getColumn(4).setMaxWidth(160);
 //	}
     
-    private void habilitarCondicion(boolean isEditable) {
-    	cbCondicion.setEditable(false);
-    }
+//    private void habilitarCondicion(boolean isEditable) {
+//    	cbCondicion.setEditable(false);
+//    }
     
     private Boolean isValidItem() {
 		if (tfProductoID.getText().isEmpty()) {
@@ -1155,11 +1170,12 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     	tfTotalNota.setText("");
     	tfCantItem.setText("");
     	tfCantDev.setText("");
-    	tfNotaNro.setEnabled(true);
-    	
-    	cbCondicion.setEnabled(true);
-    	cbCondicion.setSelectedIndex(0);
-    	
+    	chkDevolverTodos.setSelected(false);
+    	tfItemDevuelto.setText("");
+    	tfTotalDevolucion.setText("");
+    	tfSaldoItem.setText("");
+    	tfDiferencia.setText("");
+    	habilitarEdicion();
     	while (itemTableModel.getRowCount() > 0) {
     		itemTableModel.removeRow(0);
 		}
@@ -1245,6 +1261,10 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 				proveedorDialog.setInterfaz(this);
 				proveedorDialog.setVisible(true);
 				break;
+			case DEVOLUCION_CODE:
+				devolucionDialog.setInterfaz(this);
+				devolucionDialog.setVisible(true);
+				break;	
 			default:
 				break;
 		}
@@ -1287,7 +1307,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     			Double stock = p.getDepO1() != null ? p.getDepO1():0;
     			Double newQty = 0d;
     			
-    			newQty = getTypeDevolucion().equals("COMPRA") ? stock - e.getCantidad():stock + e.getCantidad();
+    			newQty = getTypeDevolucion().equals("COMPRA") ? stock - e.getCantidaddev():stock + e.getCantidaddev();
     			
 				p.setDepO1(newQty);
 				productos.add(p);
@@ -1298,11 +1318,15 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 	}
 	
 	private void updateTransacction() {
-		String situacion = "DEVOLUCION";
+		String situacion = "";
+		if(tfTotalNota.getText().equalsIgnoreCase(tfTotalDevolucion.getText())) {
+			situacion = "DEVOLUCION";
+		}
+		
 		if (getTypeDevolucion().equals("COMPRA")) { 
 			Optional<Compra> c = compraService.findById(Long.valueOf(tfNotaNro.getText()));
 			
-			if (c.isPresent()) {
+			if (c.isPresent()&&situacion.equalsIgnoreCase("DEVOLUCION")) {
 				Compra compra = c.get();
 				compra.setSituacion(situacion);
 				compraService.save(compra);
@@ -1310,7 +1334,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 		} else { //venta
 			Optional<Venta> v = ventaService.findById(Long.valueOf(tfNotaNro.getText()));
 			
-			if (v.isPresent()) {
+			if (v.isPresent()&&situacion.equalsIgnoreCase("DEVOLUCION")) {
 				Venta venta = v.get();
 				venta.setSituacion(situacion);
 				ventaService.save(venta);
@@ -1330,7 +1354,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 		    	d.setDeposito(new Deposito(Long.valueOf(tfDepositoID.getText())));
 		    	d.setVendedor(tfVendedorID.getText().isEmpty() ? new Usuario(1L):new Usuario(Long.valueOf(tfVendedorID.getText())));
 		    	d.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
-		    	d.setCredito((String)cbCondicion.getSelectedItem());
+		    	//d.setCredito((String)cbCondicion.getSelectedItem());
 		    	d.setComprobante(tfNotaNro.getText());
 		    	d.setFecha(new Date());
 		    	d.setVencimiento(new Date());
@@ -1399,12 +1423,18 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 	    		if (producto.isPresent()) {
 	    			Double stock = producto.get().getDepO1() != null ? producto.get().getDepO1():0;
     			
-	    			if (stock < ditem.getCantidad()) {	
+	    			if (stock < ditem.getCantidaddev()) {	
 	    				sinStock = true;
 	    				message = message + producto.get().getDescripcion() + " -> stock: " + producto.get().getStock() + " \n";
 					}
 				}
 			}
+    	}else {
+    		Double cantDevolver =  items.stream().mapToDouble(i -> i.getCantidaddev()).sum();
+    		if(cantDevolver==0) {
+    			sinStock=true;
+    			message="Debe cargar un item de devolución por lo menos!";
+    		}
     	}
     	
     	if (sinStock) {
@@ -1440,52 +1470,45 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     }
     
     private void addItem() {
-    	Boolean esDuplicado = false;
-		Integer fila = -1;
+    	Integer fila = -1;
 		for (Integer i = 0; i < tbProductos.getRowCount(); i++) {
 			String itemId = String.valueOf(tbProductos.getValueAt(i, 0));
-			
 			if (tfProductoID.getText().trim().equals(itemId) && !itemId.equals("")) {
-				esDuplicado = true;
 				fila = i;
 			}
 		}
-		if (esDuplicado) {
-			Integer respuesta = JOptionPane.showConfirmDialog(null, "Registro ya existe en la grilla, desea actualizar los datos?");
-			if (respuesta == 0) {
-				if (isValidItem()) {
-					actualizarRegristroGrilla(fila, String.valueOf(tbProductos.getValueAt(fila, 1)));
-					tfProductoID.requestFocus();
-				}
-			} else {
-				tfProductoID.requestFocus();
-			}
-		} else {	
-			if (getTypeDevolucion().equals("COMPRA")) { //cuando es compra verificamos si existe cantidad a devolver al proveedor
-				Long productoId = Long.valueOf(tfProductoID.getText());
-		    	Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
-		    	
-				Optional<Producto> p = productoService.findById(productoId);
-		    	
-		    	if (p.isPresent()) {
-					Double stock = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
-				
-					if (cantidad <= stock) {
-						addItemToList();
-						calculateItem();
-					} else {
-						tfProductoID.requestFocus();
-						Notifications.showAlert("No tiene suficiente Stock para este Producto. Stock actual es de: " + FormatearValor.doubleAString(stock));
-					}
-		    	} else {
-		    		Notifications.showAlert("No existe producto con este codigo.!");
-		    	}
-			} else {
-				addItemToList();
-				calculateItem();
-			}
+		if (isValidItem()) {
+			actualizarRegristroGrilla(fila, String.valueOf(tbProductos.getValueAt(fila, 1)));
+			tfProductoID.requestFocus();
+		}else {
+			tfProductoID.requestFocus();
 		}
 		
+		if (getTypeDevolucion().equals("COMPRA")) { //cuando es compra verificamos si existe cantidad a devolver al proveedor
+			Long productoId = Long.valueOf(tfProductoID.getText());
+	    	Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
+	    	
+			Optional<Producto> p = productoService.findById(productoId);
+	    	
+	    	if (p.isPresent()) {
+				Double stock = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
+			
+				if (cantidad <= stock) {
+					addItemToList();
+					calculateItem();
+				} else {
+					tfProductoID.requestFocus();
+					Notifications.showAlert("No tiene suficiente Stock para este Producto. Stock actual es de: " + FormatearValor.doubleAString(stock));
+				}
+	    	} else {
+	    		Notifications.showAlert("No existe producto con este codigo.!");
+	    	}
+		} 
+//		else {
+//			addItemToList();
+//			calculateItem();
+//		}	
+		calculateItem();
 		clearItem();
     }
     
@@ -1494,7 +1517,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
     	Double cantItem = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCantidad()).sum();
     	Double subTotalDev=0d;
     	for (DevolucionDetalle devolucionDetalle : itemTableModel.getEntities()) {
-			if(devolucionDetalle.getCantidaddev()>0) {
+			if(devolucionDetalle.getCantidaddev()!=null && devolucionDetalle.getCantidaddev()>0) {
 				subTotalDev+=(devolucionDetalle.getCantidaddev()*devolucionDetalle.getCosto());
 				cantItemDevuelto+=devolucionDetalle.getCantidaddev();
 			}
@@ -1509,10 +1532,10 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 		tfDiferencia.setText("0");
 		tfTotalDevolucion.setText("0");
 
-		if (cantItem != 0) {
+		if (cantItem != null) {
 			tfCantItem.setText(FormatearValor.doubleAString(cantItem));
 		}
-		if (cantidadDevuelto != 0) {
+		if (cantidadDevuelto != null) {
 			tfItemDevuelto.setText(FormatearValor.doubleAString(cantidadDevuelto));
 		}
 		if (cantItem != 0 && cantidadDevuelto != 0) {
@@ -1523,7 +1546,15 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 	}
     
     
-    private void addItemToList() {
+    public JCheckBox getChkDevolverTodos() {
+		return chkDevolverTodos;
+	}
+
+	public void setChkDevolverTodos(JCheckBox chkDevolverTodos) {
+		this.chkDevolverTodos = chkDevolverTodos;
+	}
+
+	private void addItemToList() {
     	itemTableModel.addEntity(getItem());
     }
 
@@ -1562,5 +1593,58 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 			tfRefId.setText(String.valueOf(p.getId()));
 			tfNotaReferencia.setText(p.getNombre());
 		}
+	}
+
+	@Override
+	public void getEntity(Devolucion v) {
+		clearForm();
+		if(v!=null) {
+			tfDevId.setText(v.getId().toString());
+			tfRefId.setText(v.getRefId().toString());
+			tfNotaReferencia.setText(v.getReferencia());
+			tfNotaNro.setText(v.getComprobante());
+			tfVendedorID.setText(v.getVendedor().getId().toString());
+			tfVendedor.setText(v.getVendedor().getUsuario());
+			tfDepositoID.setText(v.getDeposito().getId().toString());
+			tfDeposito.setText(v.getDeposito().getNombre());
+			
+			List<Object[]> listaItems = devolucionService.getDetallesDevolucion(v.getId());
+			Double cantItem = 0d;
+			Double total = 0d;
+			for (Object[] object : listaItems) {
+				DevolucionDetalle de = new DevolucionDetalle();
+	    		de.setProductoId(Long.valueOf(object[0].toString()));
+	    		de.setProducto(object[1].toString());
+	    		de.setCantidad(Double.valueOf(object[2].toString()));
+	    		de.setCosto(Double.valueOf(object[3].toString()));
+	    		de.setSubtotal(Double.valueOf(object[4].toString()));
+	    		if (object[5]!=null)
+	    			de.setCantidaddev(Double.valueOf(object[5].toString()));
+	    		else
+	    			de.setCantidaddev(0d);
+	    		cantItem+=de.getCantidad();
+				total+=de.getSubtotal();
+	    		itemTableModel.addEntity(de);
+			}
+			calculateItem();
+			inhabilitarEdicion();
+		}
+		
+	}
+
+	private void inhabilitarEdicion() {
+		btnGuardar.setVisible(false);
+		tfCantDev.setEditable(false);
+		chkDevolverTodos.setEnabled(false);
+		tfNotaNro.setEditable(false);
+		tfRefId.setEditable(false);
+	}
+	
+	private void habilitarEdicion() {
+		btnGuardar.setVisible(true);
+		tfCantDev.setEditable(true);
+		chkDevolverTodos.setEnabled(true);
+		tfNotaNro.setEditable(true);
+		tfRefId.setEditable(true);
 	}
 }

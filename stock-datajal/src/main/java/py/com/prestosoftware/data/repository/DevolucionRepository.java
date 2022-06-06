@@ -17,5 +17,9 @@ public interface DevolucionRepository extends JpaRepository<Devolucion, Long> {
 	Optional<Devolucion> findByIdAndSituacionAndTipo(Long notaId, String situacion, String tipo);
 
 	List<Devolucion> findByFechaAndSituacion(Date fecha, String situacion);
+	
+	@Query(value =  "SELECT producto_Id, producto, cantidad, costo, subtotal, cantidaddev "
+			+ "	FROM devolucion_detalles b WHERE b.devolucion_id= ?1 ", nativeQuery = true)
+	List<Object[]> getDevolucionDetallesByDevolucionId(Long ventaId);
 
 }
