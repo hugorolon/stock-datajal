@@ -1,6 +1,7 @@
 package py.com.prestosoftware.ui.transactions;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -35,10 +37,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.text.JTextComponent;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,26 +54,19 @@ import py.com.prestosoftware.data.models.CobroCliente;
 import py.com.prestosoftware.data.models.ItemCobroCliente;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.MovimientoCaja;
-import py.com.prestosoftware.data.models.MovimientoIngreso;
-import py.com.prestosoftware.data.models.MovimientoItemIngreso;
-import py.com.prestosoftware.data.models.ProcesoCobroClientes;
 import py.com.prestosoftware.domain.services.AperturaCierreCajaService;
 import py.com.prestosoftware.domain.services.CajaService;
 import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.CobroClienteService;
 import py.com.prestosoftware.domain.services.ItemCobroClienteService;
-import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
-import py.com.prestosoftware.domain.services.MovimientoIngresoService;
-import py.com.prestosoftware.domain.services.MovimientoItemIngresoService;
-import py.com.prestosoftware.domain.services.ProcesoCobroClientesService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
-import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.search.ClienteInterfaz;
 import py.com.prestosoftware.ui.search.CobroClienteDialog;
 import py.com.prestosoftware.ui.search.CobroClienteInterfaz;
+import py.com.prestosoftware.ui.search.ConsultaCliente;
 import py.com.prestosoftware.ui.table.DetalleCuentaClienteTableModel;
 import py.com.prestosoftware.ui.viewmodel.DetalleCobroClienteView;
 import py.com.prestosoftware.util.Notifications;
@@ -115,15 +113,8 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	@Autowired
 	private CobroClienteService cobroClienteService;
 	@Autowired
-	private ProcesoCobroClientesService procesoCobroClienteService;
-	@Autowired
 	private ItemCobroClienteService itemCobroClienteService;
-	@Autowired
-	private ItemCuentaARecibirService itemCuentaARecibirService;
-	@Autowired
-	private MovimientoIngresoService movimientoIngresoService;
-	@Autowired
-	private MovimientoItemIngresoService movimientoItemIngresoService;
+
 	@Autowired
 	private ClienteService clienteService;
 	@Autowired
@@ -134,9 +125,10 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	private ConsultaCliente clienteDialog;
 
 	@Autowired
-	public CobroClientePanel(CobroClienteService cobroClienteService, DetalleCuentaClienteTableModel itemTableModel, ItemCobroClienteService itemCobroClienteService, ItemCuentaARecibirService itemCuentaARecibirService,
-			ClienteService clienteService, CajaService cajaService, CobroClienteDialog cobroClienteDialog, MovimientoIngresoService movimientoIngresoService,MovimientoItemIngresoService movimientoItemIngresoService,
-			ConsultaCliente clienteDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoCobroClientesService procesoCobroClienteService) {
+	public CobroClientePanel(CobroClienteService cobroClienteService, DetalleCuentaClienteTableModel itemTableModel,
+			ItemCobroClienteService itemCobroClienteService, ClienteService clienteService, CajaService cajaService,
+			CobroClienteDialog cobroClienteDialog, ConsultaCliente clienteDialog, MovimientoCajaService pagoService,
+			AperturaCierreCajaService movCajaService) {
 		this.cobroClienteService = cobroClienteService;
 		this.itemTableModel = itemTableModel;
 		this.cajaService = cajaService;
@@ -145,12 +137,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		this.pagoService = pagoService;
 		this.movCajaService = movCajaService;
 		this.clienteDialog = clienteDialog;
-		this.procesoCobroClienteService =procesoCobroClienteService;
-		this.movimientoIngresoService =movimientoIngresoService;
-		this.movimientoItemIngresoService =movimientoItemIngresoService;
-		this.itemCobroClienteService =itemCobroClienteService;
-		this.itemCuentaARecibirService =itemCuentaARecibirService;
-
+		this.itemCobroClienteService = itemCobroClienteService;
 		setSize(914, 684);
 		setTitle("COBRO CLIENTE");
 		setLocationRelativeTo(null);
@@ -283,15 +270,27 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		scrollDetalleCobroClientes.setBounds(10, 11, 835, 278);
 		panel_2.add(scrollDetalleCobroClientes);
 
-		tbDetalleCobroCliente = new JTable(itemTableModel) {
+		tbDetalleCobroCliente = new JTable(itemTableModel) {//new SelectingTables(itemTableModel);//
 			public boolean isCellEditable(int fila, int columna) {
 				if (columna == 8)
 					return true;
 				return false;
 			}
+			public void changeSelection(int row, int column, boolean toggle, boolean extend)
+			{
+				super.changeSelection(row, column, toggle, extend);
+
+				if (editCellAt(row, column))
+				{
+					Component editor = getEditorComponent();
+					editor.requestFocusInWindow();
+					((JTextComponent)editor).selectAll();
+				}
+			}
 		};
 
 		tbDetalleCobroCliente.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbDetalleCobroCliente.setCellSelectionEnabled(true);
 		tbDetalleCobroCliente.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		tbDetalleCobroCliente.addMouseListener(new MouseAdapter() {
 			@Override
@@ -299,6 +298,13 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 				getItemSelected();
 				calculateItem();
 			}
+			
+			public void mouseEntered(MouseEvent event) {
+		        // Request the focus (if don't already have it)
+		        if(!hasFocus()) { 
+		        	requestFocus(); 
+		        }
+		    }
 		});
 		tbDetalleCobroCliente.addKeyListener(new KeyAdapter() {
 			@Override
@@ -321,15 +327,6 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
    				calculateItem();
 			}  
         });  
-		tbDetalleCobroCliente.addFocusListener(new FocusListener() {
-		    public void focusLost(FocusEvent arg0) {
-		        calculateItem();    
-		    }
-
-		    public void focusGained(FocusEvent arg0) {
-		    	// TODO Auto-generated method stub
-		    }
-		});
 		
 		scrollDetalleCobroClientes.setViewportView(tbDetalleCobroCliente);
 
@@ -354,7 +351,8 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfDescuentos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfDescuentos.setBounds(148, 343, 163, 30);
 		tfDescuentos.addFocusListener(new FocusAdapter() {
-			@Override
+
+	@Override
 			public void focusGained(FocusEvent e) {
 				tfDescuentos.selectAll();
 			}
@@ -616,45 +614,74 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	    //tbDetalleCobroCliente.getColumnModel().getColumn(7).setCellRenderer(render);
 		clearForm();
 		// newMov();
-		
 	}
 
+	class SelectingTables extends JTable {
+        //public SelectingTable(Object[][] data, String[] columnNames) {
+        public SelectingTables(DetalleCuentaClienteTableModel itemTableModel) {	
+            super(itemTableModel);
+            TableColumnModel model = super.getColumnModel();
+            for (int i = 0; i < super.getColumnCount(); i++) {
+                TableColumn tc = model.getColumn(i);
+                //tc.getCellEditor().getCellEditorValue().
+                tc.setCellEditor(new SelectingEditor(new JTextField()));
+//                tc.getCellEditor().isCellEditable(true);
+            }
+        }
+
+        class SelectingEditor extends DefaultCellEditor {
+
+            public SelectingEditor(JTextField textField) {
+                super(textField);
+            }
+
+            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+                if (c instanceof JTextComponent) {
+                    JTextComponent jtc = (JTextComponent) c;
+                    jtc.requestFocus();
+                    jtc.selectAll();
+                }
+                return c;
+            }
+        }
+    }
+	
 	private void calculateMontoTotal(int origen) {
 		try {
-			Double aCobrar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
-			if(aCobrar>0) {
+			Double aCobrar = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
+			if (aCobrar > 0) {
 				Double totalCta = FormatearValor.stringToDouble(tfSaldo.getText());
-				Double descuento =0d;
-				Double recargo =  0d;
-				if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+				Double descuento = 0d;
+				Double recargo = 0d;
+				if (!tfDescuentos.getText().isEmpty() && !tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
 					descuento = FormatearValor.stringToDouble(tfDescuentos.getText());
 					tfDescuentos.setText(FormatearValor.doubleAString(descuento));
 					btnGuardar.requestFocus();
 				}
-				if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
-				    recargo = FormatearValor.stringToDouble(tfRecargos.getText());
-				    tfRecargos.setText(FormatearValor.doubleAString(recargo));
-				    btnGuardar.requestFocus();
+				if (!tfRecargos.getText().isEmpty() && !tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+					recargo = FormatearValor.stringToDouble(tfRecargos.getText());
+					tfRecargos.setText(FormatearValor.doubleAString(recargo));
+					btnGuardar.requestFocus();
 				}
 				totalCalculado = totalCta - descuento + recargo;
 				tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
-				if(origen==0) 
+				if (origen == 0)
 					tfRecargos.requestFocus();
 				else
 					tfMontoACobrar.requestFocus();
 
-			}else {
+			} else {
 				tfRecargos.setText("0");
 				tfDescuentos.setText("0");
 				Notifications.showAlert("Debe cargar primero los datos a pagar.!");
 			}
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
 	}
 
-	
 	@Transactional
 	protected void elimina() {
 		btnAnula.setVisible(false);
@@ -697,9 +724,9 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		t.setCclEntidad(Integer.valueOf(tfEntidad.getText()));
 		t.setCclNumero(Integer.valueOf(tfNota.getText()));
 		t.setCclValor(totalCalculado);
-		Double descuento=FormatearValor.desformatearValor(tfDescuentos.getText());
-		Double interes=FormatearValor.desformatearValor(tfRecargos.getText());
-		t.setCclMonto(totalCalculado-descuento+interes);
+		Double descuento = FormatearValor.desformatearValor(tfDescuentos.getText());
+		Double interes = FormatearValor.desformatearValor(tfRecargos.getText());
+		t.setCclMonto(totalCalculado - descuento + interes);
 		t.setCclDescuento(descuento);
 		t.setCclRecargo(interes);
 		t.setCclFormaPago(1);
@@ -749,80 +776,40 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			Double aPagar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum();
 			if (validateCabezera() && validateItems(itemTableModel.getEntities()) && aPagar > 0) {
 				//Cobro clientes
-				CobroCliente t = getFormValue();
-				CobroCliente v = cobroClienteService.save(t);
-					if (v != null) {
-						//detalle cobro cliente
-						List<ItemCobroCliente> detalles=new ArrayList<ItemCobroCliente>();
-						for (DetalleCobroClienteView item : itemTableModel.getEntities()) {
-							if(item.getCobro().doubleValue()>0) {
-								ItemCobroCliente itemCobroCliente =new ItemCobroCliente();
-								itemCobroCliente.setIclNumero(v.getCclNumero());
-								itemCobroCliente.setIclMonto(item.getCobro());
-								itemCobroCliente.setIclSecuenciaCuenta(item.getIca_Secuencia());
-								if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-									itemCuentaARecibirService.cambiaEstadoSituacion(1, Long.valueOf(item.getIca_Secuencia()));
-								}
-								detalles.add(itemCobroCliente);
+					try {
+						CobroCliente t = getFormValue();
+						CobroCliente cc = cobroClienteService.save(t,itemTableModel.getEntities(),FormatearValor.stringADouble(tfMontoACobrar.getText()));
+							if (cc != null) {
+								//MovimientoCaja
+								//Apertura de caja caso no este abierto
+								lanzamientoCaja();
+								//actualiza ingreso en movimiento Caja
+								Optional<Caja> caja = cajaService.findById(1L);
+								MovimientoCaja movCaja = new MovimientoCaja();
+								movCaja.setCaja(caja.get());
+								movCaja.setFecha(new Date());
+								movCaja.setMoneda(new Moneda(1l));
+								movCaja.setNotaNro(cc.getCclNumero().toString());
+								movCaja.setNotaReferencia(cc.getCclNumero().toString());
+								movCaja.setNotaValor(totalCalculado);
+								movCaja.setPlanCuentaId(1);
+								movCaja.setTipoOperacion("E");
+								movCaja.setUsuario(GlobalVars.USER_ID);
+								movCaja.setValorM01(totalCalculado);
+								movCaja.setObs("Ingreso en caja 01 ");
+								movCaja.setSituacion("PAGADO");
+								pagoService.save(movCaja);
+								
+								Notifications.showAlert("Cobro a Cliente registrado con exito.!");
+								newMov();
 							}
-						}
-						itemCobroClienteService.save(detalles);
+								
+					} catch (Exception e) {
+						Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
 						
-						//MovimientoIngreso
-						MovimientoIngreso movimientoIngreso = new MovimientoIngreso();
-						movimientoIngreso.setFecha(new Date());
-						movimientoIngreso.setHora(new Date());
-						movimientoIngreso.setMinCaja(1);
-						movimientoIngreso.setMinDocumento(v.getCclDocumento());
-						movimientoIngreso.setMinEntidad(tfEntidad.getText());
-						movimientoIngreso.setMinProceso(v.getCclNumero());
-						movimientoIngreso.setMinTipoProceso(2);
-						movimientoIngreso.setMinSituacion(0);
-						movimientoIngreso.setMinTipoEntidad(8);
-						MovimientoIngreso movNew = movimientoIngresoService.save(movimientoIngreso);
-						
-						MovimientoItemIngreso movimientoItemIngreso= new MovimientoItemIngreso();
-						movimientoItemIngreso.setMiiNumero(movNew.getMinNumero());
-						movimientoItemIngreso.setMiiMonto(FormatearValor.stringADouble(tfMontoACobrar.getText()));
-						movimientoItemIngreso.setMiiIngreso(2);
-						movimientoItemIngreso.setMiiDescripcion("Cobro a Clientes");
-						movimientoItemIngresoService.save(movimientoItemIngreso);
-						
-						//Proceso cobro cliente
-						ProcesoCobroClientes p= new ProcesoCobroClientes();
-						p.setPccCobro(v.getCclNumero());
-						p.setPccIngreso(1);
-						p.setPccTipoproceso(31);
-						p.setPccFlag(1);
-						p.setPccProceso(movNew.getMinNumero());
-						procesoCobroClienteService.save(p);
-						
-						
-						//MovimientoCaja
-							//Apertura de caja caso no este abierto
-						lanzamientoCaja();
-						//actualiza ingreso en movimiento Caja
-						Optional<Caja> caja = cajaService.findById(1L);
-						MovimientoCaja movCaja = new MovimientoCaja();
-						movCaja.setCaja(caja.get());
-						movCaja.setFecha(new Date());
-						movCaja.setMoneda(new Moneda(1l));
-						movCaja.setNotaNro(v.getCclNumero().toString());
-						movCaja.setNotaReferencia(v.getCclNumero().toString());
-						movCaja.setNotaValor(totalCalculado);
-						movCaja.setPlanCuentaId(1);
-						movCaja.setTipoOperacion("E");
-						movCaja.setUsuario(GlobalVars.USER_ID);
-						movCaja.setValorM01(totalCalculado);
-						movCaja.setObs("Ingreso en caja 01 ");
-						movCaja.setSituacion("PAGADO");
-						pagoService.save(movCaja);
-					
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					
-
-					Notifications.showAlert("Cobro a Cliente registrado con exito.!");
-					newMov();
 			}else {
 				Notifications.showAlert("Cargar valores a pagar!");
 			}
@@ -846,29 +833,35 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	@Transactional
 	private void eliminaCobroCliente() {
 		try {
+			
 			Optional<CobroCliente> pOptional = cobroClienteService.findById(Integer.valueOf(this.getCobroClienteSeleccionado().getCclNumero().toString()));
 			if (pOptional.isPresent()) {
 				CobroCliente p = pOptional.get();
 				List<ItemCobroCliente> listaItemCobro = itemCobroClienteService.findByIclNumero(Integer.valueOf(this.getCobroClienteSeleccionado().getCclNumero().toString()));
-				for (ItemCobroCliente itemCobroCliente : listaItemCobro) {
-					//if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-					itemCuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(itemCobroCliente.getIclSecuenciaCuenta()));
-					itemCobroClienteService.remove(itemCobroCliente);
-				}
-				cobroClienteService.remove(p);
-				MovimientoIngreso movimientoIngreso = movimientoIngresoService.findByMinProceso(p.getCclNumero());
 				
-				List<MovimientoItemIngreso> listaMovItemIngreso= movimientoItemIngresoService.findByCabId(movimientoIngreso.getMinNumero());
-				for (MovimientoItemIngreso movimientoItemIngreso : listaMovItemIngreso) {
-					movimientoItemIngresoService.remove(movimientoItemIngreso);	
-				}
-				movimientoIngresoService.remove(movimientoIngreso);
+//				for (ItemCobroCliente itemCobroCliente : listaItemCobro) {
+//					//if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
+//					itemCuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(itemCobroCliente.getIclSecuenciaCuenta()));
+//					itemCobroClienteService.remove(itemCobroCliente);
+//				}
+//				for (DetalleCobroClienteView detalleCobroCliente : itemTableModel.getEntities()) {
+//					cuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(detalleCobroCliente.getCar_numero()));
+//				}
 				
-				ProcesoCobroClientes procesoCobroCliente=procesoCobroClienteService.findByPccCobro(p.getCclNumero());
-				procesoCobroClienteService.remove(procesoCobroCliente);
-				
-				MovimientoCaja movCaja = pagoService.findByNotaNro(p.getCclNumero().toString());
-				pagoService.remove(null);
+				cobroClienteService.remove(p, listaItemCobro, itemTableModel.getEntities());
+//				MovimientoIngreso movimientoIngreso = movimientoIngresoService.findByMinProceso(p.getCclNumero());
+//				
+//				List<MovimientoItemIngreso> listaMovItemIngreso= movimientoItemIngresoService.findByCabId(movimientoIngreso.getMinNumero());
+//				for (MovimientoItemIngreso movimientoItemIngreso : listaMovItemIngreso) {
+//					movimientoItemIngresoService.remove(movimientoItemIngreso);	
+//				}
+//				movimientoIngresoService.remove(movimientoIngreso);
+//				
+//				ProcesoCobroClientes procesoCobroCliente=procesoCobroClienteService.findByPccCobro(p.getCclNumero());
+//				procesoCobroClienteService.remove(procesoCobroCliente);
+//				
+//				MovimientoCaja movCaja = pagoService.findByNotaNro(p.getCclNumero().toString());
+//				pagoService.remove(movCaja);
 			}
 			
 		} catch (Exception e) {
@@ -1011,7 +1004,6 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		Double pagado= itemTableModel.getEntities().stream().mapToDouble(e -> e.getPagado()).sum();
 		Double aPagar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCar_monto1()).sum();
 		Double diferencia =(aPagar-pagado);
-		System.out.println("calculado - pagado"+diferencia);
 		Double descuento=0d;
 		Double recargo =0d;
 		if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0"))

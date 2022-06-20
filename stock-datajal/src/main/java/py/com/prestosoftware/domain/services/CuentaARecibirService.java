@@ -25,6 +25,13 @@ public class CuentaARecibirService {
         return repository.findByCarProceso(carProceso);
     }
     
+    public void cambiaEstadoSituacion(int estado, Long carNumero) {
+		if (estado == 0)
+			repository.cambiaEstadoSituacionActivo(carNumero);
+		else
+			repository.cambiaEstadoSituacionInactivo(carNumero);
+	}
+    
 //    public List<CuentaARecibir> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
 //    	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
 //    }

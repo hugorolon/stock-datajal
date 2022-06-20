@@ -15,6 +15,8 @@ public interface ProcesoCobroClientesRepository extends JpaRepository<ProcesoCob
 //	List<ProcesoCobroClientes> findByFechaAndCajaAndSituacionOrderByIdAsc(Date fecha, Caja caja, String situacion);
 //
 	ProcesoCobroClientes findByPccCobro(Integer id);
+	
+	ProcesoCobroClientes findByPccProceso(Integer id);
 
 	@Query("SELECT coalesce(max(id), 0) FROM ProcesoCobroClientes e")
 	Long getMaxId();
