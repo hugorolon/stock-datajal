@@ -616,37 +616,6 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		// newMov();
 	}
 
-	class SelectingTables extends JTable {
-        //public SelectingTable(Object[][] data, String[] columnNames) {
-        public SelectingTables(DetalleCuentaClienteTableModel itemTableModel) {	
-            super(itemTableModel);
-            TableColumnModel model = super.getColumnModel();
-            for (int i = 0; i < super.getColumnCount(); i++) {
-                TableColumn tc = model.getColumn(i);
-                //tc.getCellEditor().getCellEditorValue().
-                tc.setCellEditor(new SelectingEditor(new JTextField()));
-//                tc.getCellEditor().isCellEditable(true);
-            }
-        }
-
-        class SelectingEditor extends DefaultCellEditor {
-
-            public SelectingEditor(JTextField textField) {
-                super(textField);
-            }
-
-            public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-                Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-                if (c instanceof JTextComponent) {
-                    JTextComponent jtc = (JTextComponent) c;
-                    jtc.requestFocus();
-                    jtc.selectAll();
-                }
-                return c;
-            }
-        }
-    }
-	
 	private void calculateMontoTotal(int origen) {
 		try {
 			Double aCobrar = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();

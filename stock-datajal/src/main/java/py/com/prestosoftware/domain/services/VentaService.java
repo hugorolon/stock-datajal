@@ -123,12 +123,104 @@ public class VentaService {
 			return v;
 	}
 
-	@Transactional
+	@Transactional(rollbackFor = RuntimeException.class)
+	public Venta saveRemoved(int lanzamientoCaja, Venta venta, List<VentaDetalle> items,  String condicion) throws RuntimeException{
+		Venta v = repository.save(venta);
+		if (lanzamientoCaja == 0) {
+			try {
+				updateStockProductRemoved(items, lanzamientoCaja,1);
+				removeMovCaja(v);
+				removeMovimientoIngresoProcesoCobroVenta(v);
+			
+				if (!condicion.equalsIgnoreCase("Contado")) {
+					Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(v);
+					removeMovimientoEgreso(cuentaARecibir);
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+//			updateStockProduct(v.getItems(),lanzamientoCaja,1);
+//			openMovCaja(v, condicion);
+//			movimientoIngresoProcesoCobroVenta(v);
+//			if (!condicion.equalsIgnoreCase("Contado")) {
+//				CuentaARecibir cuentaARecibir = new CuentaARecibir();
+//				cuentaARecibir = cuentaARecibirProcesoCobroVenta(v, condicion);
+//				openMovimientoEgreso(cuentaARecibir);
+//			}
+		}
+		return v;
+	}
+	
 	public Venta save(Venta venta) {
 		Venta v = repository.save(venta);
 		return v;
 	}
+	private void removeMovCaja(Venta venta) {
+		// cierre de caja del dia anterio
+		Optional<MovimientoCaja> movimientoCaja = repositoryPago.getMovimientoCajaPorNota(venta.getId().toString());
+		if (movimientoCaja.isPresent()) {
+			MovimientoCaja mc = movimientoCaja.get();
+			mc.setObs("VENTA ANULADO");
+			mc.setSituacion("ANULADO");
+			repositoryPago.save(mc);
+			repositoryPago.flush();
+		}
+		// remover los otros movimientos insertados
+	}
 
+	private void removeMovimientoIngresoProcesoCobroVenta(Venta venta) {
+		try {
+			MovimientoIngreso m = repositoryMovimientoIngreso.findByMinProceso(Integer.valueOf(venta.getId().toString()));
+			Integer cabId = m.getMinNumero();
+			
+			List<MovimientoItemIngreso> mii = repositoryMovimientoItemIngreso.findByCabId(cabId);
+			for (MovimientoItemIngreso movimientoItemIngreso : mii) {
+				repositoryMovimientoItemIngreso.delete(movimientoItemIngreso);
+			}
+			repositoryMovimientoIngreso.delete(m);
+			ProcesoCobroVentas pcv = repositoryProcesoCobroVentas.findByPveVenta(Integer.valueOf(venta.getId().toString()));
+			repositoryProcesoCobroVentas.delete(pcv);
+			
+			repositoryMovimientoItemIngreso.flush();
+			repositoryMovimientoIngreso.flush();
+			repositoryProcesoCobroVentas.flush();
+
+		} catch (Exception e) {
+
+		}
+	}
+	
+	private Integer removeCuentaARecibirProcesoCobroVenta(Venta venta) {
+		CuentaARecibir cuentaARecibir = repositoryCuentaARecibir
+				.findByCarProceso(Integer.valueOf(venta.getId().toString()));
+		Integer cabId = cuentaARecibir.getCarNumero();
+		
+		List<ItemCuentaARecibir> listaItemCuentaARecibir = repositoryItemCuentaARecibir.findByCabId(cabId);
+		for (ItemCuentaARecibir itemCuentaARecibir : listaItemCuentaARecibir) {
+			repositoryItemCuentaARecibir.delete(itemCuentaARecibir);
+		}
+		repositoryCuentaARecibir.delete(cuentaARecibir);
+		
+		repositoryItemCuentaARecibir.flush();
+		repositoryCuentaARecibir.flush();
+
+		// Proceso Cobro ventas
+		ProcesoCobroVentas pcv = repositoryProcesoCobroVentas.findByPveVenta(Integer.valueOf(venta.getId().toString()));
+		repositoryProcesoCobroVentas.delete(pcv);
+		repositoryProcesoCobroVentas.flush();
+
+		return cabId;
+	}
+	
+	private void removeMovimientoEgreso(Integer carNumero) {
+		MovimientoEgreso movEgreso = repositoryMovimientoEgreso.findByMegProceso(carNumero);
+		List<MovimientoItemEgreso> movItemEgreso = repositoryMovimientoItemEgreso.findByCabId(movEgreso.getMegNumero());
+		for (MovimientoItemEgreso movimientoItemEgreso : movItemEgreso) {
+			repositoryMovimientoItemEgreso.delete(movimientoItemEgreso);
+		}
+		repositoryMovimientoEgreso.delete(movEgreso);
+	}
+	
 	public void remove(Venta venta) {
 		repository.delete(venta);
 	}
@@ -237,6 +329,92 @@ public class VentaService {
 						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
 						//p.setDepO5Bloq(depBloq05 - cantItem);
 						p.setDepO5(dep05 - cantItem);
+						break;
+					default:
+						break;
+					}
+				}
+
+				productos.add(p);
+			}
+		}
+
+		repositoryProducto.saveAll(productos);
+		repositoryProducto.flush();
+	}
+	
+	private void updateStockProductRemoved(List<VentaDetalle> items, int habilitaLanzamientoCaja, int depesitoId) {
+		List<Producto> productos = new ArrayList<>();
+		for (VentaDetalle e : items) {
+			Optional<Producto> pOptional = repositoryProducto.findById(e.getProductoId());
+
+			if (pOptional.isPresent()) {
+				Producto p = pOptional.get();
+
+				//Double salPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
+				Double cantItem = e.getCantidad();
+				if (habilitaLanzamientoCaja == 1) {
+					/*switch (depesitoId) {
+					case 1:
+						Double depBloq = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
+						p.setDepO1Bloq(depBloq - cantItem);
+						p.setSalidaPend(salPend + cantItem);
+						break;
+					case 2:
+						Double depBloq02 = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
+						p.setDepO2Bloq(depBloq02 - cantItem);
+						p.setSalidaPend(salPend + cantItem);
+						break;
+					case 3:
+						Double depBloq03 = p.getDepO3Bloq() != null ? p.getDepO3Bloq() : 0;
+						p.setDepO3Bloq(depBloq03 - cantItem);
+						p.setSalidaPend(salPend + cantItem);
+						break;
+					case 4:
+						Double depBloq04 = p.getDepO4Bloq() != null ? p.getDepO4Bloq() : 0;
+						p.setDepO4Bloq(depBloq04 - cantItem);
+						p.setSalidaPend(salPend + cantItem);
+						break;
+					case 5:
+						Double depBloq05 = p.getDepO5Bloq() != null ? p.getDepO5Bloq() : 0;
+						p.setDepO5Bloq(depBloq05 - cantItem);
+						p.setSalidaPend(salPend + cantItem);
+						break;
+					default:
+						break;
+					}
+					*/
+				} else {
+					switch (depesitoId) {
+					case 1:
+						//Double depBloq = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
+						Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
+						//p.setDepO1Bloq(depBloq - cantItem);
+						p.setDepO1(dep01 + cantItem);
+						break;
+					case 2:
+						//Double depBloq02 = p.getDepO2Bloq() != null ? p.getDepO2Bloq() : 0;
+						Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
+						//p.setDepO2Bloq(depBloq02 - cantItem);
+						p.setDepO2(dep02 + cantItem);
+						break;
+					case 3:
+						//Double depBloq03 = p.getDepO3Bloq() != null ? p.getDepO3Bloq() : 0;
+						Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
+						//p.setDepO3Bloq(depBloq03 - cantItem);
+						p.setDepO3(dep03 + cantItem);
+						break;
+					case 4:
+						//Double depBloq04 = p.getDepO4Bloq() != null ? p.getDepO4Bloq() : 0;
+						Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
+						//p.setDepO4Bloq(depBloq04 - cantItem);
+						p.setDepO4(dep04 + cantItem);
+						break;
+					case 5:
+						//Double depBloq05 = p.getDepO5Bloq() != null ? p.getDepO5Bloq() : 0;
+						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
+						//p.setDepO5Bloq(depBloq05 - cantItem);
+						p.setDepO5(dep05 + cantItem);
 						break;
 					default:
 						break;

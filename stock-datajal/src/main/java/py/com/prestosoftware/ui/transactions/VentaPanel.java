@@ -2282,26 +2282,22 @@ public class VentaPanel extends JFrame
 		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
 				JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
-			if (!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
-				updateStockProductRemoved(ventaSeleccionado.getItems());
-				ventaSeleccionado.setSituacion("ANULADO");
-				ventaService.save(ventaSeleccionado);
-
-				if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
-					removeMovCaja(ventaSeleccionado);
-					removeMovimientoIngresoProcesoCobroVenta(ventaSeleccionado);
-					try {
-						if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-							Integer cuentaARecibir = removeCuentaARecibirProcesoCobroVenta(ventaSeleccionado);
-							removeMovimientoEgreso(cuentaARecibir);
+			if (conf != null) {
+				int lanzCaja = conf.getHabilitaLanzamientoCaja();
+				try {
+					if (!ventaSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
+						//updateStockProductRemoved(ventaSeleccionado.getItems());
+						ventaSeleccionado.setSituacion("ANULADO");
+						Venta v=ventaService.saveRemoved(lanzCaja, ventaSeleccionado, ventaSeleccionado.getItems(), tfCondicionPago.getSelectedItem().toString());
+						if(v!=null) {
+							newVenta();
+							Notifications.showAlert("Venta ELIMINADO con exito.!");
 						}
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-
+					}		
+				}catch (Exception e) {
+					Notifications.showAlert("Venta no pudo ser ELIMINADO.!");
+					// TODO: handle exception
 				}
-
-				newVenta();
 			}
 		}
 		tfProductoID.requestFocus();
@@ -2752,7 +2748,9 @@ public class VentaPanel extends JFrame
 			if (producto != null) {
 				if (producto.getSubgrupo().getTipo().equals("S"))
 					isProductService = true;
-
+				if(nivelPrecio==null)
+					nivelPrecio= conf.getPrecioDefinido();
+				
 				precioInicial = setPrecioByCliente(nivelPrecio, producto);
 				this.precioA = producto.getPrecioVentaA();
 				this.precioB = producto.getPrecioVentaB();
