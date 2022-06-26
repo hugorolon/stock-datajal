@@ -6,7 +6,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
+
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -21,6 +24,7 @@ public class CellRendererOperaciones extends DefaultTableCellRenderer {
     }
     
     public void setValue(Object value) {
+    	SimpleDateFormat sdf=new SimpleDateFormat("dd/mm/yyyy");
         if ((value != null) && ((value instanceof Integer) || (value instanceof Long))) {
             setHorizontalAlignment(SwingConstants.RIGHT);
             Number numberValue = (Number) value;
@@ -35,7 +39,11 @@ public class CellRendererOperaciones extends DefaultTableCellRenderer {
         	    simbolo.setGroupingSeparator('.');
         	    DecimalFormat formateador = new DecimalFormat("###,###.###",simbolo); 
         	    value= formateador.format(value);
-            } else if (value instanceof String) {
+            } else if (value instanceof Date) {
+                setHorizontalAlignment(SwingConstants.CENTER);               
+                value= sdf.format(value);
+            }
+        else if (value instanceof String) {
                 setHorizontalAlignment(SwingConstants.LEFT);
             }
         super.setValue(value);
@@ -47,8 +55,7 @@ public class CellRendererOperaciones extends DefaultTableCellRenderer {
     	} else { 
             super.setBackground(new Color(225, 251, 234));
     	}
-    	
-        JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    	JLabel label = (JLabel)super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         label.setFont(new java.awt.Font("Tahoma", 0, 14));
         
         return label;

@@ -1108,7 +1108,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
         		de.setCantidad(e.getCantidad());
         		de.setCosto(e.getPrecio());
         		de.setSubtotal(e.getSubtotal());
-        		
+        		de.setCantidaddev(0d);
         		itemTableModel.addEntity(de);				
 			}
 		}	
@@ -1484,7 +1484,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 			tfProductoID.requestFocus();
 		}
 		
-		if (getTypeDevolucion().equals("COMPRA")) { //cuando es compra verificamos si existe cantidad a devolver al proveedor
+		/*if (getTypeDevolucion().equals("COMPRA")) { //cuando es compra verificamos si existe cantidad a devolver al proveedor
 			Long productoId = Long.valueOf(tfProductoID.getText());
 	    	Double cantidad = FormatearValor.stringToDouble(tfCantidad.getText());
 	    	
@@ -1503,7 +1503,7 @@ public class DevolucionPanel extends JFrame implements CompraInterfaz, VentaInte
 	    	} else {
 	    		Notifications.showAlert("No existe producto con este codigo.!");
 	    	}
-		} 
+		} */
 //		else {
 //			addItemToList();
 //			calculateItem();

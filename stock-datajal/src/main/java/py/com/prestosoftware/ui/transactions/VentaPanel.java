@@ -455,6 +455,11 @@ public class VentaPanel extends JFrame
 		Util.ocultarColumna(tbProductos, 10);
 		Util.ocultarColumna(tbProductos, 11);
 		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbProductos.getColumnModel().getColumn(0).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(145);
+		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(15);
 		tbProductos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		tbProductos.addMouseListener(new MouseAdapter() {
 			@Override

@@ -1,7 +1,10 @@
 
 package py.com.prestosoftware.ui.table;
 
+import java.text.SimpleDateFormat;
+
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.Venta;
 import py.com.prestosoftware.ui.shared.DefaultTableModel;
 
@@ -19,7 +22,6 @@ public class VentaTableModel extends DefaultTableModel<Venta> {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Venta v = entities.get(rowIndex);
-
         switch (columnIndex) {
 	        case 0:
 	            return v.getId();

@@ -25,6 +25,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -45,6 +46,7 @@ import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.UsuarioRolService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
@@ -198,8 +200,9 @@ public class ProductoVistaDialog extends JDialog {
                 loadData(); 
             }
         });
-		DefaultTableCellRenderer alignRenderer= new DefaultTableCellRenderer();
-		alignRenderer.setHorizontalAlignment(JLabel.CENTER);
+		DefaultTableCellRenderer alignRenderer= new CellRendererOthers();
+		alignRenderer.setBackground(getBackground());
+		alignRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		table.getColumnModel().getColumn(0).setPreferredWidth(75);
 		table.getColumnModel().getColumn(0).setCellRenderer(alignRenderer);
 		table.getColumnModel().getColumn(1).setPreferredWidth(275);
