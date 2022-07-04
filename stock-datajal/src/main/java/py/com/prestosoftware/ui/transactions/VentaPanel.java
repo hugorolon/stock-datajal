@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
 import javax.transaction.Transactional;
 
@@ -86,6 +87,7 @@ import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.domain.validations.VentaValidator;
 import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
@@ -454,11 +456,30 @@ public class VentaPanel extends JFrame
 		Util.ocultarColumna(tbProductos, 9);
 		Util.ocultarColumna(tbProductos, 10);
 		Util.ocultarColumna(tbProductos, 11);
+		DefaultTableCellRenderer alignRendererHeader= new CellRendererOthers();
+		alignRendererHeader.setBackground(getBackground());
+		alignRendererHeader.setHorizontalAlignment(SwingConstants.CENTER);
+		//alignRendererHeader.getFont().deriveFont(Font.BOLD);
+		//alignRendererHeader.setFont(new Font("Dialog", Font.BOLD, 16));
+		DefaultTableCellRenderer alignRenderer= new CellRendererOthers();
+		alignRenderer.setBackground(getBackground());
+		alignRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbProductos.getTableHeader().setOpaque(false);
+		tbProductos.getTableHeader().setBackground(new Color(225, 251, 234));
+		tbProductos.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+		tbProductos.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeader);
+		//tbProductos.getColumnModel().getColumn(0).get
 		tbProductos.getColumnModel().getColumn(0).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(0).setCellRenderer(alignRenderer);
+		tbProductos.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeader);
 		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(1).setCellRenderer(alignRenderer);
+		tbProductos.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeader);
 		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(145);
+		tbProductos.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeader);
 		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(10);
+		tbProductos.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeader);
 		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(15);
 		tbProductos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		tbProductos.addMouseListener(new MouseAdapter() {

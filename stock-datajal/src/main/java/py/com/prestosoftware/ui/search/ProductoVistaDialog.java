@@ -66,8 +66,6 @@ public class ProductoVistaDialog extends JDialog {
 	private JButton btnCancelar;
 	private JTable table;
 	private JScrollPane scrollPane;
-	private JTable tbPrecioIva;
-	private JScrollPane scrollPanePrecioIva;
 	
 	private ProductoService service;
 	private ProductDCTableModel tableModel;
@@ -81,7 +79,6 @@ public class ProductoVistaDialog extends JDialog {
 	private ConfiguracionService configService;
 	
 	private JPanel pnlDatosComplementarios;
-	private JPanel pnlPrecioIva;
 	private JLabel lblStockValor,lblPrecioCompraValor,lblPrecioVentaValor,lblCodigoValor,lblReferenciaValor,lblEanValor,lblNombreValor,lblAplicacionValor,lblAgrupacionValor,lblFabricanteValor,lblMagnitudValor;
 	private String nivelPrecio;
 	private UsuarioRolService usuarioRolService;
@@ -101,22 +98,6 @@ public class ProductoVistaDialog extends JDialog {
 		setSize(1154, 603);
 		setModal(true);
 		getContentPane().setLayout(null);
-		
-		pnlPrecioIva = new JPanel();
-		pnlPrecioIva.setBackground(Color.WHITE);
-		pnlPrecioIva.setBounds(624, 372, 504, 129);
-		pnlPrecioIva.setBorder(new TitledBorder(null, "PRECIO CON IVA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		getContentPane().add(pnlPrecioIva, "cell 1 4,grow");
-		pnlPrecioIva.setLayout(null);
-		
-		scrollPanePrecioIva = new JScrollPane();
-		scrollPanePrecioIva.setBounds(10, 33, 270, 86);
-		pnlPrecioIva.add(scrollPanePrecioIva);
-		
-		tbPrecioIva = new JTable(precioTableModel);
-		tbPrecioIva.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		tbPrecioIva.setDefaultRenderer(Object.class, new CellRendererOperaciones());
-		scrollPanePrecioIva.setViewportView(tbPrecioIva);
 		
 		JPanel pnlBuscador = new JPanel();
 		pnlBuscador.setBounds(0, 0, 1128, 35);
@@ -305,7 +286,7 @@ public class ProductoVistaDialog extends JDialog {
 		
 		pnlDatosComplementarios = new JPanel();
 		pnlDatosComplementarios.setBackground(Color.WHITE);
-		pnlDatosComplementarios.setBounds(624, 45, 504, 327);
+		pnlDatosComplementarios.setBounds(624, 45, 504, 466);
 		pnlDatosComplementarios.setBorder(new TitledBorder(null, "DATOS COMPLEMENTARIOS DEL PRODUCTO", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(pnlDatosComplementarios, "cell 1 0 1 3,grow");
 		pnlDatosComplementarios.setLayout(null);
