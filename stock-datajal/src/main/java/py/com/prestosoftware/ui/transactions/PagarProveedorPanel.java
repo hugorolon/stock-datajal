@@ -1,6 +1,7 @@
 package py.com.prestosoftware.ui.transactions;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,6 +37,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.JTextComponent;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -288,6 +290,17 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 				if (columna == 8)
 					return true;
 				return false;
+			}
+			public void changeSelection(int row, int column, boolean toggle, boolean extend)
+			{
+				super.changeSelection(row, column, toggle, extend);
+
+				if (editCellAt(row, column))
+				{
+					Component editor = getEditorComponent();
+					editor.requestFocusInWindow();
+					((JTextComponent)editor).selectAll();
+				}
 			}
 		};
 
@@ -980,7 +993,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
 		tfSaldo.setText(FormatearValor.doubleAString(totalCalculado));
 		tfTotalACobrar.setText(FormatearValor
-				.doubleAString(itemTableModel.getEntities().stream().mapToDouble(i -> i.getCap_monto1()).sum()));
+				.doubleAString(itemTableModel.getEntities().stream().mapToDouble(i -> i.getIcp_monto1()).sum()));
 	}
 
 	private List<DetalleAPagarProveedorView> castDetallePagarProveedor(List<Object[]> listMII, int edicion) {
