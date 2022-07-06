@@ -58,8 +58,6 @@ public class ProductoDialog extends JDialog {
 	private JButton btnCancelar;
 	private JTable table;
 	private JScrollPane scrollPane;
-	private JTable tbPrecioIva;
-	private JScrollPane scrollPanePrecioIva;
 	
 	private ProductoService service;
 	private ProductTableModel tableModel;
@@ -70,7 +68,6 @@ public class ProductoDialog extends JDialog {
 	private ProductoPrecioTableModel precioTableModel;
 	private ProductoDepositoTableModel depositoTableModel;
 	private DepositoService depositoService;
-	private JPanel pnlPrecioIva;
 	private JButton btnActualizarLista;
 	
 
@@ -156,7 +153,7 @@ public class ProductoDialog extends JDialog {
 		pnlBuscador.add(btnActualizarLista);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 35, 614, 408);
+		scrollPane.setBounds(0, 35, 886, 408);
 		getContentPane().add(scrollPane);
 		
 		table = new JTable(tableModel);
@@ -260,21 +257,6 @@ public class ProductoDialog extends JDialog {
 			}
 		});
 		pnlBotonera.add(btnCancelar);
-		
-		
-		pnlPrecioIva = new JPanel();
-		pnlPrecioIva.setBounds(628, 50, 248, 199);
-		pnlPrecioIva.setBorder(new TitledBorder(null, "PRECIO CON IVA", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		getContentPane().add(pnlPrecioIva, "cell 1 4,grow");
-		pnlPrecioIva.setLayout(null);
-		
-		scrollPanePrecioIva = new JScrollPane();
-		scrollPanePrecioIva.setBounds(6, 18, 232, 173);
-		pnlPrecioIva.add(scrollPanePrecioIva);
-		
-		tbPrecioIva = new JTable(precioTableModel);
-		tbPrecioIva.setDefaultRenderer(Object.class, new CellRendererOperaciones());
-		scrollPanePrecioIva.setViewportView(tbPrecioIva);
 		
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();

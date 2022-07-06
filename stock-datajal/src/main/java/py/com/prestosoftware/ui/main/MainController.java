@@ -601,6 +601,7 @@ public class MainController extends AbstractFrameController {
 
 	private void openPresupuesto() {
 		presupuestoPanel.setVisible(true);
+		presupuestoPanel.getConfig();
 		presupuestoPanel.newPresupuesto();
 	}
 

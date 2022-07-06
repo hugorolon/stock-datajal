@@ -30,12 +30,16 @@ import org.springframework.stereotype.Component;
 
 import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.ClientePais;
+import py.com.prestosoftware.data.models.Configuracion;
+import py.com.prestosoftware.data.models.Deposito;
+import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.Presupuesto;
 import py.com.prestosoftware.data.models.PresupuestoDetalle;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Usuario;
 import py.com.prestosoftware.domain.services.ClientePaisService;
 import py.com.prestosoftware.domain.services.ClienteService;
+import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.PresupuestoService;
 import py.com.prestosoftware.domain.services.ProductoService;
@@ -96,11 +100,12 @@ public class PresupuestoPanel extends JFrame
 	private ClientePaisService clientePaisService;
 	private UsuarioService vendedorService;
 	private ProductoService productoService;
+	private ConfiguracionService configService;
 
 	public PresupuestoPanel(PresupuestoTableModel itemTableModel, ClienteDialog clientDialog,
 			VendedorDialog vendedorDialog, ProductoDialog productoDialog, PresupuestoValidator ventaValidator,
 			PresupuestoService pService, ClienteService clienteService, UsuarioService vendedorService,
-			DepositoService depositoService, ProductoService productoService, ClientePaisService clientePaisService) {
+			DepositoService depositoService, ProductoService productoService, ClientePaisService clientePaisService, ConfiguracionService configService) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
 		this.vendedorDialog = vendedorDialog;
@@ -111,7 +116,8 @@ public class PresupuestoPanel extends JFrame
 		this.clientePaisService=clientePaisService;
 		this.vendedorService = vendedorService;
 		this.productoService = productoService;
-
+		this.configService = configService;
+		
 		setSize(921, 649);
 		setTitle("PRESUPUESTOS");
 		setLocationRelativeTo(null);
@@ -765,12 +771,29 @@ public class PresupuestoPanel extends JFrame
 		lblCamposObligatorios.setBounds(229, 12, 299, 25);
 		pnlTotales.add(lblCamposObligatorios);
 		lblCamposObligatorios.setFont(new Font("Dialog", Font.BOLD, 20));
-		
-		Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
-		tfVendedorID.setText(usuario.get().getId().toString());
-		tfVendedor.setText(usuario.get().getUsuario());
+//		Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
+//		tfVendedorID.setText(usuario.get().getId().toString());
+//		tfVendedor.setText(usuario.get().getUsuario());
 	}
 
+	private Configuracion conf;
+
+	public void getConfig() {
+		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
+
+		if (config.isPresent()) {
+			this.conf = config.get();
+
+			if (conf.getPideVendedor() == 0) {
+				Optional<Usuario> usuario = vendedorService.findById(GlobalVars.USER_ID);
+				tfVendedorID.setText(usuario.get().getId().toString());
+				tfVendedor.setText(usuario.get().getUsuario());
+				tfVendedorID.setEnabled(false);
+				tfVendedor.setEnabled(false);
+			}
+		}
+	}
+	
 	private void getItemSelected() {
 		int selectedRow = tbProductos.getSelectedRow();
 
@@ -942,8 +965,8 @@ public class PresupuestoPanel extends JFrame
 			// precioComboBoxModel.addElements(productoPrecios);
 			// tfPrecio.setText(FormatearValor.doubleAString(cbListPrecio.getItemAt(0).getValor()));
 
-			tfPrecio.setText(producto.get().getPrecioVentaA() != null
-					? FormatearValor.doubleAString(producto.get().getPrecioVentaA())
+			tfPrecio.setText(producto.get().getPrecioVentaC() != null
+					? FormatearValor.doubleAString(producto.get().getPrecioVentaC())
 					: "0");
 			// cantidad default
 			tfCantidad.setText("1");
