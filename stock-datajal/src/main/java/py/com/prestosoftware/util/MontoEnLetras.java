@@ -1,182 +1,161 @@
 package py.com.prestosoftware.util;
 
-/**
- *
- * @author kelcom
- */
-public class MontoEnLetras {
-   
-   private static final int  Unidad = 1;
-   private static final int  Decena = 10;
-   private static final int  Centena = 100;
-    
-  public static String convertir(String monto, String separadorDecimal, String moneda,boolean esMayuscula ){
-       
-      String  V[] = initVector(), s = "", z = "", c = "", espacio = " ", t;
-      int l = monto.length(), k = monto.indexOf( separadorDecimal ), u = 1, n = 0, j = 0, b = 0, d, p, r;
-      
-      try{
-            if( k >= 0 ) { c = monto.substring( k + 1, l );  l = k; }
-            
-            if ( l <= 15 )
-            {
-                        for( int i = l ; i >= 1; i-- ){
-                            d = Integer.parseInt( String.valueOf( monto.charAt( i - 1 ) )); 
-                            n = d * u + n;
 
-                                switch( u ){
-                                    case Unidad: 
-                                        s = V[ n ]; 
-                                        if ( i == l && n == 1 ) b++;
-                                    break;
-                                    case Decena:                                                
-                                        p = d - 2;
-                                    
-                                        if( p < 0 )   
-                                            s = V[ n ];                                      
-                                        else{ 
-                                            t =  V[ 20 + p ];
-                                            
-                                            if( n % 10 != 0 )
-                                               s  =  (d == 2)? "veinti" + s : t + " y " + s;
-                                            else    
-                                               s = t;
-                                         }
-                                    break;
-                                    case Centena:
-                                       p = d - 1; 
-                                       t = V[ 30 + p ];
-         
-                                       if( n % 100  == 0 ) 
-                                       { s = ""; espacio = ""; }  
-                                       else 
-                                         if( d == 1 ) t += "to";  
-                                       
-                                       s = t + espacio + s;                                       
-                                       z = ( s + z );   
-                                    break;          
-                                }  
-                                
-                                espacio = " ";     
-                              //ini. calcula los miles, millones, billones
-                                r = l - i;                                
-                                if( r > 0 && r % 3 == 0  ){
-                                        p = ( r > 10 )?  2 : j++ & 1;     
-                                        t = V[ 40 + p ];
-                                        
-                                        if( p > 0 )
-                                           if( ( n == 1 && i > 1 ) || n > 1  ) t += "es";
-                                        z = espacio + t + espacio + z;
-                                        	//z = espacio + t + z;
-                                }
-                              //fin.
-                                
-                                // reiniciar variables
-                               if ( u == Centena ){  u = 1;  n = 0;  s = "";  } else u *= 10;                                 
-                         } 
-                       
-             }      
-           //ini. adiciona la moneda y los centavos
-                if ( !c.equals("") && !c.equals("00")) c = " con " + c + " centavos";            
-                if ( !moneda.equals("") )        
-                	moneda = " " + moneda; 
-                else
-//                    if( b > 0 ) z += "o";//orig
-                	if( b > 0 ) z += "";  
-           //fin. 
-           //si es cero la parte de centavos lo oculta
-                if ( !c.equals("") && !c.equals("00"))
-                	z = ( s + z ) + moneda + c;
-                else
-                	z = ( s + z ) + moneda;
-      }
-      catch(NumberFormatException ex){
-            z = "ERROR [readNumber]: Formato numerico incorrecto.";
-      }
-     //si se recibe true como parametro, se convierte todo a mayuscula
-     if(esMayuscula){
-    	 z=z.toUpperCase();
-     }
-     z=cortarExpresion(z);
-     return z;
-     
-   }
- 
-   private static String[] initVector(  ){
-       String V[] = new String[43];
-        
-        V[0] = "cero";
-        V[1] = "un";
-        V[2] = "dos";
-        V[3] = "tres";
-        V[4] = "cuatro";
-        V[5] = "cinco";
-        V[6] = "seis";
-        V[7] = "siete";
-        V[8] = "ocho";
-        V[9] = "nueve";
-        V[10] = "diez";
-        V[11] = "once";
-        V[12] = "doce";
-        V[13] = "trece";
-        V[14] = "catorce";
-        V[15] = "quince";
-        V[16] = "dieciseis";
-        V[17] = "diecisiete";
-        V[18] = "dieciocho";
-        V[19] = "diecinueve";
-        V[20] = "veinte";
-        V[21] = "treinta";
-        V[22] = "cuarenta";
-        V[23] = "cincuenta";
-        V[24] = "secenta";
-        V[25] = "setenta";
-        V[26] = "ochenta";
-        V[27] = "noventa";
-        V[28] = "";
-        V[29] = "";
-        V[30] = "cien";
-        V[31] = "doscientos";
-        V[32] = "trescientos";
-        V[33] = "cuatrocientos";
-        V[34] = "quinientos";
-        V[35] = "seiscientos";
-        V[36] = "setecientos";
-        V[37] = "ochocientos";
-        V[38] = "novecientos";
-        V[39] = "";
-        V[40] = "mil";
-        V[41] = "millon";
-        V[42] = "billon";
-        
-        return V;
-   }
+import net.sf.jasperreports.engine.JRDefaultScriptlet;
+import java.math.BigInteger;
+import java.util.regex.Pattern;
+import net.sf.jasperreports.engine.JRScriptletException;
+
+public class MontoEnLetras extends JRDefaultScriptlet{
    
-   private static String cortarExpresion(String expresionAnterior) {
-	   //Separa la cadena en un vector
-	 	String[] array = expresionAnterior.split(" ");
-		String resultado="";
-		for (int i = 0; i < array.length; i++) {
-			String palabra=array[i];
-			if(palabra.equals(""))//por el tema del doble espacio q queda
-				i++;
-			//procesa a partir de la segunda palabra
-			if(i>0){
-				//compara si el anteriorpa es MILLON y el actual espa MIL"
-				if((array[i-1].toUpperCase().equals("MILLON") || array[i-1].toUpperCase().equals("MILLONES")) && array[i].toUpperCase().equals("MIL")){
-					palabra=palabra.replace("MIL", "");
-				}
-			}
-			//VA CREANDO UNA NUEVA CADENA POR CADA CICLO
-			resultado+=palabra+" ";
-		}
-		return resultado;
-   }
+	private static final String[] UNIDADES = {"", "un ", "dos ", "tres ", "cuatro ", "cinco ", "seis ", "siete ", "ocho ", "nueve "};
+	private static final String[] DECENAS = {"diez ", "once ", "doce ", "trece ", "catorce ", "quince ", "dieciseis ",	    "diecisiete ", "dieciocho ", "diecinueve", "veinte ", "treinta ", "cuarenta ", "cincuenta ", "sesenta ", "setenta ", "ochenta ", "noventa "};
+	private static final String[] CENTENAS = {"", "ciento ", "doscientos ", "trecientos ", "cuatrocientos ", "quinientos ", "seiscientos ",
+	    "setecientos ", "ochocientos ", "novecientos "};
+    
+	public static String convertir(String numero, String punto,  String vacio, boolean mayusculas) {
+        String literal = "";
+        String parte_decimal;
+        //si el numero utiliza (.) en lugar de (,) -> se reemplaza
+        numero = numero.replace(".", ",");
+        //si el numero no tiene parte decimal, se le agrega ,00
+        if (numero.indexOf(",") == -1) {
+            numero = numero + ",00";
+        }
+        //se valida formato de entrada -> 0,00 y 999 999 999,00
+        if (Pattern.matches("\\d{1,9},\\d{1,2}", numero)) {
+            //se divide el numero 0000000,00 -> entero y decimal
+            String Num[] = numero.split(",");
+            //de da formato al numero decimal
+            //parte_decimal = "y " + Num[1] + "/100 Soles.";
+            //se convierte el numero a literal
+            if (Integer.parseInt(Num[0]) == 0) {//si el valor es cero
+                literal = "cero ";
+            } else if (Integer.parseInt(Num[0]) > 999999) {//si es millon
+                literal = getMillones(Num[0]);
+            } else if (Integer.parseInt(Num[0]) > 999) {//si es miles
+                literal = getMiles(Num[0]);
+            } else if (Integer.parseInt(Num[0]) > 99) {//si es centena
+                literal = getCentenas(Num[0]);
+            } else if (Integer.parseInt(Num[0]) > 9) {//si es decena
+                literal = getDecenas(Num[0]);
+            } else {//sino unidades -> 9
+                literal = getUnidades(Num[0]);
+            }
+            //devuelve el resultado en mayusculas o minusculas
+            if (mayusculas) {
+                return (literal ).toUpperCase();
+            } else {
+                return (literal );
+            }
+        } else {//error, no se puede convertir
+            return literal = null;
+        }
+    }
+	
+
+
+	/* funciones para convertir los numeros a literales */
+	private static String getUnidades(String numero) {// 1 - 9
+	    //si tuviera algun 0 antes se lo quita -> 09 = 9 o 009=9
+	    String num = numero.substring(numero.length() - 1);
+	    return UNIDADES[Integer.parseInt(num)];
+	}
+
+	private static String getDecenas(String num) {// 99 
+		int n = Integer.parseInt(num); 
+		if (n < 10) {//para casos como -> 01 - 09 
+			return getUnidades(num); 
+		} else if (n > 19) {//para 20...99 
+			String u = getUnidades(num); 
+			if (u.equals("")) { //para 20,30,40,50,60,70,80,90 
+				return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8]; 
+			} else { 
+				if(n == 21) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 22) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 23) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 24) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 25) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 26) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 27) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;}
+				if(n == 28) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;} 
+				if(n == 29) {return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8].substring(0,5) + "i" + u;} 
+				return DECENAS[Integer.parseInt(num.substring(0, 1)) + 8] + "y " + u; 
+			} 
+		} else {//numeros entre 11 y 19 
+			return DECENAS[n - 10];
+		} 
+	}
+
+	private static String getCentenas(String num) {// 999 o 099
+	    if (Integer.parseInt(num) > 99) {//es centena
+	        if (Integer.parseInt(num) == 100) {//caso especial
+	            return " cien ";
+	        } else {
+	            return CENTENAS[Integer.parseInt(num.substring(0, 1))] + getDecenas(num.substring(1));
+	        }
+	    } else {//por Ej. 099 
+	        //se quita el 0 antes de convertir a decenas
+	        return getDecenas(Integer.parseInt(num) + "");
+	    }
+	}
+
+	private static String getMiles(String numero) {// 999 999
+	    //obtiene las centenas
+	    String c = numero.substring(numero.length() - 3);
+	    //obtiene los miles
+	    String m = numero.substring(0, numero.length() - 3);
+	    String n = "";
+	    //se comprueba que miles tenga valor entero
+	    if (Integer.parseInt(m) > 0) {
+	        n = getCentenas(m);
+	        return n + "mil " + getCentenas(c);
+	    } else {
+	        return "" + getCentenas(c);
+	    }
+
+	}
+
+	private static String getMillones(String numero) { //000 000 000        
+	    //se obtiene los miles
+	    String miles = numero.substring(numero.length() - 6);
+	    //se obtiene los millones
+	    String millon = numero.substring(0, numero.length() - 6);
+	    String n = "";
+	    if (Integer.parseInt(millon) > 0) {
+	    	if (Integer.parseInt(millon) == 1) {
+	    		n = getUnidades(millon) + "millon ";
+	    	} else {
+	    		n = getCentenas(millon) + "millones ";
+	    	}
+	    }
+	    
+	    return n + getMiles(miles);
+	}
+
+	private static String getBillones(String numero) { //000 000 000 000        
+	    //se obtiene los miles
+	    String miles = numero.substring(numero.length() - 9);
+	    //se obtiene los millones
+	    String millon = numero.substring(0, numero.length() - 9);
+	    String n = "";
+	    if (Integer.parseInt(millon) == 1) {
+	    	n = getUnidades(millon) + "billon ";
+	    } else {
+	    	n = getCentenas(millon) + "billones ";
+	    }
+	    
+	    return n + getMillones(miles);
+	}
+
  
-//	public static void main(String[] args) {
-	//	System.out.println(MontoEnLetras.convertir("2000000.00",".","",true));
-	//	System.out.println(MontoEnLetras.convertir("1000000.00",".","",true));
-	//	System.out.println(MontoEnLetras.convertir("9999800000000.00",".","",true));
-	//	System.out.println(MontoEnLetras.convertir("999999999999999.00",".","",true));
+//	public static void main(String[] args) throws JRScriptletException {
+//		//MontoEnLetras.Convertir(EXCEPTION_MESSAGE_KEY_PARAMETER_NOT_FOUND, EXCEPTION_MESSAGE_KEY_FIELD_NOT_FOUND, false)
+//		System.out.println(MontoEnLetras.Convertir("458000",".","",true));
+//		System.out.println(MontoEnLetras.Convertir("4580000",".","",true));
+//		System.out.println(MontoEnLetras.Convertir("45800000",".","",true));
+//		System.out.println(MontoEnLetras.Convertir("458000000",".","",true));
+//		System.out.println(MontoEnLetras.Convertir("9000000",".","",true));
+//		System.out.println(MontoEnLetras.Convertir("2007234",".","",true));
 //	}
 }

@@ -990,7 +990,7 @@ public class PresupuestoPanel extends JFrame
 		// totales
 //    	p.setTotalGravada10(tfSubtotal.getText().isEmpty() ? 0 : Double.valueOf(tfSubtotal.getText())); 	//SUBTOTAL
 //    	p.setTotalDescuento(tfDescuento.getText().isEmpty() ? 0 : Double.valueOf(tfDescuento.getText())); 	//DESCUENTO
-		p.setTotalGeneral(tfTotal.getText().isEmpty() ? 0 : Double.valueOf(tfTotal.getText())); // TOTAL GENERAL
+		p.setTotalGeneral(tfTotal.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotal.getText())); // TOTAL GENERAL
 //    	p.setTotalFlete(tfFlete.getText().isEmpty() ? 0 : Double.valueOf(tfFlete.getText()));				//FLETE
 
 		return p;
