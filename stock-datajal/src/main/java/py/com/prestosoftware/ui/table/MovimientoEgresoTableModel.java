@@ -1,6 +1,9 @@
 package py.com.prestosoftware.ui.table;
 
+import java.text.SimpleDateFormat;
+
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.MovimientoEgreso;
 import py.com.prestosoftware.ui.shared.DefaultTableModel;
 
@@ -17,12 +20,13 @@ public class MovimientoEgresoTableModel extends DefaultTableModel<MovimientoEgre
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
     	MovimientoEgreso item = entities.get(rowIndex);
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         
         switch (columnIndex) {
             case 0:
                 return item.getMegNumero();
             case 1:
-                return item.getFecha();
+            	return sdf.format(item.getFecha());
             case 2:
                 return item.getMegCaja();
             case 3:

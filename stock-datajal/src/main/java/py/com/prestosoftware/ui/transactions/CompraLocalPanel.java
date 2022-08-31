@@ -1057,7 +1057,7 @@ public class CompraLocalPanel extends JFrame
 				Double costoAnt = p.getPrecioCostoPromedio() != null ? p.getPrecioCostoPromedio() : 0;
 				Double calcPromedioPrecio = (costoAnt == 0 ? e.getPrecio()
 						: (costoAnt.intValue() + e.getPrecio().intValue()) / 2);
-				p.setPrecioCosto(e.getPrecio());
+				//p.setPrecioCosto(e.getPrecio());
 				p.setPrecioCostoPromedio(calcPromedioPrecio);
 				if (habilitaLanzamientoCaja == 1)
 					p.setEntPendiente(entPendiente + cantCompra);

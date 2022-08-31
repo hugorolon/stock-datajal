@@ -22,11 +22,12 @@ public class VentaTableModel extends DefaultTableModel<Venta> {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
     	Venta v = entities.get(rowIndex);
+    	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/YYYY");
         switch (columnIndex) {
 	        case 0:
 	            return v.getId();
             case 1:
-                return v.getFecha();
+                return sdf.format(v.getFecha());
             case 2:
                 return v.getClienteNombre();
             case 3:

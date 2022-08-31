@@ -131,7 +131,7 @@ public class VentaPanel extends JFrame
 	private static final int VENTA_CODE = 7;
 	private static final int CLIENTE_ADD_CODE = 8;
 
-	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc;
+	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc, lblCosto;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
 	private JTextField tfClienteID, tfPrecioTotal, tfPrecio, tfVendedorID;
 	private JTextField tfCantidad, tfTotalItems, tfVence, tfDescuento, tfObs;
@@ -637,6 +637,11 @@ public class VentaPanel extends JFrame
 		lblDescripcionFiscal = new JLabel("");
 		lblDescripcionFiscal.setBounds(252, 10, 320, 24);
 		pnlProducto.add(lblDescripcionFiscal);
+		
+		lblCosto = new JLabel("");
+		lblCosto.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblCosto.setBounds(913, 10, 72, 30);
+		pnlProducto.add(lblCosto);
 
 		tfClienteID = new JTextField();
 		tfClienteID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1318,6 +1323,7 @@ public class VentaPanel extends JFrame
 			tfDescripcion.setText(String.valueOf(item.getProducto()));
 			tfPrecio.setText(FormatearValor.doubleAString(item.getPrecio()));
 			tfStock.setText(FormatearValor.doubleAString(item.getStock()));
+			lblCosto.setText("");
 			tfPrecioTotal.setText(FormatearValor.doubleAString(item.getSubtotal()));
 			// tfDescuentoItem.setText(item.getDescuento().toString());
 		}
@@ -1629,7 +1635,7 @@ public class VentaPanel extends JFrame
 		tfPrecio.setText("");
 		tfPrecioTotal.setText("");
 		tfStock.setText("");
-		// tfDescuentoItem.setText("");
+		lblCosto.setText("");
 		tfProductoID.requestFocus();
 	}
 
@@ -1670,6 +1676,7 @@ public class VentaPanel extends JFrame
 		tfVence.setText("");
 		tfCondicionPago.setSelectedIndex(0);
 		tfStock.setText("");
+		lblCosto.setText("");
 		tfClienteNombre.setEnabled(false);
 		tfClienteDireccion.setEnabled(false);
 		tfCondicionPago.setEnabled(true);
@@ -2565,6 +2572,7 @@ public class VentaPanel extends JFrame
 		tbProductos.enable();
 		tfClienteNombre.setEnabled(false);
 		tfStock.setText("");
+		lblCosto.setText("");
 		//itemTableModel = new VentaItemTableModel();
 		while (itemTableModel.getRowCount() > 0) {
 			itemTableModel.removeRow(0);
@@ -2795,6 +2803,7 @@ public class VentaPanel extends JFrame
 				tfCantidad.requestFocus();
 				Double cantStock=FormatearValor.stringToDoubleFormat(producto.getDepO1().toString());
 				tfStock.setText(FormatearValor.doubleAString(cantStock));
+				lblCosto.setText(FormatearValor.doubleAString(this.precioCompra));
 			}
 		} catch (Exception e) {
 			Notifications.showAlert("Producto sin Stock, verifique datos del producto!");
@@ -3182,16 +3191,4 @@ public class VentaPanel extends JFrame
 	public void setImpuesto(int impuesto) {
 		this.impuesto = impuesto;
 	}
-
-//	@Override
-//	public void imprimirNota(boolean impresora) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void imprimirFactura(boolean impresora) {
-//		// TODO Auto-generated method stub
-//		
-//	}
 }
