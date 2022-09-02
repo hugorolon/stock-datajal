@@ -10,6 +10,8 @@
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="551"/>
 	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="435"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
 	<import value="net.sf.jasperreports.engine.*"/>
 	<import value="java.util.*"/>
 	<import value="net.sf.jasperreports.engine.data.*"/>
@@ -27,7 +29,7 @@
 	<parameter name="saldoAnterior" class="java.lang.Double"/>
 	<queryString>
 		<![CDATA[select MIN_NUMERO  AS NUMERO, MIN_FECHA AS FECHA, min_hora AS HORA, 11 AS PROCESO,  11 as tipo,
-CONCAT('VENTA CONTADO' ,'-',min_numero,'- ',c.nombre)  as nombreProceso,
+CONCAT('VENTA CONTADO' ,'-',v.id,'- ',c.nombre)  as nombreProceso,
 sum(MII_MONTO) AS INGRESO, 0 AS EGRESO 
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi, ventas v, clientes c 
 			 where min_numero=mii_numero and min_caja=1 and min_situacion=0 
@@ -56,7 +58,7 @@ sum(MII_MONTO) AS INGRESO, 0 AS EGRESO
 			  GROUP BY 1, 4, 2, 3, 4,5, 6			  
 UNION
 SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, 1 AS PROCESO, 1 as tipo,
-concat('COMPRAS','#',meg_NUMERO,'-',p.nombre) as nombreProceso
+concat('COMPRAS','#',c.id,'-',p.nombre) as nombreProceso
  ,  0 AS INGRESO, sum(MIE_MONTO) AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi, proveedores p, compras c
 			 where meg_numero=mie_numero
