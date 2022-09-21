@@ -132,13 +132,6 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="318" y="150" width="154" height="13" uuid="4c5058f4-3c2f-44cb-8ab9-9b08c6650b13"/>
-				<textElement>
-					<font fontName="Arial Narrow" size="10"/>
-				</textElement>
-				<text><![CDATA[REGISTRO SENAVE 1843]]></text>
-			</staticText>
 		</band>
 	</pageHeader>
 	<detail>
