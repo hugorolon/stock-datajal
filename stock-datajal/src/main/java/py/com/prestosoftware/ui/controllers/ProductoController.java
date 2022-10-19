@@ -212,20 +212,25 @@ public class ProductoController extends AbstractFrameController {
 
     @Override
     public void prepareAndOpenFrame() {
-        loadProducts();
-        loadCategorias();
-        loadGrupos();
-        loadNcms();
-        loadImpuestos();
-        loadMarcas();
-        loadUnidadDeMedidas();
-        loadColors();
-        loadTamanhos();
-        loadListaPrecios();
-        //loadSubGrupos();
-        showProductFrame();
-        
-        productoPanel.getBtnNuevo().requestFocus();
+    	try {
+            loadProducts();
+            loadCategorias();
+            loadGrupos();
+            loadNcms();
+            loadImpuestos();
+            loadMarcas();
+            loadUnidadDeMedidas();
+            loadColors();
+            loadTamanhos();
+            loadListaPrecios();
+            //loadSubGrupos();
+            showProductFrame();
+            
+            productoPanel.getBtnNuevo().requestFocus();			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
     }
 
     private void loadProducts() {
@@ -266,39 +271,44 @@ public class ProductoController extends AbstractFrameController {
     
     
     private List<ProductoDeposito>  getStockProductosByDeposito(Producto p) {
-		List<ProductoDeposito> listProductoDeposito= new ArrayList<ProductoDeposito>();
-		if (p != null) {
-			String deposito = depositoService.findById(1L).get().getNombre();
-			if (p.getDepO1() != null) {
-				ProductoDeposito dep01 = new ProductoDeposito(deposito, p.getDepO1());
-				listProductoDeposito.add(dep01);
-				
-				String deposito2 = depositoService.findById(2L).get().getNombre();
-				if (p.getDepO2() != null) {
-					ProductoDeposito dep02 = new ProductoDeposito(deposito2, p.getDepO2());
-					listProductoDeposito.add(dep02);
-					
-					String deposito3 = depositoService.findById(3L).get().getNombre();
-					if (p.getDepO3() != null) {
-						ProductoDeposito dep03 = new ProductoDeposito(deposito3, p.getDepO3());
-						listProductoDeposito.add(dep03);
-						
-						String deposito4 = depositoService.findById(4L).get().getNombre();
-						if (p.getDepO4() != null) {
-							ProductoDeposito dep04 = new ProductoDeposito(deposito4, p.getDepO4());
-							listProductoDeposito.add(dep04);
-							
-							String deposito5 = depositoService.findById(5L).get().getNombre();
-							if (p.getDepO5() != null) {
-								ProductoDeposito dep05 = new ProductoDeposito(deposito5, p.getDepO5());
-								listProductoDeposito.add(dep05);
-							}	
-						}
-					}
-				}
-			}	
+    	try {
+    		List<ProductoDeposito> listProductoDeposito= new ArrayList<ProductoDeposito>();
+    		if (p != null) {
+    			String deposito = depositoService.findById(1L).get().getNombre();
+    			if (p.getDepO1() != null) {
+    				ProductoDeposito dep01 = new ProductoDeposito(deposito, p.getDepO1());
+    				listProductoDeposito.add(dep01);
+    				
+    				String deposito2 = depositoService.findById(2L).get().getNombre();
+    				if (p.getDepO2() != null) {
+    					ProductoDeposito dep02 = new ProductoDeposito(deposito2, p.getDepO2());
+    					listProductoDeposito.add(dep02);
+    					
+    					String deposito3 = depositoService.findById(3L).get().getNombre();
+    					if (p.getDepO3() != null) {
+    						ProductoDeposito dep03 = new ProductoDeposito(deposito3, p.getDepO3());
+    						listProductoDeposito.add(dep03);
+    						
+    						String deposito4 = depositoService.findById(4L).get().getNombre();
+    						if (p.getDepO4() != null) {
+    							ProductoDeposito dep04 = new ProductoDeposito(deposito4, p.getDepO4());
+    							listProductoDeposito.add(dep04);
+    							
+    							String deposito5 = depositoService.findById(5L).get().getNombre();
+    							if (p.getDepO5() != null) {
+    								ProductoDeposito dep05 = new ProductoDeposito(deposito5, p.getDepO5());
+    								listProductoDeposito.add(dep05);
+    							}	
+    						}
+    					}
+    				}
+    			}	
+    		}
+    		return listProductoDeposito;	
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		return listProductoDeposito;
+		return null;
 	}
     
     private void loadMarcas() {
@@ -337,35 +347,38 @@ public class ProductoController extends AbstractFrameController {
     }
     
     private void findByName(String name) {
-    	if (name.isEmpty()) {
-    		productos = productService.findAll();
-		} else {
-			productos = productService.findByNombre(name);		
+    	try {
+    		if (name.isEmpty()) {
+        		productos = productService.findAll();
+    		} else {
+    			productos = productService.findByNombre(name);		
+    		}
+        	productoPanel.getProductTableModel().clear();
+        	productoPanel.getProductTableModel().addEntities(productos);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-    	productoPanel.getProductTableModel().clear();
-    	productoPanel.getProductTableModel().addEntities(productos);
-//    	productTableModel.clear();
-//        productTableModel.addEntities(productos);
     }
 
     private void findById(String id) {
-    	Optional<Producto> producto=Optional.of(new Producto());
-    	if (!id.equalsIgnoreCase("0") ||Integer.valueOf(id).intValue()>0) {
-    		producto = productService.findById(Long.valueOf(id));
+    	try {
+    		Optional<Producto> producto=Optional.of(new Producto());
+        	if (!id.equalsIgnoreCase("0") ||Integer.valueOf(id).intValue()>0) {
+        		producto = productService.findById(Long.valueOf(id));
+    		}
+        	productoPanel.setProductForm(producto.get());  
+        	List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(producto.get());
+        	depositoTableModel.clear();
+        	depositoTableModel.addEntities(listProductoDeposito);
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-    	productoPanel.setProductForm(producto.get());  
-    	List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(producto.get());
-    	depositoTableModel.clear();
-    	depositoTableModel.addEntities(listProductoDeposito);
     }
 
     
     private void showProductFrame() {
-    	//productoPanel.setInterfaz(this.getInterfaz());
     	productoPanel.setVisible(true);
         productoPanel.getTfNombre().requestFocus();
-        
-        //productoPanel.setinterfaz(compraLocal);
     }
 
     public void setInterfaz(ProductoInterfaz productoInterfaz) {
@@ -408,9 +421,13 @@ public class ProductoController extends AbstractFrameController {
     }
 
     private void cleanInputs() {
-    	productoPanel.clearForm();
-    	productoPanel.getTfNombre().requestFocus();
-    	addNewProduct();
+    	try {
+        	productoPanel.clearForm();
+        	productoPanel.getTfNombre().requestFocus();
+        	addNewProduct();	
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
     }
     
     private void closeWindow() {
@@ -418,44 +435,22 @@ public class ProductoController extends AbstractFrameController {
     }
     
     private void setData() {
-        int[] selectedRow = productoPanel.getTbProducto().getSelectedRows();
-        System.out.println("selected "+selectedRow.length);
-        if (selectedRow.length>0 && selectedRow[0] != -1) {
-        	Long selectedId = (Long) productoPanel.getTbProducto().getValueAt(selectedRow[0], 0);
-        	//Producto product =(Producto) this.getTable1().getEntityByRow(selectedRow);
-        	Producto product= this.productos.stream().filter(pro -> pro.getId().equals(selectedId.longValue()))
-  				  .findAny()
-  				  .orElse(null);
-        	//Producto product =(Producto) this.getTable1().getEntityByRow(selectedRow);
-        	productoPanel.setProductForm(product);  
-        	/*List<ProductoDeposito> listProductoDeposito= getStockProductosByDeposito(product);
-        	depositoTableModel.clear();
-        	depositoTableModel.addEntities(listProductoDeposito);*/
-        }
+    	try {
+    		int[] selectedRow = productoPanel.getTbProducto().getSelectedRows();
+            if (selectedRow.length>0 && selectedRow[0] != -1) {
+            	Long selectedId = (Long) productoPanel.getTbProducto().getValueAt(selectedRow[0], 0);
+            	//Producto product =(Producto) this.getTable1().getEntityByRow(selectedRow);
+            	Producto product= this.productos.stream().filter(pro -> pro.getId().equals(selectedId.longValue()))
+      				  .findAny()
+      				  .orElse(null);
+            	productoPanel.setProductForm(product);  
+            }
+		} catch (Exception e) {
+			// TODO: handle exception
+		}   
     }
     
-    private void loadData() {
-		int[] selectedRow = productoPanel.getTbProducto().getSelectedRows();
-		if (selectedRow.length > 0) {
-			
-			Long selectedId = (Long) productoPanel.getTbProducto().getValueAt(selectedRow[0], 0);
-
-			Producto producto= productos.stream().filter(p -> p.getId().equals(selectedId.longValue()))
-					  .findAny()
-					  .orElse(null);
-			
-			
-//			Long productoId = tableModel.getEntityByRow(selectedRow).getId();
-//			Producto p = service.getStockDepositoByProductoId(productoId);
-//			
-			if (producto != null) {
-				getStockProductosByDeposito(producto);
-				//getPreciosByProducto(producto);
-				//getDatosComplementarios(producto);
-			}
-	    }
-	}
-
+   
 	public String getOrigen() {
 		return origen;
 	}

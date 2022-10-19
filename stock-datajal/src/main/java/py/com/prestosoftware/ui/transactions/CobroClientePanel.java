@@ -684,23 +684,29 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	}
 
 	public CobroCliente getFormValue() {
-		CobroCliente t = new CobroCliente();
-		t.setFecha(new Date());
-		t.setHora(new Date());
-		t.setCclSituacion(0);
-		t.setCclDocumento(tfDocumento.getText());
-		t.setCclTipoEntidad(8);
-		t.setCclEntidad(Integer.valueOf(tfEntidad.getText()));
-		t.setCclNumero(Integer.valueOf(tfNota.getText()));
-		t.setCclValor(totalCalculado);
-		Double descuento = FormatearValor.desformatearValor(tfDescuentos.getText());
-		Double interes = FormatearValor.desformatearValor(tfRecargos.getText());
-		t.setCclMonto(totalCalculado - descuento + interes);
-		t.setCclDescuento(descuento);
-		t.setCclRecargo(interes);
-		t.setCclFormaPago(1);
-		t.setCclMoneda(1);
-		return t;
+		try {
+			CobroCliente t = new CobroCliente();
+			t.setFecha(new Date());
+			t.setHora(new Date());
+			t.setCclSituacion(0);
+			t.setCclDocumento(tfDocumento.getText());
+			t.setCclTipoEntidad(8);
+			t.setCclEntidad(Integer.valueOf(tfEntidad.getText()));
+			t.setCclNumero(Integer.valueOf(tfNota.getText()));
+			t.setCclValor(totalCalculado);
+			Double descuento = FormatearValor.desformatearValor(tfDescuentos.getText());
+			Double interes = FormatearValor.desformatearValor(tfRecargos.getText());
+			t.setCclMonto(totalCalculado - descuento + interes);
+			t.setCclDescuento(descuento);
+			t.setCclRecargo(interes);
+			t.setCclFormaPago(1);
+			t.setCclMoneda(1);
+			return t;
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public void clearItem() {
@@ -808,29 +814,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 				CobroCliente p = pOptional.get();
 				List<ItemCobroCliente> listaItemCobro = itemCobroClienteService.findByIclNumero(Integer.valueOf(this.getCobroClienteSeleccionado().getCclNumero().toString()));
 				
-//				for (ItemCobroCliente itemCobroCliente : listaItemCobro) {
-//					//if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-//					itemCuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(itemCobroCliente.getIclSecuenciaCuenta()));
-//					itemCobroClienteService.remove(itemCobroCliente);
-//				}
-//				for (DetalleCobroClienteView detalleCobroCliente : itemTableModel.getEntities()) {
-//					cuentaARecibirService.cambiaEstadoSituacion(0, Long.valueOf(detalleCobroCliente.getCar_numero()));
-//				}
-				
 				cobroClienteService.remove(p, listaItemCobro, itemTableModel.getEntities());
-//				MovimientoIngreso movimientoIngreso = movimientoIngresoService.findByMinProceso(p.getCclNumero());
-//				
-//				List<MovimientoItemIngreso> listaMovItemIngreso= movimientoItemIngresoService.findByCabId(movimientoIngreso.getMinNumero());
-//				for (MovimientoItemIngreso movimientoItemIngreso : listaMovItemIngreso) {
-//					movimientoItemIngresoService.remove(movimientoItemIngreso);	
-//				}
-//				movimientoIngresoService.remove(movimientoIngreso);
-//				
-//				ProcesoCobroClientes procesoCobroCliente=procesoCobroClienteService.findByPccCobro(p.getCclNumero());
-//				procesoCobroClienteService.remove(procesoCobroCliente);
-//				
-//				MovimientoCaja movCaja = pagoService.findByNotaNro(p.getCclNumero().toString());
-//				pagoService.remove(movCaja);
 			}
 			
 		} catch (Exception e) {
@@ -853,28 +837,10 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			return false;
 		}
 		for (DetalleCobroClienteView e : items) {
-			//Double aPagar=e.getCar_monto1()
-			
-//			Optional<Ingreso> ingreso = ingresoService.findById(Long.valueOf(e.getMiiIngreso()));
-//
-//			if (!ingreso.isPresent()) {
-//				// verificar la cantidad
-//					// sinStock = true;
-//				Notifications.showAlert("Ningun Ingreso válido encontrado !");
-//					return false;
-//			}
 		}
 		return true;
 	}
 
-	private Boolean isValidItem() {
-		if (tfEntidad.getText().isEmpty()) {
-			Notifications.showAlert("Digite el Id del Cliente");
-			tfEntidad.requestFocus();
-			return false;
-		}
-		return true;
-	}
 
 	public void newMov() {
 		clearForm();
@@ -896,31 +862,36 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 
 	@Override
 	public void getEntity(CobroCliente cobroCliente) {
-		if (cobroCliente != null) {
-			setCobroClienteSeleccionado(cobroCliente);
-			desabilitaEdicion();
-			if (cobroCliente.getCclSituacion() == 0) {
-				btnAnula.setVisible(true);
-			} else {
-				btnAnula.setVisible(false);
+		try {
+			if (cobroCliente != null) {
+				setCobroClienteSeleccionado(cobroCliente);
+				desabilitaEdicion();
+				if (cobroCliente.getCclSituacion() == 0) {
+					btnAnula.setVisible(true);
+				} else {
+					btnAnula.setVisible(false);
+				}
+				btnGuardar.setVisible(false);
+				tfNota.setText(cobroCliente.getCclNumero().toString());
+				lblSituacion.setText(cobroCliente.getCclSituacion() == 0 ? "VIGENTE" : "ELIMINADO");
+				SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
+				tfFecha.setText(sd.format(cobroCliente.getFecha()));
+				tfDocumento.setText("" + cobroCliente.getCclDocumento());
+				tfEntidad.setText(cobroCliente.getCclEntidad().toString());
+				Optional<Cliente> cliente = null;
+				cliente = clienteService.findById(Long.valueOf(cobroCliente.getCclEntidad()));
+				if (cliente.isPresent()) {
+					tfNombreEntidad.setText(cliente.get().getNombre());
+				}
+				itemTableModel.clear();
+				List<Object[]> listaItemCobroCliente= cobroClienteService.findClienteCobradoView(Long.valueOf(cobroCliente.getCclEntidad()),cobroCliente.getCclNumero()); 
+				List<DetalleCobroClienteView> listaCasteado = castDetalleCobroCliente(listaItemCobroCliente,1);
+				itemTableModel.addEntities(listaCasteado);
+				calculateItem();
 			}
-			btnGuardar.setVisible(false);
-			tfNota.setText(cobroCliente.getCclNumero().toString());
-			lblSituacion.setText(cobroCliente.getCclSituacion() == 0 ? "VIGENTE" : "ELIMINADO");
-			SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
-			tfFecha.setText(sd.format(cobroCliente.getFecha()));
-			tfDocumento.setText("" + cobroCliente.getCclDocumento());
-			tfEntidad.setText(cobroCliente.getCclEntidad().toString());
-			Optional<Cliente> cliente = null;
-			cliente = clienteService.findById(Long.valueOf(cobroCliente.getCclEntidad()));
-			if (cliente.isPresent()) {
-				tfNombreEntidad.setText(cliente.get().getNombre());
-			}
-			itemTableModel.clear();
-			List<Object[]> listaItemCobroCliente= cobroClienteService.findClienteCobradoView(Long.valueOf(cobroCliente.getCclEntidad()),cobroCliente.getCclNumero()); 
-			List<DetalleCobroClienteView> listaCasteado = castDetalleCobroCliente(listaItemCobroCliente,1);
-			itemTableModel.addEntities(listaCasteado);
-			calculateItem();
+			
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
 	}
@@ -952,18 +923,23 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	}
 
 	private void findEntidad(String id) {
-		Optional<Cliente> cliente = null;
-		cliente = clienteService.findById(Long.valueOf(id));
-		if (cliente.isPresent()) {
-			tfNombreEntidad.setText(cliente.get().getNombre());
-			itemTableModel.clear();
-			List<Object[]> listMII = cobroClienteService.findDetalleCobroClienteView(cliente.get().getId());
-			List<DetalleCobroClienteView> listaCasteado = castDetalleCobroCliente(listMII,0);
-			itemTableModel.addEntities(listaCasteado);
-			calculateItem();
-			chkCobraTodos.requestFocus();
-		} else {
-			Notifications.showAlert("No existe cliente informado. Verifique por favor.!");
+		try {
+			clearForm();
+			Optional<Cliente> cliente = null;
+			cliente = clienteService.findById(Long.valueOf(id));
+			if (cliente.isPresent()) {
+				tfNombreEntidad.setText(cliente.get().getNombre());
+				itemTableModel.clear();
+				List<Object[]> listMII = cobroClienteService.findDetalleCobroClienteView(cliente.get().getId());
+				List<DetalleCobroClienteView> listaCasteado = castDetalleCobroCliente(listMII,0);
+				itemTableModel.addEntities(listaCasteado);
+				calculateItem();
+				chkCobraTodos.requestFocus();
+			} else {
+				Notifications.showAlert("No existe cliente informado. Verifique por favor.!");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 

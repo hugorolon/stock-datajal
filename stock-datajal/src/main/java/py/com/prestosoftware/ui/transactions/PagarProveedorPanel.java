@@ -136,9 +136,13 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	private ConsultaProveedor proveedorDialog;
 
 	@Autowired
-	public PagarProveedorPanel(PagarProveedorService pagarProveedorService, DetalleCuentaProveedorTableModel itemTableModel, ItemPagarProveedorService itemPagarProveedorService, ItemCuentaAPagarService itemCuentaAPagarService,
-			ClienteService clienteService, CajaService cajaService, PagarProveedorDialog pagarProveedorDialog, MovimientoEgresoService movimientoEgresoService,MovimientoItemEgresoService movimientoItemEgresoService,
-			ConsultaProveedor proveedorDialog, MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService, ProcesoPagoProveedoresService procesoPagarProveedorService,ProveedorService proveedorService) {
+	public PagarProveedorPanel(PagarProveedorService pagarProveedorService,
+			DetalleCuentaProveedorTableModel itemTableModel, ItemPagarProveedorService itemPagarProveedorService,
+			ItemCuentaAPagarService itemCuentaAPagarService, ClienteService clienteService, CajaService cajaService,
+			PagarProveedorDialog pagarProveedorDialog, MovimientoEgresoService movimientoEgresoService,
+			MovimientoItemEgresoService movimientoItemEgresoService, ConsultaProveedor proveedorDialog,
+			MovimientoCajaService pagoService, AperturaCierreCajaService movCajaService,
+			ProcesoPagoProveedoresService procesoPagarProveedorService, ProveedorService proveedorService) {
 		this.pagarProveedorService = pagarProveedorService;
 		this.itemTableModel = itemTableModel;
 		this.cajaService = cajaService;
@@ -147,11 +151,11 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		this.pagoService = pagoService;
 		this.movCajaService = movCajaService;
 		this.proveedorDialog = proveedorDialog;
-		this.procesoPagarProveedorService =procesoPagarProveedorService;
-		this.movimientoEgresoService =movimientoEgresoService;
-		this.movimientoItemEgresoService =movimientoItemEgresoService;
-		this.itemPagarProveedorService =itemPagarProveedorService;
-		this.itemCuentaAPagarService =itemCuentaAPagarService;
+		this.procesoPagarProveedorService = procesoPagarProveedorService;
+		this.movimientoEgresoService = movimientoEgresoService;
+		this.movimientoItemEgresoService = movimientoItemEgresoService;
+		this.itemPagarProveedorService = itemPagarProveedorService;
+		this.itemCuentaAPagarService = itemCuentaAPagarService;
 
 		setSize(866, 488);
 		setTitle("PAGAR PROVEEDOR");
@@ -268,6 +272,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 					ie.setCobro(ie.getIcp_monto1());
 				}
 			}
+
 			private void descargaSaldo() {
 				for (DetalleAPagarProveedorView ie : itemTableModel.getEntities()) {
 					ie.setCobro(0d);
@@ -291,15 +296,14 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 					return true;
 				return false;
 			}
-			public void changeSelection(int row, int column, boolean toggle, boolean extend)
-			{
+
+			public void changeSelection(int row, int column, boolean toggle, boolean extend) {
 				super.changeSelection(row, column, toggle, extend);
 
-				if (editCellAt(row, column))
-				{
+				if (editCellAt(row, column)) {
 					Component editor = getEditorComponent();
 					editor.requestFocusInWindow();
-					((JTextComponent)editor).selectAll();
+					((JTextComponent) editor).selectAll();
 				}
 			}
 		};
@@ -320,14 +324,14 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 					calculateItem();
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					calculateItem();
-					//btnGuardar.requestFocus();
-				} else if(e.getKeyCode()== KeyEvent.VK_TAB) {
+					// btnGuardar.requestFocus();
+				} else if (e.getKeyCode() == KeyEvent.VK_TAB) {
 					calculateItem();
 				}
 				itemTableModel.fireTableDataChanged();
 			}
 		});
-		
+
 		tbDetallePagarProveedor.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -335,25 +339,24 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 				calculateItem();
 			}
 		});
-		
-		tbDetallePagarProveedor.getSelectionModel().addListSelectionListener(new ListSelectionListener() {  
-   			@Override
+
+		tbDetallePagarProveedor.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				// TODO Auto-generated method stub
-   				calculateItem();
-			}  
-        });  
-		tbDetallePagarProveedor.addFocusListener(new FocusListener() {
-		    public void focusLost(FocusEvent arg0) {
-		        calculateItem();    
-		    }
-
-		    public void focusGained(FocusEvent arg0) {
-		        // TODO Auto-generated method stub
-		    }
+				calculateItem();
+			}
 		});
-		
-		
+		tbDetallePagarProveedor.addFocusListener(new FocusListener() {
+			public void focusLost(FocusEvent arg0) {
+				calculateItem();
+			}
+
+			public void focusGained(FocusEvent arg0) {
+				// TODO Auto-generated method stub
+			}
+		});
+
 		scrollDetallePagarProveedors.setViewportView(tbDetallePagarProveedor);
 
 		JLabel lblTotalMontoIngreso = new JLabel("TOTALES");
@@ -386,7 +389,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+					if (!tfDescuentos.getText().isEmpty() && !tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
 						tfRecargos.setText("0");
 						calculateMontoTotal(0);
 					} else {
@@ -395,7 +398,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					tfRecargos.requestFocus();
-				} 
+				}
 			}
 
 			@Override
@@ -425,7 +428,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+					if (!tfRecargos.getText().isEmpty() && !tfRecargos.getText().toString().equalsIgnoreCase("0")) {
 						calculateMontoTotal(1);
 						tfDescuentos.setText("0");
 					} else {
@@ -434,7 +437,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 					}
 				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					tfRecargos.requestFocus();
-				} 
+				}
 			}
 
 			@Override
@@ -598,52 +601,50 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 
 		btnAnula.setVisible(false);
 		btnGuardar.setVisible(true);
-		
+
 		TableCellRenderer render = new TableCellRenderer() {
 
-	        public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+			public java.awt.Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 
-	                boolean hasFocus, int row, int column) {
+					boolean hasFocus, int row, int column) {
 
-	        	SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
-            	DecimalFormat formatea = new DecimalFormat("###,###");
-            	String valor="";
-            	if(column==2 || column ==4)
-            		valor=sdf.format(value);
-            	else if(column==7)
-            		valor= formatea.format(value);
-            	else
-            		valor=value.toString();	
-        
-                JLabel lbl = new JLabel(valor);
+				SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+				DecimalFormat formatea = new DecimalFormat("###,###");
+				String valor = "";
+				if (column == 2 || column == 4)
+					valor = sdf.format(value);
+				else if (column == 7)
+					valor = formatea.format(value);
+				else
+					valor = value.toString();
 
-                //lbl.setHorizontalAlignment(SwingConstants.CENTER); //alina a laizquierda
-                if(column == 2 || column == 4){ //color de fondo
-                    //lbl.setOpaque(true);
-                	lbl.setHorizontalAlignment(SwingConstants.CENTER); //alina a laizquierda
-                }
+				JLabel lbl = new JLabel(valor);
 
-                if(column == 7){ //color de fondo
-                    //lbl.setOpaque(true);
-                	lbl.setHorizontalAlignment(SwingConstants.RIGHT); //alina a laizquierda
-                	lbl.setForeground(Color.BLUE);  //fuente azul
-                    lbl.setBackground(Color.GRAY);
-                }
-                return lbl;
-	        }
+				// lbl.setHorizontalAlignment(SwingConstants.CENTER); //alina a laizquierda
+				if (column == 2 || column == 4) { // color de fondo
+					// lbl.setOpaque(true);
+					lbl.setHorizontalAlignment(SwingConstants.CENTER); // alina a laizquierda
+				}
 
-	    };
-	    tbDetallePagarProveedor.getColumnModel().getColumn(0).setPreferredWidth(100);
-	    tbDetallePagarProveedor.getColumnModel().getColumn(2).setCellRenderer(render);
-	    tbDetallePagarProveedor.getColumnModel().getColumn(4).setCellRenderer(render);
-	    //tbDetallePagarProveedor.getColumnModel().getColumn(7).setCellRenderer(render);
+				if (column == 7) { // color de fondo
+					// lbl.setOpaque(true);
+					lbl.setHorizontalAlignment(SwingConstants.RIGHT); // alina a laizquierda
+					lbl.setForeground(Color.BLUE); // fuente azul
+					lbl.setBackground(Color.GRAY);
+				}
+				return lbl;
+			}
+
+		};
+		tbDetallePagarProveedor.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tbDetallePagarProveedor.getColumnModel().getColumn(2).setCellRenderer(render);
+		tbDetallePagarProveedor.getColumnModel().getColumn(4).setCellRenderer(render);
+		// tbDetallePagarProveedor.getColumnModel().getColumn(7).setCellRenderer(render);
 		clearForm();
 		// newMov();
-		
+
 	}
 
-
-	
 	@Transactional
 	protected void elimina() {
 		btnAnula.setVisible(false);
@@ -665,7 +666,8 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 
 		if (selectedRow != -1) {
 			/*
-			 * DetallePagarProveedorView item = itemTableModel.g.getEntityByRow(selectedRow);
+			 * DetallePagarProveedorView item =
+			 * itemTableModel.g.getEntityByRow(selectedRow);
 			 * tfIngresoID.setText(String.valueOf(item.getMiiIngreso()));
 			 * tfMontoIngreso.setText(FormatearValor.doubleAString(item.getMiiMonto()));
 			 * Optional<Ingreso> ingresoSeleccionado
@@ -677,21 +679,26 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	}
 
 	public PagarProveedor getFormValue() {
-		PagarProveedor t = new PagarProveedor();
-		t.setFecha(new Date());
-		t.setHora(new Date());
-		t.setPprSituacion(0);
-		t.setPprDocumento(tfDocumento.getText());
-		t.setPprTipoEntidad(3);
-		t.setPprEntidad(Integer.valueOf(tfEntidad.getText()));
-		t.setPprNumero(Integer.valueOf(tfNota.getText()));
-		t.setPprValor(totalCalculado);
-		Double descuento=FormatearValor.desformatearValor(tfDescuentos.getText());
-		Double interes=FormatearValor.desformatearValor(tfDescuentos.getText());
-		t.setPprMonto(totalCalculado-descuento+interes);
-		t.setPprDescuento(descuento);
-		t.setPprRecargo(interes);
-		return t;
+		try {
+			PagarProveedor t = new PagarProveedor();
+			t.setFecha(new Date());
+			t.setHora(new Date());
+			t.setPprSituacion(0);
+			t.setPprDocumento(tfDocumento.getText());
+			t.setPprTipoEntidad(3);
+			t.setPprEntidad(Integer.valueOf(tfEntidad.getText()));
+			t.setPprNumero(Integer.valueOf(tfNota.getText()));
+			t.setPprValor(totalCalculado);
+			Double descuento = FormatearValor.desformatearValor(tfDescuentos.getText());
+			Double interes = FormatearValor.desformatearValor(tfDescuentos.getText());
+			t.setPprMonto(totalCalculado - descuento + interes);
+			t.setPprDescuento(descuento);
+			t.setPprRecargo(interes);
+			return t;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public void clearItem() {
@@ -733,28 +740,31 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(null, "CONFIRMA");
 		if (respuesta == 0) {
-			if (validateCabezera() && validateItems(itemTableModel.getEntities())) {
-				//Cobro clientes
-				PagarProveedor t = getFormValue();
-				PagarProveedor v = pagarProveedorService.save(t);
+			try {
+				if (validateCabezera() && validateItems(itemTableModel.getEntities())) {
+					// Cobro clientes
+					PagarProveedor t = getFormValue();
+					PagarProveedor v = pagarProveedorService.save(t);
 					if (v != null) {
-						//detalle cobro cliente
-						List<ItemPagarProveedor> detalles=new ArrayList<ItemPagarProveedor>();
+						// detalle cobro cliente
+						List<ItemPagarProveedor> detalles = new ArrayList<ItemPagarProveedor>();
 						for (DetalleAPagarProveedorView item : itemTableModel.getEntities()) {
-							if(item.getCobro().doubleValue()>0) {
-								ItemPagarProveedor itemPagarProveedor =new ItemPagarProveedor();
+							if (item.getCobro().doubleValue() > 0) {
+								ItemPagarProveedor itemPagarProveedor = new ItemPagarProveedor();
 								itemPagarProveedor.setIppNumero(v.getPprNumero());
 								itemPagarProveedor.setIppMonto(item.getCobro());
 								itemPagarProveedor.setIppSecuenciaCuenta(item.getIcp_Secuencia());
-								if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIcp_monto1().doubleValue()) {
-									itemCuentaAPagarService.cambiaEstadoSituacion(1, Long.valueOf(item.getIcp_Secuencia()));
+								if (item.getCobro().doubleValue() + item.getPagado().doubleValue() == item
+										.getIcp_monto1().doubleValue()) {
+									itemCuentaAPagarService.cambiaEstadoSituacion(1,
+											Long.valueOf(item.getIcp_Secuencia()));
 								}
 								detalles.add(itemPagarProveedor);
 							}
 						}
 						itemPagarProveedorService.save(detalles);
-						
-						//MovimientoEgreso
+
+						// MovimientoEgreso
 						MovimientoEgreso movimientoEgreso = new MovimientoEgreso();
 						movimientoEgreso.setFecha(new Date());
 						movimientoEgreso.setHora(new Date());
@@ -766,28 +776,27 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 						movimientoEgreso.setMegSituacion(0);
 						movimientoEgreso.setMegTipoEntidad(8);
 						MovimientoEgreso movNew = movimientoEgresoService.save(movimientoEgreso);
-						
-						MovimientoItemEgreso movimientoItemEgreso= new MovimientoItemEgreso();
+
+						MovimientoItemEgreso movimientoItemEgreso = new MovimientoItemEgreso();
 						movimientoItemEgreso.setMieNumero(movNew.getMegNumero());
 						movimientoItemEgreso.setMieMonto(totalCalculado);
 						movimientoItemEgreso.setMieEgreso(2);
 						movimientoItemEgreso.setMieDescripcion("Pago a Proveedores");
 						movimientoItemEgresoService.save(movimientoItemEgreso);
-						
-						//Proceso cobro cliente
-						ProcesoPagoProveedores p= new ProcesoPagoProveedores();
+
+						// Proceso cobro cliente
+						ProcesoPagoProveedores p = new ProcesoPagoProveedores();
 						p.setPppPago(v.getPprNumero());
 						p.setPppIngresoEgreso(2);
 						p.setPppTipoproceso(32);
 						p.setPppFlag(1);
 						p.setPppProceso(movNew.getMegNumero());
 						procesoPagarProveedorService.save(p);
-						
-						
-						//MovimientoCaja
-							//Apertura de caja caso no este abierto
+
+						// MovimientoCaja
+						// Apertura de caja caso no este abierto
 						lanzamientoCaja();
-						//actualiza ingreso en movimiento Caja
+						// actualiza ingreso en movimiento Caja
 						Optional<Caja> caja = cajaService.findById(1L);
 						MovimientoCaja movCaja = new MovimientoCaja();
 						movCaja.setCaja(caja.get());
@@ -803,13 +812,15 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 						movCaja.setObs("Egreso en caja 01 ");
 						movCaja.setSituacion("PAGADO");
 						pagoService.save(movCaja);
-					
-					}
-					
 
+					}
 					Notifications.showAlert("Pago a Proveedor registrado con exito.!");
 					newMov();
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
 			}
+
 		} else {
 			tfEntidad.requestFocus();
 		}
@@ -825,48 +836,54 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			}
 		}
 	}
-	
-	
+
 	@Transactional
 	private void eliminaPagarProveedor() {
 		try {
-			Optional<PagarProveedor> pOptional = pagarProveedorService.findById(Integer.valueOf(this.getPagarProveedorSeleccionado().getPprNumero().toString()));
+			Optional<PagarProveedor> pOptional = pagarProveedorService
+					.findById(Integer.valueOf(this.getPagarProveedorSeleccionado().getPprNumero().toString()));
 			if (pOptional.isPresent()) {
 				PagarProveedor p = pOptional.get();
-				List<ItemPagarProveedor> listaItemCobro = itemPagarProveedorService.findByIppNumero(Integer.valueOf(this.getPagarProveedorSeleccionado().getPprNumero().toString()));
+				List<ItemPagarProveedor> listaItemCobro = itemPagarProveedorService.findByIppNumero(
+						Integer.valueOf(this.getPagarProveedorSeleccionado().getPprNumero().toString()));
 				for (ItemPagarProveedor itemPagarProveedor : listaItemCobro) {
-					//if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue()) {
-					itemCuentaAPagarService.cambiaEstadoSituacion(0, Long.valueOf(itemPagarProveedor.getIppSecuenciaCuenta()));
-					
-					//***Esta linea no removió***//
+					// if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getIca_monto1().doubleValue())
+					// {
+					itemCuentaAPagarService.cambiaEstadoSituacion(0,
+							Long.valueOf(itemPagarProveedor.getIppSecuenciaCuenta()));
+
+					// ***Esta linea no removió***//
 					itemPagarProveedorService.remove(itemPagarProveedor);
 				}
 				pagarProveedorService.remove(p);
 				MovimientoEgreso movimientoEgreso = movimientoEgresoService.findByMegProceso(p.getPprNumero());
-				List<MovimientoItemEgreso> listaMovItemIngreso= movimientoItemEgresoService.findByCabId(movimientoEgreso.getMegNumero());
+				List<MovimientoItemEgreso> listaMovItemIngreso = movimientoItemEgresoService
+						.findByCabId(movimientoEgreso.getMegNumero());
 				for (MovimientoItemEgreso movimientoItemEgreso : listaMovItemIngreso) {
-					movimientoItemEgresoService.remove(movimientoItemEgreso);	
+					movimientoItemEgresoService.remove(movimientoItemEgreso);
 				}
 				movimientoEgresoService.remove(movimientoEgreso);
-				
-				ProcesoPagoProveedores procesoPagarProveedor=procesoPagarProveedorService.findByPppPago(p.getPprNumero());
+
+				ProcesoPagoProveedores procesoPagarProveedor = procesoPagarProveedorService
+						.findByPppPago(p.getPprNumero());
 				procesoPagarProveedorService.remove(procesoPagarProveedor);
-				
+
 				MovimientoCaja movCaja = pagoService.findByNotaNro(p.getPprNumero().toString());
 				pagoService.remove(movCaja);
 			}
-			
+
 		} catch (Exception e) {
-			Notifications.showAlert("Ocurrió un error al eliminar el registro de pago al proveedor, verifique documento!!");
+			Notifications
+					.showAlert("Ocurrió un error al eliminar el registro de pago al proveedor, verifique documento!!");
 		}
 
 	}
 
 	private boolean validateCabezera() {
-		if (totalCalculado.intValue()==0) {
+		if (totalCalculado.intValue() == 0) {
 			Notifications.showAlert("Debe cargar por lo menos un item del cobro al cliente");
 			return false;
-		} 
+		}
 		return true;
 	}
 
@@ -932,14 +949,15 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			tfFecha.setText(sd.format(pagarProveedor.getFecha()));
 			tfDocumento.setText("" + pagarProveedor.getPprDocumento());
 			tfEntidad.setText(pagarProveedor.getPprEntidad().toString());
-			Optional<Proveedor> proveedor= null;
-			proveedor= proveedorService.findById(Long.valueOf(pagarProveedor.getPprEntidad()));
+			Optional<Proveedor> proveedor = null;
+			proveedor = proveedorService.findById(Long.valueOf(pagarProveedor.getPprEntidad()));
 			if (proveedor.isPresent()) {
 				tfNombreEntidad.setText(proveedor.get().getNombre());
 			}
 			itemTableModel.clear();
-			List<Object[]> listaItemPagarProveedor= pagarProveedorService.findProveedorPagadoView(Long.valueOf(pagarProveedor.getPprEntidad()),pagarProveedor.getPprNumero()); 
-			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listaItemPagarProveedor,1);
+			List<Object[]> listaItemPagarProveedor = pagarProveedorService.findProveedorPagadoView(
+					Long.valueOf(pagarProveedor.getPprEntidad()), pagarProveedor.getPprNumero());
+			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listaItemPagarProveedor, 1);
 			itemTableModel.addEntities(listaCasteado);
 			calculateItem();
 		}
@@ -951,7 +969,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 		chkCobraTodos.setEnabled(false);
 		lblMontoACobrar.setText("TOTAL COBRADO");
 	}
-	
+
 	private void habilitaEdicion() {
 		tfEntidad.setEnabled(true);
 		chkCobraTodos.setEnabled(true);
@@ -960,12 +978,12 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 
 	@Override
 	public void getEntity(Proveedor proveedor) {
-		if (proveedor!= null) {
+		if (proveedor != null) {
 			tfEntidad.setText(proveedor.getId().toString());
 			tfNombreEntidad.setText(proveedor.getNombre());
 			itemTableModel.clear();
 			List<Object[]> listMII = pagarProveedorService.findDetallePagarProveedorView(proveedor.getId());
-			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listMII,0);
+			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listMII, 0);
 			itemTableModel.addEntities(listaCasteado);
 			calculateItem();
 		}
@@ -979,7 +997,7 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			tfNombreEntidad.setText(proveedor.get().getNombre());
 			itemTableModel.clear();
 			List<Object[]> listMII = pagarProveedorService.findDetallePagarProveedorView(proveedor.get().getId());
-			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listMII,0);
+			List<DetalleAPagarProveedorView> listaCasteado = castDetallePagarProveedor(listMII, 0);
 			itemTableModel.addEntities(listaCasteado);
 			calculateItem();
 			chkCobraTodos.requestFocus();
@@ -1012,49 +1030,49 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 			det.setIcp_documento((String) objects[9]);
 			det.setPagado((Double) objects[10]);
 			det.setNombre_ingreso((String) objects[11]);
-			if(edicion==0)
+			if (edicion == 0)
 				det.setCobro(0d);
 			else
-				det.setCobro((Double) objects[13]);	
-			det.setIcp_Secuencia((Integer)objects[12]);
-			if(det.getIcp_monto1()>0)
+				det.setCobro((Double) objects[13]);
+			det.setIcp_Secuencia((Integer) objects[12]);
+			if (det.getIcp_monto1() > 0)
 				lista.add(det);
 		}
 
 		return lista;
 
 	}
-	
+
 	private void calculateMontoTotal(int origen) {
 		try {
-			Double aCobrar=itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
-			if(aCobrar>0) {
+			Double aCobrar = itemTableModel.getEntities().stream().mapToDouble(i -> i.getCobro()).sum();
+			if (aCobrar > 0) {
 				Double totalCta = FormatearValor.stringToDouble(tfSaldo.getText());
-				Double descuento =0d;
-				Double recargo =  0d;
-				if (!tfDescuentos.getText().isEmpty()&&!tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
+				Double descuento = 0d;
+				Double recargo = 0d;
+				if (!tfDescuentos.getText().isEmpty() && !tfDescuentos.getText().toString().equalsIgnoreCase("0")) {
 					descuento = FormatearValor.stringToDouble(tfDescuentos.getText());
 					tfDescuentos.setText(FormatearValor.doubleAString(descuento));
 					btnGuardar.requestFocus();
 				}
-				if (!tfRecargos.getText().isEmpty()&&!tfRecargos.getText().toString().equalsIgnoreCase("0")) {
-				    recargo = FormatearValor.stringToDouble(tfRecargos.getText());
-				    tfRecargos.setText(FormatearValor.doubleAString(recargo));
-				    btnGuardar.requestFocus();
+				if (!tfRecargos.getText().isEmpty() && !tfRecargos.getText().toString().equalsIgnoreCase("0")) {
+					recargo = FormatearValor.stringToDouble(tfRecargos.getText());
+					tfRecargos.setText(FormatearValor.doubleAString(recargo));
+					btnGuardar.requestFocus();
 				}
 				totalCalculado = totalCta - descuento + recargo;
 				tfMontoACobrar.setText(FormatearValor.doubleAString(totalCalculado));
-				if(origen==0) 
+				if (origen == 0)
 					tfRecargos.requestFocus();
 				else
 					tfMontoACobrar.requestFocus();
 
-			}else {
+			} else {
 				tfRecargos.setText("0");
 				tfDescuentos.setText("0");
 				Notifications.showAlert("Debe cargar primero los datos a pagar.!");
 			}
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -1094,6 +1112,5 @@ public class PagarProveedorPanel extends JDialog implements PagarProveedorInterf
 	public void setLblMontoACobrar(JLabel lblMontoACobrar) {
 		this.lblMontoACobrar = lblMontoACobrar;
 	}
-	
-	
+
 }

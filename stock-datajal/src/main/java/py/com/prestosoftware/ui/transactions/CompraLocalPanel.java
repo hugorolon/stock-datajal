@@ -981,16 +981,20 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void getSelectedItem() {
-		int selectedRow = tbProductos.getSelectedRow();
+		try {
+			int selectedRow = tbProductos.getSelectedRow();
 
-		if (selectedRow != -1) {
-			CompraDetalle item = itemTableModel.getEntityByRow(selectedRow);
+			if (selectedRow != -1) {
+				CompraDetalle item = itemTableModel.getEntityByRow(selectedRow);
 
-			tfProductoID.setText(String.valueOf(item.getProductoId()));
-			tfCantidad.setText(FormatearValor.doubleAString(item.getCantidad()));
-			tfDescripcion.setText(String.valueOf(item.getProducto()));
-			tfPrecio.setText(FormatearValor.doubleAString(item.getPrecio()));
-			tfPrecioTotal.setText(FormatearValor.doubleAString(item.getSubtotal()));
+				tfProductoID.setText(String.valueOf(item.getProductoId()));
+				tfCantidad.setText(FormatearValor.doubleAString(item.getCantidad()));
+				tfDescripcion.setText(String.valueOf(item.getProducto()));
+				tfPrecio.setText(FormatearValor.doubleAString(item.getPrecio()));
+				tfPrecioTotal.setText(FormatearValor.doubleAString(item.getSubtotal()));
+			}	
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 
@@ -999,44 +1003,49 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private Compra getCompra() {
-		Compra compra = new Compra();
-		compra.setComprobante(tfFactura.getText());
-		compra.setFecha(new Date());
-		compra.setTipoCompra("LOCAL");
-		compra.setFactura(tfFactura.getText());
-		compra.setFechaCompra(Fechas.stringToDate(tfFechaCompra.getText()));
-		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
-			compra.setVencimiento(Fechas.sumarFecha(30, 0, 0, tfFechaCompra.getText()));
-			compra.setCondicion(2);
-		} else {
-			compra.setCondicion(1);
-		}
-		compra.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
-		compra.setCaja(new Caja(1L));
-		compra.setProveedor(new Proveedor(Long.valueOf(tfProveedorID.getText())));
-		compra.setProveedorNombre(tfNombre.getText());
-		compra.setDeposito(new Deposito(Long.valueOf("1")));
-		compra.setUsuario(new Usuario(GlobalVars.USER_ID));
-		compra.setTotalItem(tfCantItem.getText().isEmpty() ? 1 : FormatearValor.stringToDouble(tfCantItem.getText()));
-		if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
-			compra.setSituacion("PENDIENTE");
-		else {
-			if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
-				compra.setSituacion("PAGADO");
-				compra.setTotalPagado(tfTotalGeneral.getText().isEmpty() ? 0
-						: FormatearValor.stringToDouble(tfTotalGeneral.getText()));
-			} else
-				compra.setSituacion("PROCESADO");
-		}
-		compra.setObs(tfObs.getText());
-		compra.setTotalFob(
-				tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
-		compra.setCuotaCant(tfCuotaCant.getText().isEmpty() ? 0 : Integer.valueOf(tfCuotaCant.getText()));
-		compra.setTotalGeneral(
-				tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
+		try {
+			Compra compra = new Compra();
+			compra.setComprobante(tfFactura.getText());
+			compra.setFecha(new Date());
+			compra.setTipoCompra("LOCAL");
+			compra.setFactura(tfFactura.getText());
+			compra.setFechaCompra(Fechas.stringToDate(tfFechaCompra.getText()));
+			if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+				compra.setVencimiento(Fechas.sumarFecha(30, 0, 0, tfFechaCompra.getText()));
+				compra.setCondicion(2);
+			} else {
+				compra.setCondicion(1);
+			}
+			compra.setMoneda(new Moneda(GlobalVars.BASE_MONEDA_ID));
+			compra.setCaja(new Caja(1L));
+			compra.setProveedor(new Proveedor(Long.valueOf(tfProveedorID.getText())));
+			compra.setProveedorNombre(tfNombre.getText());
+			compra.setDeposito(new Deposito(Long.valueOf("1")));
+			compra.setUsuario(new Usuario(GlobalVars.USER_ID));
+			compra.setTotalItem(tfCantItem.getText().isEmpty() ? 1 : FormatearValor.stringToDouble(tfCantItem.getText()));
+			if (conf != null && conf.getHabilitaLanzamientoCaja() == 1)
+				compra.setSituacion("PENDIENTE");
+			else {
+				if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("Contado")) {
+					compra.setSituacion("PAGADO");
+					compra.setTotalPagado(tfTotalGeneral.getText().isEmpty() ? 0
+							: FormatearValor.stringToDouble(tfTotalGeneral.getText()));
+				} else
+					compra.setSituacion("PROCESADO");
+			}
+			compra.setObs(tfObs.getText());
+			compra.setTotalFob(
+					tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
+			compra.setCuotaCant(tfCuotaCant.getText().isEmpty() ? 0 : Integer.valueOf(tfCuotaCant.getText()));
+			compra.setTotalGeneral(
+					tfTotalGeneral.getText().isEmpty() ? 0 : FormatearValor.stringToDouble(tfTotalGeneral.getText()));
 
-		compra.setItems(itemTableModel.getEntities());
-		return compra;
+			compra.setItems(itemTableModel.getEntities());
+			return compra;	
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	@Transactional
@@ -1096,19 +1105,6 @@ public class CompraLocalPanel extends JFrame
 
 		productoService.updateStock(productos);
 
-	}
-
-	private boolean validateFactura(String proveedorId, String factura) {
-		boolean result = false;
-
-		Optional<Compra> compra = compraService.findByProveedorAndFacturaNro(new Proveedor(Long.valueOf(proveedorId)),
-				factura);
-
-		if (compra.isPresent()) {
-			result = true;
-		}
-
-		return result;
 	}
 
 	private void findCondicionPago(int cantDia) {
@@ -1765,6 +1761,7 @@ public class CompraLocalPanel extends JFrame
 
 	private void findCompraById(Long id) {
 		try {
+			resetCompra();
 			Optional<Compra> compra = compraService.findById(id);
 			if (compra.isPresent()) {
 				setCompraSeleccionado(compra.get());

@@ -30,6 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AbstractDocument;
 
+import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -138,31 +139,32 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		pnlProducto.add(panel_1);
 		panel_1.setLayout(null);
 		
-		tfFecha = new JTextField();
-		tfFecha.setEditable(false);
-		tfFecha.setBounds(10, 32, 77, 30);
+		tfFecha = new JXDatePicker();
+		tfFecha.setFormats("dd/MM/yyyy");
+		//tfFecha.setEditable(false);
+		tfFecha.setBounds(10, 32, 111, 30);
 		panel_1.add(tfFecha);
-		tfFecha.setColumns(10);
+		//tfFecha.setColumns(10);
 		
 		tfDocumento = new JTextField();
-		tfDocumento.setBounds(97, 32, 86, 30);
+		tfDocumento.setBounds(131, 32, 86, 30);
 		panel_1.add(tfDocumento);
 		tfDocumento.setColumns(10);
 
 		tfEntidad = new JTextField();
 		tfEntidad.setEditable(false);
 		tfEntidad.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfEntidad.setBounds(193, 32, 63, 30);
+		tfEntidad.setBounds(229, 32, 53, 30);
 		panel_1.add(tfEntidad);
 		tfEntidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfEntidad.setColumns(10);
 
 		JLabel lblEntidad = new JLabel("ENTIDAD");
-		lblEntidad.setBounds(193, 0, 63, 30);
+		lblEntidad.setBounds(229, 0, 63, 30);
 		panel_1.add(lblEntidad);
 
 		lblDescripcionProductoOrigen = new JLabel("DOCUMENTO");
-		lblDescripcionProductoOrigen.setBounds(97, 0, 110, 30);
+		lblDescripcionProductoOrigen.setBounds(131, 0, 86, 30);
 		panel_1.add(lblDescripcionProductoOrigen);
 
 		lblFecha = new JLabel("FECHA");
@@ -174,7 +176,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		tfNombreEntidad.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfNombreEntidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfNombreEntidad.setColumns(10);
-		tfNombreEntidad.setBounds(261, 32, 152, 30);
+		tfNombreEntidad.setBounds(292, 32, 384, 30);
 		panel_1.add(tfNombreEntidad);
 
 		panel_2 = new JPanel();
@@ -660,7 +662,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 
 	private JLabel lblNota;
 	private JTextField tfNota;
-	private JTextField tfFecha;
+	private JXDatePicker tfFecha;
 	private JTextField tfDocumento;
 	private JTextField tfEntidad;
 	private JLabel lblDescripcionProductoOrigen;
@@ -676,7 +678,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 	public MovimientoEgreso getFormValue() {
 		MovimientoEgreso t = new MovimientoEgreso();
 		t.setMegCaja(Integer.valueOf(tfCajaId.getText()));
-		t.setFecha(new Date());
+		t.setFecha(tfFecha.getDate());
 		t.setHora(new Date());
 		t.setMegSituacion(0);
 		t.setMegDocumento(tfDocumento.getText());
@@ -705,7 +707,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 	}
 
 	public void clearForm() {
-		tfFecha.setText("");
+		tfFecha.setDate(new Date());
 		tfDocumento.setText("");
 		tfEntidad.setText("");
 		tfNombreEntidad.setText("");
@@ -792,7 +794,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 					Optional<Caja> caja = cajaService.findById(1L);
 					MovimientoCaja movCaja = new MovimientoCaja();
 					movCaja.setCaja(caja.get());
-					movCaja.setFecha(new Date());
+					movCaja.setFecha(tfFecha.getDate());
 					movCaja.setMoneda(new Moneda(1l));
 					movCaja.setNotaNro(v.getMegNumero().toString());
 					movCaja.setNotaReferencia(v.getMegNumero().toString());
@@ -898,8 +900,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		tfCajaId.setText("1");
 		tfCajeroId.setText(GlobalVars.USER_ID.toString());
 		tfNombreCajero.setText(GlobalVars.USER);
-		SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
-		tfFecha.setText(sd.format(new Date()));
+		tfFecha.setDate(new Date());
 		//Optional<Usuario> usuario= usuarioService.findById(GlobalVars.USER_ID);
 		tfEntidad.setText(GlobalVars.USER_ID.toString());
 		tfNombreEntidad.setText(GlobalVars.USER);
@@ -929,8 +930,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 				tfNombreCaja.setText(caja.get().getNombre());
 				tfCajeroId.setText(GlobalVars.USER_ID.toString());
 				tfNombreCajero.setText(GlobalVars.USER);
-				SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
-				tfFecha.setText(sd.format(movimientoEgreso.getFecha()));
+				tfFecha.setDate(movimientoEgreso.getFecha());
 				tfDocumento.setText(movimientoEgreso.getMegDocumento());
 				tfEntidad.setText(GlobalVars.USER);
 				itemTableModel.clear();

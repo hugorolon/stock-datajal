@@ -552,23 +552,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		tfBuscador.addFocusListener(new FocusAdapter() {
 
 		});
-//		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-//	
-//		tfBuscador.addFocusListener(new FocusAdapter() {
-//			@Override
-//			public void focusGained(FocusEvent e) {
-//				tfBuscador.selectAll();
-//			}
-//		});
-//		((AbstractDocument) tfBuscador.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-//		tfBuscador.addKeyListener(new KeyAdapter() {
-//			@Override
-//			public void keyPressed(KeyEvent e) {
-//				if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-//					dispose();
-//				}
-//			}
-//		});
 		getContentPane().add(tfBuscador, "cell 0 0,grow");
 		tfBuscador.setText("");
 		tfBuscador.setColumns(10);
@@ -604,101 +587,102 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	}
 
 	public void setProductForm(Producto product) {
-		tfProductoId.setText(product.getId() + "");
-		// tfNombre.setText(product.getNombre());
-		tfDescripcion.setText(product.getDescripcion()==null?"":product.getDescripcion());
-//		tfReferencia.setText(product.getReferencia());
-//		tfSubreferencia.setText(product.getSubreferencia());
-		tfOtrasReferencias.setText(product.getSubreferencia()==null?"":product.getSubreferencia());
-		tfPrecioCompra.setText(
-				product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
-		
-		// tfPeso.setText(product.getPeso() != null ?
-		// FormatearValor.doubleAString(product.getPeso()) : "");
-		tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
-//		tfCantidadPorCaja.setText(
-//				product.getCantidadPorCaja() != null ? FormatearValor.doubleAString(product.getCantidadPorCaja()) : "");
+		try {
+			tfProductoId.setText(product.getId() + "");
+			// tfNombre.setText(product.getNombre());
+			tfDescripcion.setText(product.getDescripcion()==null?"":product.getDescripcion());
+//			tfReferencia.setText(product.getReferencia());
+//			tfSubreferencia.setText(product.getSubreferencia());
+			tfOtrasReferencias.setText(product.getSubreferencia()==null?"":product.getSubreferencia());
+			tfPrecioCompra.setText(
+					product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
+			
+			// tfPeso.setText(product.getPeso() != null ?
+			// FormatearValor.doubleAString(product.getPeso()) : "");
+			tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
+//			tfCantidadPorCaja.setText(
+//					product.getCantidadPorCaja() != null ? FormatearValor.doubleAString(product.getCantidadPorCaja()) : "");
 
-		tfPrecioA.setText(
-				product.getPrecioVentaA() != null ? FormatearValor.doubleAString(product.getPrecioVentaA()) : "0");
-		tfPrecioC.setText(
-				product.getPrecioVentaC() != null ? FormatearValor.doubleAString(product.getPrecioVentaC()) : "0");
-//		tfPrecioD.setText(
-//				product.getPrecioVentaD() != null ? FormatearValor.doubleAString(product.getPrecioVentaD()) : "0");
-//		tfPrecioE.setText(
-//				product.getPrecioVentaE() != null ? FormatearValor.doubleAString(product.getPrecioVentaE()) : "0");
-		imagenUrl = (product.getImagenUrl() != null ? product.getImagenUrl() : null);
+			tfPrecioA.setText(
+					product.getPrecioVentaA() != null ? FormatearValor.doubleAString(product.getPrecioVentaA()) : "0");
+			tfPrecioC.setText(
+					product.getPrecioVentaC() != null ? FormatearValor.doubleAString(product.getPrecioVentaC()) : "0");
+//			tfPrecioD.setText(
+//					product.getPrecioVentaD() != null ? FormatearValor.doubleAString(product.getPrecioVentaD()) : "0");
+//			tfPrecioE.setText(
+//					product.getPrecioVentaE() != null ? FormatearValor.doubleAString(product.getPrecioVentaE()) : "0");
+			imagenUrl = (product.getImagenUrl() != null ? product.getImagenUrl() : null);
 
-		categoriaComboBoxModel.setSelectedItem(product.getCategoria());
-		grupoComboBoxModel.setSelectedItem(product.getGrupo());
-		ncmComboBoxModel.setSelectedItem(product.getNcm());
-		impuestoComboBoxModel.setSelectedItem(product.getImpuesto());
-		marcaComboBoxModel.setSelectedItem(product.getMarca());
-		unidadMedidaComboBoxModel.setSelectedItem(product.getUnidadMedida());
-		colorComboBoxModel.setSelectedItem(product.getColor());
-		tamanhoComboBoxModel.setSelectedItem(product.getTamanho());
+			categoriaComboBoxModel.setSelectedItem(product.getCategoria());
+			grupoComboBoxModel.setSelectedItem(product.getGrupo());
+			ncmComboBoxModel.setSelectedItem(product.getNcm());
+			impuestoComboBoxModel.setSelectedItem(product.getImpuesto());
+			marcaComboBoxModel.setSelectedItem(product.getMarca());
+			unidadMedidaComboBoxModel.setSelectedItem(product.getUnidadMedida());
+			colorComboBoxModel.setSelectedItem(product.getColor());
+			tamanhoComboBoxModel.setSelectedItem(product.getTamanho());
 
-		// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
-		chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
-		tfDesFiscal.setText(product.getDescripcionFiscal());
+			// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
+			chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
+			tfDesFiscal.setText(product.getDescripcionFiscal());
 
-		chActivo.setSelected(product.getActivo() == 1 ? true : false);
+			chActivo.setSelected(product.getActivo() == 1 ? true : false);
 
-		precioTableModel.clear();
-		depositoTableModel.clear();
+			precioTableModel.clear();
+			depositoTableModel.clear();
 
-//    	if (!product.getPrecios().isEmpty()) {
-//    		precioTableModel.addEntities(product.getPrecios());
-//		}
-
-//    	if (!product.getDepositos().isEmpty()) {
-//    		depositoTableModel.addEntities(product.getDepositos());
-//		}
-
-		visualizarImagen();
+			visualizarImagen();			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public Producto getProductForm() {
-		Producto product = new Producto();
+		try {
+			Producto product = new Producto();
 
-		if (!tfProductoId.getText().isEmpty()) {
-			product.setId(Long.parseLong(tfProductoId.getText()));
-			product.setReferencia(tfProductoId.getText());
+			if (!tfProductoId.getText().isEmpty()) {
+				product.setId(Long.parseLong(tfProductoId.getText()));
+				product.setReferencia(tfProductoId.getText());
+			}
+			if (!tfDep01.getText().isEmpty()) {
+				Double cantidad = FormatearValor.stringADouble(tfDep01.getText());
+				product.setDepO1(cantidad);
+			}
+			// product.setNombre(tfNombre.getText());
+			product.setDescripcion(tfDescripcion.getText());
+			product.setSubreferencia(tfOtrasReferencias.getText());
+
+//			product.setSeccion(tfSeccion.getText());
+//			product.setRegimen((String) cbRegimen.getSelectedItem());
+
+			product.setEsServicio(chServicio.isSelected() ? 1 : 0);
+			product.setActivo(chActivo.isSelected() ? 1 : 0);
+			product.setImagenUrl(imagenUrl);
+			product.setDescripcionFiscal(tfDesFiscal.getText());
+			product.setPrecioCosto(FormatearValor.stringADouble(tfPrecioCompra.getText()));
+			//product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
+			product.setCategoria(categoriaComboBoxModel.getSelectedItem());
+			product.setGrupo(grupoComboBoxModel.getSelectedItem());
+			product.setSubgrupo(subgrupoComboBoxModel.getSelectedItem());
+			product.setMarca(marcaComboBoxModel.getSelectedItem());
+			product.setNcm(ncmComboBoxModel.getSelectedItem());
+			product.setImpuesto(impuestoComboBoxModel.getSelectedItem());
+			product.setUnidadMedida(unidadMedidaComboBoxModel.getSelectedItem());
+			product.setTamanho(tamanhoComboBoxModel.getSelectedItem());
+			product.setColor(colorComboBoxModel.getSelectedItem());
+			// product.setEsFraccionado(cbEsFraccionado.getSelectedIndex() == 0 ? 0 : 1);
+
+			product.setPrecioVentaA(
+					FormatearValor.stringADouble(!tfPrecioA.getText().isEmpty() ? tfPrecioA.getText() : "0"));
+			product.setPrecioVentaC(
+					FormatearValor.stringADouble(!tfPrecioC.getText().isEmpty() ? tfPrecioC.getText() : "0"));
+			return product;	
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
-		if (!tfDep01.getText().isEmpty()) {
-			Double cantidad = FormatearValor.stringADouble(tfDep01.getText());
-			product.setDepO1(cantidad);
-		}
-		// product.setNombre(tfNombre.getText());
-		product.setDescripcion(tfDescripcion.getText());
-		product.setSubreferencia(tfOtrasReferencias.getText());
-
-//		product.setSeccion(tfSeccion.getText());
-//		product.setRegimen((String) cbRegimen.getSelectedItem());
-
-		product.setEsServicio(chServicio.isSelected() ? 1 : 0);
-		product.setActivo(chActivo.isSelected() ? 1 : 0);
-		product.setImagenUrl(imagenUrl);
-		product.setDescripcionFiscal(tfDesFiscal.getText());
-		product.setPrecioCosto(FormatearValor.stringADouble(tfPrecioCompra.getText()));
-		//product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
-		product.setCategoria(categoriaComboBoxModel.getSelectedItem());
-		product.setGrupo(grupoComboBoxModel.getSelectedItem());
-		product.setSubgrupo(subgrupoComboBoxModel.getSelectedItem());
-		product.setMarca(marcaComboBoxModel.getSelectedItem());
-		product.setNcm(ncmComboBoxModel.getSelectedItem());
-		product.setImpuesto(impuestoComboBoxModel.getSelectedItem());
-		product.setUnidadMedida(unidadMedidaComboBoxModel.getSelectedItem());
-		product.setTamanho(tamanhoComboBoxModel.getSelectedItem());
-		product.setColor(colorComboBoxModel.getSelectedItem());
-		// product.setEsFraccionado(cbEsFraccionado.getSelectedIndex() == 0 ? 0 : 1);
-
-		product.setPrecioVentaA(
-				FormatearValor.stringADouble(!tfPrecioA.getText().isEmpty() ? tfPrecioA.getText() : "0"));
-		product.setPrecioVentaC(
-				FormatearValor.stringADouble(!tfPrecioC.getText().isEmpty() ? tfPrecioC.getText() : "0"));
-
-		return product;
+		
+		return null;
 	}
 
 	public void clearForm() {
