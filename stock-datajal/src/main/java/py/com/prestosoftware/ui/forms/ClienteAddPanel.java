@@ -509,9 +509,10 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	private void loadClients() {
 		List<Cliente> clientes = clienteService.findAll();
 		clienteComboBoxModel.clear();
-		for (Cliente cliente : clientes) {
-			clienteComboBoxModel.addElement(cliente.getNombre());	
-		}
+		//for (Cliente cliente : clientes) {
+			clienteComboBoxModel.addElement(null);
+			clienteComboBoxModel.addElements(clientes);
+		//}
 		
 	}
 

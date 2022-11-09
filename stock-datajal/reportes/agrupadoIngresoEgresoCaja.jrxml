@@ -38,8 +38,8 @@ min_fecha>=date($P{fechaInicio}) AND min_fecha<=date($P{fechaFin})
 group by 1,2,3
 UNION
 SELECT 1 as ing_egr, egr_egreso as codigorubro, egr_descripcion as nombrerubro,  0.00 as INGRESO, SUM(mie_monto) AS EGRESO 
-FROM movimiento_egresos, item_movimientoegresos, egresos  
-WHERE meg_numero = mie_numero AND mie_egreso=egr_egreso AND meg_situacion=0 AND meg_caja = 1 AND 
+FROM movimiento_egresos, item_movimientoegresos, egresos  e
+WHERE meg_numero = mie_numero AND mie_egreso=e.id AND meg_situacion=0 AND meg_caja = 1 AND 
 meg_fecha >= date($P{fechaInicio}) AND meg_fecha<=date($P{fechaFin}) 
 GROUP BY 1,2,3  
 ORDER BY 1, 2, 3]]>

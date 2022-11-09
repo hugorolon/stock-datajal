@@ -356,10 +356,10 @@ public class HistoricoCompraDialog extends JDialog {
 		String orden = "";
 		String proveedor = "";
 		String sql = "SELECT pro.id, pro.id as codigoProducto, pro.descripcion, "
-				+ "sum(ico.cantidad) as stock,ico.precio, sum(ico.cantidad * ico.precio)	as subtotal, com.id as nro, com.fecha  "
-				+ "FROM		productos pro, compras com, compra_detalles ico  "
+				+ "sum(ico.cantidad) as stock,ico.precio, sum(ico.cantidad * ico.precio)	as subtotal, com.id as nro, com.fecha, p.nombre as proveedor  "
+				+ "FROM		productos pro, compras com, compra_detalles ico , proveedores p "
 				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO' or com.situacion = '1') AND  com.ID = ico.compra_id "
-				+ "AND pro.id = ico.producto_id  ";
+				+ "AND pro.id = ico.producto_id and com.proveedor_id = p.id ";
 		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
 			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
 			proveedor = p.getId() + " - " + p.getNombre();
@@ -380,7 +380,7 @@ public class HistoricoCompraDialog extends JDialog {
 		String fechaFiltro = " and com.fecha >= to_Date('" + df.format(fechaIniSel)
 				+ "', 'DD/MM/YYYY') and com.fecha <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
 		sql += fechaFiltro;
-		sql += " GROUP BY	pro.id, pro.descripcion, com.id, com.fecha, ico.precio ";
+		sql += " GROUP BY	pro.id, pro.descripcion, com.id, com.fecha, ico.precio, p.nombre ";
 		sql += orden;
 		parametros.put("fechaFiltro", fechaFiltro);
 		parametros.put("fechaInicio", df.format(fechaIniSel));

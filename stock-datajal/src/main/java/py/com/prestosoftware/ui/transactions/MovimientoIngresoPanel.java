@@ -782,7 +782,7 @@ public class MovimientoIngresoPanel extends JDialog implements MovimientoIngreso
 		case MOVIMIENTOINGRESO_CODE:
 			movimientoIngresoDialog.setInterfaz(this);
 			movimientoIngresoDialog.setVisible(true);
-			movimientoIngresoDialog.loadMovimientoIngresos("");
+			movimientoIngresoDialog.loadMovimientoIngresos(new Date());
 			break;	
 		default:
 			break;

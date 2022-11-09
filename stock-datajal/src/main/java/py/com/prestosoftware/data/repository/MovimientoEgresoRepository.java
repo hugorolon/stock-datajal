@@ -1,12 +1,10 @@
 package py.com.prestosoftware.data.repository;
 
 import java.util.Date;
-import java.util.Optional;
-
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoEgreso;
 
 @Repository
@@ -14,6 +12,10 @@ public interface MovimientoEgresoRepository extends JpaRepository<MovimientoEgre
 
 	MovimientoEgreso findByMegProceso(Integer megProceso);
 
+	@Query(value =  "SELECT me "
+			+ " FROM MovimientoEgreso me WHERE me.fecha = ?1 ORDER BY me.megNumero DESC", nativeQuery = false)
+	List<MovimientoEgreso> getEgresosDelDia(Date fecha);
+	
 	@Query("SELECT coalesce(max(id), 0) FROM MovimientoEgreso e")
 	Long getMaxId();
 

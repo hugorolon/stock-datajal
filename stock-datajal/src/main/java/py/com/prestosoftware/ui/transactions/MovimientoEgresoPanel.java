@@ -68,7 +68,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 
 	private static final int ENTIDAD_CODE = 1;
 	private static final int INGRESO_CODE = 2;
-	private static final int MOVIMIENTOINGRESO_CODE = 3;	
+	private static final int MOVIMIENTOEGRESO_CODE = 3;	
 	
 	private JTextField tfNombreCaja;
 	private JTextField tfDescripcionEgreso;
@@ -188,7 +188,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		lblCodigoEgreso.setBounds(10, 0, 63, 30);
 		panel_2.add(lblCodigoEgreso);
 
-		JLabel lblDescripcionEgreso = new JLabel("DESCRIPCIÓN INGRESO");
+		JLabel lblDescripcionEgreso = new JLabel("DESCRIPCIÓN EGRESO");
 		lblDescripcionEgreso.setBounds(77, 0, 364, 30);
 		panel_2.add(lblDescripcionEgreso);
 
@@ -280,7 +280,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		});
 		scrollMovimientoEgreso.setViewportView(tbEgresos);
 
-		lblMontoEgreso = new JLabel("MONTO DEL INGRESO");
+		lblMontoEgreso = new JLabel("MONTO DEL EGRESO");
 		lblMontoEgreso.setBounds(506, 0, 134, 30);
 		panel_2.add(lblMontoEgreso);
 
@@ -322,7 +322,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 			}
 		});
 		
-		JLabel lblTotalMontoEgreso = new JLabel("TOTAL  INGRESO");
+		JLabel lblTotalMontoEgreso = new JLabel("TOTAL  EGRESO");
 		lblTotalMontoEgreso.setFont(new Font("Tahoma", Font.BOLD, 11));
 		lblTotalMontoEgreso.setBounds(339, 146, 134, 30);
 		panel_2.add(lblTotalMontoEgreso);
@@ -336,7 +336,7 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 		panel_2.add(tfTotal);
 		
 
-		lblNewLabel = new JLabel("INGRESO");
+		lblNewLabel = new JLabel("EGRESO");
 		lblNewLabel.setBounds(6, 75, 145, 27);
 		pnlProducto.add(lblNewLabel);
 		btnRemove.addKeyListener(new KeyAdapter() {
@@ -438,13 +438,13 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					showDialog(MOVIMIENTOINGRESO_CODE);
+					showDialog(MOVIMIENTOEGRESO_CODE);
 				}
 			}
 		});
 		btnVer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				showDialog(MOVIMIENTOINGRESO_CODE);
+				showDialog(MOVIMIENTOEGRESO_CODE);
 			}
 		});
 
@@ -766,10 +766,10 @@ public class MovimientoEgresoPanel extends JDialog implements MovimientoEgresoIn
 			egresoDialog.loadEgresos("");;
 			egresoDialog.setVisible(true);
 			break;
-		case MOVIMIENTOINGRESO_CODE:
+		case MOVIMIENTOEGRESO_CODE:
 			movimientoEgresoDialog.setInterfaz(this);
 			movimientoEgresoDialog.setVisible(true);
-			movimientoEgresoDialog.loadMovimientoEgresos("");
+			movimientoEgresoDialog.loadMovimientoEgresos(new Date());
 			break;	
 		default:
 			break;

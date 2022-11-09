@@ -1,13 +1,15 @@
 package py.com.prestosoftware.domain.services;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.MovimientoIngreso;
 import py.com.prestosoftware.data.repository.MovimientoIngresoRepository;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class MovimientoIngresoService {
@@ -19,8 +21,8 @@ public class MovimientoIngresoService {
         this.repository = repository;
     }
 
-    public List<MovimientoIngreso> findAll() {
-        return repository.findAll();
+    public List<MovimientoIngreso> findByDate(Date fecha) {
+        return repository.getIngresosDelDia(fecha);
     }
     
     

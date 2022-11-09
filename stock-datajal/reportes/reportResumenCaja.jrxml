@@ -70,7 +70,7 @@ concat('COMPRAS','#',c.id,'-',p.nombre) as nombreProceso
 			  GROUP BY 1, 4, 2, 3, 4,5, 6,7
 UNION
 SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, MEG_PROCESO AS PROCESO, mie_egreso as tipo,
-concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',meg_proceso) as nombreProceso
+concat((SELECT egr_descripcion FROM egresos WHERE id = mie_egreso),'#',meg_proceso) as nombreProceso
  ,  0 AS INGRESO, MIE_MONTO AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero
 			 --and meg_caja=1 

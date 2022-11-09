@@ -59,7 +59,7 @@ concat('COMPRAS','#',meg_NUMERO,'-',p.nombre) as nombreProceso
 			  GROUP BY 1, 4, 2, 3, 4,5, 6,7
 UNION
 SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, MEG_PROCESO AS PROCESO, mie_egreso as tipo,
-concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',meg_proceso) as nombreProceso
+concat((SELECT egr_descripcion FROM egresos WHERE id = mie_egreso),'#',meg_proceso) as nombreProceso
  ,  0 AS INGRESO, MIE_MONTO AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero
 			 --and meg_caja=1 
@@ -173,7 +173,7 @@ concat((SELECT egr_descripcion FROM egresos WHERE egr_egreso = mie_egreso),'#',m
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[CAJA : 1]]></text>
+				<text><![CDATA[CAJA: 1]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="260" y="50" width="63" height="22" uuid="2b5fd34a-0f93-49c7-8ab2-e8acfc195a96">

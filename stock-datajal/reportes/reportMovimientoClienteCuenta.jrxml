@@ -27,6 +27,7 @@ ica_monto as ica_monto1, ica_iva, ica_documento, ica_situacion
 ('Ventas de productos #') AS nombre_ingreso 
  FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli 
 	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.car_entidad=cli.id 
+	  and car_monto > coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0)
 	  $P!{fechaFiltro1}
 	  $P!{idCliente}
  UNION 
@@ -37,6 +38,7 @@ COALESCE((SELECT SUM(icl_monto) AS pagado FROM item_cobro_clientes where icl_sec
    'Saldo Anterior' AS nombre_ingreso 
  FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR , clientes cli
 	  WHERE car_numero=ica_cuenta and car_situacion=0  and ica_situacion = 0  and car.car_entidad=cli.id 
+	  and car_monto > COALESCE((SELECT SUM(icl_monto) AS pagado FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0)
 	  $P!{fechaFiltro2}	  
 	  $P!{idCliente} 
 GROUP BY car.car_entidad, cli.nombre, cli.celular, cli.direccion, car.car_tipoentidad,car_numero, car.car_hora, ICA_iva, car_proceso, car_situacion,  ica_cuenta, ica_secuencia, ica_dias, ica_iva, ica_situacion  

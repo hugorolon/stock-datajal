@@ -25,6 +25,7 @@ public interface CobroClienteRepository extends JpaRepository<CobroCliente, Inte
 			+ "('Venta # '|| car_proceso) AS nombre_ingreso, ica_secuencia  \n"
 			+ " FROM cuenta_a_recibir car, item_cuenta_a_recibir ICR, clientes cli \n"
 			+ "	  WHERE car_numero=ica_cuenta AND car_situacion=0  and ica_situacion = 0 and car.car_entidad=cli.id \n"
+			+ " and car_monto > coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia),0) \n"
 			+ "		and car_entidad=?1 \n"
 			+ "ORDER BY 1,8 asc", nativeQuery = true)
 	List<Object[]> getDetalleCobroClienteView(Long clienteId);

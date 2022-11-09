@@ -1,10 +1,6 @@
 package py.com.prestosoftware.ui.search;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,11 +48,10 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.ui.table.ClienteComboBoxModel;
 import py.com.prestosoftware.ui.table.ProductoComboBoxModel;
 import py.com.prestosoftware.util.ConnectionUtils;
-import java.awt.FlowLayout;
 
 @Component
 public class HistoricoVentaDialog extends JDialog {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private JButton btnPrevisualizar;
@@ -71,7 +66,7 @@ public class HistoricoVentaDialog extends JDialog {
 	private JButton btnImprimir;
 	private JComboBox<String> cbOrden;
 	private JLabel lblOrdenadoPor;
-	private JComboBox<String> cbCliente;
+	private JComboBox<Cliente> cbCliente;
 	private JComboBox<Producto> cbProducto;
 	private JLabel lblProducto;
 	private JLabel lblCliente;
@@ -82,15 +77,13 @@ public class HistoricoVentaDialog extends JDialog {
 	private JPanel panel;
 
 	@Autowired
-	public HistoricoVentaDialog(
-			ProductoComboBoxModel productoComboBoxModel,			ProductoService productoService
-			,ClienteComboBoxModel clienteComboBoxModel, ClienteService clienteService
-			) {
-		this.clienteComboBoxModel =clienteComboBoxModel;
-		this.clienteService=clienteService;
-		this.productoComboBoxModel=productoComboBoxModel;
-		this.productoService =productoService;
-		
+	public HistoricoVentaDialog(ProductoComboBoxModel productoComboBoxModel, ProductoService productoService,
+			ClienteComboBoxModel clienteComboBoxModel, ClienteService clienteService) {
+		this.clienteComboBoxModel = clienteComboBoxModel;
+		this.clienteService = clienteService;
+		this.productoComboBoxModel = productoComboBoxModel;
+		this.productoService = productoService;
+
 		this.setSize(566, 281);
 		this.setModal(true);
 		this.setTitle("Historico de ventas de productos");
@@ -99,181 +92,177 @@ public class HistoricoVentaDialog extends JDialog {
 		JPanel pnlBuscador = new JPanel();
 		pnlBuscador.setBounds(0, 0, 355, 244);
 		getContentPane().add(pnlBuscador);
-																						pnlBuscador.setLayout(null);
-																						
-																						lblCliente = new JLabel("Cliente");
-																						lblCliente.setBounds(10, 34, 55, 13);
-																						pnlBuscador.add(lblCliente);
-																						
-																						cbCliente = new JComboBox<String>(clienteComboBoxModel);
-																						cbCliente.setBounds(102, 30, 207, 21);
-																						pnlBuscador.add(cbCliente);
-																						
-																						lblProducto = new JLabel("Producto");
-																						lblProducto.setBounds(10, 60, 78, 13);
-																						pnlBuscador.add(lblProducto);
-																						
-																						cbProducto = new JComboBox<Producto>(productoComboBoxModel);
-																						cbProducto.setBounds(102, 56, 207, 21);
-																						pnlBuscador.add(cbProducto);
-																				
-																						lblNewLabel = new JLabel("Periodo");
-																						lblNewLabel.setBounds(10, 85, 78, 13);
-																						pnlBuscador.add(lblNewLabel);
-																				
-																						cbPeriodo = new JComboBox<String>();
-																						cbPeriodo.setBounds(102, 82, 103, 19);
-																						cbPeriodo.setModel(new DefaultComboBoxModel(new String[] { "Hoy", "Este mes", "Este año" }));
-																						cbPeriodo.addActionListener(new ActionListener() {
-																							public void actionPerformed(ActionEvent arg0) {
-																								Date today = new Date();
-																								Calendar calendar = Calendar.getInstance();
-																								calendar.setTime(today);
-																								if (cbPeriodo.getSelectedItem().toString().equalsIgnoreCase("Hoy")) {
-																									tfFechaInicial.setDate(new Date());
-																									tfFechaFinal.setDate(new Date());
-																								} else if (cbPeriodo.getSelectedItem().toString().equalsIgnoreCase("Este mes")) {
-																									calendar = Calendar.getInstance();
-																									calendar.add(Calendar.MONTH, 1);
-																									calendar.set(Calendar.DAY_OF_MONTH, 1);
-																									calendar.add(Calendar.DATE, -1);
-																									Date lastDayOfMonth = calendar.getTime();
-																									Calendar date = Calendar.getInstance();
-																									date.set(Calendar.DAY_OF_MONTH, 1);
-																									tfFechaInicial.setDate(date.getTime());
-																									tfFechaFinal.setDate(lastDayOfMonth);
-																								} else {
-																									String fechaIni = "01/01/" + calendar.get(Calendar.YEAR);
-																									String fechaFin = "31/12/" + calendar.get(Calendar.YEAR);
-																									try {
-																										tfFechaInicial.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(fechaIni));
-																										tfFechaFinal.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(fechaFin));
-																									} catch (ParseException e) {
-																										// TODO Auto-generated catch block
-																										e.printStackTrace();
-																									}
+		pnlBuscador.setLayout(null);
 
-																								}
-																							}
-																						});
-																								pnlBuscador.add(cbPeriodo);
-																								
-																										lblFechaInicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																												.getString("CuentaRecibirDialog.lblNewLabel_1.text"));
-																										lblFechaInicio.setBounds(10, 110, 82, 13);
-																										pnlBuscador.add(lblFechaInicio);
-																								
-																										tfFechaInicial = new JXDatePicker();
-																										tfFechaInicial.setFormats("dd/MM/yyyy");
-																										pnlBuscador.add(tfFechaInicial);
-																										tfFechaInicial.setBounds(102, 106, 103, 21);
-																										tfFechaInicial.setDate(new Date());
-																								
-																										lblFechaFin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																												.getString("CuentaRecibirDialog.lblFechaFin.text"));
-																										lblFechaFin.setBounds(10, 136, 68, 13);
-																										pnlBuscador.add(lblFechaFin);
-																								
-																										tfFechaFinal = new JXDatePicker();
-																										tfFechaFinal.setBounds(102, 132, 103, 21);
-																										tfFechaFinal.setFormats("dd/MM/yyyy");
-																										pnlBuscador.add(tfFechaFinal);
-																										tfFechaFinal.setDate(new Date());
-																						
-																								lblOrdenadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-																										.getString("CuentaRecibirDialog.lblOrdenadoPor.text"));
-																								lblOrdenadoPor.setBounds(10, 161, 96, 13);
-																								pnlBuscador.add(lblOrdenadoPor);
-																								
-																										cbOrden = new JComboBox<String>();
-																										cbOrden.setBounds(102, 158, 103, 19);
-																										cbOrden.setModel(new DefaultComboBoxModel(new String[] { "Codigo", "Nombre" }));
-																										cbOrden.addActionListener(new ActionListener() {
-																											public void actionPerformed(ActionEvent arg0) {
+		lblCliente = new JLabel("Cliente");
+		lblCliente.setBounds(10, 34, 55, 13);
+		pnlBuscador.add(lblCliente);
+
+		cbCliente = new JComboBox<Cliente>(clienteComboBoxModel);
+		cbCliente.setBounds(102, 30, 207, 21);
+		pnlBuscador.add(cbCliente);
+
+		lblProducto = new JLabel("Producto");
+		lblProducto.setBounds(10, 60, 78, 13);
+		pnlBuscador.add(lblProducto);
+
+		cbProducto = new JComboBox<Producto>(productoComboBoxModel);
+		cbProducto.setBounds(102, 56, 207, 21);
+		pnlBuscador.add(cbProducto);
+
+		lblNewLabel = new JLabel("Periodo");
+		lblNewLabel.setBounds(10, 85, 78, 13);
+		pnlBuscador.add(lblNewLabel);
+
+		cbPeriodo = new JComboBox<String>();
+		cbPeriodo.setBounds(102, 82, 103, 19);
+		cbPeriodo.setModel(new DefaultComboBoxModel(new String[] { "Hoy", "Este mes", "Este año" }));
+		cbPeriodo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Date today = new Date();
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(today);
+				if (cbPeriodo.getSelectedItem().toString().equalsIgnoreCase("Hoy")) {
+					tfFechaInicial.setDate(new Date());
+					tfFechaFinal.setDate(new Date());
+				} else if (cbPeriodo.getSelectedItem().toString().equalsIgnoreCase("Este mes")) {
+					calendar = Calendar.getInstance();
+					calendar.add(Calendar.MONTH, 1);
+					calendar.set(Calendar.DAY_OF_MONTH, 1);
+					calendar.add(Calendar.DATE, -1);
+					Date lastDayOfMonth = calendar.getTime();
+					Calendar date = Calendar.getInstance();
+					date.set(Calendar.DAY_OF_MONTH, 1);
+					tfFechaInicial.setDate(date.getTime());
+					tfFechaFinal.setDate(lastDayOfMonth);
+				} else {
+					String fechaIni = "01/01/" + calendar.get(Calendar.YEAR);
+					String fechaFin = "31/12/" + calendar.get(Calendar.YEAR);
+					try {
+						tfFechaInicial.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(fechaIni));
+						tfFechaFinal.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(fechaFin));
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+				}
+			}
+		});
+		pnlBuscador.add(cbPeriodo);
+
+		lblFechaInicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("CuentaRecibirDialog.lblNewLabel_1.text"));
+		lblFechaInicio.setBounds(10, 110, 82, 13);
+		pnlBuscador.add(lblFechaInicio);
+
+		tfFechaInicial = new JXDatePicker();
+		tfFechaInicial.setFormats("dd/MM/yyyy");
+		pnlBuscador.add(tfFechaInicial);
+		tfFechaInicial.setBounds(102, 106, 103, 21);
+		tfFechaInicial.setDate(new Date());
+
+		lblFechaFin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("CuentaRecibirDialog.lblFechaFin.text"));
+		lblFechaFin.setBounds(10, 136, 68, 13);
+		pnlBuscador.add(lblFechaFin);
+
+		tfFechaFinal = new JXDatePicker();
+		tfFechaFinal.setBounds(102, 132, 103, 21);
+		tfFechaFinal.setFormats("dd/MM/yyyy");
+		pnlBuscador.add(tfFechaFinal);
+		tfFechaFinal.setDate(new Date());
+
+		lblOrdenadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("CuentaRecibirDialog.lblOrdenadoPor.text"));
+		lblOrdenadoPor.setBounds(10, 161, 96, 13);
+		pnlBuscador.add(lblOrdenadoPor);
+
+		cbOrden = new JComboBox<String>();
+		cbOrden.setBounds(102, 158, 103, 19);
+		cbOrden.setModel(new DefaultComboBoxModel(new String[] { "Codigo", "Nombre" }));
+		cbOrden.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 //				if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo")) {
 //					
 //				} else {
 //
 //				}
-																											}
-																										});
-																										pnlBuscador.add(cbOrden);
+			}
+		});
+		pnlBuscador.add(cbOrden);
 
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize();
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
-		
+
 		loadProductos();
 		loadClientes();
 		AutoCompleteDecorator.decorate(cbCliente);
 		AutoCompleteDecorator.decorate(cbProducto);
-						
-						panel = new JPanel();
-						panel.setBounds(365, 0, 173, 244);
-						getContentPane().add(panel);
-						panel.setLayout(null);
-						btnPrevisualizar = new JButton("Previsualizar");
-						btnPrevisualizar.setBounds(38, 58, 103, 21);
-						panel.add(btnPrevisualizar);
-						
-								btnImprimir = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-										.getString("CuentaRecibirDialog.btnImprimir.text"));
-								btnImprimir.setBounds(38, 108, 103, 21);
-								panel.add(btnImprimir);
-								
-										btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
-												.getString("ClienteDialog.btnCancelar.text"));
-										btnCancelar.setBounds(38, 161, 103, 21);
-										panel.add(btnCancelar);
-										btnCancelar.addKeyListener(new KeyAdapter() {
-											@Override
-											public void keyPressed(KeyEvent e) {
-												if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-													dispose();
-												}
-											}
-										});
-										btnCancelar.addActionListener(new ActionListener() {
-											public void actionPerformed(ActionEvent e) {
-												dispose();
-											}
-										});
-								btnImprimir.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										print();
-									}
-								});
-						btnPrevisualizar.addKeyListener(new KeyAdapter() {
-							@Override
-							public void keyPressed(KeyEvent e) {
-								if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-									preview();
-								}
-							}
-						});
-						btnPrevisualizar.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								preview();
-							}
-						});
+
+		panel = new JPanel();
+		panel.setBounds(365, 0, 173, 244);
+		getContentPane().add(panel);
+		panel.setLayout(null);
+		btnPrevisualizar = new JButton("Previsualizar");
+		btnPrevisualizar.setBounds(38, 58, 103, 21);
+		panel.add(btnPrevisualizar);
+
+		btnImprimir = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("CuentaRecibirDialog.btnImprimir.text"));
+		btnImprimir.setBounds(38, 108, 103, 21);
+		panel.add(btnImprimir);
+
+		btnCancelar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
+				.getString("ClienteDialog.btnCancelar.text"));
+		btnCancelar.setBounds(38, 161, 103, 21);
+		panel.add(btnCancelar);
+		btnCancelar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					dispose();
+				}
+			}
+		});
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		btnImprimir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				print();
+			}
+		});
+		btnPrevisualizar.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					preview();
+				}
+			}
+		});
+		btnPrevisualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				preview();
+			}
+		});
 	}
-
-	
-
-
 
 	private void preview() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		String orden = "";
-		String cliente= "";
-		String sql ="SELECT p.id, p.descripcion, v.id as nro, i.precio AS precio, "
-				+ "i.cantidad AS stock, i.cantidad * i.precio AS subtotal, v.fecha "
-				+ "FROM productos p, ventas v, venta_detalles i  "
-				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id "
+		String cliente = "";
+		String sql = "SELECT p.id, p.descripcion, v.id as nro, i.precio AS precio, "
+				+ "i.cantidad AS stock, i.cantidad * i.precio AS subtotal, v.fecha, c.nombre as cliente "
+				+ "FROM productos p, ventas v, venta_detalles i , clientes c "
+				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id and v.cliente_id = c.id "
 				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO'  or v.situacion = '1') ";
 		if (cbCliente.getSelectedItem() != null && cbCliente.getSelectedItem().toString().length() > 0) {
-			 String clienteNombre= cbCliente.getSelectedItem().toString();
-			 Cliente c = (Cliente)clienteService.findByNombreEquals(clienteNombre);
+			String clienteNombre = cbCliente.getSelectedItem().toString();
+			Cliente c = (Cliente) clienteService.findByNombreEquals(clienteNombre);
 			cliente = c.getId() + " - " + c.getNombre();
 			sql += " and v.cliente_id = " + c.getId();
 		}
@@ -281,7 +270,7 @@ public class HistoricoVentaDialog extends JDialog {
 			Producto pro = (Producto) cbProducto.getSelectedItem();
 			sql += " and i.producto_id = " + pro.getId();
 		}
-		
+
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
 			orden = " ORDER BY	v.id asc";
 		else
@@ -291,9 +280,9 @@ public class HistoricoVentaDialog extends JDialog {
 		Date fechaFinSel = tfFechaFinal.getDate();
 		String fechaFiltro = " and fecha >= to_Date('" + df.format(fechaIniSel)
 				+ "', 'DD/MM/YYYY') and fecha <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		sql+= fechaFiltro;
-		sql+=orden;
-		
+		sql += fechaFiltro;
+		sql += orden;
+
 		parametros.put("fechaFiltro", fechaFiltro);
 		parametros.put("fechaInicio", df.format(fechaIniSel));
 		parametros.put("fechaFin", df.format(fechaFinSel));
@@ -310,7 +299,7 @@ public class HistoricoVentaDialog extends JDialog {
 			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, conn);
 			JFrame frame = new JFrame();
 			frame.setTitle("Visualizar Historico de compras de productos");
-			frame.setBounds(100, 100, 800,600);
+			frame.setBounds(100, 100, 800, 600);
 			frame.getContentPane().add(new JRViewer(jasperPrint));
 			frame.setModalExclusionType(getModalExclusionType().APPLICATION_EXCLUDE);
 			frame.setLocationRelativeTo(null);
@@ -323,8 +312,8 @@ public class HistoricoVentaDialog extends JDialog {
 	private void print() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		String orden = "";
-		String cliente= "";
-		String sql ="SELECT p.id as codigoProducto, p.descripcion, v.id as nro, i.precio AS precio, "
+		String cliente = "";
+		String sql = "SELECT p.id as codigoProducto, p.descripcion, v.id as nro, i.precio AS precio, "
 				+ "i.cantidad AS cantidad, i.cantidad * i.precio AS total "
 				+ "FROM productos p, ventas v, venta_detalles i  "
 				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id "
@@ -338,7 +327,7 @@ public class HistoricoVentaDialog extends JDialog {
 			Producto pro = (Producto) cbProducto.getSelectedItem();
 			sql += " and i.producto_id = " + pro.getId();
 		}
-		
+
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
 			orden = " ORDER BY	v.id asc";
 		else
@@ -348,9 +337,9 @@ public class HistoricoVentaDialog extends JDialog {
 		Date fechaFinSel = tfFechaFinal.getDate();
 		String fechaFiltro = " and fecha >= to_Date('" + df.format(fechaIniSel)
 				+ "', 'DD/MM/YYYY') and fecha <= TO_Date('" + df.format(fechaFinSel) + "', 'DD/MM/YYYY') ";
-		sql+= fechaFiltro;
-		sql+=orden;
-		
+		sql += fechaFiltro;
+		sql += orden;
+
 		parametros.put("fechaFiltro", fechaFiltro);
 		parametros.put("fechaInicio", df.format(fechaIniSel));
 		parametros.put("fechaFin", df.format(fechaFinSel));
@@ -376,15 +365,13 @@ public class HistoricoVentaDialog extends JDialog {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void loadClientes() {
-		if(clienteComboBoxModel.getSize()==0) {
+		if (clienteComboBoxModel.getSize() == 0) {
 			clienteComboBoxModel.clear();
 			clienteComboBoxModel.addElement(null);
-			List<Cliente> clientes= clienteService.findAllOrderByName();
-			for(Cliente c : clientes) {
-				clienteComboBoxModel.addElement(c.getNombre());
-			}
+			List<Cliente> clientes = clienteService.findAllOrderByName();
+			clienteComboBoxModel.addElements(clientes);
 		}
 	}
 

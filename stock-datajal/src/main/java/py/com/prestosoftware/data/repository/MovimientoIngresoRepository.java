@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.MovimientoIngreso;
 
 @Repository
@@ -19,6 +18,10 @@ public interface MovimientoIngresoRepository extends JpaRepository<MovimientoIng
 
 	@Query("SELECT coalesce(max(id), 0) FROM MovimientoIngreso e")
 	Long getMaxId();
+	@Query(value =  "SELECT mi "
+			+ " FROM MovimientoIngreso mi WHERE mi.fecha = ?1 ORDER BY mi.minNumero DESC", nativeQuery = false)
+	List<MovimientoIngreso> getIngresosDelDia(Date fecha);
+
 	
 //	@Query(value = "SELECT id, SUM(nota_valor) AS nota_valor, SUM(valor_m01) AS valor_m01, SUM(valor_m02) AS valor_m02, "
 //			+ "SUM(valor_m03) AS valor_m03, SUM(valor_m04) AS valor_m04, SUM(valor_m05) AS valor_m05 "

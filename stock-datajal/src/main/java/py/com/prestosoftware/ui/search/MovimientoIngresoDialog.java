@@ -1,34 +1,36 @@
 package py.com.prestosoftware.ui.search;
 
-import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.Date;
 import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.JTable;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+
+import org.jdesktop.swingx.JXDatePicker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
 import py.com.prestosoftware.data.models.MovimientoIngreso;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.table.MovimientoIngresoTableModel;
-import javax.swing.JButton;
-import javax.swing.JScrollPane;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 @Component
 public class MovimientoIngresoDialog extends JDialog {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private JTextField tfBuscador;
 	private JButton btnBuscar;
 	private JButton btnAceptar;
 	private JButton btnCancelar;
@@ -40,6 +42,8 @@ public class MovimientoIngresoDialog extends JDialog {
 	private MovimientoIngresoInterfaz interfaz;
 	
 	private List<MovimientoIngreso> movimientoIngresos;
+	private JXDatePicker dtFecha;
+	private JLabel lblFecha;
 
 	@Autowired
 	public MovimientoIngresoDialog(MovimientoIngresoService service, MovimientoIngresoTableModel tableModel) {
@@ -54,38 +58,24 @@ public class MovimientoIngresoDialog extends JDialog {
 		JPanel pnlBuscador = new JPanel();
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
 		
-		JLabel lblBuscador = new JLabel("Buscador");
-		pnlBuscador.add(lblBuscador);
+		lblFecha = new JLabel("Fecha");
+		pnlBuscador.add(lblFecha);
 		
-		tfBuscador = new JTextField();
-		tfBuscador.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					loadMovimientoIngresos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
-				}
-				if(e.getKeyCode()==KeyEvent.VK_ESCAPE){
-			    	dispose();
-			    }
-			    if(e.getKeyCode()==KeyEvent.VK_DOWN){
-			    	table.requestFocus();
-			    }
-			}
-		});
-		pnlBuscador.add(tfBuscador);
-		tfBuscador.setColumns(30);
+		dtFecha = new JXDatePicker();
+		pnlBuscador.add(dtFecha);
+		dtFecha.setFormats("dd/MM/yyyy");
 		
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadMovimientoIngresos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
+				loadMovimientoIngresos(dtFecha.getDate());
 			}
 		});
 		btnBuscar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() ==  KeyEvent.VK_ENTER) {
-					loadMovimientoIngresos(tfBuscador.getText().isEmpty() ? "" : tfBuscador.getText());
+					loadMovimientoIngresos(dtFecha.getDate());
 				}
 			}
 		});
@@ -102,9 +92,7 @@ public class MovimientoIngresoDialog extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
 					aceptar();
-				} else if(e.getKeyCode()==KeyEvent.VK_ESCAPE) {
-					 tfBuscador.requestFocus();
-				}
+				} 
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -147,17 +135,12 @@ public class MovimientoIngresoDialog extends JDialog {
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize(); 
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
-		
-		loadMovimientoIngresos("");	
+		dtFecha.setDate(new Date());
+		loadMovimientoIngresos(new Date());	
 	}
 	
-	public void loadMovimientoIngresos(String name) {
-		if (name.isEmpty()) {
-			movimientoIngresos = service.findAll();
-		} else {
-			//movimientoIngresos = service.findByNombre(name);
-		}
-		
+	public void loadMovimientoIngresos(Date fecha) {
+		movimientoIngresos = service.findByDate(fecha);		
         tableModel.clear();
         tableModel.addEntities(movimientoIngresos);
     }
@@ -176,5 +159,14 @@ public class MovimientoIngresoDialog extends JDialog {
 	    }
 		dispose();
 	}
+
+	public JXDatePicker getDtFecha() {
+		return dtFecha;
+	}
+
+	public void setDtFecha(JXDatePicker dtFecha) {
+		this.dtFecha = dtFecha;
+	}
+	
 
 }

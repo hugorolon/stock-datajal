@@ -223,7 +223,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 
 		tfNombreEntidad = new JTextField();
 		tfNombreEntidad.setEditable(false);
-		tfNombreEntidad.setHorizontalAlignment(SwingConstants.RIGHT);
+		tfNombreEntidad.setHorizontalAlignment(SwingConstants.LEFT);
 		tfNombreEntidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfNombreEntidad.setColumns(10);
 		tfNombreEntidad.setBounds(261, 32, 435, 30);
@@ -928,6 +928,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 			Optional<Cliente> cliente = null;
 			cliente = clienteService.findById(Long.valueOf(id));
 			if (cliente.isPresent()) {
+				tfEntidad.setText(cliente.get().getId().toString());
 				tfNombreEntidad.setText(cliente.get().getNombre());
 				itemTableModel.clear();
 				List<Object[]> listMII = cobroClienteService.findDetalleCobroClienteView(cliente.get().getId());
