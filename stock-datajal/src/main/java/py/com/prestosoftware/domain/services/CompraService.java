@@ -282,7 +282,7 @@ public class CompraService {
 		if (condicion.equalsIgnoreCase("30 días")) {
 			cant =1;// Integer.valueOf(tfCuotaCant.getText());
 			cantDias = 30;
-			cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(30));
+			//cal.add(Calendar.DAY_OF_MONTH, Integer.valueOf(30));
 		} 
 
 		Double valorTotal = compra.getTotalGeneral() / cant;
