@@ -1190,7 +1190,7 @@ public class PresupuestoPanel extends JFrame
 	@Override
 	public void getEntity(Producto producto) {
 		if (producto != null) {
-			Double precioUnit = producto.getPrecioVentaA() != null ? producto.getPrecioVentaA() : 0d;
+			Double precioUnit = producto.getPrecioVentaC() != null ? producto.getPrecioVentaC() : 0d;
 			tfProductoID.setText(String.valueOf(producto.getId()));
 			tfDescripcion.setText(producto.getDescripcion());
 			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
