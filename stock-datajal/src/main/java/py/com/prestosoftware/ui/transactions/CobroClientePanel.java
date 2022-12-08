@@ -732,7 +732,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		switch (code) {
 		case COBRO_CLIENTE_CODE:
 			cobroClienteDialog.setInterfaz(this);
-			cobroClienteDialog.loadCobroClientes("");
+			cobroClienteDialog.loadCobroClientes(new Date());
 			cobroClienteDialog.setVisible(true);
 			break;
 		case ENTIDAD_CODE:

@@ -11,6 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -782,7 +783,12 @@ public class MovimientoIngresoPanel extends JDialog implements MovimientoIngreso
 		case MOVIMIENTOINGRESO_CODE:
 			movimientoIngresoDialog.setInterfaz(this);
 			movimientoIngresoDialog.setVisible(true);
-			movimientoIngresoDialog.loadMovimientoIngresos(new Date());
+			try {
+				movimientoIngresoDialog.loadMovimientoIngresos(new Date());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			break;	
 		default:
 			break;

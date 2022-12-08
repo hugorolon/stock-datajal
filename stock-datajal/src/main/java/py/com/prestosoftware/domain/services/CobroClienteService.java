@@ -53,8 +53,8 @@ public class CobroClienteService {
         return repository.findAll();
     }
     
-    public List<CobroCliente> findByFecha() {
-    	java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime()); 
+    public List<CobroCliente> findByFecha(Date date) {
+    	//java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime()); 
         return repository.findByFecha(date);
     }
     
@@ -78,12 +78,14 @@ public class CobroClienteService {
     public CobroCliente save(CobroCliente client, List<DetalleCobroClienteView> listaDetalleCobroCliente, Double montoACobrar) {
     	
     	CobroCliente cc = repository.save(client);
+    	Integer cclNumero = cc.getCclNumero();
+    	Integer cclEntidad = cc.getCclEntidad();
     	//detalle cobro cliente
 		List<ItemCobroCliente> detalles=new ArrayList<ItemCobroCliente>();
 		for (DetalleCobroClienteView item : listaDetalleCobroCliente) {
 			if(item.getCobro().doubleValue()>0) {
 				ItemCobroCliente itemCobroCliente =new ItemCobroCliente();
-				itemCobroCliente.setIclNumero(cc.getCclNumero());
+				itemCobroCliente.setIclNumero(cclNumero);
 				itemCobroCliente.setIclMonto(item.getCobro());
 				itemCobroCliente.setIclSecuenciaCuenta(item.getIca_Secuencia());
 				if(item.getCobro().doubleValue()+item.getPagado().doubleValue()==item.getCar_monto1().doubleValue()) {
@@ -100,8 +102,8 @@ public class CobroClienteService {
 		movimientoIngreso.setHora(new Date());
 		movimientoIngreso.setMinCaja(1);
 		movimientoIngreso.setMinDocumento(cc.getCclDocumento());
-		movimientoIngreso.setMinEntidad(client.getCclEntidad().toString());
-		movimientoIngreso.setMinProceso(cc.getCclNumero());
+		movimientoIngreso.setMinEntidad(cclEntidad.toString());
+		movimientoIngreso.setMinProceso(cclNumero);
 		movimientoIngreso.setMinTipoProceso(2);
 		movimientoIngreso.setMinSituacion(0);
 		movimientoIngreso.setMinTipoEntidad(8);

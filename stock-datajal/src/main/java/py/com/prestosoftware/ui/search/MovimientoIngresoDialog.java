@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,7 +48,7 @@ public class MovimientoIngresoDialog extends JDialog {
 	private JLabel lblFecha;
 
 	@Autowired
-	public MovimientoIngresoDialog(MovimientoIngresoService service, MovimientoIngresoTableModel tableModel) {
+	public MovimientoIngresoDialog(MovimientoIngresoService service, MovimientoIngresoTableModel tableModel) throws ParseException {
 		this.service = service;
 		this.tableModel = tableModel;
 		
@@ -68,14 +70,24 @@ public class MovimientoIngresoDialog extends JDialog {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				loadMovimientoIngresos(dtFecha.getDate());
+				try {
+					loadMovimientoIngresos(dtFecha.getDate());
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnBuscar.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() ==  KeyEvent.VK_ENTER) {
-					loadMovimientoIngresos(dtFecha.getDate());
+					try {
+						loadMovimientoIngresos(dtFecha.getDate());
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
@@ -139,8 +151,10 @@ public class MovimientoIngresoDialog extends JDialog {
 		loadMovimientoIngresos(new Date());	
 	}
 	
-	public void loadMovimientoIngresos(Date fecha) {
-		movimientoIngresos = service.findByDate(fecha);		
+	public void loadMovimientoIngresos(Date fecha) throws ParseException {
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+		Date hoy = sdf.parse("2022-12-07");// new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-07");
+		movimientoIngresos = service.findByDate(hoy);		
         tableModel.clear();
         tableModel.addEntities(movimientoIngresos);
     }
