@@ -87,7 +87,7 @@ public class HistoricoCompraDialog extends JDialog {
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
 		this.proveedorService = proveedorService;
-		this.setSize(668, 288);
+		this.setSize(869, 315);
 		this.setModal(true);
 		this.setTitle("Historico de compras de productos");
 
@@ -192,6 +192,7 @@ public class HistoricoCompraDialog extends JDialog {
 			}
 		});
 		GridBagConstraints gbc_comboBox = new GridBagConstraints();
+		gbc_comboBox.gridwidth = 2;
 		gbc_comboBox.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox.gridx = 2;
@@ -217,6 +218,7 @@ public class HistoricoCompraDialog extends JDialog {
 			}
 		});
 		GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
+		gbc_comboBox_1.gridwidth = 2;
 		gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboBox_1.gridx = 2;

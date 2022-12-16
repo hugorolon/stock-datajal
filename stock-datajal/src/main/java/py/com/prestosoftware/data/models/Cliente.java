@@ -393,5 +393,9 @@ public class Cliente {
 		this.tipoEntidad = tipoEntidad;
 	}
 
+	@Override
+	public String toString() {
+		return this.razonSocial;
+	}
 	
 }

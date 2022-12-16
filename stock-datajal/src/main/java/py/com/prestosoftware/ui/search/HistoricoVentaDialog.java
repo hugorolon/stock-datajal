@@ -84,13 +84,13 @@ public class HistoricoVentaDialog extends JDialog {
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
 
-		this.setSize(566, 281);
+		this.setSize(803, 288);
 		this.setModal(true);
 		this.setTitle("Historico de ventas de productos");
 		getContentPane().setLayout(null);
 
 		JPanel pnlBuscador = new JPanel();
-		pnlBuscador.setBounds(0, 0, 355, 244);
+		pnlBuscador.setBounds(0, 0, 606, 244);
 		getContentPane().add(pnlBuscador);
 		pnlBuscador.setLayout(null);
 
@@ -99,7 +99,7 @@ public class HistoricoVentaDialog extends JDialog {
 		pnlBuscador.add(lblCliente);
 
 		cbCliente = new JComboBox<Cliente>(clienteComboBoxModel);
-		cbCliente.setBounds(102, 30, 207, 21);
+		cbCliente.setBounds(102, 30, 494, 21);
 		pnlBuscador.add(cbCliente);
 
 		lblProducto = new JLabel("Producto");
@@ -107,7 +107,7 @@ public class HistoricoVentaDialog extends JDialog {
 		pnlBuscador.add(lblProducto);
 
 		cbProducto = new JComboBox<Producto>(productoComboBoxModel);
-		cbProducto.setBounds(102, 56, 207, 21);
+		cbProducto.setBounds(102, 56, 494, 21);
 		pnlBuscador.add(cbProducto);
 
 		lblNewLabel = new JLabel("Periodo");
@@ -202,7 +202,7 @@ public class HistoricoVentaDialog extends JDialog {
 		AutoCompleteDecorator.decorate(cbProducto);
 
 		panel = new JPanel();
-		panel.setBounds(365, 0, 173, 244);
+		panel.setBounds(606, 0, 173, 244);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		btnPrevisualizar = new JButton("Previsualizar");
