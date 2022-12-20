@@ -10,13 +10,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.NumberFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.swing.DefaultComboBoxModel;
@@ -130,7 +129,7 @@ public class VentaPanel extends JFrame
 	private static final int CONDICION_PAGO_CODE = 6;
 	private static final int VENTA_CODE = 7;
 	private static final int CLIENTE_ADD_CODE = 8;
-
+	private static final DecimalFormat decfor = new DecimalFormat("0.00");
 	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc, lblCosto;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
 	private JTextField tfClienteID, tfPrecioTotal, tfPrecio, tfVendedorID;
@@ -1435,6 +1434,8 @@ public class VentaPanel extends JFrame
 
 		Long productoId = Long.valueOf(tfProductoID.getText());
 		Double cantidad = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
+		//String valor= tfCantidad.getText();
+		//tfCantidad.setText(valor.replace(".", ","));
 
 		Producto p = productoService.getStockDepositoByProductoId(productoId);
 		int depositoId = Integer.parseInt(tfDepositoID.getText());
@@ -1445,7 +1446,8 @@ public class VentaPanel extends JFrame
 
 		switch (depositoId) {
 		case 1:
-			Double dep01 = p.getDepO1() != null ? p.getDepO1() : 0;
+			String d = decfor.format(p.getDepO1().doubleValue());
+			Double dep01 = p.getDepO1() != null ?  FormatearValor.stringADouble(d) : 0;
 			depBlo = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
 			// result = getStockDisp(dep01 - salPend - depBlo, cantidad);
 			result = getStockDisp(dep01, cantidad);
@@ -1612,12 +1614,14 @@ public class VentaPanel extends JFrame
 	}
 
 	private VentaDetalle getItem() {
+		Double cant = FormatearValor.stringToDoubleFormat(tfCantidad.getText());
+		Double precio = FormatearValor.stringToDouble(tfPrecio.getText());
 		VentaDetalle item = new VentaDetalle();
 		item.setProductoId(Long.valueOf(tfProductoID.getText()));
 		item.setProducto(tfDescripcion.getText());
-		item.setCantidad(FormatearValor.stringToDoubleFormat(tfCantidad.getText()));
-		item.setPrecio(FormatearValor.stringToDouble(tfPrecio.getText()));
-		item.setSubtotal(FormatearValor.stringToDoubleFormat(tfPrecioTotal.getText()));
+		item.setCantidad(cant);
+		item.setPrecio(precio);
+		item.setSubtotal(cant*precio);
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
 		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
 		item.setPrecioCosto(this.precioCompra);
@@ -2845,10 +2849,10 @@ public class VentaPanel extends JFrame
 
 				switch (depositoId) {
 				case 1:
-					Double stockDep01 = p.get().getDepO1() != null ? p.get().getDepO1() : 0;
+					String s_dep01 = p.get().getDepO1() != null ? decfor.format(p.get().getDepO1()) : "0";
 					// Double stockDepBloq = p.get().getDepO1Bloq() != null ? p.get().getDepO1Bloq()
 					// : 0;
-
+					Double stockDep01=Double.valueOf(s_dep01);
 					if (stockDep01 >= cantidad) {
 						// producto.setDepO1Bloq((stockDepBloq + cantidad) - cantAnterior);
 					} else {
