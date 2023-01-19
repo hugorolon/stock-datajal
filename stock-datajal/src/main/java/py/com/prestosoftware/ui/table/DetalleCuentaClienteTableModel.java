@@ -48,7 +48,7 @@ public class DetalleCuentaClienteTableModel extends DefaultTableModel<DetalleCob
     @Override
     public void setValueAt(Object aValue, int rowIndex, int columnIndex)
     {
-    	if(entities!=null && entities.size()>0 && rowIndex!=-1) {
+    	if(entities!=null && entities.size()>0 && rowIndex!=-1 && entities.size()>rowIndex) {
             DetalleCobroClienteView row = entities.get(rowIndex);
             if(0 == columnIndex) {
                 row.setNombre_ingreso((String) aValue);
