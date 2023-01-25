@@ -25,6 +25,9 @@ public class MovimientoIngresoService {
         return repository.getIngresosDelDia(fecha);
     }
     
+    public List<Object[]> findByDateObjects(Date fecha) {
+        return repository.getIngresosDelDiaObjects(fecha);
+    }
     
     public Optional<MovimientoIngreso> findById(Integer id) {
     	return repository.findById(id);

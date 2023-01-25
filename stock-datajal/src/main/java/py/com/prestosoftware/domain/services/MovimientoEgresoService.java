@@ -27,6 +27,9 @@ public class MovimientoEgresoService {
     public List<MovimientoEgreso> findByDate(Date date) {
         return repository.getEgresosDelDia(date);
     }
+    public List<Object[]> findByDateObjects(Date date) {
+        return repository.getEgresosDelDiaObjects(date);
+    }
     
     public Optional<MovimientoEgreso> findById(Integer id) {
     	return repository.findById(id);

@@ -142,9 +142,9 @@ public class MovimientoEgresoDialog extends JDialog {
 	}
 	
 	public void loadMovimientoEgresos(Date fecha) {
-		egresos = service.findByDate(fecha);
+		List<Object[]> ListEgresos = service.findByDateObjects(fecha);
 		tableModel.clear();
-        tableModel.addEntities(egresos);
+        tableModel.addEntities(ListEgresos);
     }
 	
 	public MovimientoEgresoInterfaz getInterfaz() {

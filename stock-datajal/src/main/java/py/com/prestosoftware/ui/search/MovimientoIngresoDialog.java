@@ -152,11 +152,12 @@ public class MovimientoIngresoDialog extends JDialog {
 	}
 	
 	public void loadMovimientoIngresos(Date fecha) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
-		Date hoy = sdf.parse("2022-12-07");// new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-07");
-		movimientoIngresos = service.findByDate(hoy);		
+		//SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+		//Date hoy = sdf.parse("2022-12-07");// new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-07");
+		//movimientoIngresos 
+		List<Object[]> listaIngresos = service.findByDateObjects(fecha);		
         tableModel.clear();
-        tableModel.addEntities(movimientoIngresos);
+        tableModel.addEntities(listaIngresos);
     }
 	
 	public MovimientoIngresoInterfaz getInterfaz() {

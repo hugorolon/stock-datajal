@@ -22,6 +22,9 @@ public interface MovimientoIngresoRepository extends JpaRepository<MovimientoIng
 			+ " FROM MovimientoIngreso mi WHERE mi.fecha = ?1 ORDER BY mi.minNumero DESC", nativeQuery = false)
 	List<MovimientoIngreso> getIngresosDelDia(Date fecha);
 
+	@Query(value =  "SELECT mi.min_numero, mi.min_fecha, mi.min_caja, mi.min_documento, mi.min_entidad, sum(mii_monto) "
+			+ " FROM movimiento_ingresos mi, item_movimientoingresos ie  WHERE ie.mii_numero=mi.min_numero and mi.min_fecha = ?1 group by mi.min_numero ORDER BY mi.min_numero DESC", nativeQuery = true)
+	List<Object[]> getIngresosDelDiaObjects(Date fecha);
 	
 //	@Query(value = "SELECT id, SUM(nota_valor) AS nota_valor, SUM(valor_m01) AS valor_m01, SUM(valor_m02) AS valor_m02, "
 //			+ "SUM(valor_m03) AS valor_m03, SUM(valor_m04) AS valor_m04, SUM(valor_m05) AS valor_m05 "
