@@ -739,8 +739,8 @@ public class MainController extends AbstractFrameController {
 		ventaPanel.clearForm();
 		ventaPanel.getConfig();
 		ventaPanel.setVisible(true);
-		ventaPanel.vistaDescuentoTotal();
-		ventaPanel.vistaDescuentoItem();
+		ventaPanel.vistaPrecioCompra();
+		//ventaPanel.vistaDescuentoItem();
 		
 		ventaPanel.getTfClienteID().requestFocus();
 	}

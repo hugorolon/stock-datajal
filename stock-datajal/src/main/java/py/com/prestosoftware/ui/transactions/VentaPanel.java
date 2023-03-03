@@ -1261,7 +1261,7 @@ public class VentaPanel extends JFrame
 		label_4.setToolTipText("Campos obligatorios");
 		label_4.setForeground(Color.RED);
 		label_4.setFont(new Font("Dialog", Font.BOLD, 20));
-		// vistaDescuentoTotal();
+		vistaPrecioCompra();
 	}
 
 	/** Este metodo se ejecuta cuando se suelta una tecla */
@@ -1296,10 +1296,10 @@ public class VentaPanel extends JFrame
 //
 //	}
 
-	public void vistaDescuentoTotal() {
-		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESCUENTO TOTAL")) {
-			tfDescuento.setVisible(false);
-			lblDesc.setVisible(false);
+	public void vistaPrecioCompra() {
+		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON COSTO")) {
+			lblCosto.setVisible(false);
+			//lblDesc.setVisible(false);
 		}
 	}
 
