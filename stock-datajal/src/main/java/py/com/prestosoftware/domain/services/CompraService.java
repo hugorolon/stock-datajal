@@ -90,11 +90,11 @@ public class CompraService {
     @Transactional(rollbackFor = RuntimeException.class)
     public Compra save(int lanzamientoCaja, Compra compra, String condicion) {
     	Compra c = new Compra();
-    	compra.setId(getRowCount()+1);
+    	if(compra.getId()==999999)
+    		compra.setId(getRowCount()+1);
     	c= repository.save(compra);
     	if (lanzamientoCaja == 0) {
-			
-    		updateStockProduct(c.getItems(),lanzamientoCaja,1);
+			updateStockProduct(c.getItems(),lanzamientoCaja,1);
 			openMovCaja(c, condicion);
 			openMovimientoEgresoProcesoPagoCompras(c);
 			if (condicion.equalsIgnoreCase("30 días")) {

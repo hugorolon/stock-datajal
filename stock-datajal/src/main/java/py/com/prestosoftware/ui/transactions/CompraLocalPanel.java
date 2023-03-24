@@ -600,7 +600,7 @@ public class CompraLocalPanel extends JFrame
 				tfFechaCompra.selectAll();
 			}
 		});
-		tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
+		//tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
 		tfFechaCompra.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -608,7 +608,7 @@ public class CompraLocalPanel extends JFrame
 					if (!tfFechaCompra.getText().isEmpty()) {
 						tfFactura.requestFocus();
 					} else {
-						getFecha();
+						//getFecha();
 						Notifications.showAlert("Debes digital la fecha");
 						tfFactura.requestFocus();
 					}
@@ -617,7 +617,7 @@ public class CompraLocalPanel extends JFrame
 		});
 
 		tfFechaCompra.setColumns(8);
-		tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
+		//tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
 		tfFechaCompra.setBounds(49, 38, 86, 30);
 		pnlCliente.add(tfFechaCompra);
 
@@ -675,6 +675,22 @@ public class CompraLocalPanel extends JFrame
 				}
 			}
 
+		});
+		
+		btnGuardarPendiente = new JButton("Guardar Pendientes"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnGuardarPendiente.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		pnlBotonera.add(btnGuardarPendiente);
+		btnGuardarPendiente.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+					guardarPendiente();
+			}
+		});
+		btnGuardarPendiente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarPendiente();
+			}
 		});
 
 		pnlBotonera.add(btnAnular);
@@ -744,7 +760,7 @@ public class CompraLocalPanel extends JFrame
 //        btnBuscar.setBounds(316, 2, 150, 32);
 //        pnlBuscador.add(btnBuscar);
 
-		tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
+		//tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
 
 		lblBuscadorDeCompra = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages")
 				.getString("CompraPanel.lblBuscadorDeCompra.text"));
@@ -785,10 +801,9 @@ public class CompraLocalPanel extends JFrame
 		label.setBounds(390, 4, 15, 30);
 		pnlCliente.add(label);
 
-		JButton btnVer = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
-				.getString("CompraLocalPanel.btnNewButton.text")); //$NON-NLS-1$
+		JButton btnVer = new JButton("..."); //$NON-NLS-1$
 		btnVer.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnVer.setBounds(145, 9, 30, 23);
+		btnVer.setBounds(145, 9, 32, 23);
 		pnlCliente.add(btnVer);
 
 		JButton btnAddProveedor = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -801,7 +816,7 @@ public class CompraLocalPanel extends JFrame
 		btnAddProveedor.setBounds(351, 6, 43, 30);
 		pnlCliente.add(btnAddProveedor);
 		
-		lblSituacion = new JLabel("VIGENTE"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblSituacion = new JLabel("PENDIENTE"); //$NON-NLS-1$ //$NON-NLS-2$
 		lblSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblSituacion.setBounds(184, 5, 92, 24);
 		pnlCliente.add(lblSituacion);
@@ -1005,6 +1020,7 @@ public class CompraLocalPanel extends JFrame
 	private Compra getCompra() {
 		try {
 			Compra compra = new Compra();
+			compra.setId(Long.valueOf(tfCompraId.getText().toString()));
 			compra.setComprobante(tfFactura.getText());
 			compra.setFecha(new Date());
 			compra.setTipoCompra("LOCAL");
@@ -1173,6 +1189,58 @@ public class CompraLocalPanel extends JFrame
 		}
 	}
 
+	@Transactional
+	private void guardarPendiente() {
+		Integer respuesta = JOptionPane.showConfirmDialog(this,
+				"CONFIRMA LA OPCION DE PAGO " + tfCondicion.getSelectedItem().toString(), "AVISO ",
+				JOptionPane.OK_CANCEL_OPTION);
+		if (respuesta == 0) {
+			if (validateCabezera()) {
+				//lanzamientoCaja();
+				Compra compra = getCompra();
+				compra.setSituacion("PENDIENTE");
+
+				Optional<ValidationError> errors = compraValidator.validate(compra);
+
+				if (errors.isPresent()) {
+					ValidationError validationError = errors.get();
+					Notifications.showFormValidationAlert(validationError.getMessage());
+				} else {
+						int lanzCaja = 10;
+						try {
+							Compra c = compraService.save(lanzCaja, compra, tfCondicion.getSelectedItem().toString());
+							if (c != null) {
+								Notifications.showAlert("Compra registrado pendiente correctamente.!");
+								//imprimirFactura(false);
+							}
+						}catch (Exception e) {
+							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						clearForm();
+						newCompra();
+//					if (c != null) {
+//						updateStockProduct(c.getItems(), c.getDeposito());
+//						if (conf != null && conf.getHabilitaLanzamientoCaja() == 0) {
+//							openMovCaja(c);
+//							openMovimientoEgresoProcesoPagoCompras(c);
+//							if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+//								CuentaAPagar cuentaAPagar = new CuentaAPagar();
+//								cuentaAPagar = cuentaAPagarProcesoPagoCompras(c);
+//								movimientoIngresoProcesoPagoCompras(c, cuentaAPagar);
+//							}
+//						}
+//					}
+					productoDialog.inicializaProductos();
+					productoDialog.getProductos();
+				}
+			}
+		} else {
+			tfProductoID.requestFocus();
+		}
+	}
+	
 	private void lanzamientoCaja() {
 		Optional<Caja> caja = cajaService.findById(1l);
 		if (caja.isPresent()) {
@@ -1341,6 +1409,7 @@ public class CompraLocalPanel extends JFrame
 	private JLabel lblVence;
 	private JTextField tfVence;
 	private JButton btnAddProducto;
+	private JButton btnGuardarPendiente;
 
 	public void getConfig() {
 		Optional<Configuracion> config = configService.findByEmpresaId(new Empresa(GlobalVars.EMPRESA_ID));
@@ -1394,7 +1463,7 @@ public class CompraLocalPanel extends JFrame
 		Optional<Proveedor> proveedor = proveedorService.findById(Long.valueOf(tfProveedorID.getText()));
 
 		if (!proveedor.isPresent()) {
-			Notifications.showAlert("No codigo del Proveedor no existe.!");
+			Notifications.showAlert("El codigo del Proveedor no existe.!");
 			tfProveedorID.requestFocus();
 			return false;
 		}
@@ -1471,7 +1540,7 @@ public class CompraLocalPanel extends JFrame
 			itemTableModel.removeRow(0);
 		}
 
-		getFecha();
+		//getFecha();
 
 		tfProveedorID.requestFocus();
 	}
@@ -1776,19 +1845,31 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void habilitaReimpresion(String situacion) {
-		if(!situacion.equalsIgnoreCase("ANULADO")&&!situacion.equalsIgnoreCase("DEVOLUCION")) {
-			btnAnular.setVisible(true);
-			btnReimpresion.setVisible(true);
-			btnGuardar.setVisible(false);
-			
-		}else {
+		if(situacion.equalsIgnoreCase("ANULADO") || situacion.equalsIgnoreCase("DEVOLUCION")) {
 			btnAnular.setVisible(false);
 			btnReimpresion.setVisible(false);
 			btnGuardar.setVisible(false);
+			btnGuardarPendiente.setVisible(false);
+			btnAdd.setVisible(false);
+			btnRemove.setVisible(false);
+		}else {
+			if(situacion.equalsIgnoreCase("PENDIENTE")) {
+				btnGuardar.setVisible(true);
+				btnAdd.setVisible(true);
+				btnRemove.setVisible(true);
+				btnGuardarPendiente.setVisible(true);
+			}else {
+				if(situacion.equalsIgnoreCase("PROCESADO")||situacion.equalsIgnoreCase("PAGADO")) {
+					btnAnular.setVisible(true);
+					btnReimpresion.setVisible(true);
+					btnGuardar.setVisible(false);
+					btnGuardarPendiente.setVisible(false);
+					btnAdd.setVisible(false);
+					btnRemove.setVisible(false);
+				}
+			}
 		}
 		lblSituacion.setText(situacion);
-		btnAdd.setEnabled(false);
-		btnRemove.setEnabled(false);
 	}
 
 
@@ -1812,21 +1893,23 @@ public class CompraLocalPanel extends JFrame
 		tfCuotaCant.setText(c.getCuotaCant().toString());
 
 		findProveedorById(c.getProveedor().getId() != null ? String.valueOf(c.getProveedor().getId()) : "", false);
+		itemTableModel.clear();
 		itemTableModel.addEntities(c.getItems());
 	}
 
 	public void newCompra() {
-		long newId = compraService.getRowCount()+1;
+		long newId = 999999;//compraService.getRowCount()+1;
 		resetProveedor();
 		resetCompra();
+		tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
 		tfCompraId.setText(String.valueOf(newId));
-		btnAdd.setEnabled(true);
-		btnRemove.setEnabled(true);
+		btnAdd.setVisible(true);
+		btnRemove.setVisible(true);
 		tfCuotaCant.setEnabled(false);
 		btnAnular.setVisible(false);
 		btnReimpresion.setVisible(false);
 		btnGuardar.setVisible(true);
-		lblSituacion.setText("VIGENTE");
+		lblSituacion.setText("PENDIENTE");
 		tfProveedorID.requestFocus();
 	}
 
@@ -1855,6 +1938,7 @@ public class CompraLocalPanel extends JFrame
 		btnAnular.setVisible(false);
 		btnReimpresion.setVisible(false);
 		btnGuardar.setVisible(true);
+		btnGuardarPendiente.setVisible(true);
 		btnAdd.setEnabled(true);
 		btnRemove.setEnabled(true);
 	}

@@ -80,7 +80,7 @@ public class CompraDialog extends JDialog {
 		pnlBuscador.add(lblSituacion);
 		
 		cmbSituacion = new JComboBox();
-		cmbSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "VIGENTE"}));
+		cmbSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "PENDIENTE", "DEVOLUCIÓN"}));
 		pnlBuscador.add(cmbSituacion);
 		
 		lblForma = new JLabel(" Forma Pago :"); //$NON-NLS-1$ //$NON-NLS-2$

@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.MaskFormatter;
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Component;
@@ -113,6 +114,7 @@ import py.com.prestosoftware.ui.search.VendedorInterfaz;
 import py.com.prestosoftware.ui.search.VentaInterfaz;
 import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.util.Notifications;
+import javax.swing.JFormattedTextField;
 
 @Component
 public class VentaPanel extends JFrame
@@ -138,10 +140,10 @@ public class VentaPanel extends JFrame
 	private JTextField tfClienteDireccion, tfCuotaCant, tfProductoID, tfStock;
 	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer;
 	private JComboBox<String> tfCondicionPago;
+	private JFormattedTextField tfFechaVenta;
 	private JPanel pnlTotales;
 	private JTable tbProductos;
 	private JLabel label;
-	private JLabel label_1;
 	private JLabel label_2;
 	private JLabel label_3;
 	private JLabel label_4;
@@ -580,14 +582,14 @@ public class VentaPanel extends JFrame
 		pnlProducto.add(label_5);
 
 		JPanel panel_3 = new JPanel();
-		panel_3.setBounds(12, 0, 1006, 105);
+		panel_3.setBounds(12, 0, 1041, 105);
 		panel_3.setBorder(
 				new TitledBorder(null, "SELECCIONE CLIENTE", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(panel_3);
 		panel_3.setLayout(null);
 
 		JPanel pnlCliente = new JPanel();
-		pnlCliente.setBounds(6, 18, 990, 79);
+		pnlCliente.setBounds(6, 18, 1025, 79);
 		panel_3.add(pnlCliente);
 		pnlCliente.setLayout(null);
 
@@ -703,7 +705,7 @@ public class VentaPanel extends JFrame
 
 		JLabel lblVendedor = new JLabel("VENDEDOR");
 		lblVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVendedor.setBounds(253, 42, 103, 30);
+		lblVendedor.setBounds(483, 44, 79, 30);
 		pnlCliente.add(lblVendedor);
 
 		tfVendedorID = new JTextField();
@@ -738,14 +740,14 @@ public class VentaPanel extends JFrame
 				Util.validateNumero(e);
 			}
 		});
-		tfVendedorID.setBounds(398, 42, 47, 30);
+		tfVendedorID.setBounds(568, 45, 47, 30);
 		pnlCliente.add(tfVendedorID);
 		tfVendedorID.setColumns(10);
 
 		tfVendedor = new JTextField();
 		tfVendedor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfVendedor.setEditable(false);
-		tfVendedor.setBounds(448, 42, 273, 30);
+		tfVendedor.setBounds(618, 45, 103, 30);
 		pnlCliente.add(tfVendedor);
 		tfVendedor.setToolTipText("Nombre del Vendedor");
 		tfVendedor.setColumns(10);
@@ -796,7 +798,7 @@ public class VentaPanel extends JFrame
 
 		lblRuc = new JLabel("RUC:");
 		lblRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRuc.setBounds(0, 42, 42, 30);
+		lblRuc.setBounds(253, 44, 55, 30);
 		pnlCliente.add(lblRuc);
 
 		tfClienteRuc = new JTextField();
@@ -829,7 +831,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfClienteRuc.setColumns(10);
-		tfClienteRuc.setBounds(43, 42, 150, 30);
+		tfClienteRuc.setBounds(318, 44, 118, 30);
 		pnlCliente.add(tfClienteRuc);
 
 		lblDireccion = new JLabel("DIR:");
@@ -867,7 +869,7 @@ public class VentaPanel extends JFrame
 		tfVentaId = new JTextField();
 		tfVentaId.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfVentaId.setEditable(true);
-		tfVentaId.setBounds(43, 6, 67, 30);
+		tfVentaId.setBounds(55, 6, 55, 30);
 		pnlCliente.add(tfVentaId);
 		tfVentaId.addKeyListener(new KeyAdapter() {
 			@Override
@@ -916,15 +918,6 @@ public class VentaPanel extends JFrame
 		label.setBounds(378, 6, 14, 30);
 		pnlCliente.add(label);
 
-		label_1 = new JLabel("*");
-		label_1.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_1.setToolTipText("Campos obligatorios");
-		label_1.setHorizontalAlignment(SwingConstants.CENTER);
-		label_1.setForeground(Color.RED);
-		label_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_1.setBounds(378, 42, 14, 30);
-		pnlCliente.add(label_1);
-
 		label_3 = new JLabel("*");
 		label_3.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_3.setToolTipText("Campos obligatorios");
@@ -937,7 +930,7 @@ public class VentaPanel extends JFrame
 		tfDvRuc = new JTextField();
 		tfDvRuc.setFont(new Font("Tahoma", Font.ITALIC, 14));
 		tfDvRuc.setEnabled(false);
-		tfDvRuc.setBounds(203, 42, 27, 30);
+		tfDvRuc.setBounds(446, 44, 27, 30);
 		pnlCliente.add(tfDvRuc);
 		tfDvRuc.setColumns(10);
 
@@ -955,6 +948,42 @@ public class VentaPanel extends JFrame
 		lblSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblSituacion.setBounds(118, 10, 85, 20);
 		pnlCliente.add(lblSituacion);
+		
+		JLabel lblFecha = new JLabel("FECHA");
+		lblFecha.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblFecha.setBounds(0, 54, 55, 14);
+		pnlCliente.add(lblFecha);
+		
+		tfFechaVenta = new JFormattedTextField(getFormatoFecha());
+		tfFechaVenta.setEditable(false);
+		tfFechaVenta.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tfFechaVenta.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfFechaVenta.selectAll();
+			}
+		});
+		//tfFechaCompra.setText(Fechas.formatoDDMMAAAA(new Date()));
+		tfFechaVenta.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfFechaVenta.getText().isEmpty()) {
+						tfClienteRuc.requestFocus();
+						
+					} else {
+						//getFecha();
+						Notifications.showAlert("Debes digital la fecha");
+						tfClienteRuc.requestFocus();
+					}
+				}
+			}
+		});
+
+		tfFechaVenta.setColumns(8);
+		
+		tfFechaVenta.setBounds(55, 44, 103, 27);
+		pnlCliente.add(tfFechaVenta);
 
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(21, 590, 1034, 35);
@@ -1308,6 +1337,21 @@ public class VentaPanel extends JFrame
 //			tfDescuentoItem.setVisible(false);
 //			lblDescItem.setVisible(false);
 		}
+	}
+	
+	private MaskFormatter formatoFecha;
+	
+	private MaskFormatter getFormatoFecha() {
+		try {
+			if (formatoFecha == null) {
+				formatoFecha = new MaskFormatter("##/##/####");
+				formatoFecha.setPlaceholderCharacter('_');
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return formatoFecha;
 	}
 
 	private void getItemSelected() {
@@ -1927,6 +1971,9 @@ public class VentaPanel extends JFrame
 			tfVentaId.setText(v.getId().toString());
 			tfClienteID.setText(String.valueOf(v.getCliente().getId()));
 			tfClienteNombre.setText(v.getCliente().getNombre());
+			tfFechaVenta.setText(v.getFecha()== null ? "" : Fechas.formatoDDMMAAAA(v.getFecha()));
+			//tfFechaCompra.setText(c.getFechaCompra() == null ? "" : String.valueOf(c.getFechaCompra()));
+					//Fechas.stringToDate(tfFechaCompra.getText()));
 			tfClienteRuc.setText(v.getCliente().getCiruc());
 			tfDvRuc.setText(v.getCliente().getDvruc());
 			tfClienteDireccion.setText(v.getCliente().getDireccion());
@@ -2544,6 +2591,7 @@ public class VentaPanel extends JFrame
 	public void newVenta() {
 		Long max = ventaService.getRowCount()+1;
 		tfVentaId.setText(String.valueOf(max));
+		tfFechaVenta.setText(Fechas.formatoDDMMAAAA(new Date()));
 		resetCliente();
 		resetVenta();
 		btnAnular.setVisible(false);
