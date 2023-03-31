@@ -621,11 +621,10 @@ public class CompraLocalPanel extends JFrame
 		tfFechaCompra.setBounds(49, 38, 86, 30);
 		pnlCliente.add(tfFechaCompra);
 
-		JLabel lblFCompra = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
-				.getString("CompraPanel.lblFCompra.text")); //$NON-NLS-1$
+		JLabel lblFCompra = new JLabel("Fecha"); //$NON-NLS-1$
 		lblFCompra.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
-		lblFCompra.setBounds(6, 38, 68, 30);
+		lblFCompra.setBounds(6, 38, 43, 30);
 		pnlCliente.add(lblFCompra);
 
 		JPanel pnlBotonera = new JPanel();
@@ -1022,7 +1021,7 @@ public class CompraLocalPanel extends JFrame
 			Compra compra = new Compra();
 			compra.setId(Long.valueOf(tfCompraId.getText().toString()));
 			compra.setComprobante(tfFactura.getText());
-			compra.setFecha(new Date());
+			compra.setFecha(Fechas.stringToDate(tfFechaCompra.getText()));
 			compra.setTipoCompra("LOCAL");
 			compra.setFactura(tfFactura.getText());
 			compra.setFechaCompra(Fechas.stringToDate(tfFechaCompra.getText()));
@@ -1128,11 +1127,21 @@ public class CompraLocalPanel extends JFrame
 
 		if (condicion.isPresent()) {
 			// tfCondicion.setSelectedIndex(condicion.get().getCantDia());
-			getFecha();
-			tfVence.setText(Fechas
-					.formatoDDMMAAAA(Fechas.sumarFecha(condicion.get().getCantDia(), 0, 0, tfFechaCompra.getText())));
+			//getFecha();
+			calculateVencimiento();
+			
+
 		} else {
 			showDialog(CONDICION_PAGO_CODE);
+		}
+	}
+	
+	private void calculateVencimiento() {
+		// if (!cbCondPago.getText().isEmpty()) {
+		String fecha = Fechas.dateUtilAStringDDMMAAAA(new Date());
+		if (tfCondicion.getSelectedItem().toString().equalsIgnoreCase("30 días")) {
+			Date fechaVenc = Fechas.sumarFecha(Integer.valueOf(30), 0, 0, fecha);
+			tfVence.setText(Fechas.formatoDDMMAAAA(fechaVenc));
 		}
 	}
 
@@ -1878,7 +1887,7 @@ public class CompraLocalPanel extends JFrame
 		tfProveedorID.setText(String.valueOf(c.getProveedor().getId()));
 		tfFactura.setText(c.getFactura());
 		tfCompraId.setText(c.getId().toString());
-		tfFechaCompra.setText(c.getFechaCompra() == null ? "" : String.valueOf(c.getFechaCompra()));
+		tfFechaCompra.setText(c.getFechaCompra() == null ? "" : Fechas.formatoDDMMAAAA(c.getFechaCompra()));
 		// tfCondicion.setSelectedItem(String.valueOf(c.getCondicion()));
 		if (c.getCondicion() == 1)
 			tfCondicion.setSelectedIndex(0);
