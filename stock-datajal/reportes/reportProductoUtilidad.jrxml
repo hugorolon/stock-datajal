@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportProductoUtilidad" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -23,10 +23,10 @@
 		<![CDATA[SELECT p.id AS codigo, v.fecha as fecha, extract(month from v.fecha) as mes, p.descripcion AS nombre, 
 				 a.id AS categoriaId, a.nombre AS nombreCategoria, f.id AS fabricanteId, f.nombre AS nombreFabricante, SUM(i.cantidad) AS cantidad, 
 				 SUM(i.cantidad * i.precio) / SUM(i.cantidad) AS venta, 
-				 p.precio_costo AS compra, 
-				 p.precio_costo * SUM(i.cantidad) AS tcompra, 
+				i.costo_fob AS compra, 
+				 sum(i.cantidad) * i.costo_fob as tcompra,
 				 (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) AS tventa
-				 , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - (p.precio_costo * SUM(i.cantidad)) AS utilidad 
+				 , (SUM(i.cantidad * i.precio) / SUM(i.cantidad)) * SUM(i.cantidad) - (i.costo_fob * SUM(i.cantidad)) AS utilidad 
 				 FROM productos p, categorias a, marcas f, ventas v, venta_detalles i 
 				 WHERE 
 				 v.id = i.venta_id AND i.producto_id = p.id 
@@ -34,7 +34,7 @@
 				 AND p.marca_id = f.id 
 				 $P!{fechaFiltro}
 				
-GROUP BY v.fecha,p.id, p.descripcion, f.id, f.nombre ,a.id, a.nombre
+GROUP BY v.fecha,p.id,i.costo_fob, p.descripcion, f.id, f.nombre ,a.id, a.nombre
 order by v.fecha asc]]>
 	</queryString>
 	<field name="codigo" class="java.lang.Long"/>

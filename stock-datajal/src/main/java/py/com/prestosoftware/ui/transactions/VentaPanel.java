@@ -641,7 +641,7 @@ public class VentaPanel extends JFrame
 		
 		lblCosto = new JLabel("");
 		lblCosto.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCosto.setBounds(913, 10, 72, 30);
+		lblCosto.setBounds(913, 10, 115, 30);
 		pnlProducto.add(lblCosto);
 
 		tfClienteID = new JTextField();
@@ -1326,7 +1326,7 @@ public class VentaPanel extends JFrame
 //	}
 
 	public void vistaPrecioCompra() {
-		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON COSTO")) {
+		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "PUEDE VER PRECIO DE COMPRAS")) {
 			lblCosto.setVisible(false);
 			//lblDesc.setVisible(false);
 		}
@@ -1669,6 +1669,8 @@ public class VentaPanel extends JFrame
 		item.setStock(FormatearValor.stringToDouble(tfStock.getText()));
 		item.setDescripcionFiscal(lblDescripcionFiscal.getText());
 		item.setPrecioCosto(this.precioCompra);
+		item.setCostoCif(this.precioCompra);
+		item.setCostoFob(this.precioCompra);
 		// item.setDescuento(FormatearValor.stringToDouble(tfDescuentoItem.getText()));
 		Integer iva = impuesto;
 		item.setIva(iva);
