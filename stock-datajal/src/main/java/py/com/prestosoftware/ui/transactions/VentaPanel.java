@@ -85,6 +85,7 @@ import py.com.prestosoftware.domain.services.UsuarioService;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.domain.validations.VentaValidator;
+import py.com.prestosoftware.ui.controllers.ProductoController;
 import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.CellRendererOthers;
@@ -131,6 +132,7 @@ public class VentaPanel extends JFrame
 	private static final int CONDICION_PAGO_CODE = 6;
 	private static final int VENTA_CODE = 7;
 	private static final int CLIENTE_ADD_CODE = 8;
+	private static final int PRODUCTO_ADD_CODE = 9;
 	private static final DecimalFormat decfor = new DecimalFormat("0.00");
 	private JLabel lblRuc, lblDireccion, lblBuscadorDeVentas, lblDesc, lblCosto;
 	private JTextField tfClienteNombre, tfVendedor, tfDescripcion, tfVentaId;
@@ -185,6 +187,7 @@ public class VentaPanel extends JFrame
 	private ProcesoCobroVentasService procesoCobroVentasService;
 	private CuentaARecibirService cuentaARecibirService;
 	private ItemCuentaARecibirService itemCuentaARecibirService;
+	private ProductoController productoController;
 
 	private boolean isProductService;
 	private String nivelPrecio;
@@ -211,7 +214,8 @@ public class VentaPanel extends JFrame
 			MovimientoEgresoService movimientoEgresoService, MovimientoItemIngresoService movimientoItemIngresoService,
 			MovimientoItemEgresoService movimientoItemEgresoService,
 			ProcesoCobroVentasService procesoCobroVentasService, CuentaARecibirService cuentaARecibirService,
-			ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel) {
+			ItemCuentaARecibirService itemCuentaARecibirService, ClienteAddPanel clienteAddPanel, 
+			ProductoController productoController) {
 		this.itemTableModel = itemTableModel;
 		this.clientDialog = clientDialog;
 		this.vendedorDialog = vendedorDialog;
@@ -242,6 +246,7 @@ public class VentaPanel extends JFrame
 		this.cuentaARecibirService = cuentaARecibirService;
 		this.itemCuentaARecibirService = itemCuentaARecibirService;
 		this.clienteAddPanel = clienteAddPanel;
+		this.productoController = productoController;
 
 		setSize(1079, 672);
 		setTitle("REGISTRO DE VENTAS");
@@ -272,7 +277,7 @@ public class VentaPanel extends JFrame
 
 		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
 		lblDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDescripcion.setBounds(143, 10, 180, 30);
+		lblDescripcion.setBounds(166, 10, 169, 30);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel("TOTAL");
@@ -282,14 +287,14 @@ public class VentaPanel extends JFrame
 
 		JLabel lblPrecio = new JLabel("PRECIO");
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(582, 10, 100, 30);
+		lblPrecio.setBounds(597, 10, 85, 30);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(143, 39, 429, 30);
+		tfDescripcion.setBounds(166, 39, 418, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -368,7 +373,7 @@ public class VentaPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(582, 39, 116, 30);
+		tfPrecio.setBounds(598, 39, 100, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -411,7 +416,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfProductoID.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfProductoID.setBounds(6, 39, 61, 30);
+		tfProductoID.setBounds(6, 39, 50, 30);
 		pnlProducto.add(tfProductoID);
 		tfProductoID.setColumns(10);
 
@@ -564,12 +569,12 @@ public class VentaPanel extends JFrame
 		});
 		tfCantidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfCantidad.setColumns(10);
-		tfCantidad.setBounds(77, 39, 56, 30);
+		tfCantidad.setBounds(112, 39, 45, 30);
 		pnlProducto.add(tfCantidad);
 
 		JLabel lblCantidad = new JLabel("CANT.");
 		lblCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCantidad.setBounds(77, 10, 86, 30);
+		lblCantidad.setBounds(114, 10, 61, 30);
 		pnlProducto.add(lblCantidad);
 
 		label_5 = new JLabel("*");
@@ -643,6 +648,16 @@ public class VentaPanel extends JFrame
 		lblCosto.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCosto.setBounds(913, 10, 115, 30);
 		pnlProducto.add(lblCosto);
+		
+		JButton btnAddProducto = new JButton("+");
+		btnAddProducto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(PRODUCTO_ADD_CODE);
+			}
+		});
+		btnAddProducto.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		btnAddProducto.setBounds(62, 39, 45, 30);
+		pnlProducto.add(btnAddProducto);
 
 		tfClienteID = new JTextField();
 		tfClienteID.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -1880,6 +1895,12 @@ public class VentaPanel extends JFrame
 			clienteAddPanel.loadEmpresas();
 			clienteAddPanel.addNewCliente();
 			clienteAddPanel.setVisible(true);
+			break;
+		case PRODUCTO_ADD_CODE:
+			productoController.setInterfaz(this);
+			//productoController.addNewProduct();
+			productoController.prepareAndOpenFrame();
+			productoController.setOrigen("PRODUCTO");
 			break;
 
 		default:

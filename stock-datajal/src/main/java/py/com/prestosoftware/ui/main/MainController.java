@@ -735,7 +735,7 @@ public class MainController extends AbstractFrameController {
 	private void openVenta() {
 		//inicializaVenta();
 		itemTableModel= new VentaItemTableModel();
-		ventaPanel = new VentaPanel(itemTableModel, clientDialog, vendedorDialog, depositoDialog, productoDialogV, ventaValidator, ventaService, clienteService, clientePaisService, vendedorService, usuarioRolService, depositoService, productoService, condicionDialog, saldoDeposito, condicionPagoService, configService, movCajaService, cajaService, pagoService, consultaVentasDelDiaDialog, movimientoIngresoService, movimientoEgresoService, movimientoItemIngresoService, movimientoItemEgresoService, procesoCobroVentasService, cuentaARecibirService, itemCuentaARecibirService, clienteAddPanel);
+		ventaPanel = new VentaPanel(itemTableModel, clientDialog, vendedorDialog, depositoDialog, productoDialogV, ventaValidator, ventaService, clienteService, clientePaisService, vendedorService, usuarioRolService, depositoService, productoService, condicionDialog, saldoDeposito, condicionPagoService, configService, movCajaService, cajaService, pagoService, consultaVentasDelDiaDialog, movimientoIngresoService, movimientoEgresoService, movimientoItemIngresoService, movimientoItemEgresoService, procesoCobroVentasService, cuentaARecibirService, itemCuentaARecibirService, clienteAddPanel, productoController);
 		ventaPanel.clearForm();
 		ventaPanel.getConfig();
 		ventaPanel.setVisible(true);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportResumenCaja" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -75,7 +75,18 @@ concat((SELECT egr_descripcion FROM egresos WHERE id = mie_egreso),'#',meg_proce
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero
 			 --and meg_caja=1 
 			 and meg_situacion=0
-			 and (mie_egreso <> 1 and mie_egreso<>4 and mie_egreso<>31)
+			 and (mie_egreso <> 1 and mie_egreso<>4 and mie_egreso<>31 and mie_egreso<>2)
+			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
+			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
+			 -- ORDER BY 2,6 ASC
+union			  
+SELECT MEG_NUMERO  AS NUMERO, Meg_FECHA AS FECHA, MEG_HORA AS HORA, MEG_PROCESO AS PROCESO, mie_egreso as tipo,
+concat((SELECT egr_descripcion FROM egresos WHERE id = mie_egreso),'#',meg_proceso,'#',p.nombre) as nombreProceso
+ ,  0 AS INGRESO, MIE_MONTO AS EGRESO 
+			 FROM public.movimiento_Egresos , item_movimientoEgresos imi, proveedores p where meg_numero=mie_numero
+			 AND (meg_entidad::integer) = p.id
+			 and meg_situacion=0
+			 and (mie_egreso = 2)
 			  and meg_fecha>=date($P{fechaInicio}) and meg_fecha <= date($P{fechaFin})	
 			  GROUP BY 1, 4, 2, 3, 4,5, 6,7,8
 			  ORDER BY 2,6 ASC]]>

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import py.com.prestosoftware.data.models.MovimientoEgreso;
+import py.com.prestosoftware.data.models.MovimientoIngreso;
 import py.com.prestosoftware.domain.services.MovimientoEgresoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.table.MovimientoEgresoTableModel;
@@ -42,7 +45,7 @@ public class MovimientoEgresoDialog extends JDialog {
 	private MovimientoEgresoTableModel tableModel;
 	private MovimientoEgresoInterfaz interfaz;
 	
-	private List<MovimientoEgreso> egresos;
+	private List<Object[]> listaEgresos;
 	private JXDatePicker dtFecha;
 	private JLabel lblFecha;
 
@@ -93,7 +96,12 @@ public class MovimientoEgresoDialog extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-					aceptar();
+					try {
+						aceptar();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				} 
 			}
 		});
@@ -107,13 +115,23 @@ public class MovimientoEgresoDialog extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode()==KeyEvent.VK_ENTER){
-					aceptar();
+					try {
+						aceptar();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				aceptar();
+				try {
+					aceptar();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		pnlBotonera.add(btnAceptar);
@@ -142,9 +160,9 @@ public class MovimientoEgresoDialog extends JDialog {
 	}
 	
 	public void loadMovimientoEgresos(Date fecha) {
-		List<Object[]> ListEgresos = service.findByDateObjects(fecha);
+		listaEgresos = service.findByDateObjects(fecha);
 		tableModel.clear();
-        tableModel.addEntities(ListEgresos);
+        tableModel.addEntities(listaEgresos);
     }
 	
 	public MovimientoEgresoInterfaz getInterfaz() {
@@ -155,9 +173,20 @@ public class MovimientoEgresoDialog extends JDialog {
 		this.interfaz = interfaz;
 	}
 	
-	private void aceptar() {
+	private void aceptar() throws ParseException {
 		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(egresos.get(c));         
+			MovimientoEgreso me = new MovimientoEgreso();
+			Object[] objects= listaEgresos.get(c);
+			me.setMegNumero(Integer.valueOf(objects[0].toString()));
+			me.setFecha(new SimpleDateFormat("yyyy-MM-dd").parse(objects[1].toString())); 
+			me.setMegCaja(Integer.parseInt(objects[2]==null?"1":objects[2].toString()));
+			me.setMegDocumento(objects[3].toString());
+			me.setMegEntidad(objects[4].toString());
+			me.setMegSituacion(Integer.valueOf(objects[6].toString()));
+			//me.setMinNumero(FormatearValor.desformatearValor(objects[5].toString()).intValue());
+			interfaz.getEntity(me);         
+			
+			//interfaz.getEntity(egresos.get(c));         
 	    }
 		dispose();
 	}

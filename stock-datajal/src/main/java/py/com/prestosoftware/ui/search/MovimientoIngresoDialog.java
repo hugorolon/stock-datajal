@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
 import py.com.prestosoftware.data.models.MovimientoIngreso;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.table.MovimientoIngresoTableModel;
 
 @Component
@@ -43,7 +45,8 @@ public class MovimientoIngresoDialog extends JDialog {
 	private MovimientoIngresoTableModel tableModel;
 	private MovimientoIngresoInterfaz interfaz;
 	
-	private List<MovimientoIngreso> movimientoIngresos;
+	
+	private List<Object[]> listaMovimientoIngresos;
 	private JXDatePicker dtFecha;
 	private JLabel lblFecha;
 
@@ -103,7 +106,12 @@ public class MovimientoIngresoDialog extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
-					aceptar();
+					try {
+						aceptar();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				} 
 			}
 		});
@@ -117,13 +125,23 @@ public class MovimientoIngresoDialog extends JDialog {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode()==KeyEvent.VK_ENTER){
-					aceptar();
+					try {
+						aceptar();
+					} catch (ParseException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				}
 			}
 		});
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				aceptar();
+				try {
+					aceptar();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		pnlBotonera.add(btnAceptar);
@@ -154,10 +172,26 @@ public class MovimientoIngresoDialog extends JDialog {
 	public void loadMovimientoIngresos(Date fecha) throws ParseException {
 		//SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
 		//Date hoy = sdf.parse("2022-12-07");// new SimpleDateFormat("yyyy-MM-dd").parse("2022-12-07");
-		//movimientoIngresos 
-		List<Object[]> listaIngresos = service.findByDateObjects(fecha);		
+		//movimientoIngresos.clear();
+		listaMovimientoIngresos = service.findByDateObjects(fecha);
         tableModel.clear();
-        tableModel.addEntities(listaIngresos);
+        tableModel.addEntities(listaMovimientoIngresos);
+        /*try {
+        	for (Iterator iterator = listaIngresos.iterator(); iterator.hasNext();) {
+    			Object[] objects = (Object[]) iterator.next();
+    			MovimientoIngreso me= new MovimientoIngreso();
+    			me.setMinNumero(Integer.valueOf(objects[0].toString()));
+    			me.setFecha(new SimpleDateFormat("dd/MM/yyyy").parse(objects[1].toString())); 
+    			me.setMinCaja(Integer.parseInt(objects[2].toString()));
+    			me.setMinDocumento(objects[3].toString());
+    			me.setMinEntidad(objects[4].toString());
+    			me.setMinNumero(Integer.parseInt(objects[5].toString()));
+    			movimientoIngresos.add(me);
+    		}	
+		} catch (Exception e) {
+			// TODO: handle exception
+		}*/
+		
     }
 	
 	public MovimientoIngresoInterfaz getInterfaz() {
@@ -168,9 +202,18 @@ public class MovimientoIngresoDialog extends JDialog {
 		this.interfaz = interfaz;
 	}
 	
-	private void aceptar() {
+	private void aceptar() throws ParseException {
 		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(movimientoIngresos.get(c));         
+			MovimientoIngreso me = new MovimientoIngreso();
+			Object[] objects= listaMovimientoIngresos.get(c);
+			me.setMinNumero(Integer.valueOf(objects[0].toString()));
+			me.setFecha(new SimpleDateFormat("yyyy-MM-dd").parse(objects[1].toString())); 
+			me.setMinCaja(Integer.parseInt(objects[2].toString()));
+			me.setMinDocumento(objects[3].toString());
+			me.setMinEntidad(objects[4].toString());
+			me.setMinSituacion(Integer.valueOf(objects[6].toString()));
+			//me.setMinNumero(FormatearValor.desformatearValor(objects[5].toString()).intValue());
+			interfaz.getEntity(me);         
 	    }
 		dispose();
 	}

@@ -28,13 +28,15 @@ public class MovimientoEgresoTableModel extends DefaultTableModel<Object[]> {
             case 1:
             	return sdf.format(item[1]);
             case 2:
-                return item[2].toString();//.getMegCaja();
+                return (item[2]==null?'1':item[2].toString());//.getMegCaja();
             case 3:
                 return item[3].toString();//.getMegDocumento();
             case 4:
                 return item[4].toString();//.getMegEntidad();
             case 5:
                 return item[5];
+            case 6:
+                return item[6];    
             default:
                 return "";
         }
