@@ -36,8 +36,21 @@ public interface CompraRepository extends JpaRepository<Compra, Long> {
 	
 	@Query("SELECT coalesce(max(id), 0) FROM Compra c")
 	Long getMaxId();
-
+	
+	
 	@Query(value =  "SELECT * "
 			+ " FROM compras c WHERE c.fecha between ?1 and ?2 and c.situacion= ?3 and condicion= ?4 ORDER BY c.id ASC", nativeQuery = true)
 	List<Compra> getComprasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma);
+	
+	@Query(value =  "SELECT * "
+			+ " FROM compras c WHERE c.fecha between ?1 and ?2 and c.situacion= ?3 ORDER BY c.id ASC", nativeQuery = true)
+	List<Compra> getComprasFiltroSinForma(Date fechaIni, Date fechaFin, String situacion);
+	
+	@Query(value =  "SELECT * "
+			+ " FROM compras c WHERE c.fecha between ?1 and ?2 and condicion= ?3 ORDER BY c.id ASC", nativeQuery = true)
+	List<Compra> getComprasFiltroSinSituacion(Date fechaIni, Date fechaFin, int forma);
+	
+	@Query(value =  "SELECT * "
+			+ " FROM compras c WHERE c.fecha between ?1 and ?2 ORDER BY c.id ASC", nativeQuery = true)
+	List<Compra> getComprasFiltroSinSituacionSinForma(Date fechaIni, Date fechaFin);
 }

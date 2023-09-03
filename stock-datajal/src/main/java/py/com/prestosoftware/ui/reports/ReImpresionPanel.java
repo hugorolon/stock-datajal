@@ -113,7 +113,7 @@ public class ReImpresionPanel extends JDialog {
 		getContentPane().add(btnCancelar);
 		
 		dtpFecha = new JXDatePicker();
-		dtpFecha.setBounds(157, 27, 86, 20);
+		dtpFecha.setBounds(157, 27, 109, 20);
 		dtpFecha.setFormats("dd/MM/yyyy");
 		dtpFecha.setDate(new Date());
 		getContentPane().add(dtpFecha);

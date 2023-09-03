@@ -96,8 +96,17 @@ public class VentaService {
 		return repository.findByClienteAndFechaBetween(cliente, fechaIni, fechaFin);
 	}
 
-	public List<Venta> getVentasFiltro(Date fechaIni, Date fechaFin, String situacion, int formaPago) {
-		return repository.getVentasFiltro(fechaIni, fechaFin, situacion, formaPago);
+	public List<Venta> getVentasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma) {
+		if(situacion.length()>0 && forma > 0)
+    		return repository.getVentasFiltro(fechaIni, fechaFin, situacion, forma);
+    	else
+    		if(situacion.length()>0 && forma == 0)
+    			return repository.getVentasFiltroSinForma(fechaIni, fechaFin, situacion);
+    		else
+    			if(situacion.length()==0 && forma > 0)
+    				return repository.getVentasFiltroSinSituacion(fechaIni, fechaFin, forma);
+    			else
+    				return repository.getVentasFiltroSinSituacionSinForma(fechaIni, fechaFin);
 	}
 
 	@Transactional(rollbackFor = RuntimeException.class)

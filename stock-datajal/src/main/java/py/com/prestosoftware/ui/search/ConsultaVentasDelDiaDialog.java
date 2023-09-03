@@ -88,7 +88,7 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 				//setVentasDelDia();
 			}
 		});
-		tfSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "VIGENTE"}));
+		tfSituacion.setModel(new DefaultComboBoxModel(new String[] {"", "PAGADO", "ANULADO", "PROCESADO", "VIGENTE"}));
 		tfSituacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBuscador.add(tfSituacion);
 		
@@ -100,7 +100,7 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 			public void propertyChange(PropertyChangeEvent evt) {
 			}
 		});
-		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] {"Contado", "30 días"}));
+		tfCondicionPago.setModel(new DefaultComboBoxModel(new String[] {"", "Contado", "30 días"}));
 		tfCondicionPago.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		pnlBuscador.add(tfCondicionPago);
 		
@@ -224,11 +224,17 @@ public class ConsultaVentasDelDiaDialog extends JDialog {
 
 	@Transactional
 	public void setVentasDelDia() {
-		String situacion= tfSituacion.getSelectedItem().toString();
-		int forma=2;
-		if(tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
-			forma=1;
-				ventas=service.getVentasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);		
+		String situacion= "";
+		if(tfSituacion.getSelectedItem().toString().length()>0)
+			situacion=tfSituacion.getSelectedItem().toString();
+		int forma=0;
+		if(tfCondicionPago.getSelectedItem().toString().length()>0) {
+			if (tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
+				forma=1;
+				else
+					forma=2;
+		}
+		ventas=service.getVentasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);		
 		tableModel.clear();
 		tableModel.addEntities(ventas);
 		table.requestFocus();

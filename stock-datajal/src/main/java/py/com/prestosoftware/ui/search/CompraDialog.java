@@ -80,14 +80,14 @@ public class CompraDialog extends JDialog {
 		pnlBuscador.add(lblSituacion);
 		
 		cmbSituacion = new JComboBox();
-		cmbSituacion.setModel(new DefaultComboBoxModel(new String[] {"PAGADO", "ANULADO", "PROCESADO", "PENDIENTE", "DEVOLUCIÓN"}));
+		cmbSituacion.setModel(new DefaultComboBoxModel(new String[] {"", "PAGADO", "ANULADO", "PROCESADO", "PENDIENTE", "DEVOLUCIÓN"}));
 		pnlBuscador.add(cmbSituacion);
 		
 		lblForma = new JLabel(" Forma Pago :"); //$NON-NLS-1$ //$NON-NLS-2$
 		pnlBuscador.add(lblForma);
 		
 		cmbForma = new JComboBox();
-		cmbForma.setModel(new DefaultComboBoxModel(new String[] {"Contado", "30 días"}));
+		cmbForma.setModel(new DefaultComboBoxModel(new String[] {"", "Contado", "30 días"}));
 		pnlBuscador.add(cmbForma);
 		
 		lblFecha = new JLabel("Fecha Inicial"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -211,10 +211,16 @@ public class CompraDialog extends JDialog {
 	}
 	
 	public void loadCompras() {
-		String situacion= cmbSituacion.getSelectedItem().toString();
-		int forma=2;
-		if(cmbForma.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
-			forma=1;
+		String situacion= "";
+		if(cmbSituacion.getSelectedItem().toString().length()>0)
+			situacion=cmbSituacion.getSelectedItem().toString();
+		int forma=0;
+		if(cmbForma.getSelectedItem().toString().length()>0) {
+			if (cmbForma.getSelectedItem().toString().equalsIgnoreCase("CONTADO"))
+				forma=1;
+				else
+					forma=2;
+		}
 		compras = service.getComprasFiltro(dtpFecha.getDate(), dtpFechaFin.getDate(), situacion, forma);
 		tableModel.clear();
         tableModel.addEntities(compras);

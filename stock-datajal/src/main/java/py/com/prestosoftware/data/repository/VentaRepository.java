@@ -52,6 +52,18 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 			+ " FROM ventas v WHERE v.fecha between ?1 and ?2 and v.situacion= ?3 and condicion= ?4 ORDER BY v.id ASC", nativeQuery = true)
 	List<Venta> getVentasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma);
 	
+	@Query(value =  "SELECT * "
+			+ " FROM ventas v WHERE v.fecha between ?1 and ?2 and v.situacion= ?3 ORDER BY v.id ASC", nativeQuery = true)
+	List<Venta> getVentasFiltroSinForma(Date fechaIni, Date fechaFin, String situacion);
+	
+	@Query(value =  "SELECT * "
+			+ " FROM ventas v WHERE v.fecha between ?1 and ?2 and condicion= ?3 ORDER BY v.id ASC", nativeQuery = true)
+	List<Venta> getVentasFiltroSinSituacion(Date fechaIni, Date fechaFin,  int forma);
+	
+	@Query(value =  "SELECT * "
+			+ " FROM ventas v WHERE v.fecha between ?1 and ?2 ORDER BY v.id ASC", nativeQuery = true)
+	List<Venta> getVentasFiltroSinSituacionSinForma(Date fechaIni, Date fechaFin);
+	
 	@Query(value =  "SELECT venta_id, cantidad, precio, producto, producto_id, subtotal, v.id,  iva, descripcion_fiscal "
 			+ "	FROM public.venta_detalles v, productos p WHERE p.id=v.producto_id and v.venta_id = ?1 ORDER BY v.id ASC", nativeQuery = true)
 	List<Object[]> getVentaDetallesByVentaId(Long ventaId);

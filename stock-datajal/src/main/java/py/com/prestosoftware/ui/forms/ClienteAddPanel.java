@@ -13,14 +13,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.text.AbstractDocument;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -37,6 +42,7 @@ import py.com.prestosoftware.domain.services.EmpresaService;
 import py.com.prestosoftware.domain.validations.ClienteValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.controllers.CiudadController;
+import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
 import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.search.CiudadInterfaz;
@@ -73,7 +79,21 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	private JTextField tfCelular;
 	private JTextField tfEmail;
 	private JComboBox cbCliente;
-
+	private JCheckBox chTieneCredito;
+	private JTextField  tfCreditoDisponible;
+    private JTextField tfLimiteCredito, tfDiaCredito, tfCreditoSaldo, tfPlazo;
+    private JPanel pnlContacto;
+    private JLabel label;
+    private JTextField tfWeb;
+    private JLabel label_4;
+    private JTextField tfTelefono;
+    private JTextField tfFax;
+    private JLabel label_6;
+    private JTextField tfContacto;
+    private JTextField tfId;
+    private JTextField tfcelular2;
+    
+    
 	@Autowired
 	public ClienteAddPanel(CiudadComboBoxModel ciudadCboxModel, EmpresaComboBoxModel empresaCboxModel,
 			ClienteValidator clienteValidator, ClienteService clienteService, CiudadService ciudadService,
@@ -86,7 +106,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		this.ciudadService = ciudadService;
 		this.clienteComboBoxModel =clienteComboBoxModel;
 		this.ciudadController=ciudadController;
-		setSize(1070, 421);
+		setSize(990, 413);
 
 		initComponents();
 		AutoCompleteDecorator.decorate(cbCliente);
@@ -97,7 +117,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	}
 
 	private void initComponents() {
-		getContentPane().setLayout(new MigLayout("", "[88px][1px][694px][4px][217.00px]", "[29px][233.00px][39.00][]"));
+		getContentPane().setLayout(new MigLayout("", "[88px][1px][694px][4px][217.00px]", "[15.00px][-43.00][][10.00][]"));
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
@@ -177,7 +197,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 
 		cbCiudad = new JComboBox<>(ciudadComboBoxModel);
 		cbCiudad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cbCiudad.setBounds(514, 8, 156, 30);
+		cbCiudad.setBounds(514, 8, 206, 30);
 		cbCiudad.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -268,36 +288,6 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		label_5.setFont(new Font("Dialog", Font.BOLD, 20));
 		pnlDatosPersonal.add(label_5);
 		
-		JLabel lblCelular = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblCelular.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		lblCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCelular.setBounds(416, 48, 67, 30);
-		pnlDatosPersonal.add(lblCelular);
-		
-		tfCelular = new JTextField();
-		tfCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCelular.setBounds(514, 48, 114, 30);
-		pnlDatosPersonal.add(tfCelular);
-		tfCelular.setColumns(10);
-		
-		JLabel lblEmail = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblEmail.text")); //$NON-NLS-1$ //$NON-NLS-2$
-		lblEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblEmail.setBounds(416, 86, 67, 30);
-		pnlDatosPersonal.add(lblEmail);
-		
-		JLabel label_3_1 = new JLabel("*");
-		label_3_1.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_3_1.setHorizontalAlignment(SwingConstants.CENTER);
-		label_3_1.setForeground(Color.RED);
-		label_3_1.setFont(new Font("Dialog", Font.BOLD, 20));
-		label_3_1.setBounds(486, 48, 18, 30);
-		pnlDatosPersonal.add(label_3_1);
-		
-		tfEmail = new JTextField();
-		tfEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfEmail.setBounds(514, 86, 114, 30);
-		pnlDatosPersonal.add(tfEmail);
-		tfEmail.setColumns(10);
-		
 		JLabel lblNombreCliente = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ClienteAddPanel.lblNombreCliente.text")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
 		lblNombreCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNombreCliente.setBounds(6, 10, 110, 30);
@@ -305,9 +295,11 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		
 		cbCliente = new JComboBox<>(clienteComboBoxModel);
 		cbCliente.addItemListener(new ItemListener() {
-			  public void itemStateChanged(ItemEvent itemEvent) {
-				  traeCliente();
-				  }
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO Auto-generated method stub
+				traeCliente();
+			}
 				});
 //		cbCliente.addPropertyChangeListener(new PropertyChangeListener() {
 //			public void propertyChange(PropertyChangeEvent evt) {
@@ -326,9 +318,337 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		btnNuevaCiudad.setBounds(723, 8, 49, 30);
 		pnlDatosPersonal.add(btnNuevaCiudad);
 
+		JPanel pnlCredito = new JPanel();
+        tabbedPane.addTab("Créditos", null, pnlCredito, "");
+        
+        JLabel lblTieneCredito = new JLabel("Tiene Crédito:");
+        lblTieneCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        chTieneCredito = new JCheckBox();
+        chTieneCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        chTieneCredito.addItemListener(new ItemListener() {
+        	public void itemStateChanged(ItemEvent e) {
+        		if (e.getStateChange() == ItemEvent.SELECTED) {
+        			tfLimiteCredito.setEditable(true);
+        			tfDiaCredito.setEditable(true);
+        			tfPlazo.setEditable(true);
+        			tfLimiteCredito.requestFocus();
+				} else {
+					tfLimiteCredito.setEditable(false);
+					tfDiaCredito.setEditable(false);
+        			tfPlazo.setEditable(false);
+        			tfLimiteCredito.setText("");
+        			tfDiaCredito.setText("");
+        			tfPlazo.setText("");
+				}
+        	}
+        });
+        
+        chTieneCredito.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfLimiteCredito.requestFocus();
+				}
+        	}
+        });
+        
+        JLabel lblLimiteCredito = new JLabel("Limite Crédito:");
+        lblLimiteCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        JLabel lblDiaCredito = new JLabel("Día Crédito:");
+        lblDiaCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        tfLimiteCredito = new JFormattedTextField();
+        tfLimiteCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfLimiteCredito.setEditable( false );
+        tfLimiteCredito.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfDiaCredito.requestFocus();
+				}
+        	}
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		Util.validateNumero(e);
+        	}
+        });
+        tfLimiteCredito.setColumns(10);
+        
+        tfDiaCredito = new JFormattedTextField();
+        tfDiaCredito.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfDiaCredito.setEditable(false );
+        tfDiaCredito.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfPlazo.requestFocus();
+				}
+        	}
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		Util.validateNumero(e);
+        	}
+        });
+        tfDiaCredito.setColumns(10);
+        
+        JLabel lblCreditoSaldo = new JLabel("Crédito Saldo:");
+        lblCreditoSaldo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        tfCreditoSaldo = new JFormattedTextField();
+        tfCreditoSaldo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfCreditoSaldo.setEditable(false);
+        tfCreditoSaldo.setColumns(10);
+        
+        JLabel lblCreditoDisponible = new JLabel("Crédito Disponible:");
+        lblCreditoDisponible.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        
+        tfCreditoDisponible = new JFormattedTextField();
+        tfCreditoDisponible.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfCreditoDisponible.setEditable(false);
+        tfCreditoDisponible.setColumns(10);
+        
+        tfPlazo = new JFormattedTextField();
+        tfPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfPlazo.setText("30");
+        tfPlazo.setEditable(false);
+        tfPlazo.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tabbedPane.setSelectedIndex(2);
+					tfEmail.requestFocus();
+				}
+        	}
+        	@Override
+        	public void keyTyped(KeyEvent e) {
+        		Util.validateNumero(e);
+        	}
+        });
+        tfPlazo.setColumns(10);
+        
+        JLabel lblPlazo = new JLabel("Cond. Pago");
+        lblPlazo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        GroupLayout gl_pnlCredito = new GroupLayout(pnlCredito);
+        gl_pnlCredito.setHorizontalGroup(
+        	gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnlCredito.createSequentialGroup()
+        			.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        				.addGroup(gl_pnlCredito.createSequentialGroup()
+        					.addGap(6)
+        					.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        						.addGroup(gl_pnlCredito.createSequentialGroup()
+        							.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        								.addComponent(lblTieneCredito, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+        								.addGroup(gl_pnlCredito.createSequentialGroup()
+        									.addGap(129)
+        									.addComponent(chTieneCredito, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE)))
+        							.addGap(18)
+        							.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        								.addGroup(gl_pnlCredito.createSequentialGroup()
+        									.addGap(129)
+        									.addComponent(tfCreditoSaldo, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE))
+        								.addComponent(lblCreditoSaldo, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)))
+        						.addGroup(gl_pnlCredito.createSequentialGroup()
+        							.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        								.addGroup(gl_pnlCredito.createSequentialGroup()
+        									.addGap(129)
+        									.addComponent(tfLimiteCredito, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE))
+        								.addComponent(lblLimiteCredito, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE))
+        							.addGap(18)
+        							.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        								.addGroup(gl_pnlCredito.createSequentialGroup()
+        									.addGap(129)
+        									.addComponent(tfCreditoDisponible, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE))
+        								.addComponent(lblCreditoDisponible, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)))
+        						.addGroup(gl_pnlCredito.createSequentialGroup()
+        							.addGap(129)
+        							.addComponent(tfDiaCredito, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE))
+        						.addComponent(lblDiaCredito, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)))
+        				.addGroup(gl_pnlCredito.createSequentialGroup()
+        					.addGap(6)
+        					.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        						.addGroup(gl_pnlCredito.createSequentialGroup()
+        							.addGap(129)
+        							.addComponent(tfPlazo, GroupLayout.PREFERRED_SIZE, 163, GroupLayout.PREFERRED_SIZE))
+        						.addComponent(lblPlazo, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE))))
+        			.addContainerGap(255, Short.MAX_VALUE))
+        );
+        gl_pnlCredito.setVerticalGroup(
+        	gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        		.addGroup(gl_pnlCredito.createSequentialGroup()
+        			.addGap(10)
+        			.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        				.addComponent(lblTieneCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(chTieneCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(tfCreditoSaldo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblCreditoSaldo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+        			.addGap(10)
+        			.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        				.addComponent(tfLimiteCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblLimiteCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(tfCreditoDisponible, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblCreditoDisponible, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+        			.addGap(10)
+        			.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        				.addComponent(tfDiaCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblDiaCredito, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+        			.addPreferredGap(ComponentPlacement.RELATED)
+        			.addGroup(gl_pnlCredito.createParallelGroup(Alignment.LEADING)
+        				.addComponent(tfPlazo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+        				.addComponent(lblPlazo, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+        			.addGap(90))
+        );
+        pnlCredito.setLayout(gl_pnlCredito);
+        getContentPane().add(tabbedPane, "cell 0 4 5 1,alignx center,aligny top");
+        
+        pnlContacto = new JPanel();
+        tabbedPane.addTab("Contacto", null, pnlContacto, null);
+        
+        label = new JLabel("Email:");
+        label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        label.setBounds(6, 4, 79, 30);
+        
+        tfEmail = new JTextField();
+        tfEmail.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfEmail.setBounds(84, 4, 226, 30);
+        tfEmail.setColumns(10);
+        tfEmail.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfWeb.requestFocus();
+				}
+        	}
+        });
+        
+        label_1 = new JLabel("Web:");
+        label_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        label_1.setBounds(6, 38, 79, 30);
+        
+        tfWeb = new JTextField();
+        tfWeb.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        tfWeb.setBounds(84, 38, 226, 30);
+        tfWeb.addKeyListener(new KeyAdapter() {
+        	@Override
+        	public void keyPressed(KeyEvent e) {
+        		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfContacto.requestFocus();
+				}
+        	}
+        });
+        
+           tfWeb.setColumns(10);
+           
+           label_2 = new JLabel("Fax:");
+           label_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           label_2.setBounds(6, 208, 79, 30);
+           
+           label_3 = new JLabel("Célular:");
+           label_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           label_3.setBounds(6, 142, 79, 30);
+           
+           label_4 = new JLabel("Teléfono:");
+           label_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           label_4.setBounds(6, 107, 79, 30);
+           
+           tfTelefono = new JTextField();
+           tfTelefono.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           tfTelefono.setBounds(84, 107, 163, 30);
+           tfTelefono.addKeyListener(new KeyAdapter() {
+           	@Override
+           	public void keyPressed(KeyEvent e) {
+           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfCelular.requestFocus();
+				}
+           	}
+           	@Override
+           	public void keyTyped(KeyEvent e) {
+           		Util.validateNumero(e);
+           	}
+           });
+           tfTelefono.setColumns(10);
+           
+           tfCelular = new JTextField();
+           tfCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           tfCelular.setBounds(84, 142, 163, 30);
+           tfCelular.addKeyListener(new KeyAdapter() {
+           	@Override
+           	public void keyPressed(KeyEvent e) {
+           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfFax.requestFocus();
+				}
+           	}
+           	@Override
+           	public void keyTyped(KeyEvent e) {
+           		Util.validateNumero(e);
+           	}
+           });
+           tfCelular.setColumns(10);
+           
+           tfFax = new JTextField();
+           tfFax.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           tfFax.setBounds(84, 209, 163, 30);
+           tfFax.addKeyListener(new KeyAdapter() {
+           	@Override
+           	public void keyPressed(KeyEvent e) {
+           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					chTieneCredito.requestFocus();
+				}
+           	}
+           	@Override
+           	public void keyTyped(KeyEvent e) {
+           		Util.validateNumero(e);
+           	}
+           });
+           tfFax.setColumns(10);
+           
+           label_6 = new JLabel("Contacto:");
+           label_6.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           label_6.setBounds(6, 72, 79, 30);
+           
+           tfContacto = new JTextField();
+           tfContacto.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           tfContacto.setBounds(84, 72, 226, 30);
+           ((AbstractDocument) tfContacto.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+           tfContacto.addKeyListener(new KeyAdapter() {
+           	@Override
+           	public void keyPressed(KeyEvent e) {
+           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					tfTelefono.requestFocus();
+				}
+           	}
+           });
+           tfContacto.setColumns(10);
+           pnlContacto.setLayout(null);
+           pnlContacto.add(tfEmail);
+           pnlContacto.add(label);
+           pnlContacto.add(tfTelefono);
+           pnlContacto.add(label_4);
+           pnlContacto.add(tfWeb);
+           pnlContacto.add(label_1);
+           pnlContacto.add(tfCelular);
+           pnlContacto.add(label_3);
+           pnlContacto.add(label_2);
+           pnlContacto.add(tfFax);
+           pnlContacto.add(label_6);
+           pnlContacto.add(tfContacto);
+           
+           JLabel lblClular = new JLabel("Célular 2:");
+           lblClular.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           lblClular.setBounds(6, 178, 79, 30);
+           pnlContacto.add(lblClular);
+           
+           tfcelular2 = new JTextField();
+           tfcelular2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+           tfcelular2.setColumns(10);
+           tfcelular2.setBounds(84, 178, 163, 30);
+           pnlContacto.add(tfcelular2);
+        
 		
 		JPanel pnlBotonera = new JPanel();
-		getContentPane().add(pnlBotonera, "cell 0 3 5 1,grow");
+		getContentPane().add(pnlBotonera, "cell 0 2 5 1,grow");
 
 		btnGuardar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ClientePanel.btnGuardar.text")); //$NON-NLS-1$
@@ -360,6 +680,19 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		tfDireccion.setText(cliente.getDireccion());
 		tfEmail.setText(cliente.getEmail());
 		tfCelular.setText(cliente.getCelular());
+		
+    	tfcelular2.setText(cliente.getCelular2());
+    	tfTelefono.setText(cliente.getTelefono());
+    	tfFax.setText(cliente.getFax());
+    	tfEmail.setText(cliente.getEmail());
+    	tfWeb.setText(cliente.getWeb());
+    	tfContacto.setText(cliente.getContacto().toString());
+    	
+    	tfCreditoDisponible.setText(cliente.getCreditoDisponible() != null ? String.valueOf(cliente.getCreditoDisponible()) : "");
+    	tfCreditoSaldo.setText(cliente.getCreditoSaldo() != null ? String.valueOf(cliente.getCreditoSaldo()) : "");
+    	tfDiaCredito.setText(cliente.getDiaCredito() != null ? String.valueOf(cliente.getDiaCredito()):"");
+    	tfLimiteCredito.setText(cliente.getLimiteCredito() != null ? FormatearValor.doubleAString(cliente.getLimiteCredito()) : "");
+    	tfPlazo.setText(String.valueOf(cliente.getPlazo()));
 
 		ciudadComboBoxModel.setSelectedItem(cliente.getCiudad());
 		empresaComboBoxModel.setSelectedItem(cliente.getEmpresa());
@@ -379,8 +712,23 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		cliente.setDireccion(tfDireccion.getText());
 		cliente.setCiudad((Ciudad) ciudadComboBoxModel.getSelectedItem());
 		cliente.setEmpresa((Empresa) empresaComboBoxModel.getSelectedItem());
+		//contacto
 		cliente.setEmail(tfEmail.getText());
 		cliente.setCelular(tfCelular.getText());
+		cliente.setCelular2(tfcelular2.getText());
+		cliente.setTelefono(tfTelefono.getText());	
+    	cliente.setFax(tfFax.getText());
+    	cliente.setWeb(tfWeb.getText());
+    	cliente.setContacto(tfContacto.getText());
+    	//credito
+    	cliente.setTieneCredito(chTieneCredito.isSelected() ? 1 : 0);
+//    	client.setCreditoDisponible(Double.valueOf(tfCreditoDisponible.getText()));
+//    	client.setCreditoSaldo(Double.valueOf(tfCreditoSaldo.getText()));
+    	cliente.setDiaCredito(tfDiaCredito.getText().isEmpty() ? 0 : Integer.parseInt(tfDiaCredito.getText()));
+    	cliente.setLimiteCredito(tfLimiteCredito.getText().isEmpty() ? 0 : Double.valueOf(FormatearValor.sinSeparadorDeMiles(tfLimiteCredito.getText())));
+    	cliente.setPlazo(tfPlazo.getText().isEmpty() ? 0 : Integer.parseInt(tfPlazo.getText()));
+		
+		cliente.setActivo(1);
 		cliente.setTipoEntidad(1);
 		cliente.setFechaRegistro(new Date());
 
@@ -455,7 +803,26 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 			tfDireccion.setText(c.getDireccion());
 			tfCelular.setText(c.getCelular());
 			tfEmail.setText(c.getEmail());
-			cbCiudad.setSelectedItem(c.getCiudad());	
+			cbCiudad.setSelectedItem(c.getCiudad());
+			
+			tfCelular.setText(c.getCelular());
+	    	tfcelular2.setText(c.getCelular2());
+	    	tfTelefono.setText(c.getTelefono());
+	    	tfFax.setText(c.getFax());
+	    	tfEmail.setText(c.getEmail());
+	    	tfWeb.setText(c.getWeb());
+	    	tfContacto.setText(c.getContacto());
+//	    	tfClase.setText(client.getClase());
+//	    	tfObs.setText(client.getObs());
+	    	
+	    	tfCreditoDisponible.setText(c.getCreditoDisponible() != null ? String.valueOf(c.getCreditoDisponible()) : "");
+	    	tfCreditoSaldo.setText(c.getCreditoSaldo() != null ? String.valueOf(c.getCreditoSaldo()) : "");
+	    	tfDiaCredito.setText(c.getDiaCredito() != null ? String.valueOf(c.getDiaCredito()):"");
+	    	tfLimiteCredito.setText(c.getLimiteCredito() != null ? FormatearValor.doubleAString(c.getLimiteCredito()) : "");
+	    	tfPlazo.setText(String.valueOf(c.getPlazo()));
+			
+			
+			
 		}		
 	}
 	
@@ -470,6 +837,19 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		tfEmail.setText("");
 		cbCiudad.setSelectedIndex(0);
 		cbCliente.setSelectedItem("");
+    	tfcelular2.setText("");
+    	tfTelefono.setText("");
+    	tfFax.setText("");
+    	tfEmail.setText("");
+    	tfWeb.setText("");
+    	tfContacto.setText("");
+    	tfCreditoDisponible.setText("");
+    	tfCreditoSaldo.setText("");
+    	tfDiaCredito.setText("");
+    	tfLimiteCredito.setText("");
+    	tfPlazo.setText("");
+    	cbCiudad.setSelectedIndex(0);
+    	chTieneCredito.setSelected(false);
 	}
 	
 	private void showDialog(int code) {
@@ -527,8 +907,14 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// TODO Auto-generated method stub
-		traeCliente();
+		
 	}
+
+	
+//	public void itemStateChangedClienteAdd(ItemEvent e) {
+//		// TODO Auto-generated method stub
+//		traeCliente();
+//	}
 	
 	
 }

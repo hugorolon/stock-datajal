@@ -56,7 +56,7 @@ public class ClientePanel extends JDialog {
 	private static final long serialVersionUID = 1L;
 	
     private JTextField tfNombre, tfRazonSocial, tfCiruc, tfDvRuc, tfDireccion, tfCreditoDisponible;
-    private JTextField tfObs, tfClase, tfLimiteCredito, tfDiaCredito, tfCreditoSaldo, tfPlazo;
+    private JTextField tfLimiteCredito, tfDiaCredito, tfCreditoSaldo, tfPlazo;
     private JCheckBox chTieneCredito;
     private JButton btnGuardar, btnCancelar, btnCerrar;
     
@@ -71,15 +71,10 @@ public class ClientePanel extends JDialog {
     private JTextField tfTelefono;
     private JTextField tfCelular;
     private JTextField tfFax;
-    private JLabel lblSkype;
-    private JTextField tfSkype;
     private JLabel label_6;
     private JTextField tfContacto;
-    private JCheckBox chActivo;
-    private JLabel label_7;
     private JTextField tfId;
     private JLabel lblCodigo;
-    private JLabel lblNivelPrecio;
     
     private JLabel lblBuscador;
     private JTextField tfBuscador;
@@ -88,9 +83,6 @@ public class ClientePanel extends JDialog {
     private JScrollPane scrollPane;
     
     private JComboBox<Ciudad> cbCiudad;
-    private JComboBox<Empresa> cbEmpresa;
-    private JComboBox<String> cbTipo;
-    private JComboBox<ListaPrecio> cbListaPrecio;
     
     private CiudadComboBoxModel ciudadComboBoxModel;
     private EmpresaComboBoxModel empresaComboBoxModel;
@@ -101,7 +93,6 @@ public class ClientePanel extends JDialog {
     private JLabel lblOblig;
     private JLabel label_5;
     private JLabel label_8;
-    private JLabel label_9;
     private JLabel label_10;
     private JButton btnNuevo;
 
@@ -172,15 +163,6 @@ public class ClientePanel extends JDialog {
            JPanel pnlDatosPersonal = new JPanel();
            tabbedPane.addTab("Datos Personales", null, pnlDatosPersonal, null);
            
-           JLabel lblTipo = new JLabel("Tipo:");
-           lblTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           lblTipo.setBounds(6, 102, 84, 30);
-           
-           cbTipo = new JComboBox<String>();
-           cbTipo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           cbTipo.setBounds(117, 102, 163, 30);
-           cbTipo.setModel(new DefaultComboBoxModel<String>(new String[] {"FISICO", "JURIDICO", "EXTRANJERO"}));
-           
            tfNombre = new JTextField();
            tfNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
            tfNombre.setBounds(117, 38, 243, 30);
@@ -244,14 +226,14 @@ public class ClientePanel extends JDialog {
            cbCiudad = new JComboBox<>(ciudadComboBoxModel);
            cbCiudad.setFont(new Font("Tahoma", Font.PLAIN, 14));
            cbCiudad.setBounds(117, 204, 163, 30);
-           cbCiudad.addKeyListener(new KeyAdapter() {
-           	@Override
-           	public void keyPressed(KeyEvent e) {
-           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfClase.requestFocus();
-				}
-           	}
-           });
+//           cbCiudad.addKeyListener(new KeyAdapter() {
+//           	@Override
+//           	public void keyPressed(KeyEvent e) {
+//           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+//					//tf.requestFocus();
+//				}
+//           	}
+//           });
            
            JLabel lblDvRuc = new JLabel("DV RUC");
            lblDvRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -279,67 +261,6 @@ public class ClientePanel extends JDialog {
            });
            tfDireccion.setColumns(10);
            
-           tfObs = new JTextField();
-           tfObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           tfObs.setBounds(503, 38, 352, 64);
-           ((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-           tfObs.addKeyListener(new KeyAdapter() {
-           	@Override
-           	public void keyPressed(KeyEvent e) {
-           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					cbEmpresa.requestFocus();
-				}
-           	}
-           });
-           tfObs.setColumns(10);
-           
-           JLabel lblObs = new JLabel("Obs.:");
-           lblObs.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           lblObs.setBounds(383, 38, 75, 30);
-           
-           tfClase = new JTextField();
-           tfClase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           tfClase.setBounds(503, 4, 60, 30);
-           ((AbstractDocument) tfClase.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-           tfClase.addKeyListener(new KeyAdapter() {
-           	@Override
-           	public void keyPressed(KeyEvent e) {
-           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfObs.requestFocus();
-				}
-           	}
-           });
-           tfClase.setColumns(10);
-           
-           JLabel lblClase = new JLabel("Clase:");
-           lblClase.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           lblClase.setBounds(383, 4, 75, 30);
-           
-           cbEmpresa = new JComboBox<Empresa>(empresaComboBoxModel);
-           cbEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           cbEmpresa.setBounds(503, 106, 163, 30);
-           cbEmpresa.addKeyListener(new KeyAdapter() {
-           	@Override
-           	public void keyPressed(KeyEvent e) {
-           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					cbListaPrecio.requestFocus();
-				}
-           	}
-           });
-           
-           JLabel lblEmpresa = new JLabel("Empresa:");
-           lblEmpresa.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           lblEmpresa.setBounds(383, 106, 75, 30);
-           
-           chActivo = new JCheckBox();
-           chActivo.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           chActivo.setBounds(503, 174, 163, 30);
-           chActivo.setSelected(true);
-           
-           label_7 = new JLabel("Activo:");
-           label_7.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           label_7.setBounds(383, 174, 75, 30);
-           
            tfId = new JTextField();
            tfId.setFont(new Font("Tahoma", Font.PLAIN, 14));
            tfId.setBounds(117, 4, 163, 30);
@@ -348,49 +269,20 @@ public class ClientePanel extends JDialog {
            lblCodigo = new JLabel("Codigo:");
            lblCodigo.setFont(new Font("Tahoma", Font.PLAIN, 14));
            lblCodigo.setBounds(6, 4, 84, 30);
-           
-           lblNivelPrecio = new JLabel("Nivel Precio:");
-           lblNivelPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           lblNivelPrecio.setBounds(379, 140, 84, 30);
-           
-           cbListaPrecio = new JComboBox<ListaPrecio>(listaPrecioComboBoxModel);
-           cbListaPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-           cbListaPrecio.addKeyListener(new KeyAdapter() {
-           	@Override
-           	public void keyPressed(KeyEvent e) {
-           		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-           			tabbedPane.setSelectedIndex(1);
-					chTieneCredito.requestFocus();
-				}
-           	}
-           });
-           cbListaPrecio.setBounds(503, 140, 163, 30);
            pnlDatosPersonal.setLayout(null);
            pnlDatosPersonal.add(lblCodigo);
            pnlDatosPersonal.add(tfId);
            pnlDatosPersonal.add(lblCiudad);
            pnlDatosPersonal.add(cbCiudad);
-           pnlDatosPersonal.add(lblTipo);
-           pnlDatosPersonal.add(cbTipo);
-           pnlDatosPersonal.add(lblEmpresa);
-           pnlDatosPersonal.add(cbEmpresa);
            pnlDatosPersonal.add(tfNombre);
-           pnlDatosPersonal.add(lblClase);
-           pnlDatosPersonal.add(tfClase);
            pnlDatosPersonal.add(lblRaznSocial);
            pnlDatosPersonal.add(lblCiRuc);
            pnlDatosPersonal.add(tfRazonSocial);
            pnlDatosPersonal.add(tfCiruc);
            pnlDatosPersonal.add(lblDvRuc);
            pnlDatosPersonal.add(tfDvRuc);
-           pnlDatosPersonal.add(lblObs);
-           pnlDatosPersonal.add(tfObs);
-           pnlDatosPersonal.add(lblNivelPrecio);
-           pnlDatosPersonal.add(cbListaPrecio);
            pnlDatosPersonal.add(lblDireccin);
            pnlDatosPersonal.add(tfDireccion);
-           pnlDatosPersonal.add(label_7);
-           pnlDatosPersonal.add(chActivo);
            
            lblNombre = new JLabel("Nombre:");
            lblNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -420,14 +312,6 @@ public class ClientePanel extends JDialog {
            label_8.setFont(new Font("Dialog", Font.BOLD, 20));
            label_8.setBounds(98, 136, 18, 30);
            pnlDatosPersonal.add(label_8);
-           
-           label_9 = new JLabel("*");
-           label_9.setVerticalAlignment(SwingConstants.BOTTOM);
-           label_9.setHorizontalAlignment(SwingConstants.CENTER);
-           label_9.setForeground(Color.RED);
-           label_9.setFont(new Font("Dialog", Font.BOLD, 20));
-           label_9.setBounds(483, 106, 18, 30);
-           pnlDatosPersonal.add(label_9);
            
            label_10 = new JLabel("*");
            label_10.setVerticalAlignment(SwingConstants.BOTTOM);
@@ -658,7 +542,7 @@ public class ClientePanel extends JDialog {
            	@Override
            	public void keyPressed(KeyEvent e) {
            		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfSkype.requestFocus();
+					tfContacto.requestFocus();
 				}
            	}
            });
@@ -671,15 +555,15 @@ public class ClientePanel extends JDialog {
               
               label_3 = new JLabel("Célular:");
               label_3.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              label_3.setBounds(6, 174, 79, 30);
+              label_3.setBounds(6, 139, 79, 30);
               
               label_4 = new JLabel("Teléfono:");
               label_4.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              label_4.setBounds(6, 140, 79, 30);
+              label_4.setBounds(6, 105, 79, 30);
               
               tfTelefono = new JTextField();
               tfTelefono.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              tfTelefono.setBounds(84, 140, 163, 30);
+              tfTelefono.setBounds(84, 105, 163, 30);
               tfTelefono.addKeyListener(new KeyAdapter() {
               	@Override
               	public void keyPressed(KeyEvent e) {
@@ -696,7 +580,7 @@ public class ClientePanel extends JDialog {
               
               tfCelular = new JTextField();
               tfCelular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              tfCelular.setBounds(84, 174, 163, 30);
+              tfCelular.setBounds(84, 139, 163, 30);
               tfCelular.addKeyListener(new KeyAdapter() {
               	@Override
               	public void keyPressed(KeyEvent e) {
@@ -728,31 +612,13 @@ public class ClientePanel extends JDialog {
               });
               tfFax.setColumns(10);
               
-              lblSkype = new JLabel("Skype:");
-              lblSkype.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              lblSkype.setBounds(6, 72, 79, 30);
-              
-              tfSkype = new JTextField();
-              tfSkype.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              tfSkype.setBounds(84, 72, 226, 30);
-              tfSkype.addKeyListener(new KeyAdapter() {
-              	@Override
-              	public void keyPressed(KeyEvent e) {
-              		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfContacto.requestFocus();
-				}
-              	}
-              });
-              tfSkype.setColumns(10);
-              
               label_6 = new JLabel("Contacto:");
               label_6.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              label_6.setBounds(6, 106, 79, 30);
+              label_6.setBounds(6, 72, 79, 30);
               
               tfContacto = new JTextField();
               tfContacto.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              tfContacto.setBounds(84, 106, 226, 30);
-              ((AbstractDocument) tfContacto.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+              tfContacto.setBounds(84, 72, 226, 30);
               tfContacto.addKeyListener(new KeyAdapter() {
               	@Override
               	public void keyPressed(KeyEvent e) {
@@ -771,8 +637,6 @@ public class ClientePanel extends JDialog {
               pnlContacto.add(label_1);
               pnlContacto.add(tfCelular);
               pnlContacto.add(label_3);
-              pnlContacto.add(lblSkype);
-              pnlContacto.add(tfSkype);
               pnlContacto.add(label_2);
               pnlContacto.add(tfFax);
               pnlContacto.add(label_6);
@@ -780,13 +644,13 @@ public class ClientePanel extends JDialog {
               
               JLabel lblClular = new JLabel("Célular 2:");
               lblClular.setFont(new Font("Tahoma", Font.PLAIN, 14));
-              lblClular.setBounds(417, 174, 79, 30);
+              lblClular.setBounds(6, 175, 79, 30);
               pnlContacto.add(lblClular);
               
               tfcelular2 = new JTextField();
               tfcelular2.setFont(new Font("Tahoma", Font.PLAIN, 14));
               tfcelular2.setColumns(10);
-              tfcelular2.setBounds(495, 174, 163, 30);
+              tfcelular2.setBounds(84, 175, 163, 30);
               pnlContacto.add(tfcelular2);
            
            JPanel panel = new JPanel();
@@ -822,11 +686,10 @@ public class ClientePanel extends JDialog {
     	tfTelefono.setText(client.getTelefono());
     	tfFax.setText(client.getFax());
     	tfEmail.setText(client.getEmail());
-    	tfSkype.setText(client.getSkype());
     	tfWeb.setText(client.getWeb());
-    	tfContacto.setText(client.getContacto());
-    	tfClase.setText(client.getClase());
-    	tfObs.setText(client.getObs());
+    	tfContacto.setText(client.getContacto().toString());
+//    	tfClase.setText(client.getClase());
+//    	tfObs.setText(client.getObs());
     	
     	tfCreditoDisponible.setText(client.getCreditoDisponible() != null ? String.valueOf(client.getCreditoDisponible()) : "");
     	tfCreditoSaldo.setText(client.getCreditoSaldo() != null ? String.valueOf(client.getCreditoSaldo()) : "");
@@ -837,10 +700,10 @@ public class ClientePanel extends JDialog {
     	ciudadComboBoxModel.setSelectedItem(client.getCiudad());
     	empresaComboBoxModel.setSelectedItem(client.getEmpresa());
     	listaPrecioComboBoxModel.setSelectedItem(client.getListaPrecio());
-    	cbTipo.setSelectedItem(client.getTipo());
+//    	cbTipo.setSelectedItem(client.getTipo());
     	
     	chTieneCredito.setSelected(client.getTieneCredito() == 1 ? true : false);
-    	chActivo.setSelected(client.getActivo() == 1 ? true : false);
+    	//chActivo.setSelected(client.getActivo() == 1 ? true : false);
     }
 
     public Cliente getClientFromForm() {
@@ -859,11 +722,10 @@ public class ClientePanel extends JDialog {
     	client.setTelefono(tfTelefono.getText());
     	client.setFax(tfFax.getText());
     	client.setEmail(tfEmail.getText());
-    	client.setSkype(tfSkype.getText());
     	client.setWeb(tfWeb.getText());
     	client.setContacto(tfContacto.getText());
-    	client.setClase(tfClase.getText());
-    	client.setObs(tfObs.getText());
+//    	client.setClase(tfClase.getText());
+//    	client.setObs(tfObs.getText());
     	client.setCelular2(tfcelular2.getText());
 //    	client.setCreditoDisponible(Double.valueOf(tfCreditoDisponible.getText()));
 //    	client.setCreditoSaldo(Double.valueOf(tfCreditoSaldo.getText()));
@@ -874,10 +736,10 @@ public class ClientePanel extends JDialog {
     	client.setCiudad((Ciudad)ciudadComboBoxModel.getSelectedItem());
     	client.setEmpresa((Empresa)empresaComboBoxModel.getSelectedItem());
     	client.setListaPrecio((ListaPrecio)listaPrecioComboBoxModel.getSelectedItem());
-    	client.setTipo((String)cbTipo.getSelectedItem());
+//    	client.setTipo((String)cbTipo.getSelectedItem());
     	
     	client.setTieneCredito(chTieneCredito.isSelected() ? 1 : 0);
-    	client.setActivo(chActivo.isSelected() ? 1 : 0);
+    	//client.setActivo(chActivo.isSelected() ? 1 : 0);
     	client.setFechaRegistro(new Date());
         
         return client;
@@ -894,23 +756,22 @@ public class ClientePanel extends JDialog {
     	tfcelular2.setText("");
     	tfTelefono.setText("");
     	tfFax.setText("");
-    	tfSkype.setText("");
     	tfEmail.setText("");
     	tfWeb.setText("");
     	tfContacto.setText("");
-    	tfClase.setText("");
-    	tfObs.setText("");
+//    	tfClase.setText("");
+//    	tfObs.setText("");
     	tfCreditoDisponible.setText("");
     	tfCreditoSaldo.setText("");
     	tfDiaCredito.setText("");
     	tfLimiteCredito.setText("");
     	tfPlazo.setText("");
     	cbCiudad.setSelectedIndex(0);
-    	cbEmpresa.setSelectedIndex(0);
-    	cbListaPrecio.setSelectedIndex(0);
-    	cbTipo.setSelectedIndex(0);
+//    	cbEmpresa.setSelectedIndex(0);
+ //   	cbListaPrecio.setSelectedIndex(0);
+//    	cbTipo.setSelectedIndex(0);
     	chTieneCredito.setSelected(false);
-    	chActivo.setSelected(false);
+  //  	chActivo.setSelected(false);
     }
     
     public JButton getBtnBuscar() {

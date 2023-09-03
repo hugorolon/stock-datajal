@@ -35,6 +35,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
 import javax.transaction.Transactional;
@@ -85,6 +86,7 @@ import py.com.prestosoftware.domain.validations.ValidationError;
 import py.com.prestosoftware.ui.controllers.ProductoController;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
@@ -203,7 +205,7 @@ public class CompraLocalPanel extends JFrame
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
 		this.productoController = productoController;
 
-		setSize(920, 650);
+		setSize(1108, 650);
 		setTitle("REGISTRO DE COMPRAS");
 
 		initComponents();
@@ -217,7 +219,7 @@ public class CompraLocalPanel extends JFrame
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tabbedPane.setBounds(12, 122, 896, 322);
+		tabbedPane.setBounds(12, 122, 1083, 322);
 
 		JPanel pnlProducto = new JPanel();
 		tabbedPane.addTab("Productos", null, pnlProducto, null);
@@ -238,20 +240,20 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblSubtotal = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblSubtotal.text")); //$NON-NLS-1$
 		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSubtotal.setBounds(652, 6, 115, 18);
+		lblSubtotal.setBounds(846, 6, 115, 18);
 		pnlProducto.add(lblSubtotal);
 
 		JLabel lblPrecio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblPrecio.text")); //$NON-NLS-1$
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(538, 6, 115, 18);
+		lblPrecio.setBounds(732, 6, 115, 18);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(194, 30, 341, 30);
+		tfDescripcion.setBounds(194, 30, 528, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -259,7 +261,7 @@ public class CompraLocalPanel extends JFrame
 		tfPrecioTotal.setEditable(false);
 		tfPrecioTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecioTotal.setColumns(10);
-		tfPrecioTotal.setBounds(652, 30, 115, 30);
+		tfPrecioTotal.setBounds(846, 30, 115, 30);
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
@@ -293,7 +295,7 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(538, 30, 106, 30);
+		tfPrecio.setBounds(732, 30, 106, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -353,11 +355,11 @@ public class CompraLocalPanel extends JFrame
 				}
 			}
 		});
-		btnRemove.setBounds(826, 30, 51, 30);
+		btnRemove.setBounds(1020, 30, 51, 30);
 		pnlProducto.add(btnRemove);
 
 		JScrollPane scrollProducto = new JScrollPane();
-		scrollProducto.setBounds(6, 63, 871, 220);
+		scrollProducto.setBounds(6, 63, 1066, 220);
 		pnlProducto.add(scrollProducto);
 
 		tbProductos = new JTable(itemTableModel) {
@@ -370,7 +372,39 @@ public class CompraLocalPanel extends JFrame
 		Util.ocultarColumna(tbProductos, 6);
 		Util.ocultarColumna(tbProductos, 7);
 		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tbProductos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		tbProductos.setDefaultRenderer(Object.class, new CellRendererOperaciones());		
+		DefaultTableCellRenderer alignRendererHeaderCenter= new CellRendererOthers();
+		alignRendererHeaderCenter.setBackground(getBackground());
+		alignRendererHeaderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		DefaultTableCellRenderer alignRendererHeaderLeft= new CellRendererOthers();
+		alignRendererHeaderLeft.setHorizontalAlignment(SwingConstants.LEFT);
+		DefaultTableCellRenderer alignRendererLeft= new CellRendererOthers();
+		alignRendererLeft.setBackground(getBackground());
+		alignRendererLeft.setHorizontalAlignment(SwingConstants.LEFT);
+		DefaultTableCellRenderer alignRendererRight= new CellRendererOthers();
+		alignRendererRight.setBackground(getBackground());
+		alignRendererRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbProductos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbProductos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		tbProductos.getTableHeader().setOpaque(false);
+		tbProductos.getTableHeader().setBackground(new Color(225, 251, 234));
+		tbProductos.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+		tbProductos.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
+		tbProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tbProductos.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
+		tbProductos.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
+		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tbProductos.getColumnModel().getColumn(1).setCellRenderer(alignRendererLeft);
+		tbProductos.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderLeft);
+		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(555);
+		tbProductos.getColumnModel().getColumn(2).setCellRenderer(alignRendererLeft);
+		tbProductos.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
+		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
+		tbProductos.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
+		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(4).setCellRenderer(alignRendererRight);
 		tbProductos.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -454,7 +488,7 @@ public class CompraLocalPanel extends JFrame
 				}
 			}
 		});
-		btnAdd.setBounds(767, 30, 57, 30);
+		btnAdd.setBounds(961, 30, 57, 30);
 		pnlProducto.add(btnAdd);
 
 		label_7 = new JLabel("*");
@@ -476,13 +510,13 @@ public class CompraLocalPanel extends JFrame
 		pnlProducto.add(btnAddProducto);
 
 		JPanel pnlCabezera = new JPanel();
-		pnlCabezera.setBounds(12, 12, 896, 105);
+		pnlCabezera.setBounds(12, 12, 1083, 105);
 		pnlCabezera.setBorder(
 				new TitledBorder(null, "COMPRA LOCALES", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlCabezera.setLayout(null);
 
 		JPanel pnlCliente = new JPanel();
-		pnlCliente.setBounds(6, 18, 876, 78);
+		pnlCliente.setBounds(6, 18, 1067, 78);
 		pnlCabezera.add(pnlCliente);
 		pnlCliente.setLayout(null);
 
@@ -628,7 +662,7 @@ public class CompraLocalPanel extends JFrame
 		pnlCliente.add(lblFCompra);
 
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(12, 554, 896, 41);
+		pnlBotonera.setBounds(12, 554, 1072, 41);
 
 		btnGuardar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.btnGuardar.text")); //$NON-NLS-1$

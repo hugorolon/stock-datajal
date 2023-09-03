@@ -80,11 +80,11 @@
 			<artifactId>jxdatepicker-support</artifactId>
 			<version>1.0</version>
 		</dependency>
-		<dependency>
-			<groupId>com.numero</groupId>
-			<artifactId>MontoEnLetras</artifactId>
-			<version>0.0.1</version>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.numero</groupId>-->
+<!--			<artifactId>MontoEnLetras</artifactId>-->
+<!--			<version>0.0.1</version>-->
+<!--		</dependency>-->
 
 		<!-- <dependency> <groupId>com.miglayout</groupId> <artifactId>miglayout</artifactId> 
 			<version>3.7.4</version> </dependency> -->

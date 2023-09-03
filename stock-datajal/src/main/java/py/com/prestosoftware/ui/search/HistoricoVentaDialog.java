@@ -4,6 +4,10 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -17,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.DefaultComboBoxModel;
@@ -26,6 +31,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import org.jdesktop.swingx.JXDatePicker;
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
@@ -45,12 +51,15 @@ import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.domain.services.ClienteService;
 import py.com.prestosoftware.domain.services.ProductoService;
+import py.com.prestosoftware.ui.helpers.FormatearValor;
+import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.table.ClienteComboBoxModel;
 import py.com.prestosoftware.ui.table.ProductoComboBoxModel;
 import py.com.prestosoftware.util.ConnectionUtils;
+import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class HistoricoVentaDialog extends JDialog {
+public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 
 	private static final long serialVersionUID = 1L;
 
@@ -66,20 +75,21 @@ public class HistoricoVentaDialog extends JDialog {
 	private JButton btnImprimir;
 	private JComboBox<String> cbOrden;
 	private JLabel lblOrdenadoPor;
-	private JComboBox<Cliente> cbCliente;
+	private JTextField tfClienteNombre, tfClienteId;
+	private ConsultaCliente clientDialog;
 	private JComboBox<Producto> cbProducto;
 	private JLabel lblProducto;
 	private JLabel lblCliente;
 	private ClienteService clienteService;
-	private ClienteComboBoxModel clienteComboBoxModel;
 	private ProductoComboBoxModel productoComboBoxModel;
 	private ProductoService productoService;
 	private JPanel panel;
+	private JTextField tfNombreCliente;
 
 	@Autowired
 	public HistoricoVentaDialog(ProductoComboBoxModel productoComboBoxModel, ProductoService productoService,
-			ClienteComboBoxModel clienteComboBoxModel, ClienteService clienteService) {
-		this.clienteComboBoxModel = clienteComboBoxModel;
+			ConsultaCliente clientDialog, ClienteService clienteService) {
+		this.clientDialog= clientDialog;
 		this.clienteService = clienteService;
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
@@ -98,9 +108,41 @@ public class HistoricoVentaDialog extends JDialog {
 		lblCliente.setBounds(10, 34, 55, 13);
 		pnlBuscador.add(lblCliente);
 
-		cbCliente = new JComboBox<Cliente>(clienteComboBoxModel);
-		cbCliente.setBounds(102, 30, 494, 21);
-		pnlBuscador.add(cbCliente);
+		tfClienteId = new JTextField();
+		//cbClienteHistorico = new JComboBox<>(clienteComboBoxModel);
+		tfClienteId.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfClienteId.selectAll();
+			}
+		});
+		tfClienteId.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_F4) {
+					showDialog();
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfClienteId.getText().isEmpty()) {
+						findClientById(Long.parseLong(tfClienteId.getText()));
+						cbProducto.requestFocus();
+					} else {
+						showDialog();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
+					showDialog();
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validateNumero(e);
+			}
+		});
+		tfClienteId.setText("0");
+		tfClienteId.setBounds(102, 30, 68, 21);
+		pnlBuscador.add(tfClienteId);
 
 		lblProducto = new JLabel("Producto");
 		lblProducto.setBounds(10, 60, 78, 13);
@@ -197,9 +239,14 @@ public class HistoricoVentaDialog extends JDialog {
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 
 		loadProductos();
-		loadClientes();
-		AutoCompleteDecorator.decorate(cbCliente);
+		//loadClientes();
+		
 		AutoCompleteDecorator.decorate(cbProducto);
+		
+		tfNombreCliente = new JTextField();
+		tfNombreCliente.setBounds(180, 31, 416, 19);
+		pnlBuscador.add(tfNombreCliente);
+		tfNombreCliente.setColumns(10);
 
 		panel = new JPanel();
 		panel.setBounds(606, 0, 173, 244);
@@ -260,11 +307,11 @@ public class HistoricoVentaDialog extends JDialog {
 				+ "FROM productos p, ventas v, venta_detalles i , clientes c "
 				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id and v.cliente_id = c.id "
 				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO'  or v.situacion = '1') ";
-		if (cbCliente.getSelectedItem() != null && cbCliente.getSelectedItem().toString().length() > 0) {
-			String clienteNombre = cbCliente.getSelectedItem().toString();
-			Cliente c = (Cliente) clienteService.findByNombreEquals(clienteNombre);
-			cliente = c.getId() + " - " + c.getNombre();
-			sql += " and v.cliente_id = " + c.getId();
+		if (tfClienteId.getText() != null && tfClienteId.getText().toString().length() > 0 && tfNombreCliente.getText().length()>0) {
+//			String clienteNombre = tfNombreCliente.getText().toString();
+//			Cliente c = (Cliente) clienteService.findByNombreEquals(clienteNombre);
+//			cliente = c.getId() + " - " + c.getNombre();
+			sql += " and v.cliente_id = " + tfClienteId.getText();
 		}
 		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
 			Producto pro = (Producto) cbProducto.getSelectedItem();
@@ -309,6 +356,13 @@ public class HistoricoVentaDialog extends JDialog {
 		}
 	}
 
+//	private void traeClienteHistorico() {
+//		if(cbClienteHistorico!=null&&cbClienteHistorico.getSelectedItem()!=null && cbClienteHistorico.getSelectedItem().toString().length()>0) {
+//			Cliente c=clienteService.findByNombreEquals(cbClienteHistorico.getSelectedItem().toString().toUpperCase());		
+//		}		
+//	}
+	
+	
 	private void print() {
 		Map<String, Object> parametros = new HashMap<String, Object>();
 		String orden = "";
@@ -318,10 +372,10 @@ public class HistoricoVentaDialog extends JDialog {
 				+ "FROM productos p, ventas v, venta_detalles i  "
 				+ "WHERE v.id  = i.venta_id AND p.id = i.producto_id "
 				+ "and (v.situacion = 'PAGADO' or v.situacion = 'PROCESADO'  or v.situacion = '1') ";
-		if (cbCliente.getSelectedItem() != null && cbCliente.getSelectedItem().toString().length() > 0) {
-			Cliente c = (Cliente) cbCliente.getSelectedItem();
-			cliente = c.getId() + " - " + c.getNombre();
-			sql += " and v.cliente_id = " + c.getId();
+		if (tfClienteId.getText() != null && tfClienteId.getText().toString().length() > 0 && tfNombreCliente.getText().length()>0) {
+//			Cliente c = (Cliente) cbClienteHistorico.getSelectedItem();
+//			cliente = c.getId() + " - " + c.getNombre();
+			sql += " and v.cliente_id = " + tfClienteId.getText();
 		}
 		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
 			Producto pro = (Producto) cbProducto.getSelectedItem();
@@ -366,15 +420,21 @@ public class HistoricoVentaDialog extends JDialog {
 		}
 	}
 
-	private void loadClientes() {
-		if (clienteComboBoxModel.getSize() == 0) {
-			clienteComboBoxModel.clear();
-			clienteComboBoxModel.addElement(null);
-			List<Cliente> clientes = clienteService.findAllOrderByName();
-			clienteComboBoxModel.addElements(clientes);
-		}
-	}
+	//private void loadClientes() {
+		//if (clienteComboBoxModel.getSize() == 0) {
+//			clienteComboBoxModel.clear();
+//			clienteComboBoxModel.addElement(null);
+//			List<Cliente> clientes = clienteService.findAllOrderByName();
+//			clienteComboBoxModel.addElements(clientes);
+		//}
+//	}
 
+	private void showDialog() {
+		clientDialog.getClientes("");
+		clientDialog.setInterfaz(this);
+		clientDialog.setVisible(true);
+	}
+	
 	private void loadProductos() {
 		if (productoComboBoxModel.getSize() == 0) {
 			List<Producto> productos = productoService.findAllByNombre();
@@ -384,4 +444,34 @@ public class HistoricoVentaDialog extends JDialog {
 		}
 	}
 
+	@Override
+	public void getEntity(Cliente cliente) {
+		try {
+			if(cliente!=null) {
+				tfClienteId.setText(cliente.getId().toString());
+				tfNombreCliente.setText(cliente.getNombre());
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Hubo problemas con el cliente seleccionado, intente nuevamente!");
+			// TODO: handle exception
+		}
+	}
+	
+	private void findClientById(Long id) {
+		try {
+			Optional<Cliente> cliente = clienteService.findById(id);
+			if (cliente.isPresent()) {
+				tfClienteId.setText(cliente.get().getId().toString());
+				tfNombreCliente.setText(cliente.get().getNombre());
+			} else {
+				Notifications.showAlert("No existe Cliente con el codigo informado.!");
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas en la busqueda, intente nuevamente!");
+		}
+	}
+
+	public JTextField getTfClienteId() {
+		return tfClienteId;
+	}
 }

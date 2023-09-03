@@ -84,7 +84,16 @@ public class CompraService {
     }
     
     public List<Compra> getComprasFiltro(Date fechaIni, Date fechaFin, String situacion, int forma) {
-    	return repository.getComprasFiltro(fechaIni, fechaFin, situacion, forma);
+    	if(situacion.length()>0 && forma > 0)
+    		return repository.getComprasFiltro(fechaIni, fechaFin, situacion, forma);
+    	else
+    		if(situacion.length()>0 && forma == 0)
+    			return repository.getComprasFiltroSinForma(fechaIni, fechaFin, situacion);
+    		else
+    			if(situacion.length()==0 && forma > 0)
+    				return repository.getComprasFiltroSinSituacion(fechaIni, fechaFin, forma);
+    			else
+    				return repository.getComprasFiltroSinSituacionSinForma(fechaIni, fechaFin);
     }
 
     @Transactional(rollbackFor = RuntimeException.class)
