@@ -140,7 +140,7 @@ public class VentaPanel extends JFrame
 	private JTextField tfCantidad, tfTotalItems, tfVence, tfDescuento, tfObs;
 	private JTextField tfTotal, tfDepositoID, tfDeposito, tfClienteRuc; // tfSubtotal,
 	private JTextField tfClienteDireccion, tfCuotaCant, tfProductoID, tfStock;
-	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer;
+	private JButton btnAdd, btnRemove, btnGuardar, btnAnular, btnCancelar, btnCerrar, btnVer, btnAddProveedor, btnAddProducto;
 	private JComboBox<String> tfCondicionPago;
 	private JFormattedTextField tfFechaVenta;
 	private JPanel pnlTotales;
@@ -658,7 +658,7 @@ public class VentaPanel extends JFrame
 		lblCosto.setBounds(990, 10, 114, 30);
 		pnlProducto.add(lblCosto);
 		
-		JButton btnAddProducto = new JButton("+");
+		btnAddProducto = new JButton("+");
 		btnAddProducto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showDialog(PRODUCTO_ADD_CODE);
@@ -958,7 +958,7 @@ public class VentaPanel extends JFrame
 		pnlCliente.add(tfDvRuc);
 		tfDvRuc.setColumns(10);
 
-		JButton btnAddProveedor = new JButton("+");
+		btnAddProveedor = new JButton("+");
 		btnAddProveedor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				showDialog(CLIENTE_ADD_CODE);
@@ -1352,6 +1352,8 @@ public class VentaPanel extends JFrame
 	public void vistaPrecioCompra() {
 		if (!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "PUEDE VER PRECIO DE COMPRAS")) {
 			lblCosto.setVisible(false);
+			btnAddProveedor.setVisible(false);
+			btnAddProducto.setVisible(false);
 			//lblDesc.setVisible(false);
 		}
 	}
