@@ -91,6 +91,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuConsultaProveedor;
 	private JMenuItem mnuSaldoDeposito;
 	private JMenu mnuInfProductos;
+	private JMenu mnuRelatorios;
 	private JMenu mnuInfDatosProductos;
 	private JMenuItem mnuInfStockPorDeposito;
 	private JMenu mnuMovCuentaAPagarRecibir;
@@ -426,7 +427,7 @@ public class MainFrame extends JFrame {
 //		mnuSaldoDeposito.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
 //		mnuConsultas.add(mnuSaldoDeposito);
 		
-		JMenu mnuRelatorios = new JMenu("INFORMES");
+		mnuRelatorios = new JMenu("INFORMES");
 		mnuRelatorios.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuRelatorios.setMnemonic('L');
 		menuBar.add(mnuRelatorios);
@@ -910,6 +911,14 @@ public class MainFrame extends JFrame {
 
 	public JMenu getMnuInfProductos() {
 		return mnuInfProductos;
+	}
+	
+	public JMenu getMnuRelatorios() {
+		return mnuRelatorios;
+	}
+
+	public void setMnuRelatorios(JMenu mnuRelatorios) {
+		this.mnuRelatorios = mnuRelatorios;
 	}
 
 	public void setMnuInfProductos(JMenu mnuInfProductos) {
