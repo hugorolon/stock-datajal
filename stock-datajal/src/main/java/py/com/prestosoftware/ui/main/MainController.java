@@ -61,6 +61,7 @@ import py.com.prestosoftware.ui.controllers.UsuarioController;
 import py.com.prestosoftware.ui.controllers.UsuarioRolController;
 import py.com.prestosoftware.ui.forms.ClienteAddPanel;
 import py.com.prestosoftware.ui.forms.ProveedorAddPanel;
+import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.reports.InformeAgrupadoIngresoEgresoCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeResumenCajaDialog;
 import py.com.prestosoftware.ui.reports.InformeStockDeposito;
@@ -359,7 +360,7 @@ public class MainController extends AbstractFrameController {
 	public void prepareAndOpenFrame() {
 //		registerAction(mainMenuFrame.getBtnClientes(), (e) -> openConsultaCliente());
 //		registerAction(mainMenuFrame.getBtnProveedores(), (e) -> openConsultaProveedor());
-//		registerAction(mainMenuFrame.getBtnProductos(), (e) -> openSaldoDeposito());
+//		registerAction(mainMenuFrame.getBtnProductos(), (e) -> openSaldoDeposito());	
 		registerAction(mainMenuFrame.getBtnVentas(), (e) -> openVenta());
 		registerAction(mainMenuFrame.getBtnCompras(), (e) -> openCompraLocal());
 	//	registerAction(mainMenuFrame.getBtnPDV(), (e) -> openPDV());
@@ -386,10 +387,10 @@ public class MainController extends AbstractFrameController {
 		//registerOpenMenu(mainMenuFrame.getMnuDeposito(), (e) -> openDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuUsuario(), (e) -> openUsuario());
 		registerOpenMenu(mainMenuFrame.getMnuUsuarioRol(), (e) -> openUsuarioRol());
-//		registerOpenMenu(mainMenuFrame.getMnuCaja(), (e) -> openCaja());
-//		registerOpenMenu(mainMenuFrame.getMnuAperturaCaja(), (e) -> openAperturaCierreCaja(1));
-//		registerOpenMenu(mainMenuFrame.getMnuCierreCaja(), (e) -> openAperturaCierreCaja(2));
-//		registerOpenMenu(mainMenuFrame.getMnuLanzamiento(), (e) -> openLanzamientoCaja());
+		//registerOpenMenu(mainMenuFrame.getMnuCaja(), (e) -> openCaja());
+		//registerOpenMenu(mainMenuFrame.getMnuAperturaCaja(), (e) -> openAperturaCierreCaja(1));
+		//registerOpenMenu(mainMenuFrame.getMnuCierreCaja(), (e) -> openAperturaCierreCaja(2));
+		registerOpenMenu(mainMenuFrame.getMnuLanzamiento(), (e) -> openLanzamientoCaja());
 		registerOpenMenu(mainMenuFrame.getMnuVenta(), (e) -> openVenta());
 		registerOpenMenu(mainMenuFrame.getMnuCompra(), (e) -> openCompraLocal());
 		registerOpenMenu(mainMenuFrame.getMnuPresupuesto(), (e) -> openPresupuesto());
@@ -643,8 +644,10 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openLanzamientoCaja() {
-		lanzamientoCaja.clearForm();
-		lanzamientoCaja.setVisible(true);
+		if(usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "CAJA")) {
+			lanzamientoCaja.clearForm();
+			lanzamientoCaja.setVisible(true);
+		}
 	}
 
 	private void openDeposito() {

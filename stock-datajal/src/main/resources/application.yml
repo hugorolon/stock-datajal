@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://server:5432/sys_agroprogreso30122021
+    url: jdbc:postgresql://localhost:5432/sys_pequeno
     username: postgres
     password: adminpg
 

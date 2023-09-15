@@ -1268,7 +1268,7 @@ public class PresupuestoPanel extends JFrame
 					if (pre != null) {
 						// updateStockProduct(v.getItems());
 						Notifications.showAlert("Presupuesto registrado con exito.!");
-						print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AGROPROGRESO",
+						print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AUTOREPUESTOS PEQUENO",
 								JOptionPane.OK_CANCEL_OPTION);
 					}
 					if (print == 0)

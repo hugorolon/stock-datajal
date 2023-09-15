@@ -1300,7 +1300,7 @@ public class FacturaLegalPanel extends JFrame
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this,
 				"CONFIRMAR FACTURACIÓN " ,
-				"AVISO - AGROPROGRESO", JOptionPane.OK_CANCEL_OPTION);
+				"AVISO - AUTOREPUESTOS PEQUENO", JOptionPane.OK_CANCEL_OPTION);
 		Integer print=null;
 		if (respuesta == 0) {
 			if (validateCabezera()) { // && validateItems(itemTableModel.getEntities())
@@ -1332,7 +1332,7 @@ public class FacturaLegalPanel extends JFrame
 						try {
 						VentaTemporal v = ventaService.save(venta, clienteNuevo, tfCondicionPago.getSelectedItem().toString());
 							Notifications.showAlert("Venta registrado con exito.!");
-							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AGROPROGRESO",
+							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AUTOREPUESTOS PEQUENO",
 									JOptionPane.OK_CANCEL_OPTION);
 						} catch (Exception e) {
 							Notifications.showAlert("Ocurrió un error en VentaTemporal!, intente nuevamente");

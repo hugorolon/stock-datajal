@@ -209,12 +209,10 @@ public class LoginForm extends JFrame {
 		if (usuarioRolService!=null&&!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS CON DESCUENTO TOTAL")) {
 			mainMenuFrame.getMnuCompra().setEnabled(false);
 			mainMenuFrame.getBtnCompras().setEnabled(false);
-			mainMenuFrame.getMnuMercaderia().setEnabled(false);
-			mainMenuFrame.getMnuMovCuentaARecibirCobroCliente().setEnabled(false);
-			mainMenuFrame.getMnuMovCuentaAPagarPagoProveedor().setEnabled(false);
-			mainMenuFrame.getMnuMovCajaIngreso().setVisible(false);
-			mainMenuFrame.getMnuMovCajaEgreso().setVisible(false);
-			mainMenuFrame.getMnuRelatorios().setVisible(false);
+		}if (usuarioRolService!=null&&!usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "CAJA")) {
+			//mainMenuFrame.getMnuCierreCaja().setEnabled(false);
+			mainMenuFrame.getMnuAperturaCaja().setEnabled(false);
+			mainMenuFrame.getMnuLanzamiento().setEnabled(false);
 		}
 		mainMenuFrame.setVisible(true);
 	}

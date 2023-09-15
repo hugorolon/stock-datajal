@@ -68,7 +68,7 @@ public class MovimientoCajaService {
     	return repository.findByNotaNro(id);
     }
     
-    public Optional<MovimientoCaja> getTotalsMovCaja(Caja caja, Date fecha, String situacion) {
+    public Optional<Object[]> getTotalsMovCaja(Caja caja, Date fecha, String situacion) {
     	return repository.getTotalsEntradaCaja(caja, fecha, situacion);
     }
 

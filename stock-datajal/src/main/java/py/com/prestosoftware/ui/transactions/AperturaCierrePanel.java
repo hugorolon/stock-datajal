@@ -202,25 +202,26 @@ public class AperturaCierrePanel extends JDialog {
     		}
 		} else { // CIERRE
 			if (aperturaCierreCaja.isPresent()) {
-				Optional<MovimientoCaja> movCaja = cajaMovService.getTotalsMovCaja(new Caja(cajaId), fecha, situacion);
+				Optional<Object[]> movCaja = cajaMovService.getTotalsMovCaja(new Caja(cajaId), fecha, situacion);
 				
 				if (movCaja.isPresent()) {	
-					MovimientoCaja mCaja = movCaja.get();
+					Object[] mCaja = movCaja.get();
+
 					
 					aperCierre = aperturaCierreCaja.get();
 					aperCierre.setHoraCierre(fecha);
 					aperCierre.setFechaCierre(fecha);
 					
 					//verificar los valores del cierre
-					aperCierre.setMontoCierre(mCaja.getNotaValor() != null ? mCaja.getNotaValor():0);
-					aperCierre.setMontoCierreM1(mCaja.getValorM01() != null ? mCaja.getValorM01():0);
-					aperCierre.setMontoCierreM2(mCaja.getValorM02() != null ? mCaja.getValorM02():0);
-					aperCierre.setMontoCierreM3(mCaja.getValorM03() != null ? mCaja.getValorM03():0);
-					aperCierre.setMontoCierreM4(mCaja.getValorM04() != null ? mCaja.getValorM04():0);
-					aperCierre.setMontoCierreM5(mCaja.getValorM05() != null ? mCaja.getValorM04():0);
-					
-					movService.save(aperCierre);
-					
+//					aperCierre.setMontoCierre(mCaja.getNotaValor() != null ? mCaja.getNotaValor():0);
+//					aperCierre.setMontoCierreM1(mCaja.getValorM01() != null ? mCaja.getValorM01():0);
+//					aperCierre.setMontoCierreM2(mCaja.getValorM02() != null ? mCaja.getValorM02():0);
+//					aperCierre.setMontoCierreM3(mCaja.getValorM03() != null ? mCaja.getValorM03():0);
+//					aperCierre.setMontoCierreM4(mCaja.getValorM04() != null ? mCaja.getValorM04():0);
+//					aperCierre.setMontoCierreM5(mCaja.getValorM05() != null ? mCaja.getValorM04():0);
+//					
+//					movService.save(aperCierre);
+//					
 					Notifications.showAlert("Se cerro correctamente la CAJA.!");
 				} else {
 					Notifications.showAlert("No se puede cerrar la caja sin movimiento.!");

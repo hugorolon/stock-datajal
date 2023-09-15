@@ -8,8 +8,8 @@ public class PostgresConnUtils {
  
     public static Connection getPostgresConnection()
             throws ClassNotFoundException, SQLException {
-        String hostName = "server";
-        String dbName = "sys_agroprogreso30122021";
+        String hostName = "localhost";
+        String dbName = "sys_pequeno";
         String userName = "postgres";
         String password = "adminpg";
         return getPostgresConnection(hostName, dbName, userName, password);

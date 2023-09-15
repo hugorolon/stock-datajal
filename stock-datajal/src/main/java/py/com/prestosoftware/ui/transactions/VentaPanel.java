@@ -2211,7 +2211,7 @@ public class VentaPanel extends JFrame
 	private void save() {
 		Integer respuesta = JOptionPane.showConfirmDialog(this,
 				"CONFIRMAR SI ESTA SEGURO LA CONDICIÓN DE PAGO " + tfCondicionPago.getSelectedItem().toString(),
-				"AVISO - AGROPROGRESO", JOptionPane.OK_CANCEL_OPTION);
+				"AVISO - AUTOREPUESTOS PEQUENO", JOptionPane.OK_CANCEL_OPTION);
 		Integer print=null;
 		if (respuesta == 0) {
 			if (validateCabezera()) { // && validateItems(itemTableModel.getEntities())
@@ -2248,7 +2248,7 @@ public class VentaPanel extends JFrame
 						Venta v = ventaService.save(lanzCaja, venta, clienteNuevo, tfCondicionPago.getSelectedItem().toString());
 						tfVentaId.setText(v.getId()+"");
 							Notifications.showAlert("Venta registrado con exito.!");
-							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AGROPROGRESO",
+							print = JOptionPane.showConfirmDialog(this, "IMPRIMIR", "AVISO - AUTOREPUESTOS PEQUENO",
 									JOptionPane.OK_CANCEL_OPTION);
 						} catch (Exception e) {
 							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
@@ -2397,7 +2397,7 @@ public class VentaPanel extends JFrame
 	}
 
 	private void anular() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AUTOREPUESTOS PEQUENO",
 				JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (conf != null) {

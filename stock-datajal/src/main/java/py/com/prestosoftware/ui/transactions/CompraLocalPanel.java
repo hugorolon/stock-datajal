@@ -1304,7 +1304,7 @@ public class CompraLocalPanel extends JFrame
 
 	
 	private void anular() {
-		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AGROPROGRESO",
+		Integer respuesta = JOptionPane.showConfirmDialog(this, "CONFIRMAR", "AVISO - AUTOREPUESTOS PEQUENO",
 				JOptionPane.OK_CANCEL_OPTION);
 		if (respuesta == 0) {
 			if (!compraSeleccionado.getSituacion().equalsIgnoreCase("ANULADO")) {
