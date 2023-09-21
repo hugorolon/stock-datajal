@@ -562,24 +562,6 @@ public class ProductoVistaDialog extends JDialog {
 				if (p.getDepO2() != null) {
 					ProductoDeposito dep02 = new ProductoDeposito(deposito2, p.getDepO2());
 					depositoTableModel.addEntity(dep02);
-					
-					String deposito3 = depositoService.findById(3L).get().getNombre();
-					if (p.getDepO3() != null) {
-						ProductoDeposito dep03 = new ProductoDeposito(deposito3, p.getDepO3());
-						depositoTableModel.addEntity(dep03);
-						
-						String deposito4 = depositoService.findById(4L).get().getNombre();
-						if (p.getDepO4() != null) {
-							ProductoDeposito dep04 = new ProductoDeposito(deposito4, p.getDepO4());
-							depositoTableModel.addEntity(dep04);
-							
-							String deposito5 = depositoService.findById(5L).get().getNombre();
-							if (p.getDepO5() != null) {
-								ProductoDeposito dep05 = new ProductoDeposito(deposito5, p.getDepO5());
-								depositoTableModel.addEntity(dep05);
-							}	
-						}
-					}
 				}
 			}	
 		}
@@ -600,16 +582,6 @@ public class ProductoVistaDialog extends JDialog {
 					if (p.getPrecioVentaC() != null) {
 						ProductoPrecio precio03 = new ProductoPrecio("Precio C", (p.getPrecioVentaC() != null ? p.getPrecioVentaC():0));
 						precioTableModel.addEntity(precio03);
-						
-						if (p.getPrecioVentaD() != null) {
-							ProductoPrecio precio04 = new ProductoPrecio("Precio D", (p.getPrecioVentaD() != null ? p.getPrecioVentaD():0));
-							precioTableModel.addEntity(precio04);
-							
-							if (p.getPrecioVentaE() != null) {
-								ProductoPrecio precio05 = new ProductoPrecio("Precio E", (p.getPrecioVentaE() != null ? p.getPrecioVentaE():0));
-								precioTableModel.addEntity(precio05);
-							}	
-						}
 					}
 				}
 			}	

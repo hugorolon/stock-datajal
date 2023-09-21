@@ -159,13 +159,7 @@ public class SubgrupoController extends AbstractFrameController {
     		
     		if (e.getPrecioVentaC() != null)
     			e.setPrecioVentaC(e.getPrecioVentaC() + ((subgrupo.getPorcentajePrecioC() / 100) * e.getPrecioVentaC()));
-    		
-    		if (e.getPrecioVentaD() != null)
-    			e.setPrecioVentaD(e.getPrecioVentaD() + ((subgrupo.getPorcentajePrecioD() / 100) * e.getPrecioVentaD()));
-    		
-    		if (e.getPrecioVentaE() != null)
-    			e.setPrecioVentaE(e.getPrecioVentaE() + ((subgrupo.getPorcentajePrecioE() / 100) * e.getPrecioVentaE()));
-    		
+    	
     		productoService.save(e);	
 		}
     	

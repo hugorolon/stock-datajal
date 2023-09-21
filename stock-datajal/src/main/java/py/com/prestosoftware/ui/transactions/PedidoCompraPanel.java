@@ -844,7 +844,7 @@ public class PedidoCompraPanel extends JFrame implements ProveedorInterfaz,
     	Optional<Producto> producto = productoService.findById(id);
     	
     	if (producto.isPresent()) {
-    		Double ultimoPrecioCosto = producto.get().getCostoFob() != null ? producto.get().getCostoFob() : 0;
+    		Double ultimoPrecioCosto = producto.get().getPrecioCosto() != null ? producto.get().getPrecioCosto() : 0;
     		tfDescripcion.setText(producto.get().getDescripcion());
     		tfPrecio.setText(FormatearValor.doubleAString(ultimoPrecioCosto));
     		tfCantidad.setText("1");

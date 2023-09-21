@@ -33,11 +33,6 @@ public class Producto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(name = "es_servicio")
-	private int esServicio;
-	
-	@Column(name = "es_fraccionado")
-	private int esFraccionado;
 
 	@NotNull
 	private String descripcion;
@@ -55,26 +50,17 @@ public class Producto {
 	
 	private String seccion;
 	
-	@Column(name = "regimen")
-	private String regimen;
+	@Column(name = "modeloaplicacion")
+	private String modeloAplicacion;
 	
 	@Column(name = "precio_costo")
 	private Double precioCosto;
-	
-	@Column(name = "costo_fob")
-	private Double costoFob;
-	
-	@Column(name = "costo_cif")
-	private Double costoCif;
-	
+		
 	@Column(name = "precio_costo_promedio")
 	private Double precioCostoPromedio;
 	
 	@Column(name = "stock_actual", precision = 15, scale = 2)
 	private Double stock;
-	
-	@Column(name = "es_promo")
-	private String esPromo;
 	
 	@Column(name = "imagen_url")
 	private String imagenUrl;
@@ -88,12 +74,7 @@ public class Producto {
 	@ManyToOne
 	@JoinColumn(name = "subgrupo_id")
 	private Subgrupo subgrupo;
-	
-	@NotNull
-	@ManyToOne
-	@JoinColumn(name = "ncm_id")
-	private Ncm ncm;
-	
+		
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "categoria_id")
@@ -136,28 +117,11 @@ public class Producto {
 	@Column(name = "precio_venta_c")
 	private Double precioVentaC;
 	
-	@ColumnDefault(value = "0")
-	@Column(name = "precio_venta_d")
-	private Double precioVentaD;
-	
-	@ColumnDefault(value = "0")
-	@Column(name = "precio_venta_e")
-	private Double precioVentaE;
-	
 	@Column(name = "dep_01")
 	private Double depO1;
 	
 	@Column(name = "dep_02")
 	private Double depO2;
-	
-	@Column(name = "dep_03")
-	private Double depO3;
-	
-	@Column(name = "dep_04")
-	private Double depO4;
-	
-	@Column(name = "dep_05")
-	private Double depO5;
 	
 	@Column(name = "dep_01_bloq")
 	private Double depO1Bloq;
@@ -165,38 +129,40 @@ public class Producto {
 	@Column(name = "dep_02_bloq")
 	private Double depO2Bloq;
 	
-	@Column(name = "dep_03_bloq")
-	private Double depO3Bloq;
-	
-	@Column(name = "dep_04_bloq")
-	private Double depO4Bloq;
-	
-	@Column(name = "dep_05_bloq")
-	private Double depO5Bloq;
-	
 	@Column(name = "entrada_pend")
 	private Double entPendiente;
 	
 	@Column(name = "salida_pend")
 	private Double salidaPend;
 	
-	@Column(name = "total_cif")
-	private Double totalCif;
-	
-	@Column(name = "total_fob")
-	private Double totalFob;
 	
 	@ColumnDefault(value = "1")
 	private int activo; 
 	
-	//PROMOCION
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_promo_inicial")
-	private Date fechaPromoInicio;
+	@Column(name = "codigo")
+	private String codigo;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_promo_final")
-	private Date fechaPromoFin;
+	@Column(name = "codigo_sec")
+	private String codigoSec;
+	
+	@Column(name = "codigofram")
+	private String codigofram;
+	
+	@Column(name = "codigoman")
+	private String codigoman;
+	
+	@Column(name = "viscocidad")
+	private String viscocidad;
+	
+	@Column(name = "base")
+	private String base;
+	
+	@Column(name = "origen")
+	private String origen;
+	
+	@Column(name = "envase")
+	private String envase;
+
 	
 	//AUDITORIA
 	@ManyToOne
@@ -225,8 +191,7 @@ public class Producto {
 	
 	public Producto(String descripcion, String descriFiscal, String referencia, String subreferencia,
 			Grupo grupo, Subgrupo subgrupo, Marca marca, Color color, Tamanho tamanho, UnidadMedida uom, Impuesto imp,
-			Categoria categoria, Ncm ncm, Double precioCosto,Double precioCostoPromedio, Double precioA, Double precioB, Double precioC, 
-			Double precioD, Double precioE) {
+			Categoria categoria, Double precioCosto,Double precioCostoPromedio, Double precioA, Double precioB, Double precioC) {
 		//this.nombre = nombre; String nombre, 
 		this.descripcion = descripcion;
 		this.descripcionFiscal = descriFiscal;
@@ -240,15 +205,12 @@ public class Producto {
 		this.unidadMedida = uom;
 		this.impuesto = imp;
 		this.categoria = categoria;
-		this.ncm = ncm;
 		this.precioCosto=precioCosto;
 		this.precioCostoPromedio=precioCostoPromedio;
 		this.precioVentaA = precioA;
 		this.precioVentaB = precioB;
 		this.precioVentaC = precioC;
-		this.precioVentaD = precioD;
-		this.precioVentaE = precioE;
-	}
+		}
 
 	public Long getId() {
 		return id;
@@ -257,22 +219,6 @@ public class Producto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	public int getEsServicio() {
-		return esServicio;
-	}
-
-	public void setEsServicio(int esServicio) {
-		this.esServicio = esServicio;
-	}
-
-//	public String getNombre() {
-//		return nombre;
-//	}
-//
-//	public void setNombre(String nombre) {
-//		this.nombre = nombre;
-//	}
 
 	public String getDescripcion() {
 		return descripcion;
@@ -330,12 +276,12 @@ public class Producto {
 		this.seccion = seccion;
 	}
 
-	public String getRegimen() {
-		return regimen;
+	public String getModeloAplicacion() {
+		return modeloAplicacion;
 	}
 
-	public void setRegimen(String regimen) {
-		this.regimen = regimen;
+	public void setModeloAplicacion(String modeloAplicacion) {
+		this.modeloAplicacion = modeloAplicacion;
 	}
 
 	public Double getStock() {
@@ -346,28 +292,12 @@ public class Producto {
 		this.stock = stock;
 	}
 
-	public String getEsPromo() {
-		return esPromo;
-	}
-
-	public void setEsPromo(String esPromo) {
-		this.esPromo = esPromo;
-	}
-
 	public Grupo getGrupo() {
 		return grupo;
 	}
 
 	public void setGrupo(Grupo grupo) {
 		this.grupo = grupo;
-	}
-
-	public Ncm getNcm() {
-		return ncm;
-	}
-
-	public void setNcm(Ncm ncm) {
-		this.ncm = ncm;
 	}
 
 	public Categoria getCategoria() {
@@ -490,14 +420,7 @@ public class Producto {
 		this.updatedDate = updatedDate;
 	}
 	
-	public int getEsFraccionado() {
-		return esFraccionado;
-	}
-	
-	public void setEsFraccionado(int esFraccionado) {
-		this.esFraccionado = esFraccionado;
-	}
-	
+
 	public Double getDepO1() {
 		return depO1;
 	}
@@ -512,30 +435,6 @@ public class Producto {
 
 	public void setDepO2(Double depO2) {
 		this.depO2 = depO2;
-	}
-
-	public Double getDepO3() {
-		return depO3;
-	}
-
-	public void setDepO3(Double depO3) {
-		this.depO3 = depO3;
-	}
-
-	public Double getDepO4() {
-		return depO4;
-	}
-
-	public void setDepO4(Double depO4) {
-		this.depO4 = depO4;
-	}
-
-	public Double getDepO5() {
-		return depO5;
-	}
-
-	public void setDepO5(Double depO5) {
-		this.depO5 = depO5;
 	}
 
 	public Double getDepO1Bloq() {
@@ -553,30 +452,6 @@ public class Producto {
 	public void setDepO2Bloq(Double depO2Bloq) {
 		this.depO2Bloq = depO2Bloq;
 	}
-
-	public Double getDepO3Bloq() {
-		return depO3Bloq;
-	}
-
-	public void setDepO3Bloq(Double depO3Bloq) {
-		this.depO3Bloq = depO3Bloq;
-	}
-
-	public Double getDepO4Bloq() {
-		return depO4Bloq;
-	}
-
-	public void setDepO4Bloq(Double depO4Bloq) {
-		this.depO4Bloq = depO4Bloq;
-	}
-
-	public Double getDepO5Bloq() {
-		return depO5Bloq;
-	}
-
-	public void setDepO5Bloq(Double depO5Bloq) {
-		this.depO5Bloq = depO5Bloq;
-	}
 	
 	public Double getEntPendiente() {
 		return entPendiente;
@@ -592,38 +467,6 @@ public class Producto {
 	
 	public void setSalidaPend(Double salidaPend) {
 		this.salidaPend = salidaPend;
-	}
-
-	public Double getTotalCif() {
-		return totalCif;
-	}
-
-	public void setTotalCif(Double totalCif) {
-		this.totalCif = totalCif;
-	}
-
-	public Double getTotalFob() {
-		return totalFob;
-	}
-
-	public void setTotalFob(Double totalFob) {
-		this.totalFob = totalFob;
-	}
-	
-	public Double getCostoCif() {
-		return costoCif;
-	}
-	
-	public void setCostoCif(Double costoCif) {
-		this.costoCif = costoCif;
-	}
-	
-	public Double getCostoFob() {
-		return costoFob;
-	}
-	
-	public void setCostoFob(Double costoFob) {
-		this.costoFob = costoFob;
 	}
 
 	public Double getPrecioVentaA() {
@@ -650,36 +493,68 @@ public class Producto {
 		this.precioVentaC = precioVentaC;
 	}
 
-	public Double getPrecioVentaD() {
-		return precioVentaD;
+	public String getCodigo() {
+		return codigo;
 	}
 
-	public void setPrecioVentaD(Double precioVentaD) {
-		this.precioVentaD = precioVentaD;
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
 	}
 
-	public Double getPrecioVentaE() {
-		return precioVentaE;
+	public String getCodigoSec() {
+		return codigoSec;
 	}
 
-	public void setPrecioVentaE(Double precioVentaE) {
-		this.precioVentaE = precioVentaE;
+	public void setCodigoSec(String codigoSec) {
+		this.codigoSec = codigoSec;
 	}
 
-	public Date getFechaPromoInicio() {
-		return fechaPromoInicio;
+	public String getCodigofram() {
+		return codigofram;
 	}
 
-	public void setFechaPromoInicio(Date fechaPromoInicio) {
-		this.fechaPromoInicio = fechaPromoInicio;
+	public void setCodigofram(String codigofram) {
+		this.codigofram = codigofram;
 	}
 
-	public Date getFechaPromoFin() {
-		return fechaPromoFin;
+	public String getCodigoman() {
+		return codigoman;
 	}
 
-	public void setFechaPromoFin(Date fechaPromoFin) {
-		this.fechaPromoFin = fechaPromoFin;
+	public void setCodigoman(String codigoman) {
+		this.codigoman = codigoman;
+	}
+
+	public String getViscocidad() {
+		return viscocidad;
+	}
+
+	public void setViscocidad(String viscocidad) {
+		this.viscocidad = viscocidad;
+	}
+
+	public String getBase() {
+		return base;
+	}
+
+	public void setBase(String base) {
+		this.base = base;
+	}
+
+	public String getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(String origen) {
+		this.origen = origen;
+	}
+
+	public String getEnvase() {
+		return envase;
+	}
+
+	public void setEnvase(String envase) {
+		this.envase = envase;
 	}
 
 	@Override

@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import net.miginfocom.swing.MigLayout;
+import py.com.prestosoftware.data.models.Categoria;
 import py.com.prestosoftware.data.models.Impuesto;
 import py.com.prestosoftware.data.models.ListaPrecio;
 import py.com.prestosoftware.data.models.Marca;
@@ -71,11 +72,13 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	private static final long serialVersionUID = 1L;
 
 	private static final int MARCA_CODE = 1;
-	private JTextField tfDescripcion, tfDesFiscal;
+	private JTextField tfDescripcion;
 	private JTextField tfProductoId;
 	private JCheckBox chActivo;
 	private JButton btnGuardar, btnCancelar, btnCerrar;
 	private JComboBox<Marca> cbMarca;
+	private JComboBox<Categoria> cbAgrupacion;
+	private JComboBox<Marca> cbMarcas;
 	private JComboBox<Impuesto> cbImpuesto;
 	private JComboBox<ListaPrecio> cbListaPrecio;
 	private JTable tbListaPrecio;
@@ -87,7 +90,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 	private CategoriaComboBoxModel categoriaComboBoxModel;
 	private GrupoComboBoxModel grupoComboBoxModel;
-	private NcmComboBoxModel ncmComboBoxModel;
 	private ImpuestoComboBoxModel impuestoComboBoxModel;
 	private MarcaComboBoxModel marcaComboBoxModel;
 	private ColorComboBoxModel colorComboBoxModel;
@@ -96,11 +98,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	private SubgrupoComboBoxModel subgrupoComboBoxModel;
 	private ProductoPrecioTableModel precioTableModel;
 	private ProductoDepositoTableModel depositoTableModel;
-	private JLabel lblEsServicio;
-	private JCheckBox chServicio;
 	private JLabel label_7;
-	private JLabel label_9;
-	private JTextField tfPrecioC;
 	//private JTextField tfPrecioB;
 	private JTextField tfPrecioA;
 	private JButton btnNuevo;
@@ -114,19 +112,39 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 	private ProductTableModel productTableModel;
 	private JTabbedPane tabbedPane;
+	private JPanel pnlLubricantes;
+	private JPanel pnlFiltros;
 
 	private SubgrupoService subgrupoService;
 	private ProductoInterfaz interfaz;
 	private JTextField tfPrecioCompra;
+	private JTextField tfBase;
 	private JLabel label_2;
 	private JTextField tfDep01;
 	private JLabel lblNewLabel_1;
 	private JTextField tfOtrasReferencias;
 	private JButton btnNewMarcas;
 	private MarcaController marcaController;
+	private JTextField tfCodigo;
+	private JTextField tfCodigoSec;
+	private JLabel lblCdigoSec;
+	private JLabel lblNewLabel_2;
+	private JLabel lblNewLabel_3;
+	private JTextField tfViscocidad;
+	private JLabel lblNewLabel_4;
+	private JTextField tfOrigen;
+	private JLabel lblNewLabel_5;
+	private JTextField tfEnvase;
+	private JTextField tfCodigoFram;
+	private JLabel lblNewLabel_6;
+	private JLabel lblNewLabel_7;
+	private JTextField tfCodigoMan;
+	private JLabel lblNewLabel_8;
+	private JTextField tfReferencia;
+	
  
 	@Autowired
-	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel,
+	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, 
 			CategoriaComboBoxModel categoriaComboBoxModel, ImpuestoComboBoxModel impuestoComboBoxModel,
 			MarcaComboBoxModel marcaComboBoxModel, ColorComboBoxModel colorComboBoxModel,
 			SubgrupoComboBoxModel subgrupoComboBoxModel, TamanhoComboBoxModel tamanhoComboBoxModel,
@@ -134,7 +152,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			ProductoPrecioTableModel precioTableModel, ProductoDepositoTableModel depositoTableModel,
 			ProductTableModel productTableModel, SubgrupoService subgrupoService, MarcaController marcaController) {
 		this.grupoComboBoxModel = grupoComboBoxModel;
-		this.ncmComboBoxModel = ncmComboBoxModel;
 		this.categoriaComboBoxModel = categoriaComboBoxModel;
 		this.impuestoComboBoxModel = impuestoComboBoxModel;
 		this.marcaComboBoxModel = marcaComboBoxModel;
@@ -149,12 +166,13 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		this.marcaController= marcaController;
 
 		initComponents();
-		AutoCompleteDecorator.decorate(cbMarca);
+		AutoCompleteDecorator.decorate(cbMarcas);
+		AutoCompleteDecorator.decorate(cbAgrupacion);
 		Util.setupScreen(this);
 	}
 
 	private void initComponents() {
-		setSize(900, 550);
+		setSize(900, 619);
 		setTitle("REGISTRO DE MERCADERIAS");
 		getContentPane().setLayout(new MigLayout("", "[788px,grow]", "[][158.00,grow][25px][316px][45px]"));
 
@@ -186,7 +204,8 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		tbProducto.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		tbProducto.getColumnModel().getColumn(0).setPreferredWidth(75);
 		tbProducto.getColumnModel().getColumn(0).setCellRenderer(alignRenderer);
-		tbProducto.getColumnModel().getColumn(1).setPreferredWidth(275);
+		tbProducto.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tbProducto.getColumnModel().getColumn(2).setPreferredWidth(275);
 		scrollProducto.setViewportView(tbProducto);
 
 		pnlBuscador = new JPanel();
@@ -202,130 +221,45 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 		JLabel lblCodigo = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ProductoPanel.lblCodigo.text")); //$NON-NLS-1$
-		lblCodigo.setBounds(16, 4, 98, 25);
+		lblCodigo.setBounds(10, 4, 98, 25);
 
 		tfProductoId = new JTextField();
 		tfProductoId.setEditable(false);
 		tfProductoId.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfProductoId.setBounds(118, 4, 79, 25);
+		tfProductoId.setBounds(112, 4, 79, 25);
 
 		JLabel lblNombre = new JLabel("Descripción");
-		lblNombre.setBounds(16, 39, 98, 21);
+		lblNombre.setBounds(10, 64, 98, 25);
 
 		tfDescripcion = new JTextField();
-		tfDescripcion.setNextFocusableComponent(tfDesFiscal);
+		tfDescripcion.setNextFocusableComponent(tfPrecioCompra);
 		tfDescripcion.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
 				tfDescripcion.selectAll();
 			}
 		});
-		tfDescripcion.setBounds(118, 39, 566, 21);
+		tfDescripcion.setBounds(112, 64, 566, 25);
 		((AbstractDocument) tfDescripcion.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDescripcion.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					// tfDesFiscal.setText(tfDescripcion.getText());
-					tfDesFiscal.requestFocus();
+					tfPrecioCompra.requestFocus();
 				}
 			}
 		});
 		tfDescripcion.setColumns(10);
-
-		tfDesFiscal = new JTextField();
-		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfDesFiscal.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfDesFiscal.selectAll();
-			}
-		});
-		tfDesFiscal.setBounds(118, 68, 566, 21);
-		((AbstractDocument) tfDesFiscal.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfDesFiscal.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					tfPrecioCompra.requestFocus();
-				} else {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						tfDescripcion.requestFocus();
-					}
-				}
-			}
-		});
-		tfDesFiscal.setColumns(10);
-
-		JLabel lblDescFiscal = new JLabel("Desc. Fiscal:");
-		lblDescFiscal.setBounds(16, 68, 98, 21);
-		tfDesFiscal.setNextFocusableComponent(tfPrecioA);
 		pnlDatosPersonal.setLayout(null);
 		pnlDatosPersonal.add(lblCodigo);
 		pnlDatosPersonal.add(tfProductoId);
 		pnlDatosPersonal.add(lblNombre);
 		pnlDatosPersonal.add(tfDescripcion);
-		pnlDatosPersonal.add(lblDescFiscal);
-		pnlDatosPersonal.add(tfDesFiscal);
-
-		lblEsServicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
-				.getString("ProductoPanel.lblEsFraccionado.text"));
-		lblEsServicio.setBounds(205, 4, 67, 25);
-		pnlDatosPersonal.add(lblEsServicio);
-		lblEsServicio.setVisible(false);
-
-		chServicio = new JCheckBox();
-		chServicio.setVisible(false);
-		chServicio.setBounds(282, 4, 28, 25);
-		pnlDatosPersonal.add(chServicio);
 
 		label_7 = new JLabel("Precio A");
-		label_7.setBounds(16, 125, 98, 25);
+		label_7.setBounds(10, 124, 104, 25);
 		pnlDatosPersonal.add(label_7);
-
-		label_9 = new JLabel("Precio C");
-		label_9.setBounds(16, 154, 98, 25);
-		pnlDatosPersonal.add(label_9);
-
-		tfPrecioC = new JTextField();
-		tfPrecioC.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfPrecioC.selectAll();
-			}
-		});
-
-		tfPrecioC.setBounds(118, 154, 163, 25);
-		tfPrecioC.setColumns(10);
-		tfPrecioC.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusGained(FocusEvent e) {
-				tfPrecioC.selectAll();
-			}
-		});
-		tfPrecioC.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					Double precioC = FormatearValor.stringToDouble(tfPrecioC.getText());
-					tfPrecioC.setText(FormatearValor.doubleAString(precioC));
-					tabbedPane.setSelectedIndex(1);
-					// tabbedPane..requestFocus();
-				} else {
-					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						tfPrecioA.requestFocus();
-					}
-				}
-			}
-
-			@Override
-			public void keyTyped(KeyEvent e) {
-				Util.validateNumero(e);
-			}
-		});
-		pnlDatosPersonal.add(tfPrecioC);
 
 
 		tfPrecioA = new JTextField();
@@ -342,10 +276,10 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
 					Double precioA = FormatearValor.stringToDouble(tfPrecioA.getText());
 					tfPrecioA.setText(FormatearValor.doubleAString(precioA));
-					tfPrecioC.requestFocus();
+					//tfPrecioC.requestFocus();
 				}else {
 					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						tfPrecioCompra.requestFocus();
+						cbMarcas.requestFocus();
 					}
 				}
 			}
@@ -355,7 +289,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 				Util.validateNumero(e);
 			}
 		});
-		tfPrecioA.setBounds(118, 125, 163, 25);
+		tfPrecioA.setBounds(112, 124, 163, 25);
 		tfPrecioA.setColumns(10);
 		pnlDatosPersonal.add(tfPrecioA);
 
@@ -371,7 +305,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 		tfPrecioCompra = new JTextField();
 		tfPrecioCompra.setColumns(10);
-		tfPrecioCompra.setBounds(118, 94, 163, 25);
+		tfPrecioCompra.setBounds(112, 94, 163, 25);
 		tfPrecioCompra.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -388,7 +322,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 					tfPrecioA.requestFocus();
 				} else {
 					if (e.getKeyCode() == KeyEvent.VK_UP) {
-						tfDesFiscal.requestFocus();
+						tfDescripcion.requestFocus();
 					}
 				}
 			}
@@ -402,19 +336,118 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 		label_2 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ProductoPanel.label_2.text")); //$NON-NLS-1$
-		label_2.setBounds(16, 183, 98, 25);
+		label_2.setBounds(10, 154, 104, 25);
 		pnlDatosPersonal.add(label_2);
 
 		tfDep01 = new JTextField();
 		tfDep01.setEditable(false);
 		tfDep01.setColumns(10);
-		tfDep01.setBounds(118, 183, 163, 25);
+		tfDep01.setBounds(112, 154, 163, 25);
 		pnlDatosPersonal.add(tfDep01);
 
 		JLabel lblNewLabel = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
 				.getString("ProductoPanel.lblNewLabel.text")); //$NON-NLS-1$
-		lblNewLabel.setBounds(16, 102, 92, 13);
+		lblNewLabel.setBounds(10, 94, 92, 25);
 		pnlDatosPersonal.add(lblNewLabel);
+		
+		JLabel lblCdigo = new JLabel("Código"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblCdigo.setBounds(10, 34, 98, 25);
+		pnlDatosPersonal.add(lblCdigo);
+		
+		tfCodigo = new JTextField();
+		//tfCodigo.setText(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.textField.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		tfCodigo.setBounds(112, 34, 163, 25);
+		pnlDatosPersonal.add(tfCodigo);
+		tfCodigo.setColumns(10);
+		
+		tfCodigoSec = new JTextField();
+		tfCodigoSec.setColumns(10);
+		tfCodigoSec.setBounds(410, 34, 163, 25);
+		pnlDatosPersonal.add(tfCodigoSec);
+		
+		lblCdigoSec = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.lblCdigoSec.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		lblCdigoSec.setBounds(307, 34, 93, 21);
+		pnlDatosPersonal.add(lblCdigoSec);
+		
+		cbMarcas = new JComboBox<Marca>(marcaComboBoxModel);
+		cbMarcas.setBounds(112, 184, 163, 25);
+		pnlDatosPersonal.add(cbMarcas);
+		
+		JLabel label_2_1 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.label_2_1.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		label_2_1.setBounds(10, 184, 104, 25);
+		pnlDatosPersonal.add(label_2_1);
+		
+		JLabel label_2_2 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.label_2_2.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		label_2_2.setBounds(10, 214, 104, 25);
+		pnlDatosPersonal.add(label_2_2);
+		
+		cbAgrupacion = new JComboBox<Categoria>(categoriaComboBoxModel);
+		cbAgrupacion.setBounds(112, 214, 163, 25);
+		pnlDatosPersonal.add(cbAgrupacion);
+		
+		pnlLubricantes = new JPanel();
+		tabbedPane.addTab("Lubricantes", null, pnlLubricantes, "");
+		pnlLubricantes.setLayout(null);
+		
+		tfBase = new JTextField();
+		tfBase.setBounds(79, 24, 96, 25);
+		//textField.setText(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.textField.text")); //$NON-NLS-1$ //$NON-NLS-2$
+		pnlLubricantes.add(tfBase);
+		tfBase.setColumns(10);
+		
+		lblNewLabel_2 = new JLabel("Base"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_2.setBounds(10, 24, 45, 25);
+		pnlLubricantes.add(lblNewLabel_2);
+		
+		lblNewLabel_3 = new JLabel("Viscocidad"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_3.setBounds(10, 54, 59, 25);
+		pnlLubricantes.add(lblNewLabel_3);
+		
+		tfViscocidad = new JTextField();
+		tfViscocidad.setBounds(79, 54, 96, 25);
+		pnlLubricantes.add(tfViscocidad);
+		tfViscocidad.setColumns(10);
+		
+		lblNewLabel_4 = new JLabel("Origen"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_4.setBounds(10, 84, 45, 25);
+		pnlLubricantes.add(lblNewLabel_4);
+		
+		tfOrigen = new JTextField();
+		tfOrigen.setBounds(79, 84, 96, 25);
+		pnlLubricantes.add(tfOrigen);
+		tfOrigen.setColumns(10);
+		
+		lblNewLabel_5 = new JLabel("Envase"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_5.setBounds(10, 114, 45, 25);
+		pnlLubricantes.add(lblNewLabel_5);
+		
+		tfEnvase = new JTextField();
+		tfEnvase.setBounds(79, 114, 96, 25);
+		pnlLubricantes.add(tfEnvase);
+		tfEnvase.setColumns(10);
+		
+		pnlFiltros = new JPanel();
+		tabbedPane.addTab("Filtros", null, pnlFiltros, "");
+		pnlFiltros.setLayout(null);
+		
+		tfCodigoFram = new JTextField();
+		tfCodigoFram.setBounds(81, 21, 96, 25);
+		pnlFiltros.add(tfCodigoFram);
+		tfCodigoFram.setColumns(10);
+		
+		lblNewLabel_6 = new JLabel("Código Fram"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_6.setBounds(10, 24, 73, 25);
+		pnlFiltros.add(lblNewLabel_6);
+		
+		lblNewLabel_7 = new JLabel("Código Mann"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_7.setBounds(10, 50, 73, 25);
+		pnlFiltros.add(lblNewLabel_7);
+		
+		tfCodigoMan = new JTextField();
+		tfCodigoMan.setBounds(81, 50, 96, 25);
+		pnlFiltros.add(tfCodigoMan);
+		tfCodigoMan.setColumns(10);
+		
 
 		JPanel pnlInfo = new JPanel();
 		tabbedPane.addTab("Info", null, pnlInfo, "");
@@ -456,43 +489,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			}
 		});
 		pnlInfo.add(btnNewMarcas, "cell 2 0,alignx left,aligny center");
-
-		lblNewLabel_1 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
-				.getString("ProductoPanel.lblNewLabel_1.text")); //$NON-NLS-1$
-		pnlInfo.add(lblNewLabel_1, "cell 0 1,alignx left");
-		
-				tfOtrasReferencias = new JTextField();
-				((AbstractDocument) tfOtrasReferencias.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-				tfOtrasReferencias.addFocusListener(new FocusAdapter() {
-					@Override
-					public void focusGained(FocusEvent e) {
-						tfOtrasReferencias.requestFocus();
-					}
-				});
-				tfOtrasReferencias.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyPressed(KeyEvent e) {
-						if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-								|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-							cbImpuesto.requestFocus();
-						} else {
-							if (e.getKeyCode() == KeyEvent.VK_UP) {
-								cbMarca.requestFocus();
-							}
-						}
-					}
-
-					@Override
-					public void keyTyped(KeyEvent e) {
-						// Util.validateNumero(e);
-					}
-				});
-				pnlInfo.add(tfOtrasReferencias, "cell 1 1,grow");
-				tfOtrasReferencias.setColumns(10);
-
-		JLabel lblImpuesto = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
-				.getString("ProductoPanel.lblImpuesto.text"));
-		pnlInfo.add(lblImpuesto, "cell 0 2,grow");
 		
 				cbImpuesto = new JComboBox<Impuesto>(impuestoComboBoxModel);
 				cbImpuesto.addKeyListener(new KeyAdapter() {
@@ -508,7 +504,51 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 						}
 					}
 				});
-				pnlInfo.add(cbImpuesto, "cell 1 2,grow");
+								
+								lblNewLabel_8 = new JLabel("Referencia"); //$NON-NLS-1$ //$NON-NLS-2$
+								pnlInfo.add(lblNewLabel_8, "cell 0 1,alignx left");
+								
+								tfReferencia = new JTextField();
+								pnlInfo.add(tfReferencia, "cell 1 1,grow");
+								tfReferencia.setColumns(10);
+						
+								lblNewLabel_1 = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
+										.getString("ProductoPanel.lblNewLabel_1.text")); //$NON-NLS-1$
+								pnlInfo.add(lblNewLabel_1, "cell 0 2,alignx left");
+						
+								tfOtrasReferencias = new JTextField();
+								((AbstractDocument) tfOtrasReferencias.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
+								tfOtrasReferencias.addFocusListener(new FocusAdapter() {
+									@Override
+									public void focusGained(FocusEvent e) {
+										tfOtrasReferencias.requestFocus();
+									}
+								});
+								tfOtrasReferencias.addKeyListener(new KeyAdapter() {
+									@Override
+									public void keyPressed(KeyEvent e) {
+										if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
+												|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
+											cbImpuesto.requestFocus();
+										} else {
+											if (e.getKeyCode() == KeyEvent.VK_UP) {
+												cbMarca.requestFocus();
+											}
+										}
+									}
+
+									@Override
+									public void keyTyped(KeyEvent e) {
+										// Util.validateNumero(e);
+									}
+								});
+								pnlInfo.add(tfOtrasReferencias, "cell 1 2,grow");
+								tfOtrasReferencias.setColumns(10);
+				
+						JLabel lblImpuesto = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages")
+								.getString("ProductoPanel.lblImpuesto.text"));
+						pnlInfo.add(lblImpuesto, "cell 0 3,grow");
+				pnlInfo.add(cbImpuesto, "cell 1 3,grow");
 		pnlInfo.add(lblActivo, "cell 0 7,grow");
 		pnlInfo.add(chActivo, "cell 1 7,grow");
 
@@ -591,8 +631,10 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			tfProductoId.setText(product.getId() + "");
 			// tfNombre.setText(product.getNombre());
 			tfDescripcion.setText(product.getDescripcion()==null?"":product.getDescripcion());
-//			tfReferencia.setText(product.getReferencia());
+			tfCodigo.setText(product.getCodigo());
+			tfCodigoSec.setText(product.getCodigoSec());
 //			tfSubreferencia.setText(product.getSubreferencia());
+			tfReferencia.setText(product.getReferencia()==null?"":product.getReferencia());
 			tfOtrasReferencias.setText(product.getSubreferencia()==null?"":product.getSubreferencia());
 			tfPrecioCompra.setText(
 					product.getPrecioCosto() != null ? FormatearValor.doubleAString(product.getPrecioCosto()) : "0");
@@ -605,8 +647,8 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 			tfPrecioA.setText(
 					product.getPrecioVentaA() != null ? FormatearValor.doubleAString(product.getPrecioVentaA()) : "0");
-			tfPrecioC.setText(
-					product.getPrecioVentaC() != null ? FormatearValor.doubleAString(product.getPrecioVentaC()) : "0");
+//			tfPrecioC.setText(
+//					product.getPrecioVentaC() != null ? FormatearValor.doubleAString(product.getPrecioVentaC()) : "0");
 //			tfPrecioD.setText(
 //					product.getPrecioVentaD() != null ? FormatearValor.doubleAString(product.getPrecioVentaD()) : "0");
 //			tfPrecioE.setText(
@@ -615,16 +657,29 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 			categoriaComboBoxModel.setSelectedItem(product.getCategoria());
 			grupoComboBoxModel.setSelectedItem(product.getGrupo());
-			ncmComboBoxModel.setSelectedItem(product.getNcm());
+			
 			impuestoComboBoxModel.setSelectedItem(product.getImpuesto());
 			marcaComboBoxModel.setSelectedItem(product.getMarca());
 			unidadMedidaComboBoxModel.setSelectedItem(product.getUnidadMedida());
 			colorComboBoxModel.setSelectedItem(product.getColor());
 			tamanhoComboBoxModel.setSelectedItem(product.getTamanho());
 
-			// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
-			chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
-			tfDesFiscal.setText(product.getDescripcionFiscal());
+			tabbedPane.remove(pnlLubricantes);
+			tabbedPane.remove(pnlFiltros);
+			if (product.getCategoria().getNombre().equalsIgnoreCase("lubricantes")) {
+				tabbedPane.insertTab("Lubricantes", null, pnlLubricantes,"" ,1);
+				tfBase.setText(product.getBase());
+				tfViscocidad.setText(product.getViscocidad());
+				tfOrigen.setText(product.getOrigen());
+				tfEnvase.setText(product.getEnvase());
+				pnlLubricantes.setVisible(true);
+			}
+			if (product.getCategoria().getNombre().equalsIgnoreCase("filtros")) {
+				tfCodigoFram.setText(product.getCodigofram());
+				tfCodigoMan.setText(product.getCodigoman());
+				tabbedPane.insertTab("Filtros", null, pnlFiltros,"" ,1);
+			}
+			
 
 			chActivo.setSelected(product.getActivo() == 1 ? true : false);
 
@@ -656,27 +711,34 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 //			product.setSeccion(tfSeccion.getText());
 //			product.setRegimen((String) cbRegimen.getSelectedItem());
 
-			product.setEsServicio(chServicio.isSelected() ? 1 : 0);
 			product.setActivo(chActivo.isSelected() ? 1 : 0);
 			product.setImagenUrl(imagenUrl);
-			product.setDescripcionFiscal(tfDesFiscal.getText());
+//			product.setDescripcionFiscal(tfDesFiscal.getText());
 			product.setPrecioCosto(FormatearValor.stringADouble(tfPrecioCompra.getText()));
 			//product.setPrecioCostoPromedio(FormatearValor.stringADouble(tfPrecioPromedio.getText()));
 			product.setCategoria(categoriaComboBoxModel.getSelectedItem());
 			product.setGrupo(grupoComboBoxModel.getSelectedItem());
 			product.setSubgrupo(subgrupoComboBoxModel.getSelectedItem());
 			product.setMarca(marcaComboBoxModel.getSelectedItem());
-			product.setNcm(ncmComboBoxModel.getSelectedItem());
+			
 			product.setImpuesto(impuestoComboBoxModel.getSelectedItem());
 			product.setUnidadMedida(unidadMedidaComboBoxModel.getSelectedItem());
 			product.setTamanho(tamanhoComboBoxModel.getSelectedItem());
 			product.setColor(colorComboBoxModel.getSelectedItem());
-			// product.setEsFraccionado(cbEsFraccionado.getSelectedIndex() == 0 ? 0 : 1);
+			pnlLubricantes.setVisible(false);
+			pnlFiltros.setVisible(false);
+			if (categoriaComboBoxModel.getSelectedItem().getNombre().equalsIgnoreCase("lubricantes")) {
+				product.setBase(tfBase.getText());
+				pnlLubricantes.setVisible(true);
+			}
+			if (categoriaComboBoxModel.getSelectedItem().getNombre().equalsIgnoreCase("filtros")) {
+				pnlFiltros.setVisible(true);
+			}
 
 			product.setPrecioVentaA(
 					FormatearValor.stringADouble(!tfPrecioA.getText().isEmpty() ? tfPrecioA.getText() : "0"));
-			product.setPrecioVentaC(
-					FormatearValor.stringADouble(!tfPrecioC.getText().isEmpty() ? tfPrecioC.getText() : "0"));
+//			product.setPrecioVentaC(
+//					FormatearValor.stringADouble(!tfPrecioC.getText().isEmpty() ? tfPrecioC.getText() : "0"));
 			return product;	
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -686,9 +748,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	}
 
 	public void clearForm() {
-		tfProductoId.setText("");
+		tfProductoId.setText("0");
 		tfDescripcion.setText("");
-		tfDesFiscal.setText("");
+//		tfDesFiscal.setText("");
 
 		// tfSeccion.setText("");
 		tfOtrasReferencias.setText("");
@@ -705,7 +767,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 
 		tfPrecioA.setText("");
 		//tfPrecioB.setText("");
-		tfPrecioC.setText("");
+//		tfPrecioC.setText("");
 		tabbedPane.setSelectedIndex(0);
 
 		while (precioTableModel.getRowCount() > 0) {

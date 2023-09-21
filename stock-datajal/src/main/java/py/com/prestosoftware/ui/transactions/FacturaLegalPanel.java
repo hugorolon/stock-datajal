@@ -1623,13 +1623,6 @@ public class FacturaLegalPanel extends JFrame
 		case "Precio C":
 			precio = producto.getPrecioVentaC();
 			break;
-		case "Precio D":
-			precio = producto.getPrecioVentaD();
-			break;
-		case "Precio E":
-			precio = producto.getPrecioVentaE();
-			break;
-
 		default:
 			break;
 		}
@@ -1667,38 +1660,6 @@ public class FacturaLegalPanel extends JFrame
 						Notifications.showAlert("No tiene suficiente Stock para el Item");
 					}
 
-					break;
-				case 3:
-					Double stockDep03 = p.get().getDepO3() != null ? p.get().getDepO3() : 0;
-					Double stockDep03Bloq = p.get().getDepO3Bloq() != null ? p.get().getDepO3Bloq() : 0;
-
-					if (stockDep03 >= cantidad) {
-						producto.setDepO3Bloq((stockDep03Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-
-					break;
-				case 4:
-					Double stockDep04 = p.get().getDepO4() != null ? p.get().getDepO4() : 0;
-					Double stockDep04Bloq = p.get().getDepO4Bloq() != null ? p.get().getDepO4Bloq() : 0;
-
-					if (stockDep04 >= cantidad) {
-						producto.setDepO4Bloq((stockDep04Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
-
-					break;
-				case 5:
-					Double stockDep05 = p.get().getDepO5() != null ? p.get().getDepO5() : 0;
-					Double stockDep05Bloq = p.get().getDepO5Bloq() != null ? p.get().getDepO5Bloq() : 0;
-
-					if (stockDep05 >= cantidad) {
-						producto.setDepO5Bloq((stockDep05Bloq + cantidad) - cantAnterior);
-					} else {
-						Notifications.showAlert("No tiene suficiente Stock para el Item");
-					}
 					break;
 				default:
 					Notifications.showAlert("Verifique producto y deposito para agregar a la tabla.!");

@@ -750,11 +750,8 @@ public class AjusteStockPanel extends JDialog implements DepositoInterfaz, Produ
     			Producto p = producto.get();
     			Double stockDep01 = p.getDepO1() != null ? p.getDepO1() : 0;
     			Double stockDep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-    			Double stockDep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-    			Double stockDep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-    			Double stockDep05 = p.getDepO5() != null ? p.getDepO5() : 0;
     			
-    			Double stock = stockDep01 + stockDep02 + stockDep03 + stockDep04 + stockDep05;
+    			Double stock = stockDep01 + stockDep02;
     			
     			if (stock < e.getCantidadNueva() ) {
     				Notifications.showAlert("La cantidad Nueva del producto: " + producto.get().getDescripcion() + 

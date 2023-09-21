@@ -66,7 +66,8 @@ public class ProductoService {
     }
 
     public List<Producto> findByNombre(String name) {
-        return repository.findByDescripcionContaining(name);
+       // return repository.findByDescripcionContaining(name);
+    	return repository.findProductsByFilter(name);
     }
 
     public void save(Producto producto) {

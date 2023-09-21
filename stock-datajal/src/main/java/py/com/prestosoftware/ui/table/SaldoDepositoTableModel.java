@@ -22,19 +22,13 @@ public class SaldoDepositoTableModel extends DefaultTableModel<Producto> {
         
         Double dep01 = product.getDepO1() != null ? product.getDepO1():0;
     	Double dep02 = product.getDepO2() != null ? product.getDepO2():0;
-    	Double dep03 = product.getDepO3() != null ? product.getDepO3():0;
-    	Double dep04 = product.getDepO4() != null ? product.getDepO4():0;
-    	Double dep05 = product.getDepO5() != null ? product.getDepO5():0;  
     	
-    	Double totalDep = dep01 + dep02 + dep03 + dep04 + dep05;
+    	Double totalDep = dep01 + dep02 ;
         
         Double depBloq01 = product.getDepO1Bloq() != null ? product.getDepO1Bloq():0;
     	Double depBloq02 = product.getDepO2Bloq() != null ? product.getDepO2Bloq():0;
-    	Double depBloq03 = product.getDepO3Bloq() != null ? product.getDepO3Bloq():0;
-    	Double depBloq04 = product.getDepO4Bloq() != null ? product.getDepO4Bloq():0;
-    	Double depBloq05 = product.getDepO5Bloq() != null ? product.getDepO5Bloq():0;
     	
-    	Double totalDepBloq = depBloq01 + depBloq02 + depBloq03 + depBloq04 + depBloq05;
+    	Double totalDepBloq = depBloq01 + depBloq02 ;
 
         switch (columnIndex) {
             case 0:

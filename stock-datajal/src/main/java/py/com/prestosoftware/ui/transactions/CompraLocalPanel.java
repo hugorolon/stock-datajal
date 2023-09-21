@@ -1130,18 +1130,6 @@ public class CompraLocalPanel extends JFrame
 						cantDep = p.getDepO2() != null ? p.getDepO2() : 0;
 						p.setDepO2(cantDep + cantCompra);
 						break;
-					case 3:
-						cantDep = p.getDepO3() != null ? p.getDepO3() : 0;
-						p.setDepO3(cantDep + cantCompra);
-						break;
-					case 4:
-						cantDep = p.getDepO4() != null ? p.getDepO4() : 0;
-						p.setDepO4(cantDep + cantCompra);
-						break;
-					case 5:
-						cantDep = p.getDepO5() != null ? p.getDepO5() : 0;
-						p.setDepO5(cantDep + cantCompra);
-						break;
 					default:
 						break;
 					}
@@ -1352,18 +1340,6 @@ public class CompraLocalPanel extends JFrame
 					case 2:
 						Double dep02 = p.getDepO2() != null ? p.getDepO2() : 0;
 						p.setDepO2(dep02 - cantItem);
-						break;
-					case 3:
-						Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-						p.setDepO3(dep03 - cantItem);
-						break;
-					case 4:
-						Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-						p.setDepO4(dep04 - cantItem);
-						break;
-					case 5:
-						Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-						p.setDepO5(dep05 - cantItem);
 						break;
 					default:
 						break;
@@ -1854,21 +1830,12 @@ public class CompraLocalPanel extends JFrame
 	}
 
 	private void setProducto(Producto producto) {
-		if (producto.getEsServicio() == 1) {
-			tfProductoID.setText("");
-			tfDescripcion.setText("");
-			tfCantidad.setText("");
-			tfPrecio.setText("");
-			tfProductoID.requestFocus();
-			Notifications.showAlert("Este Producto es de tipo Servicio. No se puede comprar");
-		} else {
 			Double costo = producto.getPrecioCosto() != null ? producto.getPrecioCosto() : 0;
 			tfProductoID.setText(producto.getId().toString());
 			tfDescripcion.setText(producto.getDescripcion());
 			tfPrecio.setText(FormatearValor.doubleAString(costo));
 			tfCantidad.setText("1");
 			tfCantidad.requestFocus();
-		}
 	}
 
 	private void findCompraById(Long id) {

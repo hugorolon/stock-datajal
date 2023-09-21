@@ -160,14 +160,6 @@ public class GrupoController extends AbstractFrameController {
 				e.setPrecioVentaC(
 						e.getPrecioVentaC() + ((grupo.getPorcIncrementoPrecioC() / 100) * e.getPrecioVentaC()));
 
-			if (e.getPrecioVentaD() != null)
-				e.setPrecioVentaD(
-						e.getPrecioVentaD() + ((grupo.getPorcIncrementoPrecioD() / 100) * e.getPrecioVentaD()));
-
-			if (e.getPrecioVentaE() != null)
-				e.setPrecioVentaE(
-						e.getPrecioVentaE() + ((grupo.getPorcIncrementoPrecioE() / 100) * e.getPrecioVentaE()));
-
 			productoService.save(e);
 
 		}

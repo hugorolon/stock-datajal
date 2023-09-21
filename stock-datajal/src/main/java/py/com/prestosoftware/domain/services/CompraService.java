@@ -189,18 +189,6 @@ public class CompraService {
 						cantDep = p.getDepO2()!=null ? p.getDepO2() : 0;
 						p.setDepO2(cantDep + cantCompra);
 						break;
-					case 3:
-						cantDep = p.getDepO3()!=null ? p.getDepO3() : 0;
-						p.setDepO3(cantDep + cantCompra);
-						break;
-					case 4:
-						cantDep = p.getDepO4() != null ? p.getDepO4() : 0;
-						p.setDepO4(cantDep + cantCompra);
-						break;
-					case 5:
-						cantDep = p.getDepO5() != null ? p.getDepO5():0;
-						p.setDepO5(cantDep + cantCompra);
-						break;
 					default:
 						break;
 					}

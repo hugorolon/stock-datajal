@@ -978,21 +978,6 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 			//depBlo = p.getDepO2Bloq()!=null?p.getDepO2Bloq():0;
 			result = getStockDisp(dep02 - salPend, cantidad);
 			break;
-		case 3:
-			Double dep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-			//depBlo = p.getDepO3Bloq()!=null?p.getDepO3Bloq():0;
-			result = getStockDisp(dep03 - salPend, cantidad);
-			break;
-		case 4:
-			Double dep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-			//depBlo = p.getDepO4Bloq()!=null?p.getDepO4Bloq():0;
-			result = getStockDisp(dep04 - salPend, cantidad);
-			break;
-		case 5:
-			Double dep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-			//depBlo = p.getDepO5Bloq()!=null?p.getDepO5Bloq():0;
-			result = getStockDisp(dep05 - salPend, cantidad);
-			break;
 		default:
 			break;
 		}
@@ -1029,13 +1014,6 @@ public class PDV extends JFrame implements ProductoInterfaz, VentaInterfaz {
 		case "C":
 			precio = producto.getPrecioVentaC();
 			break;
-		case "D":
-			precio = producto.getPrecioVentaD();
-			break;
-		case "E":
-			precio = producto.getPrecioVentaE();
-			break;
-
 		default:
 			break;
 		}

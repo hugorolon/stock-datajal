@@ -1771,14 +1771,11 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 				Producto p = pOptional.get();
 
 				Double salidaPend = p.getSalidaPend() != null ? p.getSalidaPend() : 0;
-				Double cantItem = e.getCantidad() != null ? e.getCantidad() : 1;
+				Double cantItem = e.getCantidad() != null ? e.getCantidad() : 0;
 
 				// Stock de Depositos
 				Double cant = p.getDepO1() != null ? p.getDepO1() : 0;
 				Double cant02 = p.getDepO2() != null ? p.getDepO2() : 0;
-				Double cant03 = p.getDepO3() != null ? p.getDepO3() : 0;
-				Double cant04 = p.getDepO4() != null ? p.getDepO4() : 0;
-				Double cant05 = p.getDepO5() != null ? p.getDepO5() : 0;
 
 				// refactorizar
 				switch (depID) {
@@ -1798,64 +1795,15 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 					}
 
 					break;
-				case 3:
-					if (isCancel) {
-						p.setDepO3(cant03 + cantItem);
-					} else {
-						p.setDepO3(cant03 - cantItem);
-					}
-
-					break;
-				case 4:
-					if (isCancel) {
-						p.setDepO4(cant04 + cantItem);
-					} else {
-						p.setDepO4(cant04 - cantItem);
-					}
-
-					break;
-				case 5:
-					if (isCancel) {
-						p.setDepO5(cant05 + cantItem);
-					} else {
-						p.setDepO5(cant05 - cantItem);
-					}
-
-					break;
 				default:
 					break;
 				}
 
 				p.setSalidaPend(salidaPend - cantItem);
 
-				// calcular de total fob y cif
-				Double stockActual = (cant + cant02 + cant03 + cant04 + cant05) - e.getCantidad();
-				Double codtoFobItem = p.getCostoFob() != null ? p.getCostoFob() : 0;
-				Double codtoCifItem = p.getCostoCif() != null ? p.getCostoCif() : 0;
 
-				p.setTotalFob(stockActual * codtoFobItem);
-				p.setTotalCif(stockActual * codtoCifItem);
-
-				// agregamos a la lista
+				//actualizar el calculo de utilidad asi como ya fue implementado en agroprogreso
 				productos.add(p);
-
-				// update de venta items
-//				e.setCostoCif(p.getCostoCif() != null ? p.getCostoCif():0);
-//				e.setCostoFob(p.getCostoFob() != null ? p.getCostoFob():0);
-
-				// calcular
-//				Double total = venta.getTotalGeneral() != null ? venta.getTotalGeneral():0;
-//				Double flete = venta.getTotalFlete() != null ? venta.getTotalFlete():0;
-//				Double descuento = venta.getTotalDescuento() != null ? venta.getTotalDescuento():0;
-//				
-//				Double costoCif = ((total + flete) - (-descuento)) / total;	
-//						
-//				e.setPrecioFob(e.getPrecio());
-//				e.setPrecio(costoCif * e.getCostoCif());
-//				e.setPrecioCif(costoCif * e.getCostoCif());
-
-				// venta detalle
-//				itemsUpdate.add(e);
 			}
 		}
 		
@@ -1905,7 +1853,6 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	}
 
 	private void updateCompraItemDeposito(Compra c) {
-		Double gastoTotal = c.getGastos() != null ? c.getGastos() : 0;
 		Double total = c.getTotalGeneral() != null ? c.getTotalGeneral() : 0;
 		Double desc = c.getDescuento() != null ? c.getDescuento() : 0;
 
@@ -1924,10 +1871,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 
 				Double stockDep01 = p.getDepO1() != null ? p.getDepO1() : 0;
 				Double stockDep02 = p.getDepO2() != null ? p.getDepO2() : 0;
-				Double stockDep03 = p.getDepO3() != null ? p.getDepO3() : 0;
-				Double stockDep04 = p.getDepO4() != null ? p.getDepO4() : 0;
-				Double stockDep05 = p.getDepO5() != null ? p.getDepO5() : 0;
-
+		
 				switch (depId) {
 					case 1:
 						p.setEntPendiente(entradaPend - cantidad);
@@ -1937,39 +1881,17 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 						p.setEntPendiente(entradaPend - cantidad);
 						p.setDepO2(stockDep02 + cantidad);
 						break;
-					case 3:
-						p.setEntPendiente(entradaPend - cantidad);
-						p.setDepO3(stockDep03 + cantidad);
-						break;
-					case 4:
-						p.setEntPendiente(entradaPend - cantidad);
-						p.setDepO4(stockDep04 + cantidad);
-						break;
-					case 5:
-						p.setEntPendiente(entradaPend - cantidad);
-						p.setDepO5(stockDep05 + cantidad);
-						break;
-	
 					default:
 						break;
 				}
 
 				// Calcular precio promedio
-				Double stockTotal = stockDep01 + stockDep02 + stockDep03 + stockDep04 + stockDep05 + cantidad;
+				Double stockTotal = stockDep01 + stockDep02 + cantidad;
 				Double precio = p.getPrecioCosto() != null ? p.getPrecioCosto() : 0;
 				Double precioPromedioActual = stockTotal * precio;
 				p.setPrecioCostoPromedio(precioPromedioActual);
 
-				// Calculo de costo y total FOB
-				Double totalFob = p.getTotalFob() != null ? p.getTotalFob() : 0;
-				p.setCostoFob(e.getPrecio());
 				p.setPrecioCosto(e.getPrecio());
-				p.setTotalFob(totalFob + e.getSubtotal());
-
-				// Calculo de costo
-				Double costoCif = (total + gastoTotal - (-desc)) / total;
-				p.setCostoCif(costoCif * p.getCostoFob());
-				p.setTotalCif(p.getCostoCif() * stockTotal);
 
 				productos.add(p);
 				

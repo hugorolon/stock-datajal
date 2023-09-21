@@ -283,24 +283,6 @@ public class ProductoController extends AbstractFrameController {
     				if (p.getDepO2() != null) {
     					ProductoDeposito dep02 = new ProductoDeposito(deposito2, p.getDepO2());
     					listProductoDeposito.add(dep02);
-    					
-    					String deposito3 = depositoService.findById(3L).get().getNombre();
-    					if (p.getDepO3() != null) {
-    						ProductoDeposito dep03 = new ProductoDeposito(deposito3, p.getDepO3());
-    						listProductoDeposito.add(dep03);
-    						
-    						String deposito4 = depositoService.findById(4L).get().getNombre();
-    						if (p.getDepO4() != null) {
-    							ProductoDeposito dep04 = new ProductoDeposito(deposito4, p.getDepO4());
-    							listProductoDeposito.add(dep04);
-    							
-    							String deposito5 = depositoService.findById(5L).get().getNombre();
-    							if (p.getDepO5() != null) {
-    								ProductoDeposito dep05 = new ProductoDeposito(deposito5, p.getDepO5());
-    								listProductoDeposito.add(dep05);
-    							}	
-    						}
-    					}
     				}
     			}	
     		}
@@ -424,7 +406,7 @@ public class ProductoController extends AbstractFrameController {
     	try {
         	productoPanel.clearForm();
         	productoPanel.getTfNombre().requestFocus();
-        	addNewProduct();	
+        	//addNewProduct();	
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

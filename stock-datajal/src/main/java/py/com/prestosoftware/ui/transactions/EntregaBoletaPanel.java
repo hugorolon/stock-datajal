@@ -269,10 +269,6 @@ public class EntregaBoletaPanel extends JDialog {
 				//Stock de Depositos
 				Double cant = p.getDepO1() != null ?  p.getDepO1():0;
 				Double cant02 = p.getDepO2() != null ?  p.getDepO2():0;
-				Double cant03 = p.getDepO3() != null ?  p.getDepO3():0;
-				Double cant04 = p.getDepO4() != null ?  p.getDepO4():0;
-				Double cant05 = p.getDepO5() != null ?  p.getDepO5():0;
-				
 				//refactorizar
 				switch (depID) {
 					case 1:
@@ -281,18 +277,6 @@ public class EntregaBoletaPanel extends JDialog {
 						break;
 					case 2:
 						p.setDepO2(cant02 + cantItem);
-						p.setSalidaPend(salidaPend - cantItem);
-						break;
-					case 3:
-						p.setDepO3(cant03 + cantItem);
-						p.setSalidaPend(salidaPend - cantItem);
-						break;
-					case 4:			
-						p.setDepO4(cant04 + cantItem);
-						p.setSalidaPend(salidaPend - cantItem);
-						break;
-					case 5:
-						p.setDepO5(cant05 + cantItem);
 						p.setSalidaPend(salidaPend - cantItem);
 						break;
 					default:
@@ -322,9 +306,6 @@ public class EntregaBoletaPanel extends JDialog {
 				//Stock de Depositos
 				Double cant = p.getDepO1() != null ?  p.getDepO1():0;
 				Double cant02 = p.getDepO2() != null ?  p.getDepO2():0;
-				Double cant03 = p.getDepO3() != null ?  p.getDepO3():0;
-				Double cant04 = p.getDepO4() != null ?  p.getDepO4():0;
-				Double cant05 = p.getDepO5() != null ?  p.getDepO5():0;
 				
 				//refactorizar
 				switch (depID) {
@@ -334,18 +315,6 @@ public class EntregaBoletaPanel extends JDialog {
 						break;
 					case 2:
 						p.setDepO2(cant02 + cantItem);
-						p.setEntPendiente(entradaPend - cantItem);
-						break;
-					case 3:
-						p.setDepO3(cant03 + cantItem);
-						p.setEntPendiente(entradaPend - cantItem);
-						break;
-					case 4:			
-						p.setDepO4(cant04 + cantItem);
-						p.setEntPendiente(entradaPend - cantItem);
-						break;
-					case 5:
-						p.setDepO5(cant05 + cantItem);
 						p.setEntPendiente(entradaPend - cantItem);
 						break;
 					default:
