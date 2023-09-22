@@ -536,8 +536,10 @@ public class VentaPanel extends JFrame
 					if (!tfCantidad.getText().isEmpty()) {
 						if (!tfProductoID.getText().isEmpty()) {
 							if (!isProductService) {
-								if (validateCantidad()) {
+								if (conf != null && conf.getBloqueaProductoNegativo()==0 || validateCantidad()) {
 									tfPrecio.requestFocus();
+								}else {
+									Notifications.showAlert("Stock menos de la cantidad a vender del Producto.!");
 								}
 							} else {
 								tfPrecio.requestFocus();
@@ -1516,9 +1518,9 @@ public class VentaPanel extends JFrame
 
 		switch (depositoId) {
 		case 1:
-			String d = decfor.format(p.getDepO1().doubleValue());
+			String d = decfor.format(p.getDepO1()!=null?p.getDepO1().doubleValue():0);
 			Double dep01 = p.getDepO1() != null ?  FormatearValor.stringADouble(d) : 0;
-			depBlo = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
+			//depBlo = p.getDepO1Bloq() != null ? p.getDepO1Bloq() : 0;
 			// result = getStockDisp(dep01 - salPend - depBlo, cantidad);
 			result = getStockDisp(dep01, cantidad);
 			break;
@@ -2806,16 +2808,16 @@ public class VentaPanel extends JFrame
 	private void setProducto(Producto producto) {
 		try {
 			if (producto != null) {
-				if (producto.getSubgrupo().getTipo().equals("S"))
+				if (producto.getSubgrupo()!=null&&producto.getSubgrupo().getTipo().equals("S"))
 					isProductService = true;
 				if(nivelPrecio==null)
 					nivelPrecio= conf.getPrecioDefinido();
 				
 				precioInicial = setPrecioByCliente(nivelPrecio, producto);
-				this.precioA = producto.getPrecioVentaA();
-				this.precioB = producto.getPrecioVentaB();
-				this.precioC = producto.getPrecioVentaC();
-				this.impuesto = producto.getImpuesto().getPorcentaje().intValue();
+				this.precioA = producto.getPrecioVentaA()!=null?producto.getPrecioVentaA():0;
+				this.precioB = producto.getPrecioVentaB()!=null?producto.getPrecioVentaB():0;
+				this.precioC = producto.getPrecioVentaC()!=null?producto.getPrecioVentaC():0;;
+				this.impuesto = producto.getImpuesto()!=null?producto.getImpuesto().getPorcentaje().intValue():0;
 				this.precioCompra= producto.getPrecioCosto()==null?0:producto.getPrecioCosto();
 				// setProductoSeleccionado(producto);
 
@@ -2827,7 +2829,7 @@ public class VentaPanel extends JFrame
 				tfCantidad.setText("1");
 				// tfDescuentoItem.setText(FormatearValor.doubleAString(0d));
 				tfCantidad.requestFocus();
-				Double cantStock=FormatearValor.stringToDoubleFormat(producto.getDepO1().toString());
+				Double cantStock=FormatearValor.stringToDoubleFormat(producto.getDepO1()!=null?producto.getDepO1().toString():"0");
 				tfStock.setText(FormatearValor.doubleAString(cantStock));
 				lblCosto.setText(FormatearValor.doubleAString(this.precioCompra));
 			}

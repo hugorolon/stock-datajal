@@ -611,8 +611,8 @@ public class ProductoVistaDialog extends JDialog {
 	}
 
 	private void getDatosComplementarios(Producto p) {
-		lblEanValor.setText(p.getReferencia().toString());
-		lblReferenciaValor.setText(p.getSubreferencia());
+		lblEanValor.setText(p.getReferencia()!=null?p.getReferencia().toString():"");
+		lblReferenciaValor.setText(p.getSubreferencia()!=null?p.getSubreferencia().toString():"");
 		try {
 			lblStockValor.setText(FormatearValor.doubleAString(p.getDepO1()));			
 		} catch (Exception e) {
@@ -650,8 +650,8 @@ public class ProductoVistaDialog extends JDialog {
 		lblCodigoValor.setText(p.getId().toString());
 		lblNombreValor.setText(p.getDescripcion());
 		lblMagnitudValor.setText("1- UNIDAD");
-		lblAgrupacionValor.setText("1- "+p.getGrupo().toString());
-		lblFabricanteValor.setText(p.getMarca().getId()+"- "+p.getMarca().getNombre());
+		lblAgrupacionValor.setText("1- "+p.getCategoria()!=null?p.getCategoria().getNombre():"");
+		lblFabricanteValor.setText(p.getMarca()!=null?p.getMarca().getId()+"- "+p.getMarca().getNombre():"");
 	}
 	
 	public void limpiaDatosComplementarios() {
