@@ -687,7 +687,7 @@ public class ClientePanel extends JDialog {
     	tfFax.setText(client.getFax());
     	tfEmail.setText(client.getEmail());
     	tfWeb.setText(client.getWeb());
-    	tfContacto.setText(client.getContacto().toString());
+    	tfContacto.setText(client.getContacto()!=null?client.getContacto().toString():"");
 //    	tfClase.setText(client.getClase());
 //    	tfObs.setText(client.getObs());
     	

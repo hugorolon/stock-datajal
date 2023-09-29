@@ -200,7 +200,7 @@ public class MainFrame extends JFrame {
 		mnuSubgrupo = new JMenuItem("SUB GRUPOS");
 		mnuSubgrupo.setFont(new Font("Segoe UI", Font.PLAIN, 14));
 		mnuSubgrupo.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_MASK));
-		mnuProducto.add(mnuSubgrupo);
+		//mnuProducto.add(mnuSubgrupo);
 		mnuProducto.addSeparator();
 		mnuEmpaque_2 = new JMenuItem("EMPAQUES");
 		mnuEmpaque_2.setFont(new Font("Segoe UI", Font.PLAIN, 14));

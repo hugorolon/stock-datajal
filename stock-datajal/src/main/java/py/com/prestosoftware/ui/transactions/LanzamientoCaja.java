@@ -249,7 +249,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					if (!tfOperacionID.getText().isEmpty()) {
+					if (tfOperacionID.getText()!=""&&!tfOperacionID.getText().isEmpty()) {
 						findOperacionById(tfOperacionID.getText());
 					} else {
 						openPopup(0);
@@ -382,9 +382,16 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 				}
 			}
 		});
+		btnAdd.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					addItem();
+				}
+			}
+		});
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				addItem();
+				
 			}
 		});
 		pnlEntradaPago.add(btnAdd);
@@ -791,45 +798,45 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		tbNotasLanzadas.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		scrollNotasLanzadas.setViewportView(tbNotasLanzadas);
 
-		panelValorCaja = new JPanel();
-		tabbedPane.addTab("Valores en Caja", null, panelValorCaja, null);
-		panelValorCaja.setLayout(null);
+		//panelValorCaja = new JPanel();
+		//tabbedPane.addTab("Valores en Caja", null, panelValorCaja, null);
+		//panelValorCaja.setLayout(null);
 
-		scrollPaneEntradaCaja = new JScrollPane();
-		scrollPaneEntradaCaja.setBounds(6, 6, 557, 80);
-		panelValorCaja.add(scrollPaneEntradaCaja);
+//		scrollPaneEntradaCaja = new JScrollPane();
+//		scrollPaneEntradaCaja.setBounds(6, 6, 557, 80);
+//		panelValorCaja.add(scrollPaneEntradaCaja);
 
-		tbEntradaCaja = new JTable(entradaCajaModel);
-		scrollPaneEntradaCaja.setViewportView(tbEntradaCaja);
+//		tbEntradaCaja = new JTable(entradaCajaModel);
+//		scrollPaneEntradaCaja.setViewportView(tbEntradaCaja);
+//
+//		lblConsolidado = new JLabel("CONSOLIDADO");
+//		lblConsolidado.setBounds(321, 88, 111, 29);
+//		panelValorCaja.add(lblConsolidado);
 
-		lblConsolidado = new JLabel("CONSOLIDADO");
-		lblConsolidado.setBounds(321, 88, 111, 29);
-		panelValorCaja.add(lblConsolidado);
+//		tfConsolidado = new JTextField();
+//		tfConsolidado.setFont(new Font("Arial", Font.PLAIN, 14));
+//		tfConsolidado.setEditable(false);
+//		tfConsolidado.setColumns(10);
+//		tfConsolidado.setBounds(433, 88, 130, 29);
+//		panelValorCaja.add(tfConsolidado);
 
-		tfConsolidado = new JTextField();
-		tfConsolidado.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfConsolidado.setEditable(false);
-		tfConsolidado.setColumns(10);
-		tfConsolidado.setBounds(433, 88, 130, 29);
-		panelValorCaja.add(tfConsolidado);
+//		JScrollPane scrollCotizacion = new JScrollPane();
+//		tabbedPane.addTab("Cotizaciones", null, scrollCotizacion, null);
+//
+//		tbCotizacion = new JTable(cotizacionModel);
+//		tbCotizacion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//		tbCotizacion.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+//		scrollCotizacion.setViewportView(tbCotizacion);
 
-		JScrollPane scrollCotizacion = new JScrollPane();
-		tabbedPane.addTab("Cotizaciones", null, scrollCotizacion, null);
-
-		tbCotizacion = new JTable(cotizacionModel);
-		tbCotizacion.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tbCotizacion.setDefaultRenderer(Object.class, new CellRendererOperaciones());
-		scrollCotizacion.setViewportView(tbCotizacion);
-
-		lblTipoOperacion = new JLabel("");
-		lblTipoOperacion.setBounds(6, 301, 23, 30);
-		lblTipoOperacion.setForeground(Color.RED);
-		pnlEntradaPago.add(lblTipoOperacion);
-
-		lblTipo = new JLabel("HISTORICO");
-		lblTipo.setBounds(427, 169, 134, 16);
-		lblTipo.setHorizontalAlignment(SwingConstants.LEFT);
-		pnlEntradaPago.add(lblTipo);
+//		lblTipoOperacion = new JLabel("");
+//		lblTipoOperacion.setBounds(6, 301, 23, 30);
+//		lblTipoOperacion.setForeground(Color.RED);
+//		pnlEntradaPago.add(lblTipoOperacion);
+//
+//		lblTipo = new JLabel("HISTORICO");
+//		lblTipo.setBounds(427, 169, 134, 16);
+//		lblTipo.setHorizontalAlignment(SwingConstants.LEFT);
+//		pnlEntradaPago.add(lblTipo);
 
 		btnGuardar = new JButton("GUARDAR");
 		btnGuardar.setBounds(770, 335, 112, 47);
@@ -1028,32 +1035,37 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 //	}
 
 	private boolean existItemInTable() {
-		Boolean esDuplicado = false;
-		for (Integer i = 0; i < tbLanzamientos.getRowCount(); i++) {
-			String operacionId = String.valueOf(tbLanzamientos.getValueAt(i, 0));
-			String operacionTipo = String.valueOf(tbLanzamientos.getValueAt(i, 1));
-			String notaNro = String.valueOf(tbLanzamientos.getValueAt(i, 2));
+		try {
+			Boolean esDuplicado = false;
+			for (Integer i = 0; i < tbLanzamientos.getRowCount(); i++) {
+				String operacionId = String.valueOf(tbLanzamientos.getValueAt(i, 0));
+				String operacionTipo = String.valueOf(tbLanzamientos.getValueAt(i, 1));
+				String notaNro = String.valueOf(tbLanzamientos.getValueAt(i, 2));
 
-			if (tfOperacionID.getText().trim().equals(operacionId)
-					&& lblTipoOperacion.getText().trim().equals(operacionTipo)
-					&& tfNotaNro.getText().trim().equals(notaNro)) {
-				esDuplicado = true;
+				if (tfOperacionID.getText().trim().equals(operacionId)
+						&& lblTipoOperacion.getText().trim().equals(operacionTipo)
+						&& tfNotaNro.getText().trim().equals(notaNro)) {
+					esDuplicado = true;
+				}
 			}
-		}
-		if (esDuplicado) {
-			Integer respuesta = JOptionPane.showConfirmDialog(null,
-					"Registro ya existe en la grilla, desea actualizar los datos?");
-			if (respuesta == 0) {
-				if (isValidItem()) {
-					// actualizarRegristroGrilla(fila, String.valueOf(tbNotas.getValueAt(fila, 1)));
+			if (esDuplicado) {
+				Integer respuesta = JOptionPane.showConfirmDialog(null,
+						"Registro ya existe en la grilla, desea actualizar los datos?");
+				if (respuesta == 0) {
+					if (isValidItem()) {
+						// actualizarRegristroGrilla(fila, String.valueOf(tbNotas.getValueAt(fila, 1)));
+						tfOperacionID.requestFocus();
+					}
+				} else {
 					tfOperacionID.requestFocus();
 				}
-			} else {
-				tfOperacionID.requestFocus();
 			}
-		}
 
-		return esDuplicado;
+			return esDuplicado;
+			
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private boolean isValidItem() {
@@ -1118,26 +1130,31 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 //	}
 
 	public void findOperacionById(String id) {
-		int operacionId = Integer.parseInt(id);
-		
-		if (operacionId == OPERACION_COBRO_CLI) {
-			openPopup(OPERACION_COBRO_CLI);
+		try {
+			int operacionId = Integer.parseInt(id);
 			
-		} else if (operacionId == OPERACION_PAGO_PROV) {
-			openPopup(OPERACION_PAGO_PROV);
-			
-		} else {
-			Optional<PlanCuenta> cuenta = planService.findById(Long.valueOf(id));
-
-			if (cuenta.isPresent()) {
-				String nombre = cuenta.get().getNombre();
-				lblOperacionNombre.setText(nombre);
-				lblTipoOperacion.setText(cuenta.get().getTipo());
-				tfNotaNro.requestFocus();
+			if (operacionId == OPERACION_COBRO_CLI) {
+				openPopup(OPERACION_COBRO_CLI);
+				
+			} else if (operacionId == OPERACION_PAGO_PROV) {
+				openPopup(OPERACION_PAGO_PROV);
+				
 			} else {
-				Notifications.showAlert("No se encuentra Operacion con ese codigo.!");
+				Optional<PlanCuenta> cuenta = planService.findById(Long.valueOf(id));
+
+				if (cuenta.isPresent()) {
+					String nombre = cuenta.get().getNombre();
+					lblOperacionNombre.setText(nombre);
+					lblTipoOperacion.setText(cuenta.get().getTipo());
+					tfNotaNro.requestFocus();
+				} else {
+					Notifications.showAlert("No se encuentra Operacion con ese codigo.!");
+				}
 			}
+		} catch (Exception e) {
+			Notifications.showAlert("Ingrese correctamente la Operacion deseada, desde 1 a 7 enteros!");
 		}
+		
 	}
 
 	public void findCajaById(Long id) {
@@ -1298,17 +1315,21 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	}
 
 	private void calculateItem() {
-		Double totalEntrada = tableModel.getEntities().stream().filter(e -> e.getTipoOperacion().equals("E"))
-				.mapToDouble(i -> i.getNotaValor()).sum();
+		try {
+			Double totalEntrada = tableModel.getEntities().stream().filter(e -> e.getTipoOperacion().equals("E"))
+					.mapToDouble(i -> i.getNotaValor()).sum();
 
-		Double totalSalida = tableModel.getEntities().stream().filter(e -> e.getTipoOperacion().equals("S"))
-				.mapToDouble(i -> i.getNotaValor()).sum();
+			Double totalSalida = tableModel.getEntities().stream().filter(e -> e.getTipoOperacion().equals("S"))
+					.mapToDouble(i -> i.getNotaValor()).sum();
 
-		Double totalGeneral = totalEntrada - totalSalida;
+			Double totalGeneral = totalEntrada - totalSalida;
 
-		setTotals(totalGeneral, totalEntrada, totalSalida);
+			setTotals(totalGeneral, totalEntrada, totalSalida);
 
-		setTotalMoneda(totalGeneral);
+			setTotalMoneda(totalGeneral);	
+		} catch (Exception e2) {
+			Notifications.showAlert("Problemas para calcular totales");
+		}
 	}
 
 	private void setTotalMoneda(Double total) {
@@ -1385,15 +1406,15 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		} else {
 			entPago.setCaja(new Caja(Long.parseLong(tfCajaID.getText())));
 		}
-		if(tfOperacionID.getText()!="")
-			entPago.setPlanCuentaId(Integer.parseInt(tfOperacionID.getText()));
+		if(tfOperacionID.getText()!=""&&!tfOperacionID.getText().isEmpty())
+			entPago.setPlanCuentaId(Integer.parseInt(tfOperacionID.getText().toString()));
 		
 		entPago.setTipoOperacion(lblTipoOperacion.getText());
 		entPago.setNotaNro(tfNotaNro.getText());
 		entPago.setNotaReferencia(tfNotaNombre.getText());
 		entPago.setNotaValor(FormatearValor.stringADouble(tfNotaValor.getText()));
 		entPago.setObs(tfObs.getText());
-		entPago.setSituacion("PAGADO");
+		//entPago.setSituacion("PAGADO");
 
 		return entPago;
 	}
@@ -1626,14 +1647,26 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 									: 0);
 					e.setValorM05(FormatearValor.stringToDouble("0"));
 					e.setCotizacion(mDolar);
+					if(e.getPlanCuentaId()==1) {
+						Optional<Venta> venta = ventaService.findById(Long.valueOf(e.getNotaNro()));
+						if (venta.isPresent()) {
+							Venta v = venta.get();
+							if(v.getCondicion()==2)
+								e.setSituacion("PROCESADO");
+							else
+								e.setSituacion("PAGADO");
+							ventaService.saveFromCaja(v);
+						}
+					}
 				}				
 			}
 
 			List<MovimientoCaja> pagos = pagoService.save(mov);
+			
 
-			if (pagos != null && !pagos.isEmpty()) {
-				updateTransacction(pagos, new Caja(Long.valueOf(tfCajaID.getText())));
-			}
+//			if (pagos != null && !pagos.isEmpty()) {
+//				updateTransacction(pagos, new Caja(Long.valueOf(tfCajaID.getText())));
+//			}
 
 			if (isPDV) {
 				//clearForm();
@@ -1669,7 +1702,10 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	}
 
 	private boolean validateItems() {
-
+		if(tableModel.getEntities().isEmpty()) {
+			Notifications.showAlert("Cargue por lo menos un item!");
+			return false;
+		}
 		return true;
 	}
 

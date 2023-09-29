@@ -50,9 +50,6 @@ public class Producto {
 	
 	private String seccion;
 	
-	@Column(name = "modeloaplicacion")
-	private String modeloAplicacion;
-	
 	@Column(name = "precio_costo")
 	private Double precioCosto;
 		
@@ -162,6 +159,9 @@ public class Producto {
 	
 	@Column(name = "envase")
 	private String envase;
+	
+	@Column(name = "modeloaplicacion")
+	private String modeloAplicacion;
 
 	
 	//AUDITORIA
@@ -191,7 +191,8 @@ public class Producto {
 	
 	public Producto(String descripcion, String descriFiscal, String referencia, String subreferencia,
 			Grupo grupo, Subgrupo subgrupo, Marca marca, Color color, Tamanho tamanho, UnidadMedida uom, Impuesto imp,
-			Categoria categoria, Double precioCosto,Double precioCostoPromedio, Double precioA, Double precioB, Double precioC) {
+			Categoria categoria, Double precioCosto,Double precioCostoPromedio, Double precioA, Double precioB, Double precioC,
+			String codigo, String codigoSec,  String codigofram, String codigoman, String viscocidad, String base, String origen, String envase,  String modeloAplicacion) {
 		//this.nombre = nombre; String nombre, 
 		this.descripcion = descripcion;
 		this.descripcionFiscal = descriFiscal;
@@ -210,6 +211,16 @@ public class Producto {
 		this.precioVentaA = precioA;
 		this.precioVentaB = precioB;
 		this.precioVentaC = precioC;
+		this.codigo = codigo;
+		this.codigoSec= codigoSec;
+		this.codigofram= codigofram;
+		this.codigoman=codigoman;
+		this.viscocidad= viscocidad;
+		this.base = base;
+		this.origen=origen;
+		this.envase= envase;
+		this.modeloAplicacion=modeloAplicacion;
+
 		}
 
 	public Long getId() {
@@ -274,14 +285,6 @@ public class Producto {
 
 	public void setSeccion(String seccion) {
 		this.seccion = seccion;
-	}
-
-	public String getModeloAplicacion() {
-		return modeloAplicacion;
-	}
-
-	public void setModeloAplicacion(String modeloAplicacion) {
-		this.modeloAplicacion = modeloAplicacion;
 	}
 
 	public Double getStock() {
@@ -555,6 +558,15 @@ public class Producto {
 
 	public void setEnvase(String envase) {
 		this.envase = envase;
+	}
+	
+
+	public String getModeloAplicacion() {
+		return modeloAplicacion;
+	}
+
+	public void setModeloAplicacion(String modeloAplicacion) {
+		this.modeloAplicacion = modeloAplicacion;
 	}
 
 	@Override

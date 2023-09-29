@@ -276,12 +276,13 @@ public class InformeAgrupadoIngresoEgresoCajaDialog extends JDialog {
 		parametros.put("fechaFin", df.format(fechaFinSel));
 		
 		Date fechaUltimoMovimiento=service.findLastDateMov(fechaIniSel);
-		Optional<Double> ventaContado=service.totalVentaContado(fechaUltimoMovimiento);
-		Optional<Double> otrosIng=service.totalOtrosIngresos(fechaUltimoMovimiento, caja);
+		Date fechaUltimoMovimientoAux = fechaUltimoMovimiento==null?fechaIniSel:fechaUltimoMovimiento;
+		Optional<Double> ventaContado=service.totalVentaContado(fechaUltimoMovimientoAux);
+		Optional<Double> otrosIng=service.totalOtrosIngresos(fechaUltimoMovimientoAux, caja);
 		Double entradaAnterior = (ventaContado.get()==null?0:ventaContado.get()) + (otrosIng.get()==null?0:otrosIng.get());
 		//Optional<Double> entradaAnterior= contado + otrosIng;
-		Optional<Double> compraContado= service.totalCompraContado(fechaUltimoMovimiento, caja);
-		Optional<Double> otrosEgr= service.totalOtrosEgresos(fechaUltimoMovimiento, caja);
+		Optional<Double> compraContado= service.totalCompraContado(fechaUltimoMovimientoAux, caja);
+		Optional<Double> otrosEgr= service.totalOtrosEgresos(fechaUltimoMovimientoAux, caja);
 		Double salidaAnterior =  (compraContado.get()==null?0:compraContado.get()) + (otrosEgr.get()==null?0:otrosEgr.get());
 //		Optional<Double> entrada= service.totalEntrada(fechaIniSel,fechaFinSel, caja);
 //		Optional<Double> salida= service.totalSalida(fechaIniSel,fechaFinSel, caja);

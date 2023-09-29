@@ -23,7 +23,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	
 	Optional<Producto> findByReferencia(String referencia);
 	//p.id = :filter OR
-	@Query(value = "SELECT * FROM productos p WHERE upper(p.descripcion) LIKE %:filter% OR upper(p.referencia) LIKE %:filter% OR upper(p.codigo) LIKE %:filter% OR upper(p.codigo_sec) LIKE %:filter% OR upper(p.codigofram) LIKE %:filter% OR upper(p.codigoman) LIKE %:filter% ORDER BY p.id", nativeQuery = true)
+	@Query(value = "SELECT * FROM productos p WHERE upper(p.descripcion) LIKE upper(%:filter%) OR upper(p.referencia) LIKE upper(%:filter%) OR upper(p.codigo) LIKE upper(%:filter%) OR upper(p.codigo_sec) LIKE upper(%:filter%) OR upper(p.codigofram) LIKE upper(%:filter%) OR upper(p.codigoman) LIKE upper(%:filter%) OR p.viscocidad LIKE %:filter% OR p.base LIKE %:filter% ORDER BY p.id", nativeQuery = true)
 	List<Producto> findProductsByFilter(String filter);
 	
 	@Query(value = "SELECT stock FROM producto_depositos WHERE deposito_id = ?1 AND producto_id = ?2 ORDER BY id DESC LIMIT 1", nativeQuery = true)
@@ -38,7 +38,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	@Query("SELECT coalesce(max(id), 0) FROM Producto e")
 	Long getMaxId();
 	
-	@Query(value = "SELECT * FROM productos p WHERE p.id =:filter OR p.descripcion =:filter OR p.referencia =:filter LIMIT 1", nativeQuery = true)
+	@Query(value = "SELECT * FROM productos p WHERE p.codigo =:filter OR p.codigo_sec =:filter OR p.codigoman =:filter OR p.codigofram =:filter OR p.referencia =:filter LIMIT 1", nativeQuery = true)
 	Optional<Producto> findByProductByFilter(String filter);
 
 }

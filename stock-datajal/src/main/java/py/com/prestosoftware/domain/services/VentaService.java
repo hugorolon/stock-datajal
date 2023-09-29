@@ -133,6 +133,39 @@ public class VentaService {
 	}
 
 	@Transactional(rollbackFor = RuntimeException.class)
+	public Venta saveFromCaja(Venta venta) throws RuntimeException{
+			String condicion = venta.getCondicion()==1?"Contado":"30 días";
+			List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
+			List<Object[]> listaItems = repository.getVentaDetallesByVentaId(venta.getId());
+			for (Object[] object : listaItems) {
+				VentaDetalle det = new VentaDetalle();
+				det.setCantidad(Double.valueOf(object[1].toString()));
+				det.setPrecio(Double.valueOf(object[2].toString()));
+				det.setProducto(object[3].toString());
+				det.setSubtotal(Double.valueOf(object[5].toString()));
+				det.setProductoId(Long.valueOf(object[4].toString()));
+				det.setIva(Integer.valueOf(object[7].toString()));
+				listaDetalles.add(det);
+			}
+			venta.setItems(new ArrayList<VentaDetalle>());
+			venta.setItems(listaDetalles);
+				updateStockProduct(venta.getItems(),0,1);
+				//openMovCaja(venta, condicion);
+				movimientoIngresoProcesoCobroVenta(venta);
+				if (venta.getCondicion()== 2) {
+					CuentaARecibir cuentaARecibir = new CuentaARecibir();
+					cuentaARecibir = cuentaARecibirProcesoCobroVenta(venta, condicion);
+					openMovimientoEgreso(cuentaARecibir);
+					venta.setSituacion("PROCESADO");
+				}else {
+					venta.setSituacion("PAGADO");
+				}
+			Venta v = repository.save(venta);
+			return v;
+	}
+
+	
+	@Transactional(rollbackFor = RuntimeException.class)
 	public Venta saveRemoved(int lanzamientoCaja, Venta venta, List<VentaDetalle> items,  String condicion) throws RuntimeException{
 		Venta v = repository.save(venta);
 		if (lanzamientoCaja == 0) {

@@ -12,7 +12,7 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] {"ID","CODIGO", "CODIGO SEC", "DESCRIPCION", "SALDO", "COSTO", "PRECIO A" };
+        return new String[] {"ID","CODIGO","DESCRIPCION", "CODIGO SEC", "SALDO", "COSTO", "PRECIO A", "FRAM", "MAN","VISCOCIDAD", "BASE" };
     }
 
     @Override
@@ -43,15 +43,23 @@ public class ProductTableModel extends DefaultTableModel<Producto> {
             case 1:
                 return product.getCodigo();    
             case 2:
-                return product.getCodigoSec();        
+            	return product.getDescripcion();
             case 3:
-                return product.getDescripcion();
+                return product.getCodigoSec();                        
             case 4:      	
                 return (Object) FormatearValor.doubleAString(totalDep - (totalDepBloq + salPend));
             case 5:
                 return (Object) FormatearValor.doubleAString(precioCosto);
             case 6:
                 return (Object) FormatearValor.doubleAString(precioA);
+            case 7:
+                return product.getCodigofram(); 
+            case 8:
+                return product.getCodigoman(); 
+            case 9:
+                return product.getViscocidad(); 
+            case 10:
+                return product.getBase();       
             default:
                 return "";
         }
