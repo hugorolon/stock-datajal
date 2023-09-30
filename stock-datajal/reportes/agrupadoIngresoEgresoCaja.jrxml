@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reportResumenCaja" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="c2ed3914-a80c-4b5c-a599-d924e8dc460f">
 	<property name="ireport.scriptlethandling" value="0"/>
 	<property name="ireport.encoding" value="UTF-8"/>
@@ -27,7 +27,7 @@
 	<parameter name="saldoAnterior" class="java.lang.Double"/>
 	<queryString>
 		<![CDATA[select 0  AS ing_egr, 0 AS codigorubro, 'Saldo Anterior'  as nombrerubro,
-sum(MII_MONTO) AS INGRESO, (select sum(MIE_MONTO) AS EGRESO 
+sum(COALESCE(MII_MONTO,0)) AS INGRESO, (select sum(COALESCE(MIE_MONTO,0)) AS EGRESO 
 			 FROM public.movimiento_Egresos , item_movimientoEgresos imi where meg_numero=mie_numero and meg_caja=1 and meg_situacion=0 and meg_fecha<date($P{fechaInicio})) AS EGRESO
 			 FROM public.movimiento_ingresos , item_movimientoingresos imi where min_numero=mii_numero and min_caja=1 and min_situacion=0 and min_fecha<date($P{fechaInicio})
 UNION
@@ -99,7 +99,7 @@ ORDER BY 1, 2, 3]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[AGROVETERINARIA  PROGRESO]]></text>
+				<text><![CDATA[AUTO REPUESTOS PEQUEÑO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="11" width="116" height="14" uuid="d65a7d15-08af-4050-b2b5-954f7ceab2e2">
@@ -108,7 +108,7 @@ ORDER BY 1, 2, 3]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[RUC - 50079096-5]]></text>
+				<text><![CDATA[RUC - X]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="22" width="116" height="14" uuid="d69ea773-73e5-4496-9dfa-6d73fc050a35">
@@ -118,7 +118,7 @@ ORDER BY 1, 2, 3]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[TEL. 0983507253/518217]]></text>
+				<text><![CDATA[TEL. 0985 568080]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="33" width="116" height="14" uuid="0825bda6-2295-4e00-84ee-2823948b3630">
@@ -128,7 +128,7 @@ ORDER BY 1, 2, 3]]>
 				<textElement>
 					<font size="7" isBold="true"/>
 				</textElement>
-				<text><![CDATA[KRESSBURGO - ITAPUA]]></text>
+				<text><![CDATA[CIUDAD DEL ESTE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="2" y="50" width="140" height="22" uuid="485ba78f-e866-4f55-a890-20c51986d8b4">

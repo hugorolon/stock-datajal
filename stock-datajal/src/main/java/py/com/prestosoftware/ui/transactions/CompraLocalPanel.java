@@ -234,7 +234,7 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblDescripcion = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblDescripcion.text")); //$NON-NLS-1$
 		lblDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDescripcion.setBounds(194, 6, 242, 18);
+		lblDescripcion.setBounds(223, 6, 213, 18);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -246,14 +246,14 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblPrecio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblPrecio.text")); //$NON-NLS-1$
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(732, 6, 115, 18);
+		lblPrecio.setBounds(743, 6, 104, 18);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(194, 30, 528, 30);
+		tfDescripcion.setBounds(224, 30, 518, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -295,7 +295,7 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(732, 30, 106, 30);
+		tfPrecio.setBounds(742, 30, 96, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -313,7 +313,7 @@ public class CompraLocalPanel extends JFrame
 					showDialog(PRODUCTO_CODE);
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfProductoID.getText().isEmpty()) {
-						findProductoById(Long.valueOf(tfProductoID.getText()));
+						findProductoById(tfProductoID.getText());
 					} else {
 						showDialog(PRODUCTO_CODE);
 					}
@@ -332,7 +332,7 @@ public class CompraLocalPanel extends JFrame
 			}
 		});
 		tfProductoID.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfProductoID.setBounds(6, 30, 57, 30);
+		tfProductoID.setBounds(6, 30, 96, 30);
 		pnlProducto.add(tfProductoID);
 		tfProductoID.setColumns(10);
 
@@ -459,13 +459,13 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfCantidad.setColumns(10);
-		tfCantidad.setBounds(117, 30, 73, 30);
+		tfCantidad.setBounds(151, 30, 70, 30);
 		pnlProducto.add(tfCantidad);
 
 		JLabel lblCantidad = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblCantidad.text")); //$NON-NLS-1$
 		lblCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCantidad.setBounds(117, 6, 76, 18);
+		lblCantidad.setBounds(151, 6, 70, 18);
 		pnlProducto.add(lblCantidad);
 
 		btnAdd = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
@@ -506,7 +506,7 @@ public class CompraLocalPanel extends JFrame
 			}
 		});
 		btnAddProducto.setFont(new Font("Dialog", Font.BOLD, 18));
-		btnAddProducto.setBounds(64, 30, 51, 30);
+		btnAddProducto.setBounds(106, 28, 43, 30);
 		pnlProducto.add(btnAddProducto);
 
 		JPanel pnlCabezera = new JPanel();
@@ -1700,26 +1700,31 @@ public class CompraLocalPanel extends JFrame
 		
 	}
 
-	private void findProductoById(Long id) {
+	private void findProductoById(String id) {
+		Optional<Producto> producto= Optional.empty();;
 		try {
-			Optional<Producto> producto = productoService.findById(id);
-
-			if (producto.isPresent()) {
-				if (producto.get().getSubgrupo().getTipo().equals("S")) {
-					Notifications.showAlert("Este Producto es un servicio, no se puede comprar.!");
-					clearItem();
-				} else {
+		    Long value = Long.valueOf(id);
+		    producto = productoService.findById(value);
+		    if (producto.isPresent()) {
+				setProducto(producto.get());
+			}
+		} catch (NumberFormatException e) {
+			try {
+				producto = productoService.findByFilter(id.trim().toUpperCase());
+				if (producto.isPresent()) {
 					setProducto(producto.get());
 				}
-			} else {
-				Notifications.showAlert("No existe Producto con ese codigo.!");
+			} catch (Exception ex) {
+				// TODO: handle exception
+				Notifications.showAlert("Error en busqueda de Producto.!");
 				tfProductoID.requestFocus();
-			}	
-		} catch (Exception e) {
-			// TODO: handle exception
-			Notifications.showAlert("Error en busqueda de Producto.!");
-			tfProductoID.requestFocus();
+			}
 		}
+		if (!producto.isPresent()) {
+			Notifications.showAlert("No existe Producto con ese codigo.!");
+			tfProductoID.requestFocus();
+		}	
+		
 	}
 
 	private void addItem() {

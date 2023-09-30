@@ -141,6 +141,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	private JTextField tfCodigoMan;
 	private JLabel lblNewLabel_8;
 	private JTextField tfReferencia;
+	private JTextField tfModeloAplicacion;
 	
  
 	@Autowired
@@ -172,7 +173,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	}
 
 	private void initComponents() {
-		setSize(900, 619);
+		setSize(1032, 719);
 		setTitle("REGISTRO DE MERCADERIAS");
 		getContentPane().setLayout(new MigLayout("", "[788px,grow]", "[][158.00,grow][25px][316px][45px]"));
 
@@ -239,7 +240,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 				tfDescripcion.selectAll();
 			}
 		});
-		tfDescripcion.setBounds(112, 64, 566, 25);
+		tfDescripcion.setBounds(112, 64, 831, 25);
 		((AbstractDocument) tfDescripcion.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDescripcion.addKeyListener(new KeyAdapter() {
 			@Override
@@ -384,6 +385,15 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		cbAgrupacion = new JComboBox<Categoria>(categoriaComboBoxModel);
 		cbAgrupacion.setBounds(112, 214, 163, 25);
 		pnlDatosPersonal.add(cbAgrupacion);
+		
+		JLabel lblNewLabel_9 = new JLabel("Modelo Aplicación"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblNewLabel_9.setBounds(10, 244, 98, 25);
+		pnlDatosPersonal.add(lblNewLabel_9);
+		
+		tfModeloAplicacion = new JTextField();
+		tfModeloAplicacion.setBounds(112, 244, 831, 25);
+		pnlDatosPersonal.add(tfModeloAplicacion);
+		tfModeloAplicacion.setColumns(10);
 		
 		pnlLubricantes = new JPanel();
 		tabbedPane.addTab("Lubricantes", null, pnlLubricantes, "");
@@ -663,6 +673,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			unidadMedidaComboBoxModel.setSelectedItem(product.getUnidadMedida());
 			colorComboBoxModel.setSelectedItem(product.getColor());
 			tamanhoComboBoxModel.setSelectedItem(product.getTamanho());
+			tfModeloAplicacion.setText(product.getModeloAplicacion());
 
 			tabbedPane.remove(pnlLubricantes);
 			tabbedPane.remove(pnlFiltros);
@@ -725,13 +736,19 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			product.setUnidadMedida(unidadMedidaComboBoxModel.getSelectedItem());
 			product.setTamanho(tamanhoComboBoxModel.getSelectedItem());
 			product.setColor(colorComboBoxModel.getSelectedItem());
+			product.setModeloAplicacion(tfModeloAplicacion.getText());
 			pnlLubricantes.setVisible(false);
 			pnlFiltros.setVisible(false);
 			if (categoriaComboBoxModel.getSelectedItem().getNombre().equalsIgnoreCase("lubricantes")) {
 				product.setBase(tfBase.getText());
+				product.setViscocidad(tfViscocidad.getText());
+				product.setEnvase(tfEnvase.getText());
+				product.setOrigen(tfOrigen.getText());
 				pnlLubricantes.setVisible(true);
 			}
 			if (categoriaComboBoxModel.getSelectedItem().getNombre().equalsIgnoreCase("filtros")) {
+				product.setCodigofram(tfCodigoFram.getText());
+				product.setCodigoman(tfCodigoMan.getText());
 				pnlFiltros.setVisible(true);
 			}
 

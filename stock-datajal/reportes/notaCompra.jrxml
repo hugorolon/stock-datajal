@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
+<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NotaInterna" pageWidth="637" pageHeight="396" columnWidth="637" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" whenResourceMissingType="Empty" uuid="928dcb1a-5e67-4b4a-ad43-b6984179efcc">
 	<property name="com.jasperassistant.designer.Grid" value="false"/>
 	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
@@ -150,7 +150,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[AGRO VETERINARIA PROGRESO]]></text>
+				<text><![CDATA[AUTO REPUESTOS PEQUEÑO]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="24" width="158" height="13" uuid="a2c74dde-2918-4e98-9368-a33e85475374">
@@ -159,7 +159,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[RUC : 6675712-6]]></text>
+				<text><![CDATA[RUC : X]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="36" width="158" height="15" uuid="0c22b560-e896-4210-a381-a3e442ac2edc">
@@ -169,7 +169,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TEL: 0983 507253 /518217]]></text>
+				<text><![CDATA[TEL. 0985 568080]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="50" width="158" height="15" uuid="49dbd4b6-9e97-4579-bac9-a5030fe055b6">
@@ -179,7 +179,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[KRESSBURGO - ITAPUA]]></text>
+				<text><![CDATA[CIUDAD DEL ESTE]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="24" y="67" width="120" height="15" uuid="77727cf2-da23-4878-95ba-a0cad9baf9da">

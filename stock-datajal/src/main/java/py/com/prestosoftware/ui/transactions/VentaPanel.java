@@ -277,17 +277,17 @@ public class VentaPanel extends JFrame
 
 		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
 		lblDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDescripcion.setBounds(166, 10, 169, 30);
+		lblDescripcion.setBounds(209, 10, 126, 30);
 		pnlProducto.add(lblDescripcion);
 
 		JLabel lblSubtotal = new JLabel("TOTAL");
 		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSubtotal.setBounds(835, 10, 50, 30);
+		lblSubtotal.setBounds(846, 10, 50, 30);
 		pnlProducto.add(lblSubtotal);
 
 		JLabel lblPrecio = new JLabel("PRECIO");
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(726, 10, 88, 30);
+		lblPrecio.setBounds(747, 10, 67, 30);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
@@ -295,7 +295,7 @@ public class VentaPanel extends JFrame
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(166, 39, 550, 30);
+		tfDescripcion.setBounds(208, 39, 540, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -308,7 +308,7 @@ public class VentaPanel extends JFrame
 		tfPrecioTotal.setEditable(false);
 		tfPrecioTotal.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfPrecioTotal.setColumns(10);
-		tfPrecioTotal.setBounds(835, 39, 106, 30);
+		tfPrecioTotal.setBounds(845, 39, 96, 30);
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
@@ -374,7 +374,7 @@ public class VentaPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(726, 39, 100, 30);
+		tfPrecio.setBounds(748, 39, 88, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -417,7 +417,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		tfProductoID.setFont(new Font("Arial", Font.PLAIN, 14));
-		tfProductoID.setBounds(6, 39, 50, 30);
+		tfProductoID.setBounds(6, 39, 114, 30);
 		pnlProducto.add(tfProductoID);
 		tfProductoID.setColumns(10);
 
@@ -579,12 +579,12 @@ public class VentaPanel extends JFrame
 		});
 		tfCantidad.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfCantidad.setColumns(10);
-		tfCantidad.setBounds(112, 39, 45, 30);
+		tfCantidad.setBounds(159, 39, 45, 30);
 		pnlProducto.add(tfCantidad);
 
 		JLabel lblCantidad = new JLabel("CANT.");
 		lblCantidad.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCantidad.setBounds(114, 10, 61, 30);
+		lblCantidad.setBounds(159, 10, 50, 30);
 		pnlProducto.add(lblCantidad);
 
 		label_5 = new JLabel("*");
@@ -667,7 +667,7 @@ public class VentaPanel extends JFrame
 			}
 		});
 		btnAddProducto.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		btnAddProducto.setBounds(62, 39, 45, 30);
+		btnAddProducto.setBounds(126, 39, 28, 30);
 		pnlProducto.add(btnAddProducto);
 
 		tfClienteID = new JTextField();
@@ -1454,16 +1454,14 @@ public class VentaPanel extends JFrame
 
 	private boolean getStockDisp(Double cantDep, Double cant) {
 		boolean result = false;
-
-		if (cantDep != null) {
-			if (cantDep < cant) {
+		Double cantidadDeposito = cantDep!=null?cantDep:0;
+			if (conf.getBloqueaProductoNegativo()==1 && cantidadDeposito < cant) {
 				Notifications.showAlert(
-						"Disponibilidad de " + FormatearValor.doubleAString(cantDep) + " piezas en el stock");
+						"Disponibilidad de " + FormatearValor.doubleAString(cantidadDeposito) + " piezas en el stock");
 				result = false;
 			} else {
 				result = true;
 			}
-		}
 
 		return result;
 	}
@@ -1834,17 +1832,12 @@ public class VentaPanel extends JFrame
 			Double precioUnit = FormatearValor.stringToDouble(tfPrecio.getText());
 			Double precioTotal = cantidad * precioUnit;
 			tfPrecio.setText(FormatearValor.doubleAString(precioUnit));
-			if (this.precioCompra>0 && this.precioCompra> precioUnit) {
+			if (conf.getAutorizaVentaBajoCosto()==0 && this.precioCompra>=0 && this.precioCompra> precioUnit) {
 				Notifications.showAlert("No puede vender a bajo del precio de compra!");
 				tfPrecio.requestFocus();
 			}else {
-				if(this.precioCompra==0) {
-					Notifications.showAlert("Verificar el precio de compra, esta en 0!");
-					tfProductoID.requestFocus();
-				}else {
-					tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
-					btnAdd.requestFocus();
-				}
+				tfPrecioTotal.setText(FormatearValor.doubleAString(precioTotal));
+				btnAdd.requestFocus();
 			}
 		} catch (Exception e) {
 			Notifications.showAlert("Verficar datos de producto, cantidad o precio!");
@@ -2039,7 +2032,7 @@ public class VentaPanel extends JFrame
 				}
 				det.setProductoId(Long.valueOf(object[4].toString()));
 				det.setIva(Integer.valueOf(object[7].toString()));
-				det.setDescripcionFiscal(object[8].toString());
+				//det.setDescripcionFiscal(object[8].toString());
 				cantItem+=det.getCantidad();
 				total+=det.getSubtotal();
 
@@ -2753,22 +2746,29 @@ public class VentaPanel extends JFrame
 	}
 
 	private void findProducto(String id) {
+		Optional<Producto> producto= Optional.empty();;
 		try {
-			Optional<Producto> producto = null;
-			producto = productoService.findById(Long.valueOf(id.trim()));
-			if (!producto.isPresent()) {
-				if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
-					producto = productoService.findByReferencia(id);
-			}
-
-			if (producto.isPresent()) {
+		    Long value = Long.valueOf(id);
+		    producto = productoService.findById(value);
+		    if (producto.isPresent()) {
 				setProducto(producto.get());
-			} else {
-				Notifications.showAlert("No existe producto informado. Verifique por favor.!");
 			}
-		} catch (Exception e) {
-			Notifications.showAlert("Problemas con el Producto, intente nuevamente!");
+		} catch (NumberFormatException e) {
+			try {
+				producto = productoService.findByFilter(id.trim().toUpperCase());
+				if (producto.isPresent()) {
+					setProducto(producto.get());
+				}
+			} catch (Exception ex) {
+				// TODO: handle exception
+				Notifications.showAlert("Error en busqueda de Producto.!");
+				tfProductoID.requestFocus();
+			}
 		}
+		if (!producto.isPresent()) {
+			Notifications.showAlert("No existe Producto con ese codigo.!");
+			tfProductoID.requestFocus();
+		}	
 	}
 	
 	private Producto findProductoReturn(String id) {
@@ -2808,8 +2808,8 @@ public class VentaPanel extends JFrame
 	private void setProducto(Producto producto) {
 		try {
 			if (producto != null) {
-				if (producto.getSubgrupo()!=null&&producto.getSubgrupo().getTipo().equals("S"))
-					isProductService = true;
+//				if (producto.getSubgrupo()!=null&&producto.getSubgrupo().getTipo().equals("S"))
+//					isProductService = true;
 				if(nivelPrecio==null)
 					nivelPrecio= conf.getPrecioDefinido();
 				
@@ -2926,7 +2926,7 @@ public class VentaPanel extends JFrame
 				if (conf != null && conf.getPermiteItemDuplicado() == 1) {
 					itemTableModel.addEntity(getItem());
 					calculateItem();
-					addItemCantBloq(productoId, cantidad, 0d, depositoId);
+					//addItemCantBloq(productoId, cantidad, 0d, depositoId);
 					tfProductoID.requestFocus();
 				} else {
 					int fila = getDuplicateItemIndex();
@@ -2943,14 +2943,14 @@ public class VentaPanel extends JFrame
 							itemTableModel.addEntity(getItem());
 
 							calculateItem();
-							addItemCantBloq(productoId, cantidad, cantAnterior, depositoId);
+							//addItemCantBloq(productoId, cantidad, cantAnterior, depositoId);
 						} else {
 							tfProductoID.requestFocus();
 						}
 					} else {
 						itemTableModel.addEntity(getItem());
 						calculateItem();
-						addItemCantBloq(productoId, cantidad, 0d, depositoId);
+						//addItemCantBloq(productoId, cantidad, 0d, depositoId);
 						tfProductoID.requestFocus();
 					}
 				}

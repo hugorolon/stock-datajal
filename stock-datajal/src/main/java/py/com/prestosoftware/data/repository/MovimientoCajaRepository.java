@@ -32,20 +32,20 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 	
 	@Query(value = "select max(min_fecha) "
 			+ "			 FROM public.movimiento_ingresos "
-			+ "			  where  min_fecha < ?1 ", nativeQuery = true)
+			+ "			  where  min_fecha < date(?1) ", nativeQuery = true)
 	Date findLastDateMov(Date fecha);
 	
 	@Query(value = "select coalesce(sum(total_general - total_descuento),0) AS INGRESO "
 			+ "			 FROM public.ventas v  "
 			+ "			 where v.condicion=1 and situacion<>'ANULADO' "
-			+ "			  and fecha= ?1 ", nativeQuery = true)
+			+ "			  and fecha= date(?1) ", nativeQuery = true)
 	Optional<Double> getTotalsVentaContado(Date fecha);
 
 	@Query(value = "select coalesce(sum(MII_MONTO),0) AS INGRESO "
 			+ "			 FROM public.movimiento_ingresos , item_movimientoingresos imi "
 			+ "			 where min_numero=mii_numero and min_caja= ?1 and min_situacion=0 "
 			+ "			 and (mii_ingreso <> 1 and mii_ingreso <> 11 and  mii_ingreso <> 30) "
-			+ "			  and min_fecha= ?2 ", nativeQuery = true)
+			+ "			  and min_fecha= date(?2) ", nativeQuery = true)
 	Optional<Double> getTotalsOtrosIngresos(Caja caja, Date fecha);
 	
 	

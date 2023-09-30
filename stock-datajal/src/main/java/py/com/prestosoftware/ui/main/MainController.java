@@ -585,7 +585,7 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openSubgrupo() {
-		subgrupoController.prepareAndOpenFrame();
+		//subgrupoController.prepareAndOpenFrame();
 	}
 
 	private void openCotizacion() {

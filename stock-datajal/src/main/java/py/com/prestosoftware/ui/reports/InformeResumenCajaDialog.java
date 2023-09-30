@@ -273,7 +273,8 @@ public class InformeResumenCajaDialog extends JDialog {
 		Date fechaFinSel = tfFechaFinal.getDate();
 		parametros.put("fechaInicio", df.format(fechaIniSel));
 		parametros.put("fechaFin", df.format(fechaFinSel));
-		Date fechaUltimoMovimiento=service.findLastDateMov(fechaIniSel);
+		Date fechaUltimoMovimientoAux=service.findLastDateMov(fechaIniSel);
+		Date fechaUltimoMovimiento=(fechaUltimoMovimientoAux==null?fechaIniSel:fechaUltimoMovimientoAux);
 		Optional<Double> ventaContado=service.totalVentaContado(fechaUltimoMovimiento);
 		Optional<Double> otrosIng=service.totalOtrosIngresos(fechaUltimoMovimiento, caja);
 		Double entradaAnterior = (ventaContado.get()==null?0:ventaContado.get()) + (otrosIng.get()==null?0:otrosIng.get());
