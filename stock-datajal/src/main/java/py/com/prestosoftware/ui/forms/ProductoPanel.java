@@ -767,8 +767,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 	public void clearForm() {
 		tfProductoId.setText("0");
 		tfDescripcion.setText("");
-//		tfDesFiscal.setText("");
-
+		tfCodigo.setText("");
+		tfCodigoFram.setText("");
+		tfCodigoMan.setText("");
 		// tfSeccion.setText("");
 		tfOtrasReferencias.setText("");
 		tfDep01.setText("");
