@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Grupo;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Subgrupo;
@@ -69,9 +70,14 @@ public class ProductoService {
        // return repository.findByDescripcionContaining(name);
     	return repository.findProductsByFilter(name);
     }
-
-    public void save(Producto producto) {
-        repository.save(producto);
+//
+//    public void save(Producto producto) {
+//        repository.save(producto);
+//    }
+    
+    public Producto save(Producto producto) {
+        Producto p = repository.save(producto);
+        return p;
     }
 
     public void remove(Producto producto) {
