@@ -13,7 +13,6 @@ public class ClienteValidator extends ValidationSupport implements Validator<Cli
     @Override
     public Optional<ValidationError> validate(Cliente client) {
         if (	isNullOrEmptyString(client.getNombre()) ||
-                isNullOrEmptyString(client.getRazonSocial()) ||
                 isNullOrEmptyString(client.getCiruc()) || 
                 isNullValue(client.getEmpresa()) ||
                 isNullOrEmptyString(client.getDireccion())) {

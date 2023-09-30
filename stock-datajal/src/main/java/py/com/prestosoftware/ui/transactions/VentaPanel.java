@@ -2650,7 +2650,7 @@ public class VentaPanel extends JFrame
 		if (cliente != null) {
 			setClienteSeleccionado(cliente);
 			tfClienteID.setText(String.valueOf(cliente.getId()));
-			tfClienteNombre.setText(cliente.getRazonSocial());
+			tfClienteNombre.setText(cliente.getNombre());
 			tfClienteRuc.setText(cliente.getCiruc());
 			tfDvRuc.setText(cliente.getDvruc());
 			tfClienteDireccion.setText(cliente.getDireccion());

@@ -58,7 +58,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	private static final long serialVersionUID = 1L;
 	private static final int CIUDAD_CODE = 1;
 	private JLabel lblCodigo;
-	private JTextField tfNombre, tfRazonSocial, tfCiruc, tfDvRuc, tfDireccion;
+	private JTextField tfNombre, tfCiruc, tfDvRuc, tfDireccion;
 	private JTextField tfClienteId;
 	private JButton btnGuardar, btnCancelar;
 
@@ -138,34 +138,16 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfRazonSocial.setText(tfNombre.getText());
-					tfRazonSocial.requestFocus();
+					tfCiruc.setText(tfNombre.getText());
+					tfCiruc.requestFocus();
 				}
 			}
 		});
 		tfNombre.setColumns(10);
 
-		JLabel lblRaznSocial = new JLabel("Razon Social");
-		lblRaznSocial.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblRaznSocial.setBounds(6, 122, 98, 30);
-
-		tfRazonSocial = new JTextField();
-		tfRazonSocial.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfRazonSocial.setBounds(122, 122, 251, 30);
-		((AbstractDocument) tfRazonSocial.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
-		tfRazonSocial.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					tfCiruc.requestFocus();
-				}
-			}
-		});
-		tfRazonSocial.setColumns(10);
-
 		tfCiruc = new JTextField();
 		tfCiruc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfCiruc.setBounds(122, 160, 104, 30);
+		tfCiruc.setBounds(122, 125, 104, 30);
 		tfCiruc.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -189,7 +171,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 
 		JLabel lblCiRuc = new JLabel("CI");
 		lblCiRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCiRuc.setBounds(6, 160, 98, 30);
+		lblCiRuc.setBounds(6, 125, 98, 30);
 
 		JLabel lblCiudad = new JLabel("Ciudad");
 		lblCiudad.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -207,19 +189,19 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 
 		JLabel lblDvRuc = new JLabel("DV");
 		lblDvRuc.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDvRuc.setBounds(252, 160, 57, 30);
+		lblDvRuc.setBounds(252, 125, 57, 30);
 
 		tfDvRuc = new JTextField();
-		tfDvRuc.setBounds(313, 160, 60, 30);
+		tfDvRuc.setBounds(313, 125, 60, 30);
 		tfDvRuc.setColumns(10);
 
 		JLabel lblDireccin = new JLabel("Dirección");
 		lblDireccin.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDireccin.setBounds(6, 198, 98, 30);
+		lblDireccin.setBounds(6, 166, 98, 30);
 
 		tfDireccion = new JTextField();
 		tfDireccion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tfDireccion.setBounds(122, 198, 251, 30);
+		tfDireccion.setBounds(122, 166, 251, 30);
 		((AbstractDocument) tfDireccion.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfDireccion.addKeyListener(new KeyAdapter() {
 			@Override
@@ -251,8 +233,6 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		pnlDatosPersonal.add(tfDvRuc);
 		pnlDatosPersonal.add(lblDireccin);
 		pnlDatosPersonal.add(tfDireccion);
-		pnlDatosPersonal.add(lblRaznSocial);
-		pnlDatosPersonal.add(tfRazonSocial);
 		pnlDatosPersonal.add(lblNombre);
 		pnlDatosPersonal.add(tfNombre);
 
@@ -264,16 +244,8 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		label_1.setFont(new Font("Dialog", Font.BOLD, 20));
 		pnlDatosPersonal.add(label_1);
 
-		label_2 = new JLabel("*");
-		label_2.setBounds(102, 122, 18, 30);
-		label_2.setVerticalAlignment(SwingConstants.BOTTOM);
-		label_2.setHorizontalAlignment(SwingConstants.CENTER);
-		label_2.setForeground(Color.RED);
-		label_2.setFont(new Font("Dialog", Font.BOLD, 20));
-		pnlDatosPersonal.add(label_2);
-
 		label_3 = new JLabel("*");
-		label_3.setBounds(102, 160, 18, 30);
+		label_3.setBounds(102, 125, 18, 30);
 		label_3.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_3.setHorizontalAlignment(SwingConstants.CENTER);
 		label_3.setForeground(Color.RED);
@@ -281,7 +253,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 		pnlDatosPersonal.add(label_3);
 
 		label_5 = new JLabel("*");
-		label_5.setBounds(102, 198, 18, 30);
+		label_5.setBounds(102, 166, 18, 30);
 		label_5.setVerticalAlignment(SwingConstants.BOTTOM);
 		label_5.setHorizontalAlignment(SwingConstants.CENTER);
 		label_5.setForeground(Color.RED);
@@ -674,7 +646,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	public void setClienteForm(Cliente cliente) {
 		tfClienteId.setText(cliente.getId() + "");
 		tfNombre.setText(cliente.getNombre());
-		tfRazonSocial.setText(cliente.getRazonSocial());
+//		tfRazonSocial.setText(cliente.getRazonSocial());
 		tfCiruc.setText(cliente.getCiruc());
 		tfDvRuc.setText(cliente.getDvruc());
 		tfDireccion.setText(cliente.getDireccion());
@@ -705,7 +677,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 			cliente.setId(Long.parseLong(tfClienteId.getText()));
 		}
 
-		cliente.setRazonSocial(tfRazonSocial.getText());
+		cliente.setRazonSocial(tfNombre.getText());
 		cliente.setNombre(tfNombre.getText());
 		cliente.setCiruc(tfCiruc.getText());
 		cliente.setDvruc(tfDvRuc.getText());
@@ -797,7 +769,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 			Cliente c=clienteService.findByNombreEquals(cbCliente.getSelectedItem().toString().toUpperCase());
 			tfClienteId.setText(c.getId().toString());
 			tfNombre.setText(c.getNombre());
-			tfRazonSocial.setText(c.getRazonSocial());
+//			tfRazonSocial.setText(c.getRazonSocial());
 			tfCiruc.setText(c.getCiruc());
 			tfDvRuc.setText(c.getDvruc());
 			tfDireccion.setText(c.getDireccion());
@@ -829,7 +801,7 @@ public class ClienteAddPanel extends JDialog implements CiudadInterfaz , ItemLis
 	public void clearForm() {
 		tfClienteId.setText("");
 		tfNombre.setText("");
-		tfRazonSocial.setText("");
+//		tfRazonSocial.setText("");
 		tfCiruc.setText("");
 		tfDvRuc.setText("");
 		tfDireccion.setText("");

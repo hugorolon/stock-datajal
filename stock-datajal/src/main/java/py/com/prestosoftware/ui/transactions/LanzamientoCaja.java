@@ -1422,7 +1422,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private void clearItem() {
 		tfOperacionID.setText("");
 		lblOperacionNombre.setText("");
-		lblTipoOperacion.setText("");
+//		lblTipoOperacion.setText("");
 		tfNotaNro.setText("");
 		tfNotaNombre.setText("");
 		tfNotaValor.setText("");
