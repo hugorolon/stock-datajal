@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -152,6 +153,7 @@ public class VentaPanel extends JFrame
 	private JLabel lblCamposObligatorios;
 	private JLabel label_5;
 	private JLabel lblSituacion;
+	private JLabel lblHora;
 	private JTextField tfDvRuc;
 	private JButton btnReimpresion;
 
@@ -1006,8 +1008,13 @@ public class VentaPanel extends JFrame
 
 		tfFechaVenta.setColumns(8);
 		
-		tfFechaVenta.setBounds(55, 44, 103, 27);
+		tfFechaVenta.setBounds(55, 44, 90, 27);
 		pnlCliente.add(tfFechaVenta);
+		
+		lblHora = new JLabel("HORA");
+		lblHora.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblHora.setBounds(153, 54, 45, 14);
+		pnlCliente.add(lblHora);
 
 		JPanel pnlBotonera = new JPanel();
 		pnlBotonera.setBounds(21, 590, 1110, 35);
@@ -2033,6 +2040,8 @@ public class VentaPanel extends JFrame
 			}else {
 				lblSituacion.setText(v.getSituacion());				
 			}
+			
+			lblHora.setText(Fechas.formatoHHmm(v.getHora()));
 			List<VentaDetalle> listaDetalles = new ArrayList<VentaDetalle>();
 			List<Object[]> listaItems = ventaService.retriveVentaDetalleByIdVenta(v.getId());
 			// venta_id, cantidad, precio, producto, producto_id, subtotal, id, iva
@@ -2651,6 +2660,7 @@ public class VentaPanel extends JFrame
 		tfDescuento.setText("0");
 		// tfDescuentoItem.setText("0");
 		lblSituacion.setText("VIGENTE");
+		lblHora.setText("");
 		tfCuotaCant.setText("0");
 		tfVence.setText("");
 		tfCondicionPago.setSelectedIndex(0);

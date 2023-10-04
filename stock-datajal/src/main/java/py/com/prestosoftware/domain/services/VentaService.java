@@ -118,11 +118,24 @@ public class VentaService {
 				Cliente n = this.repositoryCliente.save(clienteNuevo);
 				venta.setCliente(n);
 			}
-			v = repository.save(venta);
+			try {
+				v = repository.save(venta);	
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			
 			if (lanzamientoCaja == 0) {
-				updateStockProduct(v.getItems(),lanzamientoCaja,1);
-				openMovCaja(v, condicion);
-				movimientoIngresoProcesoCobroVenta(v);
+				try {
+					updateStockProduct(v.getItems(),lanzamientoCaja,1);
+					openMovCaja(v, condicion);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				try {
+					movimientoIngresoProcesoCobroVenta(v);					
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
 				if (!condicion.equalsIgnoreCase("Contado")) {
 					CuentaARecibir cuentaARecibir = new CuentaARecibir();
 					cuentaARecibir = cuentaARecibirProcesoCobroVenta(v, condicion);

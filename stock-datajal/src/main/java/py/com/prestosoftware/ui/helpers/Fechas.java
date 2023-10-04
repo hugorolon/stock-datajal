@@ -76,6 +76,12 @@ public class Fechas {
 		return auxCalendar.getTime();	
 	}
 	
+	public static String formatoHHmm(Date fecha) {
+		SimpleDateFormat formato = new SimpleDateFormat("HH:mm");
+		return formato.format(fecha);
+	}
+	
+	
 	public static String formatoDDMMAAAA(Date fecha) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy") ;		
 		return formato.format(fecha);
