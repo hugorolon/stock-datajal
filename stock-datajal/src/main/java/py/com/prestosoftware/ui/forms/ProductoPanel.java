@@ -650,7 +650,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 			
 			// tfPeso.setText(product.getPeso() != null ?
 			// FormatearValor.doubleAString(product.getPeso()) : "");
-			tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "");
+			tfDep01.setText(product.getDepO1() != null ? FormatearValor.doubleAString(product.getDepO1()) : "0");
 //			tfCantidadPorCaja.setText(
 //					product.getCantidadPorCaja() != null ? FormatearValor.doubleAString(product.getCantidadPorCaja()) : "");
 
