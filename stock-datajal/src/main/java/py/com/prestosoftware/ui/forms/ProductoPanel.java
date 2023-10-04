@@ -341,7 +341,6 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		pnlDatosPersonal.add(label_2);
 
 		tfDep01 = new JTextField();
-		tfDep01.setEditable(false);
 		tfDep01.setColumns(10);
 		tfDep01.setBounds(112, 154, 163, 25);
 		pnlDatosPersonal.add(tfDep01);
@@ -716,6 +715,8 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 				product.setDepO1(cantidad);
 			}
 			// product.setNombre(tfNombre.getText());
+			product.setCodigo(tfCodigo.getText());
+			product.setCodigoSec(tfCodigoSec.getText());
 			product.setDescripcion(tfDescripcion.getText());
 			product.setSubreferencia(tfOtrasReferencias.getText());
 
