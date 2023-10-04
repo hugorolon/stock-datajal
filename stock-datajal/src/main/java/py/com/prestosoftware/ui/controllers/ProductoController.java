@@ -406,7 +406,7 @@ public class ProductoController extends AbstractFrameController {
             ValidationError validationError = errors.get();
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
-            productService.save(product);
+        	product = productService.save(product);
             if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
             	
@@ -424,7 +424,7 @@ public class ProductoController extends AbstractFrameController {
     	try {
         	productoPanel.clearForm();
         	productoPanel.getTfNombre().requestFocus();
-        	addNewProduct();	
+        	//addNewProduct();	
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

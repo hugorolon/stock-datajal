@@ -69,8 +69,12 @@ public class ProductoService {
         return repository.findByDescripcionContaining(name);
     }
 
-    public void save(Producto producto) {
-        repository.save(producto);
+//    public void save(Producto producto) {
+//        repository.save(producto);
+//    }
+    public Producto save(Producto producto) {
+        Producto p = repository.save(producto);
+        return p;
     }
 
     public void remove(Producto producto) {
