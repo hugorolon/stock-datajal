@@ -27,7 +27,7 @@ public class NotaTableModel extends DefaultTableModel<Nota> {
             case 2:
                 return item.getNotaRef();
             case 3:
-                return (Object)FormatearValor.doubleAString(item.getNotaValor());
+                return (Object)item.getNotaValor();
             default:
                 return "";
         }

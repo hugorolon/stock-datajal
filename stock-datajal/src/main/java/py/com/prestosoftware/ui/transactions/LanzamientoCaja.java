@@ -1043,7 +1043,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 				String notaNro = String.valueOf(tbLanzamientos.getValueAt(i, 2));
 
 				if (tfOperacionID.getText().trim().equals(operacionId)
-						&& lblTipoOperacion.getText().trim().equals(operacionTipo)
+						&& tipo.trim().equals(operacionTipo)
 						&& tfNotaNro.getText().trim().equals(notaNro)) {
 					esDuplicado = true;
 				}
@@ -1145,7 +1145,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 				if (cuenta.isPresent()) {
 					String nombre = cuenta.get().getNombre();
 					lblOperacionNombre.setText(nombre);
-					lblTipoOperacion.setText(cuenta.get().getTipo());
+					tipo = cuenta.get().getTipo();
+					//lblTipoOperacion.setText(cuenta.get().getTipo());
 					tfNotaNro.requestFocus();
 				} else {
 					Notifications.showAlert("No se encuentra Operacion con ese codigo.!");
@@ -1301,7 +1302,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 			MovimientoCaja item = tableModel.getEntityByRow(selectedRow);
 
 			tfOperacionID.setText(String.valueOf(item.getPlanCuentaId()));
-			lblTipoOperacion.setText(item.getTipoOperacion());
+			tipo= item.getTipoOperacion();
+			//lblTipoOperacion.setText(item.getTipoOperacion());
 			lblOperacionNombre.setText(item.getNotaReferencia());
 			tfNotaNro.setText(item.getNotaNro());
 			tfNotaValor.setText(FormatearValor.doubleAString(item.getNotaValor()));
@@ -1409,7 +1411,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		if(tfOperacionID.getText()!=""&&!tfOperacionID.getText().isEmpty())
 			entPago.setPlanCuentaId(Integer.parseInt(tfOperacionID.getText().toString()));
 		
-		entPago.setTipoOperacion(lblTipoOperacion.getText());
+		entPago.setTipoOperacion(tipo);
 		entPago.setNotaNro(tfNotaNro.getText());
 		entPago.setNotaReferencia(tfNotaNombre.getText());
 		entPago.setNotaValor(FormatearValor.stringADouble(tfNotaValor.getText()));
@@ -1491,6 +1493,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private Long monedaBaseCodigo = 0L;
 	// private Double monedaBaseValor = 0d;
 	private Double mDolar, mGs, mRs, mPs = 0d;
+	private String tipo="";
 
 	public void getCotizaciones() {
 		cotizacionModel.clear();
@@ -1538,7 +1541,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private JTextField tfTotalEntrada;
 	private JLabel lblTotalSalida;
 	private JTextField tfTotalSalida;
-	private JLabel lblTipoOperacion;
+	//private JLabel lblTipoOperacion;
 	private JLabel lblTipo;
 	private JLabel lblPs;
 	private JLabel tfTotalPs;
@@ -2105,7 +2108,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		if (c != null) {
 			tfOperacionID.setText(String.valueOf(c.getId()));
 			lblOperacionNombre.setText(c.getNombre());
-			lblTipoOperacion.setText(c.getTipo());
+			tipo = c.getTipo();
+			//lblTipoOperacion.setText(c.getTipo());
 			tfNotaNro.requestFocus();
 		}
 	}
