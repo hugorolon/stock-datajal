@@ -87,6 +87,8 @@ import py.com.prestosoftware.ui.table.NotaTableModel;
 import py.com.prestosoftware.ui.viewmodel.MonedaValor;
 import py.com.prestosoftware.ui.viewmodel.Nota;
 import py.com.prestosoftware.util.Notifications;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 @Component
 public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, ClienteInterfaz, 
@@ -886,6 +888,16 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		tbNotasLanzadas.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
 		tbNotasLanzadas.getColumnModel().getColumn(4).setPreferredWidth(55);
 		tbNotasLanzadas.getColumnModel().getColumn(4).setCellRenderer(alignRendererLeft);
+		tabbedPane.addChangeListener(new ChangeListener() {
+	        public void stateChanged(ChangeEvent e) {
+	            if(tabbedPane.getSelectedIndex()==0) {
+	            	getNotasPendientes();
+	            }	            	
+	            else {
+	            	getNotasLanzadas(Long.valueOf(tfCajaID.getText()));
+	            }
+	        }
+	    });
 		scrollNotasLanzadas.setViewportView(tbNotasLanzadas);
 
 		//panelValorCaja = new JPanel();
