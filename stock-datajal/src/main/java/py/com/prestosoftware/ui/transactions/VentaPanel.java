@@ -485,15 +485,15 @@ public class VentaPanel extends JFrame
 		tbProductos.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
 		tbProductos.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
 		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(105);
-		tbProductos.getColumnModel().getColumn(1).setCellRenderer(alignRendererLeft);
+		tbProductos.getColumnModel().getColumn(1).setCellRenderer(alignRendererRight);
 		tbProductos.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderLeft);
-		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(585);
+		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(605);
 		tbProductos.getColumnModel().getColumn(2).setCellRenderer(alignRendererLeft);
 		tbProductos.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(135);
 		tbProductos.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
 		tbProductos.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(130);
 		tbProductos.getColumnModel().getColumn(4).setCellRenderer(alignRendererRight);
 		
 		tbProductos.addMouseListener(new MouseAdapter() {

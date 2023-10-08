@@ -12,7 +12,7 @@ public class NotaTableModel extends DefaultTableModel<Nota> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[] { "OPERACION", "DOCUMENTO", "REF.", "VALOR"};
+        return new String[] { "OPERACION", "DOCUMENTO", "REFERENCIA O NOMBRE", "VALOR"};
     }
 
     @Override
@@ -27,7 +27,7 @@ public class NotaTableModel extends DefaultTableModel<Nota> {
             case 2:
                 return item.getNotaRef();
             case 3:
-                return (Object)item.getNotaValor();
+                return (Object)item.getNotaValor()!=null?item.getNotaValor():"";
             default:
                 return "";
         }

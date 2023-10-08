@@ -29,6 +29,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
 
@@ -64,6 +65,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.domain.services.VentaService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.Fechas;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
@@ -175,7 +177,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	}
 	
 	private void initProperties() {
-		setSize(900, 610);
+		setSize(1009, 663);
 		setTitle("LANZAMIENTO DE CAJA");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -185,7 +187,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 	private void initComponents() {
 		getContentPane().setLayout(null);
 		pnlEntradaPago = new JPanel();
-		pnlEntradaPago.setBounds(6, 81, 888, 498);
+		pnlEntradaPago.setBounds(6, 81, 968, 498);
 		getContentPane().add(pnlEntradaPago);
 		pnlEntradaPago.setLayout(null);
 
@@ -198,11 +200,11 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlEntradaPago.add(lblReferencia);
 
 		JLabel lblValor = new JLabel("VALOR");
-		lblValor.setBounds(319, 169, 85, 16);
+		lblValor.setBounds(645, 169, 85, 16);
 		pnlEntradaPago.add(lblValor);
 
 		tfNotaNombre = new JTextField();
-		tfNotaNombre.setBounds(152, 186, 164, 30);
+		tfNotaNombre.setBounds(152, 186, 481, 30);
 		tfNotaNombre.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -218,7 +220,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlEntradaPago.add(tfNotaNombre);
 
 		tfNotaValor = new JTextField();
-		tfNotaValor.setBounds(317, 186, 103, 30);
+		tfNotaValor.setBounds(643, 186, 103, 30);
 		tfNotaValor.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -281,7 +283,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		tfOperacionID.setColumns(10);
 
 		btnRemove = new JButton(" - ");
-		btnRemove.setBounds(819, 186, 63, 30);
+		btnRemove.setBounds(902, 186, 48, 30);
 		btnRemove.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -298,7 +300,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlEntradaPago.add(btnRemove);
 
 		JScrollPane scrollLanzamiento = new JScrollPane();
-		scrollLanzamiento.setBounds(6, 218, 876, 104);
+		scrollLanzamiento.setBounds(6, 218, 952, 104);
 		pnlEntradaPago.add(scrollLanzamiento);
 
 		tbLanzamientos = new JTable(tableModel) {
@@ -331,6 +333,38 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 
 		tbLanzamientos.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbLanzamientos.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+		DefaultTableCellRenderer alignRendererHeaderCenter= new CellRendererOthers();
+		alignRendererHeaderCenter.setBackground(getBackground());
+		alignRendererHeaderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		DefaultTableCellRenderer alignRendererHeaderLeft= new CellRendererOthers();
+		alignRendererHeaderLeft.setHorizontalAlignment(SwingConstants.LEFT);
+		DefaultTableCellRenderer alignRendererLeft= new CellRendererOthers();
+		alignRendererLeft.setBackground(getBackground());
+		alignRendererLeft.setHorizontalAlignment(SwingConstants.LEFT);
+		DefaultTableCellRenderer alignRendererRight= new CellRendererOthers();
+		alignRendererRight.setBackground(getBackground());
+		alignRendererRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbLanzamientos.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(0).setPreferredWidth(50);
+		tbLanzamientos.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
+		tbLanzamientos.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(1).setPreferredWidth(50);
+		tbLanzamientos.getColumnModel().getColumn(1).setCellRenderer(alignRendererRight);
+		tbLanzamientos.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(2).setPreferredWidth(50);
+		tbLanzamientos.getColumnModel().getColumn(2).setCellRenderer(alignRendererLeft);
+		tbLanzamientos.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(3).setPreferredWidth(280);
+		tbLanzamientos.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
+		tbLanzamientos.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(4).setPreferredWidth(50);
+		tbLanzamientos.getColumnModel().getColumn(4).setCellRenderer(alignRendererRight);
+		tbLanzamientos.getColumnModel().getColumn(5).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLanzamientos.getColumnModel().getColumn(5).setPreferredWidth(50);
+		tbLanzamientos.getColumnModel().getColumn(5).setCellRenderer(alignRendererRight);
+		
+		
+		
 		scrollLanzamiento.setViewportView(tbLanzamientos);
 
 		tfNotaNro = new JTextField();
@@ -373,7 +407,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlEntradaPago.add(lblDocumento);
 
 		btnAdd = new JButton(" + ");
-		btnAdd.setBounds(750, 186, 63, 30);
+		btnAdd.setBounds(844, 186, 48, 30);
 		btnAdd.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -711,7 +745,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		tfVueltoGs.setColumns(10);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(6, 12, 870, 152);
+		tabbedPane.setBounds(6, 12, 952, 152);
 		pnlEntradaPago.add(tabbedPane);
 
 //		panel = new JPanel();
@@ -752,7 +786,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlNotasPendientes.setLayout(null);
 
 		JScrollPane scrollNotasPendientes = new JScrollPane();
-		scrollNotasPendientes.setBounds(6, 6, 557, 115);
+		scrollNotasPendientes.setBounds(6, 6, 931, 115);
 		pnlNotasPendientes.add(scrollNotasPendientes);
 
 		tbNotasPendientes = new JTable(notaModel);
@@ -769,6 +803,33 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		});
 		tbNotasPendientes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbNotasPendientes.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+//		DefaultTableCellRenderer alignRendererHeaderCenter= new CellRendererOthers();
+//		alignRendererHeaderCenter.setBackground(getBackground());
+//		alignRendererHeaderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+//		DefaultTableCellRenderer alignRendererHeaderLeft= new CellRendererOthers();
+//		alignRendererHeaderLeft.setHorizontalAlignment(SwingConstants.LEFT);
+//		DefaultTableCellRenderer alignRendererLeft= new CellRendererOthers();
+//		alignRendererLeft.setBackground(getBackground());
+//		alignRendererLeft.setHorizontalAlignment(SwingConstants.LEFT);
+//		DefaultTableCellRenderer alignRendererRight= new CellRendererOthers();
+//		alignRendererRight.setBackground(getBackground());
+//		alignRendererRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbNotasPendientes.getTableHeader().setOpaque(false);
+		tbNotasPendientes.getTableHeader().setBackground(new Color(225, 251, 234));
+		tbNotasPendientes.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+		tbNotasPendientes.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasPendientes.getColumnModel().getColumn(0).setPreferredWidth(80);
+		tbNotasPendientes.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
+		tbNotasPendientes.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasPendientes.getColumnModel().getColumn(1).setPreferredWidth(105);
+		tbNotasPendientes.getColumnModel().getColumn(1).setCellRenderer(alignRendererRight);
+		tbNotasPendientes.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasPendientes.getColumnModel().getColumn(2).setPreferredWidth(385);
+		tbNotasPendientes.getColumnModel().getColumn(2).setCellRenderer(alignRendererLeft);
+		tbNotasPendientes.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasPendientes.getColumnModel().getColumn(3).setPreferredWidth(100);
+		tbNotasPendientes.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
+		
 		scrollNotasPendientes.setViewportView(tbNotasPendientes);
 
 		pnlNotasLanzadas = new JPanel();
@@ -776,7 +837,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlNotasLanzadas.setLayout(null);
 
 		scrollNotasLanzadas = new JScrollPane();
-		scrollNotasLanzadas.setBounds(6, 6, 551, 115);
+		scrollNotasLanzadas.setBounds(6, 6, 931, 115);
 		pnlNotasLanzadas.add(scrollNotasLanzadas);
 
 		tbNotasLanzadas = new JTable(notasLanzadasModel);
@@ -796,6 +857,35 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		});
 		tbNotasLanzadas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tbNotasLanzadas.setDefaultRenderer(Object.class, new CellRendererOperaciones());
+//		DefaultTableCellRenderer alignRendererHeaderCenter= new CellRendererOthers();
+//		alignRendererHeaderCenter.setBackground(getBackground());
+//		alignRendererHeaderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+//		DefaultTableCellRenderer alignRendererHeaderLeft= new CellRendererOthers();
+//		alignRendererHeaderLeft.setHorizontalAlignment(SwingConstants.LEFT);
+//		DefaultTableCellRenderer alignRendererLeft= new CellRendererOthers();
+//		alignRendererLeft.setBackground(getBackground());
+//		alignRendererLeft.setHorizontalAlignment(SwingConstants.LEFT);
+//		DefaultTableCellRenderer alignRendererRight= new CellRendererOthers();
+//		alignRendererRight.setBackground(getBackground());
+//		alignRendererRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbNotasLanzadas.getTableHeader().setOpaque(false);
+		tbNotasLanzadas.getTableHeader().setBackground(new Color(225, 251, 234));
+		tbNotasLanzadas.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
+		tbNotasLanzadas.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasLanzadas.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tbNotasLanzadas.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
+		tbNotasLanzadas.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasLanzadas.getColumnModel().getColumn(1).setPreferredWidth(55);
+		tbNotasLanzadas.getColumnModel().getColumn(1).setCellRenderer(alignRendererLeft);
+		tbNotasLanzadas.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasLanzadas.getColumnModel().getColumn(2).setPreferredWidth(55);
+		tbNotasLanzadas.getColumnModel().getColumn(2).setCellRenderer(alignRendererRight);
+		tbNotasLanzadas.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasLanzadas.getColumnModel().getColumn(3).setPreferredWidth(300);
+		tbNotasLanzadas.getColumnModel().getColumn(3).setCellRenderer(alignRendererLeft);
+		tbNotasLanzadas.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
+		tbNotasLanzadas.getColumnModel().getColumn(4).setPreferredWidth(55);
+		tbNotasLanzadas.getColumnModel().getColumn(4).setCellRenderer(alignRendererLeft);
 		scrollNotasLanzadas.setViewportView(tbNotasLanzadas);
 
 		//panelValorCaja = new JPanel();
@@ -839,15 +929,15 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 //		pnlEntradaPago.add(lblTipo);
 
 		btnGuardar = new JButton("GUARDAR");
-		btnGuardar.setBounds(770, 335, 112, 47);
+		btnGuardar.setBounds(804, 332, 112, 47);
 		pnlEntradaPago.add(btnGuardar);
 
 		JButton btnEscCancelar = new JButton("SALIR");
-		btnEscCancelar.setBounds(770, 445, 112, 47);
+		btnEscCancelar.setBounds(804, 442, 112, 47);
 		pnlEntradaPago.add(btnEscCancelar);
 
 		btnCancelar = new JButton("CANCELAR");
-		btnCancelar.setBounds(770, 394, 112, 47);
+		btnCancelar.setBounds(804, 391, 112, 47);
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				clearForm();
@@ -862,7 +952,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		pnlEntradaPago.add(btnCancelar);
 
 		tfObs = new JTextField();
-		tfObs.setBounds(421, 186, 324, 30);
+		tfObs.setBounds(759, 186, 79, 30);
 		((AbstractDocument) tfObs.getDocument()).setDocumentFilter(new UppercaseDocumentFilter());
 		tfObs.addKeyListener(new KeyAdapter() {
 			@Override
@@ -880,8 +970,8 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		tfObs.setColumns(10);
 		pnlEntradaPago.add(tfObs);
 
-		lbIdRef = new JLabel("");
-		lbIdRef.setBounds(512, 169, 121, 16);
+		lbIdRef = new JLabel("Obs.");
+		lbIdRef.setBounds(759, 169, 91, 16);
 		lbIdRef.setEnabled(false);
 		pnlEntradaPago.add(lbIdRef);
 		btnEscCancelar.addKeyListener(new KeyAdapter() {
@@ -912,7 +1002,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		});
 
 		JPanel pnlCabecera = new JPanel();
-		pnlCabecera.setBounds(6, 0, 888, 75);
+		pnlCabecera.setBounds(6, 0, 968, 75);
 		getContentPane().add(pnlCabecera);
 
 		JLabel lblCaja = new JLabel("CAJA:");
@@ -1228,7 +1318,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 
 			if (compra.isPresent()) {
 				notaReferencia = compra.get().getProveedorNombre();
-				notaValor = compra.get().getTotalCif();
+				notaValor = compra.get().getTotalGeneral();
 				idRef = compra.get().getProveedor().getId();
 				operacionValida = true;
 			}
@@ -1592,7 +1682,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 				notas.add(new Nota("VENTAS", venta.getId(), venta.getClienteNombre(), venta.getTotalGeneral()));
 			}
 			for (Compra compra : compras) {
-				notas.add(new Nota("COMPRAS", compra.getId(), compra.getProveedorNombre(), compra.getTotalCif()));
+				notas.add(new Nota("COMPRAS", compra.getId(), compra.getProveedorNombre(), compra.getTotalGeneral()));
 			}
 			for (Devolucion d : devoluciones) {
 				notas.add(new Nota("DEVOLUCIONES DE " + d.getTipo(), d.getId(), d.getReferencia(), d.getTotalGeneral()));
@@ -1635,7 +1725,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		if (validateCabezera() && validateItems()) {
 			List<MovimientoCaja> mov = tableModel.getEntities();
 			for (MovimientoCaja e : mov) {
-				if (e.getTipoOperacion().equals("E")) {
+				//if (e.getTipoOperacion().equals("E")) {
 					e.setValorM01(
 							!tfRecibidoUs.getText().isEmpty() ? FormatearValor.stringToDouble(tfRecibidoUs.getText())
 									: 0);
@@ -1655,13 +1745,26 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 						if (venta.isPresent()) {
 							Venta v = venta.get();
 							if(v.getCondicion()==2)
-								e.setSituacion("PROCESADO");
+								v.setSituacion("PROCESADO");
 							else
-								e.setSituacion("PAGADO");
+								v.setSituacion("PAGADO");
 							ventaService.saveFromCaja(v);
 						}
+					}else {
+						if(e.getPlanCuentaId()==2) {
+							Optional<Compra> compra= compraService.findById(Long.valueOf(e.getNotaNro()));
+							if (compra.isPresent()) {
+								Compra c = compra.get();
+								if(c.getCondicion()==2)
+									c.setSituacion("PROCESADO");
+								else
+									c.setSituacion("PAGADO");
+								compraService.saveFromCaja(c);
+							}
+						}
+						
 					}
-				}				
+				//}				
 			}
 
 			List<MovimientoCaja> pagos = pagoService.save(mov);

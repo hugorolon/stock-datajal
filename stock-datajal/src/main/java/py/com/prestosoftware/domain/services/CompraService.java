@@ -121,6 +121,20 @@ public class CompraService {
     	return repository.save(compra);
     }
 
+    @Transactional(rollbackFor = RuntimeException.class)
+    public Compra saveFromCaja(Compra compra) {
+			updateStockProduct(compra.getItems(),0,1);
+			String condicion= compra.getCondicion()==1?"contado":"30 días";
+			openMovCaja(compra, condicion);
+			openMovimientoEgresoProcesoPagoCompras(compra);
+			if (condicion.equalsIgnoreCase("30 días")) {
+				CuentaAPagar cuentaAPagar = new CuentaAPagar();
+				cuentaAPagar = cuentaAPagarProcesoPagoCompras(compra, condicion);
+				movimientoIngresoProcesoPagoCompras(compra, cuentaAPagar);
+			}
+    	return repository.save(compra);
+    }
+
     public void remove(Compra compra) {
         repository.delete(compra);
     }
