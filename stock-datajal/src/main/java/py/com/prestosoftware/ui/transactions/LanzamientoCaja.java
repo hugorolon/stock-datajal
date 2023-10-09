@@ -1709,7 +1709,7 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 		String situacion2 = "PROCESADO";
 
 		if (!tfCajaID.getText().isEmpty()) {
-			List<MovimientoCaja> pagos = pagoService.findByFechaAndCajaAndSituacion(new Date(), new Caja(Long.valueOf(tfCajaID.getText())), situacion);
+			List<MovimientoCaja> pagos = pagoService.getMovimientosLanzamiento(new Date(), Long.valueOf(tfCajaID.getText()), situacion, situacion2);
 
 			if (!pagos.isEmpty()) {
 				notasLanzadasModel.clear();
