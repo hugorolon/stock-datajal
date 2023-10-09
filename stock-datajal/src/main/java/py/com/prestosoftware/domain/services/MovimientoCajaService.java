@@ -25,8 +25,11 @@ public class MovimientoCajaService {
         return repository.findAll();
     }
     
-    public List<MovimientoCaja> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
+    public List <MovimientoCaja> findByFechaAndCajaAndSituacion(Date fecha, Caja caja, String situacion) {
     	return repository.findByFechaAndCajaAndSituacionOrderByIdAsc(fecha, caja, situacion);
+    }
+    public Optional<List<MovimientoCaja>> getMovimientosLanzamiento(Date fecha, Caja caja, String situacion, String situacion2) {
+    	return repository.getMovimientosLanzamiento(fecha, caja, situacion, situacion2);
     }
     
     public Date findLastDateMov(Date fecha) {

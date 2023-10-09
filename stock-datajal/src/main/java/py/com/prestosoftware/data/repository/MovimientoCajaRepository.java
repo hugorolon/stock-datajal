@@ -72,5 +72,9 @@ public interface MovimientoCajaRepository extends JpaRepository<MovimientoCaja, 
 	@Query(value = "SELECT  mc "
 			+ "FROM MovimientoCaja mc " + "WHERE mc.notaNro = ?1", nativeQuery = false)
 	Optional <MovimientoCaja> getMovimientoCajaPorNota(String nroNota);
+	
+	@Query(value = "SELECT  mc "
+			+ "FROM MovimientoCaja mc " + "WHERE mc.fecha = ?1 and mc.caja.id= ?2 and (mc.situacion = ?3 or mc.situacion = ?4)", nativeQuery = false)
+	Optional <List<MovimientoCaja>> getMovimientosLanzamiento(Date fecha, Caja caja, String situacion, String situacion2);
 
 }

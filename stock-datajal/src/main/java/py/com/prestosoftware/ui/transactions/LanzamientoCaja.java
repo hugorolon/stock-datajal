@@ -1706,17 +1706,17 @@ public class LanzamientoCaja extends JFrame implements PlanCuentaInterfaz, Clien
 
 	private void getNotasLanzadas(Long cajaId) {
 		String situacion = "PAGADO";
-		List<MovimientoCaja> pagos = new ArrayList<>();
+		String situacion2 = "PROCESADO";
 
 		if (!tfCajaID.getText().isEmpty()) {
-			pagos = pagoService.findByFechaAndCajaAndSituacion(new Date(), new Caja(cajaId), situacion);
+			Optional<List<MovimientoCaja>> pagos = pagoService.getMovimientosLanzamiento(new Date(), new Caja(cajaId), situacion, situacion2);
 
-			if (!pagos.isEmpty()) {
+			if (pagos.isPresent()) {
 				notasLanzadasModel.clear();
-				notasLanzadasModel.addEntities(pagos);
+				notasLanzadasModel.addEntities(pagos.get());
 
 				// valores en caja
-				loadValoresCaja(pagos);
+				loadValoresCaja(pagos.get());
 			}
 		}
 	}
