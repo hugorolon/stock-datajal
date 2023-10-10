@@ -11,7 +11,7 @@ public class CategoriaTableModel extends DefaultTableModel<Categoria> {
 	
 	@Override
     public String[] getColumnLabels() {
-        return new String[]{ "Nombre", "Activo" };
+        return new String[]{ "ID", "Nombre", "Activo" };
     }
 
     @Override
@@ -20,8 +20,10 @@ public class CategoriaTableModel extends DefaultTableModel<Categoria> {
 
         switch (columnIndex) {
             case 0:
-                return categoria.getNombre();
+            	return categoria.getId();
             case 1:
+                return categoria.getNombre();
+            case 2:
                 return categoria.getActivo();
             default:
                 return "";

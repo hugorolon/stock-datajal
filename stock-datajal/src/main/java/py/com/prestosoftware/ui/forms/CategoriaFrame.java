@@ -31,15 +31,15 @@ public class CategoriaFrame extends JDialog {
     private void setFrameUp() {
         setTitle("Registro de Categorias");
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setSize(830, 511);
         setLocationRelativeTo(null);
         setResizable(false);
     }
 
     private void initComponents() {
-    	add(searchPanel, BorderLayout.NORTH);
-    	add(tablePanel, BorderLayout.CENTER);
-    	add(formPanel, BorderLayout.SOUTH); 
+    	getContentPane().add(searchPanel, BorderLayout.NORTH);
+    	getContentPane().add(tablePanel, BorderLayout.CENTER);
+    	getContentPane().add(formPanel, BorderLayout.SOUTH); 
     }
     
     public CategoriaTablePanel getTablePanel() {
