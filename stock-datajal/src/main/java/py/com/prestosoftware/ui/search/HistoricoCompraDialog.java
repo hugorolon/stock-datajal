@@ -8,6 +8,8 @@ import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -21,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.swing.DefaultComboBoxModel;
@@ -49,18 +52,23 @@ import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
+import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.table.ProductoComboBoxModel;
 import py.com.prestosoftware.ui.table.ProveedorComboBoxModel;
 import py.com.prestosoftware.util.ConnectionUtils;
+import py.com.prestosoftware.util.Notifications;
+
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 @Component
-public class HistoricoCompraDialog extends JDialog {
+public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 
 	private static final long serialVersionUID = 1L;
-
+	private static final int PRODUCTO_CODE = 1;
 	private JButton btnPrevisualizar;
 	private JButton btnCancelar;
-
+	private ProductoVistaDialog productoDialog;
 	private JXDatePicker tfFechaInicial;
 	private JXDatePicker tfFechaFinal;
 	private JComboBox<String> cbPeriodo;
@@ -75,18 +83,20 @@ public class HistoricoCompraDialog extends JDialog {
 	private ProveedorComboBoxModel proveedorComboBoxModel;
 	private ProductoComboBoxModel productoComboBoxModel;
 	private JComboBox<Proveedor> cbProveedor;
-	private JComboBox<Producto> cbProducto;
 	private ProductoService productoService;
 	private ProveedorService proveedorService;
+	private JTextField tfProductoId;
+	private JTextField tfDescripcion;
 
 	@Autowired
 	public HistoricoCompraDialog(ProveedorComboBoxModel proveedorComboBoxModel,
 			ProductoComboBoxModel productoComboBoxModel, ProductoService productoService,
-			ProveedorService proveedorService) {
+			ProveedorService proveedorService,  ProductoVistaDialog productoDialog) {
 		this.proveedorComboBoxModel = proveedorComboBoxModel;
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
 		this.proveedorService = proveedorService;
+		this.productoDialog= productoDialog;
 		this.setSize(869, 315);
 		this.setModal(true);
 		this.setTitle("Historico de compras de productos");
@@ -172,6 +182,14 @@ public class HistoricoCompraDialog extends JDialog {
 		gbc_btnCancelar.gridx = 1;
 		gbc_btnCancelar.gridy = 5;
 		pnlBotonera.add(btnCancelar, gbc_btnCancelar);
+		
+				
+				GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
+				gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
+				gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
+				gbc_comboBox_1.gridx = 3;
+				gbc_comboBox_1.gridy = 1;
+				
 
 		lblProveedor = new JLabel("Proveedor"); //$NON-NLS-1$ //$NON-NLS-2$
 		GridBagConstraints gbc_lblProveedor = new GridBagConstraints();
@@ -187,7 +205,7 @@ public class HistoricoCompraDialog extends JDialog {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					cbProducto.requestFocus();
+					tfProductoId.requestFocus();
 				}
 			}
 		});
@@ -199,31 +217,58 @@ public class HistoricoCompraDialog extends JDialog {
 		gbc_comboBox.gridy = 2;
 		pnlBuscador.add(cbProveedor, gbc_comboBox);
 
-		lblProducto = new JLabel("Producto"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblProducto = new JLabel("Producto");
 		GridBagConstraints gbc_lblProducto = new GridBagConstraints();
 		gbc_lblProducto.anchor = GridBagConstraints.WEST;
 		gbc_lblProducto.insets = new Insets(0, 0, 5, 5);
 		gbc_lblProducto.gridx = 1;
 		gbc_lblProducto.gridy = 3;
 		pnlBuscador.add(lblProducto, gbc_lblProducto);
-
-		cbProducto = new JComboBox<Producto>(productoComboBoxModel);
-		cbProducto.addKeyListener(new KeyAdapter() {
+		
+		tfProductoId = new JTextField();
+		tfProductoId.setText(""); //$NON-NLS-1$ //$NON-NLS-2$
+		tfProductoId.addFocusListener(new FocusAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
-						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					cbPeriodo.requestFocus();
-				}
+			public void focusGained(FocusEvent e) {
+				tfProductoId.selectAll();
 			}
 		});
-		GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
-		gbc_comboBox_1.gridwidth = 2;
-		gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
-		gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
-		gbc_comboBox_1.gridx = 2;
-		gbc_comboBox_1.gridy = 3;
-		pnlBuscador.add(cbProducto, gbc_comboBox_1);
+		tfProductoId.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_F4) {
+					showDialog(PRODUCTO_CODE);
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfProductoId.getText().isEmpty()) {
+						findProducto(tfProductoId.getText());
+					} else {
+						showDialog(PRODUCTO_CODE);
+					}
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// Util.validateNumero(e);
+			}
+		});
+		GridBagConstraints gbc_tfProductoId = new GridBagConstraints();
+		gbc_tfProductoId.insets = new Insets(0, 0, 5, 5);
+		gbc_tfProductoId.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfProductoId.gridx = 2;
+		gbc_tfProductoId.gridy = 3;
+		pnlBuscador.add(tfProductoId, gbc_tfProductoId);
+		tfProductoId.setColumns(10);
+		
+		tfDescripcion = new JTextField();
+		tfDescripcion.setText("");
+		GridBagConstraints gbc_tfDescripcion = new GridBagConstraints();
+		gbc_tfDescripcion.insets = new Insets(0, 0, 5, 5);
+		gbc_tfDescripcion.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tfDescripcion.gridx = 3;
+		gbc_tfDescripcion.gridy = 3;
+		pnlBuscador.add(tfDescripcion, gbc_tfDescripcion);
+		tfDescripcion.setColumns(10);
 
 		lblNewLabel = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblNewLabel.text")); //$NON-NLS-1$
@@ -350,7 +395,6 @@ public class HistoricoCompraDialog extends JDialog {
 		loadProductos();
 		loadProveedores();
 		AutoCompleteDecorator.decorate(cbProveedor);
-		AutoCompleteDecorator.decorate(cbProducto);
 	}
 
 	private void preview() {
@@ -367,9 +411,8 @@ public class HistoricoCompraDialog extends JDialog {
 			proveedor = p.getId() + " - " + p.getNombre();
 			sql += " and com.proveedor_id = " + p.getId();
 		}
-		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
-			Producto pro = (Producto) cbProducto.getSelectedItem();
-			sql += " and ico.producto_id = " + pro.getId();
+		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
+			sql += " and ico.producto_id = " + tfProductoId.getText();
 		}
 		// + "ORDER BY com.id ";
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
@@ -424,9 +467,8 @@ public class HistoricoCompraDialog extends JDialog {
 			proveedor = p.getId() + " - " + p.getNombre();
 			sql += " and com.proveedor_id = " + p.getId();
 		}
-		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
-			Producto pro = (Producto) cbProducto.getSelectedItem();
-			sql += " and ico.producto_id = " + pro.getId();
+		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
+			sql += " and ico.producto_id = " + tfProductoId.getText();
 		}
 		// + "ORDER BY com.id ";
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
@@ -484,5 +526,59 @@ public class HistoricoCompraDialog extends JDialog {
 			productoComboBoxModel.addElements(productos);
 		}
 	}
+	
+	private void findProducto(String id) {
+		try {
+			Optional<Producto> producto = null;
+			producto = productoService.findById(Long.valueOf(id.trim()));
+			
+			if (producto.isPresent()) {
+				setProducto(producto.get());
+			} else {
+				Notifications.showAlert("No existe producto informado. Verifique por favor.!");
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas con el Producto, intente nuevamente!");
+		}
+	}
+	
+	private void showDialog(int code) {
+		switch (code) {
+		case PRODUCTO_CODE:
+			productoDialog.setInterfaz(this);
+			productoDialog.getProductos();
+			productoDialog.limpiaDatosComplementarios();
+			productoDialog.setVisible(true);
+			break;
 
+
+		default:
+			break;
+		}
+	}
+	
+	private void setProducto(Producto producto) {
+		try {
+			if (producto != null) {
+				
+				
+				tfProductoId.setText(String.valueOf(producto.getId()));
+				tfDescripcion.setText(producto.getDescripcion());
+				
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Producto sin Stock, verifique datos del producto!");
+		}
+	}
+
+
+	@Override
+	public void getEntity(Producto producto) {
+		try {
+			setProducto(producto);
+		} catch (Exception e) {
+			Notifications.showAlert("Hubo problemas con el Producto, intente nuevamente!");
+			// TODO: handle exception
+		}
+	}
 }

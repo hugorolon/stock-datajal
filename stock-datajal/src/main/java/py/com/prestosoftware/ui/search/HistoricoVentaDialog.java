@@ -59,13 +59,14 @@ import py.com.prestosoftware.util.ConnectionUtils;
 import py.com.prestosoftware.util.Notifications;
 
 @Component
-public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
+public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz, ProductoInterfaz {
 
 	private static final long serialVersionUID = 1L;
+	private static final int PRODUCTO_CODE = 1;
 
 	private JButton btnPrevisualizar;
 	private JButton btnCancelar;
-
+	private ProductoVistaDialog productoDialog;
 	private JXDatePicker tfFechaInicial;
 	private JXDatePicker tfFechaFinal;
 	private JComboBox<String> cbPeriodo;
@@ -77,7 +78,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 	private JLabel lblOrdenadoPor;
 	private JTextField tfClienteNombre, tfClienteId;
 	private ConsultaCliente clientDialog;
-	private JComboBox<Producto> cbProducto;
+	
 	private JLabel lblProducto;
 	private JLabel lblCliente;
 	private ClienteService clienteService;
@@ -85,14 +86,17 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 	private ProductoService productoService;
 	private JPanel panel;
 	private JTextField tfNombreCliente;
+	private JTextField tfProductoId;
+	private JTextField tfDescripcion;
 
 	@Autowired
 	public HistoricoVentaDialog(ProductoComboBoxModel productoComboBoxModel, ProductoService productoService,
-			ConsultaCliente clientDialog, ClienteService clienteService) {
+			ConsultaCliente clientDialog, ClienteService clienteService,  ProductoVistaDialog productoDialog) {
 		this.clientDialog= clientDialog;
 		this.clienteService = clienteService;
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
+		this.productoDialog= productoDialog;
 
 		this.setSize(803, 288);
 		this.setModal(true);
@@ -124,7 +128,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 					if (!tfClienteId.getText().isEmpty()) {
 						findClientById(Long.parseLong(tfClienteId.getText()));
-						cbProducto.requestFocus();
+						tfProductoId.requestFocus();
 					} else {
 						showDialog();
 					}
@@ -148,9 +152,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 		lblProducto.setBounds(10, 60, 78, 13);
 		pnlBuscador.add(lblProducto);
 
-		cbProducto = new JComboBox<Producto>(productoComboBoxModel);
-		cbProducto.setBounds(102, 56, 494, 21);
-		pnlBuscador.add(cbProducto);
+		
 
 		lblNewLabel = new JLabel("Periodo");
 		lblNewLabel.setBounds(10, 85, 78, 13);
@@ -238,15 +240,51 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 		Dimension ventana = this.getSize();
 		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 
-		loadProductos();
+		//loadProductos();
 		//loadClientes();
 		
-		AutoCompleteDecorator.decorate(cbProducto);
 		
 		tfNombreCliente = new JTextField();
 		tfNombreCliente.setBounds(180, 31, 416, 19);
 		pnlBuscador.add(tfNombreCliente);
 		tfNombreCliente.setColumns(10);
+		
+		tfProductoId = new JTextField();
+		tfProductoId.setText("");
+		tfProductoId.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfProductoId.selectAll();
+			}
+		});
+		tfProductoId.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_F4) {
+					showDialog(PRODUCTO_CODE);
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfProductoId.getText().isEmpty()) {
+						findProducto(tfProductoId.getText());
+					} else {
+						showDialog(PRODUCTO_CODE);
+					}
+				} 
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// Util.validateNumero(e);
+			}
+		});
+		tfProductoId.setBounds(102, 57, 68, 19);
+		pnlBuscador.add(tfProductoId);
+		tfProductoId.setColumns(10);
+		
+		tfDescripcion = new JTextField();
+		tfDescripcion.setText("");
+		tfDescripcion.setBounds(180, 57, 416, 19);
+		pnlBuscador.add(tfDescripcion);
+		tfDescripcion.setColumns(10);
 
 		panel = new JPanel();
 		panel.setBounds(606, 0, 173, 244);
@@ -313,9 +351,8 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 //			cliente = c.getId() + " - " + c.getNombre();
 			sql += " and v.cliente_id = " + tfClienteId.getText();
 		}
-		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
-			Producto pro = (Producto) cbProducto.getSelectedItem();
-			sql += " and i.producto_id = " + pro.getId();
+		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
+			sql += " and i.producto_id = " + tfProductoId.getText();
 		}
 
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
@@ -377,9 +414,8 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 //			cliente = c.getId() + " - " + c.getNombre();
 			sql += " and v.cliente_id = " + tfClienteId.getText();
 		}
-		if (cbProducto.getSelectedItem() != null && cbProducto.getSelectedItem().toString().length() > 0) {
-			Producto pro = (Producto) cbProducto.getSelectedItem();
-			sql += " and i.producto_id = " + pro.getId();
+		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
+			sql += " and i.producto_id = " + tfProductoId.getText();
 		}
 
 		if (cbOrden.getSelectedItem().toString().equalsIgnoreCase("Codigo"))
@@ -435,14 +471,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 		clientDialog.setVisible(true);
 	}
 	
-	private void loadProductos() {
-		if (productoComboBoxModel.getSize() == 0) {
-			List<Producto> productos = productoService.findAllByNombre();
-			productoComboBoxModel.clear();
-			productoComboBoxModel.addElement(null);
-			productoComboBoxModel.addElements(productos);
-		}
-	}
+	
 
 	@Override
 	public void getEntity(Cliente cliente) {
@@ -473,5 +502,59 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz{
 
 	public JTextField getTfClienteId() {
 		return tfClienteId;
+	}
+	
+	private void showDialog(int code) {
+		switch (code) {
+		case PRODUCTO_CODE:
+			productoDialog.setInterfaz(this);
+			productoDialog.getProductos();
+			productoDialog.limpiaDatosComplementarios();
+			productoDialog.setVisible(true);
+			break;
+
+
+		default:
+			break;
+		}
+	}
+	
+	private void setProducto(Producto producto) {
+		try {
+			if (producto != null) {
+				
+				
+				tfProductoId.setText(String.valueOf(producto.getId()));
+				tfDescripcion.setText(producto.getDescripcion());
+				
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Producto sin Stock, verifique datos del producto!");
+		}
+	}
+	
+	private void findProducto(String id) {
+		try {
+			Optional<Producto> producto = null;
+			producto = productoService.findById(Long.valueOf(id.trim()));
+			
+			if (producto.isPresent()) {
+				setProducto(producto.get());
+			} else {
+				Notifications.showAlert("No existe producto informado. Verifique por favor.!");
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas con el Producto, intente nuevamente!");
+		}
+	}
+	
+	@Override
+	public void getEntity(Producto producto) {
+		try {
+			setProducto(producto);
+		} catch (Exception e) {
+			Notifications.showAlert("Hubo problemas con el Producto, intente nuevamente!");
+			// TODO: handle exception
+		}
 	}
 }
