@@ -98,7 +98,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz, Pr
 		this.productoService = productoService;
 		this.productoDialog= productoDialog;
 
-		this.setSize(803, 288);
+		this.setSize(803, 284);
 		this.setModal(true);
 		this.setTitle("Historico de ventas de productos");
 		getContentPane().setLayout(null);
@@ -144,7 +144,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz, Pr
 				Util.validateNumero(e);
 			}
 		});
-		tfClienteId.setText("0");
+		tfClienteId.setText("");
 		tfClienteId.setBounds(102, 30, 68, 21);
 		pnlBuscador.add(tfClienteId);
 
@@ -250,7 +250,7 @@ public class HistoricoVentaDialog extends JDialog implements ClienteInterfaz, Pr
 		tfNombreCliente.setColumns(10);
 		
 		tfProductoId = new JTextField();
-		tfProductoId.setText("");
+		tfProductoId.setText("0");
 		tfProductoId.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
