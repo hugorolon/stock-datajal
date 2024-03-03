@@ -142,14 +142,15 @@ public class MainFrame extends JFrame {
 	 * Create the frame.
 	 */
 	public MainFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(0);
 		setBounds(100, 100, 778, 393);
 		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setTitle("SOFTWARE DE GESTIÓN EMPRESARIAL");
 		
 		addWindowListener(new java.awt.event.WindowAdapter() {   
 			public void windowClosing(java.awt.event.WindowEvent e) {    
-				System.exit(0);   
+			//	System.exit(0);   
 			}		 
 		});	
 		
@@ -568,7 +569,7 @@ public class MainFrame extends JFrame {
 		mntmSalir.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
 		mntmSalir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				//System.exit(0);
 			}
 		});
 		mnConfiguracion.add(mntmSalir);
@@ -1051,6 +1052,14 @@ public class MainFrame extends JFrame {
 
 	public void setMnuVentasPorDeposito(JMenuItem mnuVentasPorDeposito) {
 		this.mnuVentasPorDeposito = mnuVentasPorDeposito;
+	}
+
+	public JMenuItem getMntmSalir() {
+		return mntmSalir;
+	}
+
+	public void setMntmSalir(JMenuItem mntmSalir) {
+		this.mntmSalir = mntmSalir;
 	}
 	
 	

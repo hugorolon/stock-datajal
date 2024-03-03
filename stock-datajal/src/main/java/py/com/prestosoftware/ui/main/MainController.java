@@ -109,6 +109,7 @@ import py.com.prestosoftware.ui.transactions.PresupuestoPanel;
 import py.com.prestosoftware.ui.transactions.TransferenciaPanel;
 import py.com.prestosoftware.ui.transactions.TransformacionPanel;
 import py.com.prestosoftware.ui.transactions.VentaPanel;
+import py.com.prestosoftware.util.Notifications;
 
 @Controller
 public class MainController extends AbstractFrameController {
@@ -435,7 +436,7 @@ public class MainController extends AbstractFrameController {
 //		registerOpenMenu(mainMenuFrame.getMnuPDV(), (e) -> openPDV());
 		registerOpenMenu(mainMenuFrame.getMnuConfig(), (e) -> openConfigPanel());
 //		registerOpenMenu(mainMenuFrame.getMnuEmpaque_2(), (e) -> openEmpaque());
-
+		registerOpenMenu(mainMenuFrame.getMntmSalir(), (e) -> closeSystem());
 //		registerOpenMenu(mainMenuFrame.getMnuCondicionDePago(), (e) -> openCondicionPago());
 
 		openLoginForm();
@@ -743,6 +744,13 @@ public class MainController extends AbstractFrameController {
 		//ventaPanel.vistaDescuentoItem();
 		
 		ventaPanel.getTfClienteID().requestFocus();
+	}
+	
+	private void closeSystem() {
+		if (!ventaPanel.isVisible())
+			System.exit(0);
+		else
+			Notifications.showAlert("Existen ventas pendientes!");
 	}
 	/*
 	VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
