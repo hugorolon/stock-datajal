@@ -419,7 +419,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz{
 		JPanel pnlInfo = new JPanel();
 		tabbedPane.addTab("Info", null, pnlInfo, "");
 
-		JLabel lblMarca = new JLabel("Marca");
+		JLabel lblMarca = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages").getString("ProductoPanel.lblMarca.text")); //$NON-NLS-1$ //$NON-NLS-2$
 
 		chActivo = new JCheckBox();
 		chActivo.addKeyListener(new KeyAdapter() {

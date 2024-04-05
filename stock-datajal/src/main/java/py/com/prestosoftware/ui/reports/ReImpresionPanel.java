@@ -61,7 +61,7 @@ public class ReImpresionPanel extends JDialog {
 				dispose();
 			}
 		});
-		btnFactura.setBounds(246, 80, 139, 52);
+		btnFactura.setBounds(384, 80, 107, 52);
 		getContentPane().add(btnFactura);
 		
 		JButton btnRemision = new JButton("Nota Interna");
@@ -83,7 +83,7 @@ public class ReImpresionPanel extends JDialog {
 				dispose();
 			}
 		});
-		btnRemision.setBounds(41, 80, 139, 52);
+		btnRemision.setBounds(212, 80, 139, 52);
 		getContentPane().add(btnRemision);
 		
 		JLabel lblImpresionFactura = new JLabel("Fecha Factura");
@@ -109,7 +109,7 @@ public class ReImpresionPanel extends JDialog {
 			}
 		});
 		btnCancelar.setFont(new Font("Verdana", Font.BOLD, 14));
-		btnCancelar.setBounds(433, 80, 131, 52);
+		btnCancelar.setBounds(527, 80, 109, 52);
 		getContentPane().add(btnCancelar);
 		
 		dtpFecha = new JXDatePicker();
@@ -121,6 +121,28 @@ public class ReImpresionPanel extends JDialog {
 		chkImpresion = new JCheckBox("Imprimir directo en impresora predeterminada");
 		chkImpresion.setBounds(100, 155, 391, 21);
 		getContentPane().add(chkImpresion);
+		
+		JButton btnTicket = new JButton("Ticket");
+		btnTicket.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					panelInterfaz.cargaFecha(dtpFecha.getDate());
+					panelInterfaz.imprimirTicket();
+					dispose();
+				}
+			}
+		});
+		btnTicket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelInterfaz.cargaFecha(dtpFecha.getDate());
+				panelInterfaz.imprimirNota(chkImpresion.isSelected());
+				dispose();
+			}
+		});
+		btnTicket.setFont(new Font("Verdana", Font.BOLD, 14));
+		btnTicket.setBounds(30, 80, 131, 52);
+		getContentPane().add(btnTicket);
 		//dtpFecha.setColumns(10);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();

@@ -58,7 +58,7 @@ public class ImpresionPanel extends JDialog {
 				dispose();
 			}
 		});
-		btnFactura.setBounds(222, 80, 139, 52);
+		btnFactura.setBounds(339, 80, 112, 52);
 		getContentPane().add(btnFactura);
 		
 		JButton btnRemision = new JButton("Nota Interna");
@@ -78,7 +78,7 @@ public class ImpresionPanel extends JDialog {
 				dispose();
 			}
 		});
-		btnRemision.setBounds(20, 80, 139, 52);
+		btnRemision.setBounds(181, 80, 137, 52);
 		getContentPane().add(btnRemision);
 		
 		JLabel lblImpresionFactura = new JLabel("SELECCIONAR / CANCELAR");
@@ -104,12 +104,32 @@ public class ImpresionPanel extends JDialog {
 			}
 		});
 		btnCancelar.setFont(new Font("Verdana", Font.BOLD, 14));
-		btnCancelar.setBounds(433, 80, 131, 52);
+		btnCancelar.setBounds(461, 80, 103, 52);
 		getContentPane().add(btnCancelar);
 		
 		chkBoxImpresion = new JCheckBox("Imprimir directo en impresora predeterminada");
 		chkBoxImpresion.setBounds(40, 167, 524, 21);
 		getContentPane().add(chkBoxImpresion);
+		
+		JButton btnTicket = new JButton("Ticket");
+		btnTicket.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode()==KeyEvent.VK_ENTER) {
+					panelInterfaz.imprimirTicket();
+					dispose();
+				}
+			}
+		});
+		btnTicket.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelInterfaz.imprimirTicket();
+				dispose();
+			}
+		});
+		btnTicket.setFont(new Font("Verdana", Font.BOLD, 14));
+		btnTicket.setBounds(33, 80, 112, 52);
+		getContentPane().add(btnTicket);
 		
 		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension ventana = this.getSize(); 
