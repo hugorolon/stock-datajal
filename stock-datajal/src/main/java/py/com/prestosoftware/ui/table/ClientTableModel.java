@@ -14,7 +14,7 @@ public class ClientTableModel extends DefaultTableModel<Cliente> {
 	@Override
     public String[] getColumnLabels() {
         return new String[]{
-        		"Codigo", "Nombre", "Razon Social", "C.I. Nro./R.U.C", "Telefono","Registro"};
+        		"Codigo", "Nombre", "Razon Social", "C.I. Nro./R.U.C", "Telefono",};
     }
 
     @Override
@@ -32,8 +32,8 @@ public class ClientTableModel extends DefaultTableModel<Cliente> {
                 return client.getCiruc();
             case 4:
                 return client.getTelefono();
-            case 5:
-                return Fechas.formatoDDMMAAAA(client.getFechaRegistro());
+//            case 5:
+//                return Fechas.formatoDDMMAAAA(client.getFechaRegistro());
             default:
                 return "";
         }

@@ -1,5 +1,6 @@
 package py.com.prestosoftware.data.models;
 
+import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,8 +37,8 @@ public class Producto {
 	@Column(name = "es_servicio")
 	private int esServicio;
 	
-	@Column(name = "es_fraccionado")
-	private int esFraccionado;
+	@Column(name = "es_lote")
+	private int esLote;
 
 	@NotNull
 	private String descripcion;
@@ -122,6 +123,12 @@ public class Producto {
 	@ManyToOne
 	@JoinColumn(name = "umedida_id")
 	private UnidadMedida unidadMedida;
+	
+	@Column(name = "principio_activo")
+	private String principioActivo;
+	
+	@Column(name = "codigo_barra")
+	private BigInteger codigoBarra;
 	
 	//Precios de ventas
 	@ColumnDefault(value = "0")
@@ -490,12 +497,12 @@ public class Producto {
 		this.updatedDate = updatedDate;
 	}
 	
-	public int getEsFraccionado() {
-		return esFraccionado;
+	public int getEsLote() {
+		return esLote;
 	}
 	
-	public void setEsFraccionado(int esFraccionado) {
-		this.esFraccionado = esFraccionado;
+	public void setEsLote(int esLote) {
+		this.esLote = esLote;
 	}
 	
 	public Double getDepO1() {
@@ -680,6 +687,24 @@ public class Producto {
 
 	public void setFechaPromoFin(Date fechaPromoFin) {
 		this.fechaPromoFin = fechaPromoFin;
+	}
+	
+	
+
+	public String getPrincipioActivo() {
+		return principioActivo;
+	}
+
+	public void setPrincipioActivo(String principioActivo) {
+		this.principioActivo = principioActivo;
+	}
+
+	public BigInteger getCodigoBarra() {
+		return codigoBarra;
+	}
+
+	public void setCodigoBarra(BigInteger codigoBarra) {
+		this.codigoBarra = codigoBarra;
 	}
 
 	@Override

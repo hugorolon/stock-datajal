@@ -377,12 +377,12 @@ public class MainController extends AbstractFrameController {
 		registerOpenMenu(mainMenuFrame.getMnuListaPrecio(), (e) -> openListaPrecio());
 		registerOpenMenu(mainMenuFrame.getMnuCategoria(), (e) -> openCategoria());
 		registerOpenMenu(mainMenuFrame.getMnuGrupo(), (e) -> openGrupo());
-		registerOpenMenu(mainMenuFrame.getMnuNcm(), (e) -> openNcm());
+//		registerOpenMenu(mainMenuFrame.getMnuNcm(), (e) -> openNcm());
 		registerOpenMenu(mainMenuFrame.getMnuImpuesto(), (e) -> openImpuesto());
 		registerOpenMenu(mainMenuFrame.getMnuMarca(), (e) -> openMarca());
 		registerOpenMenu(mainMenuFrame.getMnuUnidadMedida(), (e) -> openUnidadMedida());
-		registerOpenMenu(mainMenuFrame.getMnuTamanhos(), (e) -> openTamanho());
-		registerOpenMenu(mainMenuFrame.getMnuColores(), (e) -> openColor());
+//		registerOpenMenu(mainMenuFrame.getMnuTamanhos(), (e) -> openTamanho());
+//		registerOpenMenu(mainMenuFrame.getMnuColores(), (e) -> openColor());
 //		registerOpenMenu(mainMenuFrame.getMnuEmpresa(), (e) -> openEmpresa());
 		//registerOpenMenu(mainMenuFrame.getMnuDeposito(), (e) -> openDeposito());
 		registerOpenMenu(mainMenuFrame.getMnuUsuario(), (e) -> openUsuario());
