@@ -7,10 +7,10 @@ public class GlobalVars {
 	public static Long USER_ID = 1L;
 	public static String USER = "";
 	public static Long EMPRESA_ID = 1L;
-	public static String EMPRESA = "";
-	public static String EMPRESA_DIR = "";
-	public static String EMPRESA_RUC = "";
-	public static String EMPRESA_TEL = "";
+	public static String EMPRESA = "Farmacia SJ";
+	public static String EMPRESA_DIR = "Barrio San Vicente";
+	public static String EMPRESA_RUC = "123456";
+	public static String EMPRESA_TEL = "054422666";
 	public static Long DEPOSITO_ID = 1L;
 	public static String PATH_REPORT = File.pathSeparator+"server"+File.pathSeparator+"reportes";
 	
