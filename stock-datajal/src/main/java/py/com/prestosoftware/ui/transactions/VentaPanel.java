@@ -251,7 +251,7 @@ public class VentaPanel extends JFrame
 		this.productoController = productoController;
 
 		setSize(1155, 714);
-		setTitle("REGISTRO DE VENTAS");
+		setTitle("REGISTRO DE VENTAS - AGROVETERINARIA PROGRESO - RUC 6675712-6");
 
 		initComponents();
 		Util.setupScreen(this);

@@ -119,7 +119,7 @@ public class PresupuestoPanel extends JFrame
 		this.configService = configService;
 		
 		setSize(921, 649);
-		setTitle("PRESUPUESTOS");
+		setTitle("PRESUPUESTO - AGROVETERINARIA PROGRESO - RUC 6675712-6");
 		setLocationRelativeTo(null);
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

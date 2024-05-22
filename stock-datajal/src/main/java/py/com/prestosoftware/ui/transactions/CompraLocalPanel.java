@@ -206,7 +206,7 @@ public class CompraLocalPanel extends JFrame
 		this.productoController = productoController;
 
 		setSize(1108, 650);
-		setTitle("REGISTRO DE COMPRAS");
+		setTitle("REGISTRO DE COMPRAS - AGROVETERINARIA PROGRESO - RUC 6675712-6");
 
 		initComponents();
 		Util.setupScreen(this);
