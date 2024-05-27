@@ -138,7 +138,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		this.movCajaService = movCajaService;
 		this.clienteDialog = clienteDialog;
 		this.itemCobroClienteService = itemCobroClienteService;
-		setSize(914, 811);
+		setSize(914, 720);
 		setTitle("COBRO CLIENTE");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -150,7 +150,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 	@SuppressWarnings("serial")
 	private void initComponents() {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-		tabbedPane.setBounds(6, 76, 887, 635);
+		tabbedPane.setBounds(6, 76, 887, 561);
 		getContentPane().add(tabbedPane);
 
 		JPanel pnlProducto = new JPanel();
@@ -262,12 +262,12 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		panel_1.add(chkCobraTodos);
 
 		panel_2 = new JPanel();
-		panel_2.setBounds(6, 97, 866, 501);
+		panel_2.setBounds(6, 97, 866, 441);
 		pnlProducto.add(panel_2);
 		panel_2.setLayout(null);
 
 		JScrollPane scrollDetalleCobroClientes = new JScrollPane();
-		scrollDetalleCobroClientes.setBounds(10, 11, 835, 395);
+		scrollDetalleCobroClientes.setBounds(10, 11, 835, 339);
 		panel_2.add(scrollDetalleCobroClientes);
 
 		tbDetalleCobroCliente = new JTable(itemTableModel) {//new SelectingTables(itemTableModel);//
@@ -332,7 +332,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 
 		JLabel lblTotalMontoIngreso = new JLabel("TOTALES");
 		lblTotalMontoIngreso.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblTotalMontoIngreso.setBounds(426, 406, 91, 30);
+		lblTotalMontoIngreso.setBounds(426, 349, 91, 30);
 		panel_2.add(lblTotalMontoIngreso);
 
 		tfSaldo = new JTextField();
@@ -340,16 +340,16 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfSaldo.setText("");
 		tfSaldo.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfSaldo.setColumns(10);
-		tfSaldo.setBounds(711, 406, 134, 30);
+		tfSaldo.setBounds(711, 349, 134, 30);
 		panel_2.add(tfSaldo);
 
 		JLabel lblDescuentos = new JLabel("DESCUENTOS");
-		lblDescuentos.setBounds(148, 446, 79, 14);
+		lblDescuentos.setBounds(148, 389, 79, 14);
 		panel_2.add(lblDescuentos);
 
 		tfDescuentos = new JTextField();
 		tfDescuentos.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfDescuentos.setBounds(148, 461, 163, 30);
+		tfDescuentos.setBounds(148, 404, 163, 30);
 		tfDescuentos.addFocusListener(new FocusAdapter() {
 
 	@Override
@@ -389,7 +389,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfRecargos = new JTextField();
 		tfRecargos.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfRecargos.setColumns(10);
-		tfRecargos.setBounds(321, 461, 163, 30);
+		tfRecargos.setBounds(321, 404, 163, 30);
 		tfRecargos.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -425,28 +425,28 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		panel_2.add(tfRecargos);
 
 		JLabel lblRecargos = new JLabel("RECARGOS");
-		lblRecargos.setBounds(321, 446, 79, 14);
+		lblRecargos.setBounds(321, 389, 79, 14);
 		panel_2.add(lblRecargos);
 
 		tfMontoACobrar = new JTextField();
 		tfMontoACobrar.setEditable(false);
 		tfMontoACobrar.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfMontoACobrar.setColumns(10);
-		tfMontoACobrar.setBounds(492, 461, 163, 30);
+		tfMontoACobrar.setBounds(492, 404, 163, 30);
 		panel_2.add(tfMontoACobrar);
 
 		lblMontoACobrar = new JLabel("MONTO A COBRAR");
-		lblMontoACobrar.setBounds(492, 446, 125, 14);
+		lblMontoACobrar.setBounds(492, 389, 125, 14);
 		panel_2.add(lblMontoACobrar);
 
 		tfObs = new JTextField();
 		tfObs.setHorizontalAlignment(SwingConstants.LEFT);
 		tfObs.setColumns(10);
-		tfObs.setBounds(665, 461, 180, 30);
+		tfObs.setBounds(665, 404, 180, 30);
 		panel_2.add(tfObs);
 
 		JLabel lblOBS = new JLabel("OBS.");
-		lblOBS.setBounds(665, 446, 79, 14);
+		lblOBS.setBounds(665, 389, 79, 14);
 		panel_2.add(lblOBS);
 
 		tfTotalACobrar = new JTextField();
@@ -454,7 +454,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		tfTotalACobrar.setHorizontalAlignment(SwingConstants.RIGHT);
 		tfTotalACobrar.setEditable(false);
 		tfTotalACobrar.setColumns(10);
-		tfTotalACobrar.setBounds(576, 406, 134, 30);
+		tfTotalACobrar.setBounds(576, 349, 134, 30);
 		panel_2.add(tfTotalACobrar);
 
 		lblNewLabel = new JLabel("DETALLES CUENTA CLIENTE");
@@ -505,7 +505,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 		pnlCliente.add(lblSituacion);
 
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 721, 883, 35);
+		panel.setBounds(6, 647, 883, 35);
 		getContentPane().add(panel);
 
 		btnGuardar = new JButton("Guardar");

@@ -1,5 +1,7 @@
 package py.com.prestosoftware.ui.transactions;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -205,7 +207,7 @@ public class CompraLocalPanel extends JFrame
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
 		this.productoController = productoController;
 
-		setSize(1108, 650);
+		setSize(1024, 650);
 		setTitle("REGISTRO DE COMPRAS - AGROVETERINARIA PROGRESO - RUC 6675712-6");
 
 		initComponents();
@@ -219,7 +221,7 @@ public class CompraLocalPanel extends JFrame
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		tabbedPane.setBounds(12, 122, 1083, 322);
+		tabbedPane.setBounds(12, 122, 998, 322);
 
 		JPanel pnlProducto = new JPanel();
 		tabbedPane.addTab("Productos", null, pnlProducto, null);
@@ -240,20 +242,20 @@ public class CompraLocalPanel extends JFrame
 		JLabel lblSubtotal = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblSubtotal.text")); //$NON-NLS-1$
 		lblSubtotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblSubtotal.setBounds(846, 6, 115, 18);
+		lblSubtotal.setBounds(764, 6, 130, 18);
 		pnlProducto.add(lblSubtotal);
 
 		JLabel lblPrecio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.lblPrecio.text")); //$NON-NLS-1$
 		lblPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecio.setBounds(732, 6, 115, 18);
+		lblPrecio.setBounds(667, 6, 115, 18);
 		pnlProducto.add(lblPrecio);
 
 		tfDescripcion = new JTextField();
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
-		tfDescripcion.setBounds(194, 30, 528, 30);
+		tfDescripcion.setBounds(194, 30, 472, 30);
 		pnlProducto.add(tfDescripcion);
 
 		tfPrecioTotal = new JTextField();
@@ -261,7 +263,7 @@ public class CompraLocalPanel extends JFrame
 		tfPrecioTotal.setEditable(false);
 		tfPrecioTotal.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecioTotal.setColumns(10);
-		tfPrecioTotal.setBounds(846, 30, 115, 30);
+		tfPrecioTotal.setBounds(764, 30, 97, 30);
 		pnlProducto.add(tfPrecioTotal);
 
 		tfPrecio = new JTextField();
@@ -295,7 +297,7 @@ public class CompraLocalPanel extends JFrame
 		});
 		tfPrecio.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		tfPrecio.setColumns(10);
-		tfPrecio.setBounds(732, 30, 106, 30);
+		tfPrecio.setBounds(667, 30, 89, 30);
 		pnlProducto.add(tfPrecio);
 
 		tfProductoID = new JTextField();
@@ -338,7 +340,7 @@ public class CompraLocalPanel extends JFrame
 
 		btnRemove = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.btnRemove.text")); //$NON-NLS-1$
-		btnRemove.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnRemove.setFont(new Font("Dialog", Font.BOLD, 16));
 		btnRemove.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -355,11 +357,11 @@ public class CompraLocalPanel extends JFrame
 				}
 			}
 		});
-		btnRemove.setBounds(1020, 30, 51, 30);
+		btnRemove.setBounds(920, 30, 50, 30);
 		pnlProducto.add(btnRemove);
 
 		JScrollPane scrollProducto = new JScrollPane();
-		scrollProducto.setBounds(6, 63, 1066, 220);
+		scrollProducto.setBounds(6, 63, 988, 220);
 		pnlProducto.add(scrollProducto);
 
 		tbProductos = new JTable(itemTableModel) {
@@ -391,19 +393,19 @@ public class CompraLocalPanel extends JFrame
 		tbProductos.getTableHeader().setBackground(new Color(225, 251, 234));
 		tbProductos.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
 		tbProductos.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(0).setPreferredWidth(100);
+		tbProductos.getColumnModel().getColumn(0).setPreferredWidth(85);
 		tbProductos.getColumnModel().getColumn(0).setCellRenderer(alignRendererLeft);
 		tbProductos.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(100);
+		tbProductos.getColumnModel().getColumn(1).setPreferredWidth(85);
 		tbProductos.getColumnModel().getColumn(1).setCellRenderer(alignRendererLeft);
 		tbProductos.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderLeft);
-		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(555);
+		tbProductos.getColumnModel().getColumn(2).setPreferredWidth(595);
 		tbProductos.getColumnModel().getColumn(2).setCellRenderer(alignRendererLeft);
 		tbProductos.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(3).setPreferredWidth(100);
 		tbProductos.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
 		tbProductos.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
-		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(150);
+		tbProductos.getColumnModel().getColumn(4).setPreferredWidth(115);
 		tbProductos.getColumnModel().getColumn(4).setCellRenderer(alignRendererRight);
 		tbProductos.addMouseListener(new MouseAdapter() {
 			@Override
@@ -470,7 +472,7 @@ public class CompraLocalPanel extends JFrame
 
 		btnAdd = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.btnAdd.text")); //$NON-NLS-1$
-		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAdd.setFont(new Font("Dialog", Font.BOLD, 16));
 		btnAdd.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -488,7 +490,7 @@ public class CompraLocalPanel extends JFrame
 				}
 			}
 		});
-		btnAdd.setBounds(961, 30, 57, 30);
+		btnAdd.setBounds(867, 30, 50, 30);
 		pnlProducto.add(btnAdd);
 
 		label_7 = new JLabel("*");
@@ -510,13 +512,13 @@ public class CompraLocalPanel extends JFrame
 		pnlProducto.add(btnAddProducto);
 
 		JPanel pnlCabezera = new JPanel();
-		pnlCabezera.setBounds(12, 12, 1083, 105);
+		pnlCabezera.setBounds(12, 12, 998, 105);
 		pnlCabezera.setBorder(
 				new TitledBorder(null, "COMPRA LOCALES", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		pnlCabezera.setLayout(null);
 
 		JPanel pnlCliente = new JPanel();
-		pnlCliente.setBounds(6, 18, 1067, 78);
+		pnlCliente.setBounds(6, 18, 978, 78);
 		pnlCabezera.add(pnlCliente);
 		pnlCliente.setLayout(null);
 
@@ -662,7 +664,7 @@ public class CompraLocalPanel extends JFrame
 		pnlCliente.add(lblFCompra);
 
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(12, 554, 1072, 41);
+		pnlBotonera.setBounds(12, 554, 988, 41);
 
 		btnGuardar = new JButton(ResourceBundle.getBundle("py.com.prestosoftware.ui.transactions.messages") //$NON-NLS-1$
 				.getString("CompraPanel.btnGuardar.text")); //$NON-NLS-1$
@@ -1650,6 +1652,7 @@ public class CompraLocalPanel extends JFrame
 			productoDialog.setInterfaz(this);
 			productoDialog.getProductos();
 			productoDialog.setVisible(true);
+			productoDialog.inicializarSeleccion();
 			break;
 		case CONDICION_PAGO_CODE:
 			condicionPagoDialog.setInterfaz(this);

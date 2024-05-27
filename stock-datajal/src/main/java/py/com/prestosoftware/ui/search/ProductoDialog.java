@@ -28,6 +28,7 @@ import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ProductTableModel;
 import py.com.prestosoftware.ui.table.ProductoDepositoTableModel;
@@ -82,12 +83,12 @@ public class ProductoDialog extends JDialog {
 		this.precioTableModel = productoPrecioTableModel;
 		
 		setTitle("LISTA DE STOCK");
-		setSize(900, 600);
+		setSize(803, 518);
 		setModal(true);
 		getContentPane().setLayout(null);
 		
 		JPanel pnlBuscador = new JPanel();
-		pnlBuscador.setBounds(0, 0, 900, 35);
+		pnlBuscador.setBounds(0, 0, 787, 35);
 		getContentPane().add(pnlBuscador);
 		
 		JLabel lblBuscador = new JLabel("Buscador");
@@ -153,7 +154,7 @@ public class ProductoDialog extends JDialog {
 		pnlBuscador.add(btnActualizarLista);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 35, 886, 408);
+		scrollPane.setBounds(0, 35, 787, 408);
 		getContentPane().add(scrollPane);
 		
 		table = new JTable(tableModel);
@@ -223,7 +224,7 @@ public class ProductoDialog extends JDialog {
 		
 		scrollPane.setViewportView(table);
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(0, 443, 900, 35);
+		pnlBotonera.setBounds(0, 443, 787, 35);
 		getContentPane().add(pnlBotonera);
 		
 		btnAceptar = new JButton("Aceptar");
@@ -259,10 +260,10 @@ public class ProductoDialog extends JDialog {
 		pnlBotonera.add(btnCancelar);
 		
 		
-		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension ventana = this.getSize(); 
-		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
-		
+//		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+//		Dimension ventana = this.getSize(); 
+//		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
+		Util.setupScreen(this);
 		loadProductos("");	
 	}
 	

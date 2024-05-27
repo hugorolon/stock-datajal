@@ -50,6 +50,7 @@ import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
+import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ProductDCTableModel;
 import py.com.prestosoftware.ui.table.ProductoDepositoTableModel;
@@ -95,12 +96,12 @@ public class ProductoVistaDialog extends JDialog {
 		this.configService=configService;
 		this.usuarioRolService=usuarioRolService;
 		setTitle("LISTA DE STOCK");
-		setSize(1154, 603);
+		setSize(1000, 603);
 		setModal(true);
 		getContentPane().setLayout(null);
 		
 		JPanel pnlBuscador = new JPanel();
-		pnlBuscador.setBounds(0, 0, 1128, 35);
+		pnlBuscador.setBounds(0, 0, 986, 35);
 		getContentPane().add(pnlBuscador);
 		
 		JLabel lblBuscador = new JLabel("Buscador");
@@ -170,7 +171,7 @@ public class ProductoVistaDialog extends JDialog {
 		pnlBuscador.add(btnActualizarLista);
 		
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 35, 614, 476);
+		scrollPane.setBounds(0, 35, 531, 476);
 		getContentPane().add(scrollPane);
 		
 		table = new JTable(tableModel);
@@ -247,7 +248,7 @@ public class ProductoVistaDialog extends JDialog {
 		
 		scrollPane.setViewportView(table);
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(0, 521, 1130, 35);
+		pnlBotonera.setBounds(0, 521, 976, 35);
 		getContentPane().add(pnlBotonera);
 		
 		btnAceptar = new JButton("Aceptar");
@@ -286,7 +287,7 @@ public class ProductoVistaDialog extends JDialog {
 		
 		pnlDatosComplementarios = new JPanel();
 		pnlDatosComplementarios.setBackground(Color.WHITE);
-		pnlDatosComplementarios.setBounds(624, 45, 504, 466);
+		pnlDatosComplementarios.setBounds(541, 45, 435, 466);
 		pnlDatosComplementarios.setBorder(new TitledBorder(null, "DATOS COMPLEMENTARIOS DEL PRODUCTO", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(pnlDatosComplementarios, "cell 1 0 1 3,grow");
 		pnlDatosComplementarios.setLayout(null);
@@ -416,22 +417,22 @@ public class ProductoVistaDialog extends JDialog {
 		lblDosPuntos1_2_1.setBounds(105, 237, 10, 13);
 		pnlDatosComplementarios.add(lblDosPuntos1_2_1);
 		
-		lblCodigoValor = new JLabel("lblCodigoValor");
+		lblCodigoValor = new JLabel("");
 		lblCodigoValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCodigoValor.setBounds(114, 21, 169, 13);
 		pnlDatosComplementarios.add(lblCodigoValor);
 		
-		lblReferenciaValor = new JLabel("lblReferenciaValor");
+		lblReferenciaValor = new JLabel("");
 		lblReferenciaValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblReferenciaValor.setBounds(114, 44, 169, 13);
 		pnlDatosComplementarios.add(lblReferenciaValor);
 		
-		lblEanValor = new JLabel("lblEanValor");
+		lblEanValor = new JLabel("");
 		lblEanValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblEanValor.setBounds(114, 67, 102, 13);
 		pnlDatosComplementarios.add(lblEanValor);
 		
-		lblNombreValor = new JLabel("lblNombreValor");
+		lblNombreValor = new JLabel("");
 		lblNombreValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNombreValor.setBounds(114, 98, 380, 13);
 		pnlDatosComplementarios.add(lblNombreValor);
@@ -441,40 +442,40 @@ public class ProductoVistaDialog extends JDialog {
 		lblAplicacionValor.setBounds(114, 121, 380, 13);
 		pnlDatosComplementarios.add(lblAplicacionValor);
 		
-		lblAgrupacionValor = new JLabel("lblAgrupacionValor");
+		lblAgrupacionValor = new JLabel("");
 		lblAgrupacionValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblAgrupacionValor.setBounds(114, 157, 380, 13);
 		pnlDatosComplementarios.add(lblAgrupacionValor);
 		
-		lblFabricanteValor = new JLabel("lblFabricanteValor");
+		lblFabricanteValor = new JLabel("");
 		lblFabricanteValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblFabricanteValor.setBounds(114, 180, 380, 13);
 		pnlDatosComplementarios.add(lblFabricanteValor);
 		
-		lblMagnitudValor = new JLabel("lblMagnitud");
+		lblMagnitudValor = new JLabel("");
 		lblMagnitudValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblMagnitudValor.setBounds(114, 203, 380, 13);
 		pnlDatosComplementarios.add(lblMagnitudValor);
 		
-		lblStockValor = new JLabel("lbSltockValor");
+		lblStockValor = new JLabel("");
 		lblStockValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblStockValor.setBounds(114, 237, 380, 13);
 		pnlDatosComplementarios.add(lblStockValor);
 		
-		lblPrecioCompraValor = new JLabel("lblPrecioCompraValor");
+		lblPrecioCompraValor = new JLabel("");
 		lblPrecioCompraValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblPrecioCompraValor.setBounds(114, 260, 380, 13);
 		pnlDatosComplementarios.add(lblPrecioCompraValor);
 		
-		lblPrecioVentaValor = new JLabel("lblPrecioVentaValor");
+		lblPrecioVentaValor = new JLabel("");
 		lblPrecioVentaValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblPrecioVentaValor.setBounds(114, 283, 380, 13);
 		pnlDatosComplementarios.add(lblPrecioVentaValor);
 		
-		
-		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension ventana = this.getSize(); 
-		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
+		Util.setupScreen(this);
+//		Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
+//		Dimension ventana = this.getSize(); 
+//		this.setLocation((pantalla.width - ventana.width) / 2, (pantalla.height - ventana.height) / 2);
 		getConfig();
 	}
 	
@@ -614,6 +615,13 @@ public class ProductoVistaDialog extends JDialog {
 				}
 			}	
 		}
+	}
+	
+	public void inicializarSeleccion() {
+		lblEanValor.setText("");
+		lblReferenciaValor.setText("");
+		lblStockValor.setText("");      
+		lblNombreValor.setText("");
 	}
 	
 	private void loadData() {
