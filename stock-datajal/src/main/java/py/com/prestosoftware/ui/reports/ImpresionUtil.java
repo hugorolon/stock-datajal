@@ -35,32 +35,34 @@ import py.com.prestosoftware.util.MontoEnLetras;
 
 public class ImpresionUtil {
 
-	public static void performTicket(List<VentaDetalle> items, String condicion, String ventaId, String total) {
+	public static void performTicket(String cliente, String ruc, String direccion, List<VentaDetalle> items, String condicion, String ventaId, String total) {
 		JFrame f = new JFrame();
 	    
 	    PrintJob pjob = f.getToolkit().getPrintJob(f, 
 	      "ticket", null);
 	    
-	    int a = 115;
+	    int a = 110;
 	    
 	    Graphics g = pjob.getGraphics();
 	    
 	    g.setColor(Color.black);
 	    
-	    g.setFont(new Font("Arial", 0, 8));
-	    g.drawString("                   " + GlobalVars.EMPRESA + "                   ", 1, 10);
-	    g.drawString("                                USO INTERNO                            ", 1, 20);
-	    g.drawString("--------------------------------------------------------------------------------", 1, 25);
+	    g.setFont(new Font("Arial",Font.BOLD, 6));
+	    g.drawString("                   Farmacia FAMILIAR                   ", 1, 10);
+	    g.drawString("                       USO INTERNO                  ", 1, 20);
+	    g.drawString("-----------------------------------------------------------------", 1, 25);
 	    
-	    g.drawString("  DIRECCIÓN:  " + GlobalVars.EMPRESA_DIR, 1, 35);
-	    g.drawString("  CONDICIÓN:  " + condicion, 1, 45);
-	    g.drawString("  FECHA: " + Fechas.formatoDDMMAAAA(new Date()), 1, 55);
-	    g.drawString("  TICKET Nº: " + ventaId, 1, 65);
 	    
-	    g.drawString("  CAJA:  001 ", 1, 75);
-	    g.drawString("--------------------------------------------------------------------------------", 1, 80);
-	    g.drawString("DESCRIPCIÓN      	  CANT.        PRECIO     SUB-TOTAL", 1, 95);
-	    g.drawString("--------------------------------------------------------------------------------", 1, 105);
+	    g.drawString("CLIENTE:  " + cliente, 1, 35);
+	    g.drawString("DIRECCIÓN:  " + direccion, 1, 45);
+	    g.drawString("DOC/RUC: " +ruc, 1, 55);
+	    g.drawString("FECHA: " + Fechas.formatoDDMMAAAA(new Date()), 1, 65);
+	    g.drawString("TICKET Nº: " + ventaId, 69, 65);
+	    g.drawString("CAJA:  001   Correo: lic.ysibeatriz@gmail.com", 1, 75);
+	    g.drawString("TELEF.:  0982431334   ", 1, 85);
+	    g.drawString("-----------------------------------------------------------------", 1, 90);
+	    g.drawString("DESCRIPCIÓN      	  CANT.  PRECIO   SUB-TOTAL", 1, 95);
+	    g.drawString("-----------------------------------------------------------------", 1, 100);
 	    
 	    g.setColor(Color.black);
 	    
@@ -70,22 +72,23 @@ public class ImpresionUtil {
 	      String subtotal = FormatearValor.doubleAString(vd.getSubtotal());
 	      
 	      g.drawString((String) vd.getProducto(), 1, a);
-	      g.drawString(cant, 60, a + 20);
-	      g.drawString(precio, 90, a + 20);
-	      g.drawString(subtotal, 130, a + 20);
-	      a += 40;
+	      g.drawString(cant, 60, a + 12);
+	      g.drawString(precio, 80, a + 12);
+	      g.drawString(subtotal, 119, a + 12);
+	      a += 24;
 	      
 	    }
 	    
 	    g.setColor(Color.black);
-	    g.setFont(new Font("Arial", 0, 8));
-	    g.drawString("------------------------------------------------------------------------------------", 1, a + 20);
-	    g.drawString("TOTAL A PAGAR:                       GS. " + total, 1, a + 40);
+	    g.setFont(new Font("Arial", Font.BOLD, 6));
+	    g.drawString("-----------------------------------------------------------------", 1, a + 10);
+	    g.drawString("TOTAL A PAGAR:                         GS.  " + total, 1, a + 15);
 //	    g.drawString("VALOR RECIBIDO:                     GS. " + this.tfRecibido.getText(), 1, a + 60);
 //	    g.drawString("VALOR VUELTO:                        GS. " + this.lblVuelto_1.getText(), 1, a + 80);
-	    g.drawString("=======================================================================", 1, a + 100);
-	    g.drawString("                  GRACIAS POR LA PREFERENCIA..!                   ", 10, a + 120);
-	    
+	    g.drawString("=============================================================", 1, a + 20);
+	    g.drawString("    GRACIAS POR LA PREFERENCIA..!", 10, a + 25);
+	    g.drawString("=============================================================", 1, a + 30);
+	    g.drawString(" -", 1, a + 80);
 	    g.dispose();
 	    
 	    pjob.end();

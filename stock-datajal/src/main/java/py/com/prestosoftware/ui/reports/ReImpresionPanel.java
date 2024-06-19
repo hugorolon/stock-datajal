@@ -136,7 +136,7 @@ public class ReImpresionPanel extends JDialog {
 		btnTicket.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				panelInterfaz.cargaFecha(dtpFecha.getDate());
-				panelInterfaz.imprimirNota(chkImpresion.isSelected());
+				panelInterfaz.imprimirTicket();
 				dispose();
 			}
 		});

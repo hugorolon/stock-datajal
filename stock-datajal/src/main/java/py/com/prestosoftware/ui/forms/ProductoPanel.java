@@ -518,7 +518,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		chkLote.addActionListener(actionListener);
 
 		lblCategoria = new JLabel("Categoría"); //$NON-NLS-1$ //$NON-NLS-2$
-		lblCategoria.setBounds(16, 91, 45, 25);
+		lblCategoria.setBounds(16, 91, 98, 25);
 		pnlDatosPersonal.add(lblCategoria);
 
 		cbCategoria = new JComboBox<Categoria>(categoriaComboBoxModel);

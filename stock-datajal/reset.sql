@@ -1,3 +1,6 @@
+delete FROM public.apertura_cierre_cajas;
+delete from marcas;
+delete from public.productos;
 DELETE FROM public.devolucion_detalles;
 DELETE FROM public.devoluciones;
 delete from public.depositos where id>1;

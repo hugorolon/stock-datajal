@@ -3195,7 +3195,7 @@ public class VentaPanel extends JFrame
 
 	@Override
 	public void imprimirTicket() {
-		ImpresionUtil.performTicket(itemTableModel.getEntities(),
+		ImpresionUtil.performTicket(tfClienteNombre.getText(),tfClienteRuc.getText(),tfClienteDireccion.getText(),itemTableModel.getEntities(),
 				tfCondicionPago.getSelectedItem().toString().equalsIgnoreCase("0") ? "CONTADO" : "CREDITO",
 				tfVentaId.getText(), tfTotal.getText());
 		clearForm();
