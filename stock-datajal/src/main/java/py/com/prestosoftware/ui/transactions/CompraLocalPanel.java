@@ -54,6 +54,7 @@ import py.com.prestosoftware.data.models.CuentaAPagar;
 import py.com.prestosoftware.data.models.Deposito;
 import py.com.prestosoftware.data.models.Empresa;
 import py.com.prestosoftware.data.models.ItemCuentaAPagar;
+import py.com.prestosoftware.data.models.Lotes;
 import py.com.prestosoftware.data.models.Moneda;
 import py.com.prestosoftware.data.models.MovimientoCaja;
 import py.com.prestosoftware.data.models.MovimientoEgreso;
@@ -72,6 +73,7 @@ import py.com.prestosoftware.domain.services.CondicionPagoService;
 import py.com.prestosoftware.domain.services.ConfiguracionService;
 import py.com.prestosoftware.domain.services.CuentaAPagarService;
 import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
+import py.com.prestosoftware.domain.services.LoteService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
 import py.com.prestosoftware.domain.services.MovimientoEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
@@ -120,6 +122,7 @@ public class CompraLocalPanel extends JFrame
 	private static final int COMPRA_CODE = 6;
 	private static final int PROVEEDOR_ADD_CODE = 7;
 	private static final int PRODUCTO_ADD_CODE = 8;
+	private static final int PRODUCTO_LOTE_ADD_CODE = 9;
 
 	private JTextField tfNombre, tfDescripcion, tfProductoID, tfProveedorID, tfPrecioTotal, tfCompraId;
 	private JTextField tfPrecio, tfCantidad, tfCantItem;
@@ -168,6 +171,7 @@ public class CompraLocalPanel extends JFrame
 	private Proveedor proveedorSeleccionado;
 	private Compra compraSeleccionado;
 	private ProductoController productoController;
+	private LoteService loteService;
 	
 	public CompraLocalPanel(CompraItemTableModel itemTableModel, ConsultaProveedor proveedorDialog,
 			ProveedorAddPanel proveedorAddPanel, CompraDialog compraDialog, ProductoVistaDialog productoDialog,
@@ -180,7 +184,7 @@ public class CompraLocalPanel extends JFrame
 			ProcesoPagoComprasService procesoPagoComprasService,
 			ProcesoPagoProveedoresService procesoPagoProveedoresService, CuentaAPagarService cuentaAPagarService,
 			ItemCuentaAPagarService itemCuentaAPagarService, 
-			ProductoController productoController) {
+			ProductoController productoController, LoteService loteService) {
 		this.itemTableModel = itemTableModel;
 		this.proveedorDialog = proveedorDialog;
 		this.proveedorAddPanel = proveedorAddPanel;
@@ -204,6 +208,7 @@ public class CompraLocalPanel extends JFrame
 		this.cuentaAPagarService = cuentaAPagarService;
 		this.itemCuentaAPagarService = itemCuentaAPagarService;
 		this.productoController = productoController;
+		this.loteService =loteService;
 
 		setSize(1108, 650);
 		setTitle("REGISTRO DE COMPRAS");
@@ -1678,6 +1683,13 @@ public class CompraLocalPanel extends JFrame
 //			productoAddPanel.addNewProducto();
 //			productoAddPanel.setVisible(true);
 			break;
+		case PRODUCTO_LOTE_ADD_CODE:
+	//			proveedorAddPanel.setInterfaz(this);
+	//			proveedorAddPanel.loadCiudades();
+	//			proveedorAddPanel.loadEmpresas();
+	//			proveedorAddPanel.addNewProveedor();
+	//			proveedorAddPanel.setVisible(true);
+			break;	
 
 		default:
 			break;
@@ -1734,6 +1746,7 @@ public class CompraLocalPanel extends JFrame
 					clearItem();
 				} else {
 					setProducto(producto.get());
+					
 				}
 			} else {
 				Notifications.showAlert("No existe Producto con ese codigo.!");
@@ -1744,6 +1757,14 @@ public class CompraLocalPanel extends JFrame
 			Notifications.showAlert("Error en busqueda de Producto.!");
 			tfProductoID.requestFocus();
 		}
+	}
+	
+	public List<Lotes> findLotes() {
+		List<Lotes> lotes = loteService.findLotesByProductoId(Long.valueOf(tfProductoID.getText()));
+//		itemTableModel.clear();
+//		itemTableModel.addEntities(lotes);
+
+		return lotes;
 	}
 
 	private void addItem() {

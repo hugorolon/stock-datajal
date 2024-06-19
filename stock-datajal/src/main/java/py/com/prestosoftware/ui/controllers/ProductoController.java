@@ -3,6 +3,7 @@ package py.com.prestosoftware.ui.controllers;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import py.com.prestosoftware.data.models.Color;
 import py.com.prestosoftware.data.models.Grupo;
 import py.com.prestosoftware.data.models.Impuesto;
 import py.com.prestosoftware.data.models.ListaPrecio;
+import py.com.prestosoftware.data.models.Lotes;
 import py.com.prestosoftware.data.models.Marca;
 import py.com.prestosoftware.data.models.Ncm;
 import py.com.prestosoftware.data.models.Producto;
@@ -34,6 +36,7 @@ import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.GrupoService;
 import py.com.prestosoftware.domain.services.ImpuestoService;
 import py.com.prestosoftware.domain.services.ListaPrecioService;
+import py.com.prestosoftware.domain.services.LoteService;
 import py.com.prestosoftware.domain.services.MarcaService;
 import py.com.prestosoftware.domain.services.NcmService;
 import py.com.prestosoftware.domain.services.ProductoService;
@@ -76,6 +79,7 @@ public class ProductoController extends AbstractFrameController {
     private UnidadMedidaService unidadMedidaService;
     private ColorService colorService;
     private ListaPrecioService listaPrecioService;
+    private LoteService loteService;
    // private ProductoInterfaz interfaz;
     
     private ProductoPanel productoPanel;
@@ -103,7 +107,7 @@ public class ProductoController extends AbstractFrameController {
     	UnidadMedidaService unidadMedidaService, ColorService colorService, DepositoService depositoService, CategoriaComboBoxModel categoriaComboBoxModel,
     	GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel, ImpuestoComboBoxModel impuestoComboBoxModel,
     	MarcaComboBoxModel marcaComboBoxModel, TamanhoComboBoxModel tamanhoComboBoxModel, UnidadMedidaComboBoxModel unidadMedidaComboBoxModel, 
-    	ColorComboBoxModel colorComboBoxModel, ListaPrecioComboBoxModel listaComboBoxModel, SubgrupoComboBoxModel subgrupoComboBoxModel, ProductoDepositoTableModel depositoTableModel) {
+    	ColorComboBoxModel colorComboBoxModel, ListaPrecioComboBoxModel listaComboBoxModel, SubgrupoComboBoxModel subgrupoComboBoxModel, ProductoDepositoTableModel depositoTableModel, LoteService loteService) {
         this.productoPanel = productFrame;  
         this.productTableModel = productTableModel;
         this.depositoTableModel=depositoTableModel;
@@ -130,6 +134,7 @@ public class ProductoController extends AbstractFrameController {
         this.colorComboBoxModel = colorComboBoxModel;
         this.listaComboBoxModel = listaComboBoxModel;
         this.subgrupoComboBoxModel = subgrupoComboBoxModel;
+        this.loteService= loteService;
     }
 
     @PostConstruct
@@ -407,6 +412,13 @@ public class ProductoController extends AbstractFrameController {
             Notifications.showFormValidationAlert(validationError.getMessage());
         } else {
         	product = productService.save(product);
+        	List<Lotes> lotes= productoPanel.getLotesAgregados();
+        	for (Iterator iterator = lotes.iterator(); iterator.hasNext();) {
+				Lotes lotes2 = (Lotes) iterator.next();
+				lotes2.setIdProducto(product.getId());
+				if(lotes2.getId()==null)
+					loteService.save(lotes2);
+			}
             if(origen.equalsIgnoreCase("MENU")) {
             	loadProducts();
             	

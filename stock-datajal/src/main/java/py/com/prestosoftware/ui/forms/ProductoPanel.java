@@ -7,31 +7,45 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+import py.com.prestosoftware.ui.helpers.Fechas;
 
 import javax.imageio.ImageIO;
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.text.AbstractDocument;
+import javax.swing.text.MaskFormatter;
 
 import org.jdesktop.swingx.autocomplete.AutoCompleteDecorator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +56,15 @@ import py.com.prestosoftware.data.models.Categoria;
 import py.com.prestosoftware.data.models.Grupo;
 import py.com.prestosoftware.data.models.Impuesto;
 import py.com.prestosoftware.data.models.ListaPrecio;
+import py.com.prestosoftware.data.models.Lotes;
 import py.com.prestosoftware.data.models.Marca;
 import py.com.prestosoftware.data.models.Producto;
+import py.com.prestosoftware.data.models.VentaDetalle;
+import py.com.prestosoftware.domain.services.LoteService;
 import py.com.prestosoftware.domain.services.SubgrupoService;
 import py.com.prestosoftware.ui.controllers.MarcaController;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.helpers.CellRendererOthers;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.ImagenPanel;
 import py.com.prestosoftware.ui.helpers.UppercaseDocumentFilter;
@@ -58,6 +76,7 @@ import py.com.prestosoftware.ui.table.ColorComboBoxModel;
 import py.com.prestosoftware.ui.table.GrupoComboBoxModel;
 import py.com.prestosoftware.ui.table.ImpuestoComboBoxModel;
 import py.com.prestosoftware.ui.table.ListaPrecioComboBoxModel;
+import py.com.prestosoftware.ui.table.LotesTableModel;
 import py.com.prestosoftware.ui.table.MarcaComboBoxModel;
 import py.com.prestosoftware.ui.table.NcmComboBoxModel;
 import py.com.prestosoftware.ui.table.ProductTableModel;
@@ -66,8 +85,10 @@ import py.com.prestosoftware.ui.table.ProductoPrecioTableModel;
 import py.com.prestosoftware.ui.table.SubgrupoComboBoxModel;
 import py.com.prestosoftware.ui.table.TamanhoComboBoxModel;
 import py.com.prestosoftware.ui.table.UnidadMedidaComboBoxModel;
+import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.util.Notifications;
 import javax.swing.JTextArea;
+import javax.swing.JFormattedTextField;
 
 @Component
 public class ProductoPanel extends JDialog implements MarcaInterfaz {
@@ -103,6 +124,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 	private SubgrupoComboBoxModel subgrupoComboBoxModel;
 	private ProductoPrecioTableModel precioTableModel;
 	private ProductoDepositoTableModel depositoTableModel;
+	private LotesTableModel itemTableModel;
 	private JLabel lblEsServicio;
 	private JCheckBox chServicio;
 	private JCheckBox chkLote;
@@ -123,7 +145,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 	private ProductTableModel productTableModel;
 	private JTabbedPane tabbedPane;
 
-	private SubgrupoService subgrupoService;
+	private LoteService loteService;
 	private ProductoInterfaz interfaz;
 	private JTextField tfPrecioCompra;
 	private JLabel label_2;
@@ -137,6 +159,10 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 	private JLabel lblCategoria;
 	private JTextField tfCodigoBarra;
 	private JLabel lblPrincipioActivo;
+	private JTable tbLotes;
+	private JPanel pnlLotes;
+	private JPanel pnlInfo;
+	private JFormattedTextField tfVencimiento;
 
 	@Autowired
 	public ProductoPanel(GrupoComboBoxModel grupoComboBoxModel, NcmComboBoxModel ncmComboBoxModel,
@@ -145,7 +171,8 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			SubgrupoComboBoxModel subgrupoComboBoxModel, TamanhoComboBoxModel tamanhoComboBoxModel,
 			UnidadMedidaComboBoxModel unidadMedidaComboBoxModel, ListaPrecioComboBoxModel listaComboBoxModel,
 			ProductoPrecioTableModel precioTableModel, ProductoDepositoTableModel depositoTableModel,
-			ProductTableModel productTableModel, SubgrupoService subgrupoService, MarcaController marcaController) {
+			ProductTableModel productTableModel, SubgrupoService subgrupoService, MarcaController marcaController,
+			LotesTableModel itemTableModel, LoteService loteService) {
 		this.grupoComboBoxModel = grupoComboBoxModel;
 		this.ncmComboBoxModel = ncmComboBoxModel;
 		this.categoriaComboBoxModel = categoriaComboBoxModel;
@@ -158,8 +185,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		this.precioTableModel = precioTableModel;
 		this.depositoTableModel = depositoTableModel;
 		this.productTableModel = productTableModel;
-		this.subgrupoService = subgrupoService;
 		this.marcaController = marcaController;
+		this.itemTableModel = itemTableModel;
+		this.loteService = loteService;
 
 		initComponents();
 
@@ -269,9 +297,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(tfPrecioC.getText().length()>0) {
+					if (tfPrecioC.getText().length() > 0) {
 						Double precioC = FormatearValor.stringToDouble(tfPrecioC.getText());
-						tfPrecioC.setText(FormatearValor.doubleAString(precioC));						
+						tfPrecioC.setText(FormatearValor.doubleAString(precioC));
 					}
 					chServicio.requestFocus();
 				} else {
@@ -300,9 +328,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(tfPrecioC.getText().length()>0) {
+					if (tfPrecioC.getText().length() > 0) {
 						Double precioC = FormatearValor.stringToDouble(tfPrecioC.getText());
-						tfPrecioC.setText(FormatearValor.doubleAString(precioC));						
+						tfPrecioC.setText(FormatearValor.doubleAString(precioC));
 					}
 					tabbedPane.setSelectedIndex(1);
 					chServicio.requestFocus();
@@ -333,9 +361,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(tfPrecioA.getText().length()>0) {
+					if (tfPrecioA.getText().length() > 0) {
 						Double precioA = FormatearValor.stringToDouble(tfPrecioA.getText());
-						tfPrecioA.setText(FormatearValor.doubleAString(precioA));						
+						tfPrecioA.setText(FormatearValor.doubleAString(precioA));
 					}
 					tfPrecioB.requestFocus();
 				} else {
@@ -378,7 +406,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(tfPrecioCompra.getText().length()>0) {
+					if (tfPrecioCompra.getText().length() > 0) {
 						Double precioCompra = FormatearValor.stringToDouble(tfPrecioCompra.getText());
 						tfPrecioCompra.setText(FormatearValor.doubleAString(precioCompra));
 					}
@@ -432,9 +460,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN
 						|| e.getKeyCode() == KeyEvent.VK_RIGHT) {
-					if(tfPrecioB.getText().length()>0) {
+					if (tfPrecioB.getText().length() > 0) {
 						Double precioB = FormatearValor.stringToDouble(tfPrecioB.getText());
-						tfPrecioB.setText(FormatearValor.doubleAString(precioB));						
+						tfPrecioB.setText(FormatearValor.doubleAString(precioB));
 					}
 					tfPrecioC.requestFocus();
 				} else {
@@ -451,13 +479,43 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		});
 		pnlDatosPersonal.add(tfPrecioB);
 
-		JLabel lblLote = new JLabel("Controla Lote"); //$NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
+		JLabel lblLote = new JLabel("Controla Lote"); // $NON-NLS-2$ //$NON-NLS-1$ //$NON-NLS-2$
 		lblLote.setBounds(540, 178, 98, 25);
 		pnlDatosPersonal.add(lblLote);
 
 		chkLote = new JCheckBox(""); //$NON-NLS-1$ //$NON-NLS-2$
 		chkLote.setBounds(644, 178, 93, 21);
 		pnlDatosPersonal.add(chkLote);
+//		chkLote.addItemListener(new ItemListener() {
+//		    @Override
+//		    public void itemStateChanged(ItemEvent e) {
+//		        if (e.getStateChange() == ItemEvent.SELECTED) {
+//		            // the checkbox was just selected
+//		        } else {
+//		            // the checkbox was just deselected
+//		        }
+//		    }
+//		});
+//		
+		ActionListener actionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				System.out.println(selected);
+				if (selected) {
+					tabbedPane.remove(pnlInfo);
+					tabbedPane.addTab("Lotes", pnlLotes);
+					tabbedPane.addTab("Info", pnlInfo);
+					// pnlLotes.setVisible(true);
+				} else {
+					tabbedPane.remove(pnlLotes);
+					// pnlLotes.setVisible(false);
+				}
+
+				// abstractButton.setText(newLabel);
+			}
+		};
+		chkLote.addActionListener(actionListener);
 
 		lblCategoria = new JLabel("Categoría"); //$NON-NLS-1$ //$NON-NLS-2$
 		lblCategoria.setBounds(16, 91, 45, 25);
@@ -497,11 +555,93 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		pnlDatosPersonal.add(tfPrincipioActivo);
 		// AutoCompleteDecorator.decorate(cbMarca);
 
-		JPanel pnlLotes = new JPanel();
-		tabbedPane.addTab("Lotes", null, pnlLotes, "");
+		pnlLotes = new JPanel();
+		// tabbedPane.addTab("Lotes", null, pnlLotes, "");
 
-		
-		JPanel pnlInfo = new JPanel();
+		pnlLotes.setLayout(null);
+
+		JScrollPane scrollLotes = new JScrollPane();
+		scrollLotes.setBounds(10, 75, 466, 210);
+		pnlLotes.add(scrollLotes);
+
+		tbLotes = new JTable(itemTableModel) {
+			public boolean isCellEditable(int fila, int columna) {
+				return false;
+			}
+		};
+		tbLotes.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		tbLotes.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		DefaultTableCellRenderer alignRendererHeaderCenter = new CellRendererOthers();
+		alignRendererHeaderCenter.setBackground(getBackground());
+		alignRendererHeaderCenter.setHorizontalAlignment(SwingConstants.CENTER);
+		DefaultTableCellRenderer alignRendererRight = new CellRendererOthers();
+		alignRendererRight.setBackground(getBackground());
+		alignRendererRight.setHorizontalAlignment(SwingConstants.RIGHT);
+		tbLotes.getColumnModel().getColumn(0).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLotes.getColumnModel().getColumn(0).setPreferredWidth(105);
+		tbLotes.getColumnModel().getColumn(1).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLotes.getColumnModel().getColumn(1).setPreferredWidth(125);
+		tbLotes.getColumnModel().getColumn(1).setCellRenderer(alignRendererRight);
+		tbLotes.getColumnModel().getColumn(2).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLotes.getColumnModel().getColumn(2).setPreferredWidth(125);
+		tbLotes.getColumnModel().getColumn(2).setCellRenderer(alignRendererRight);
+		tbLotes.getColumnModel().getColumn(3).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLotes.getColumnModel().getColumn(3).setPreferredWidth(105);
+		tbLotes.getColumnModel().getColumn(3).setCellRenderer(alignRendererRight);
+		tbLotes.getColumnModel().getColumn(4).setHeaderRenderer(alignRendererHeaderCenter);
+		tbLotes.getColumnModel().getColumn(4).setPreferredWidth(105);
+		tbLotes.getColumnModel().getColumn(4).setCellRenderer(alignRendererRight);
+		Util.ocultarColumna(tbLotes, 0);
+		scrollLotes.setViewportView(tbLotes);
+
+		JLabel lblVencimiento = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
+				.getString("ProductoPanel.lblNewLabel_2.text")); //$NON-NLS-1$
+		lblVencimiento.setBounds(26, 10, 80, 13);
+		pnlLotes.add(lblVencimiento);
+
+		JButton btnAddLotes = new JButton("+"); //$NON-NLS-1$ //$NON-NLS-2$
+		btnAddLotes.setBounds(391, 32, 85, 21);
+		btnAddLotes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnAddLotes.setFont(new Font("Dialog", Font.BOLD, 18));
+		btnAddLotes.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					addItem();
+				}
+			}
+		});
+		btnAddLotes.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent mouseEvent) {
+				if (mouseEvent.getClickCount() == 1 || mouseEvent.getClickCount() == 2) {
+					addItem();
+				}
+			}
+		});
+		pnlLotes.add(btnAddLotes);
+
+		tfVencimiento = new JFormattedTextField(getFormatoFecha());
+		tfVencimiento.setBounds(26, 32, 80, 19);
+		tfVencimiento.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfVencimiento.getText().isEmpty()) {
+						btnAddLotes.requestFocus();
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+					btnAddLotes.requestFocus();
+				}
+			}
+		});
+
+		pnlLotes.add(tfVencimiento);
+
+		pnlInfo = new JPanel();
 		tabbedPane.addTab("Info", null, pnlInfo, "");
 
 		JLabel lblMarca = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.forms.messages") //$NON-NLS-1$
@@ -602,6 +742,7 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		Util.setupScreen(this);
 	}
 
+	@SuppressWarnings("serial")
 	private void initComponents() {
 		setSize(954, 634);
 		setTitle("REGISTRO DE MERCADERIAS");
@@ -642,6 +783,19 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		getContentPane().add(pnlBuscador, "cell 0 2,growx,aligny top");
 		pnlBuscador.setLayout(new BorderLayout(10, 10));
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if (e.getSource() instanceof JTabbedPane) {
+					JTabbedPane pane = (JTabbedPane) e.getSource();
+					System.out.println("Selected paneNo : " + pane.getSelectedIndex());
+					if (pane.getSelectedIndex() == 1) {
+						//getLotes();
+					}
+				}
+			}
+
+		});
 		getContentPane().add(tabbedPane, "cell 0 3,grow");
 
 		JPanel panelBotonera = new JPanel();
@@ -694,6 +848,74 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 		getContentPane().add(btnBuscador, "cell 0 0");
 	}
 
+	public List<Lotes> getLotes() {
+		List<Lotes> lotes = loteService.findLotesByProductoId(Long.valueOf(tfProductoId.getText()));
+		itemTableModel.clear();
+		itemTableModel.addEntities(lotes);
+
+		return lotes;
+	}
+	
+	public List<Lotes> getLotesAgregados() {
+		return itemTableModel.getEntities();
+	}
+
+	private void addItem() {
+		try {
+			if (isValidItem()) {
+
+				itemTableModel.addEntity(getItem());
+				tfVencimiento.requestFocus();
+			}
+			tfVencimiento.setText(null);
+			// clearItem();
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas para agregar items!");
+			// clearItem();
+		}
+
+	}
+
+	private void removeItem() {
+		try {
+			int selectedRow = tbLotes.getSelectedRow();
+
+			if (selectedRow != -1) {
+				// VentaDetalle item = itemTableModel.getEntityByRow(selectedRow);
+				itemTableModel.removeRow(selectedRow);
+			} else {
+				Notifications.showAlert("Debe seleccionar un Item para quitar de la lista");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+
+	private Boolean isValidItem() {
+		if (tfProductoId.getText().isEmpty()) {
+			Notifications.showAlert("Digite el codigo del Producto");
+			tfProductoId.requestFocus();
+			return false;
+		} else if (tfVencimiento.getText().isEmpty()) {
+			Notifications.showAlert("Seleccione la fecha de vencimiento");
+			tfVencimiento.requestFocus();
+			return false;
+		}
+
+		return true;
+	}
+
+	private Lotes getItem() {
+		Lotes item = new Lotes();
+		item.setIdProducto(Long.valueOf(tfProductoId.getText()));
+		item.setFechaFinal(Fechas.stringDDMMAAAAADateUtil(tfVencimiento.getText()));
+		item.setStock(0d);
+		item.setPrecioCompra(0d);
+		item.setPrecioVenta(0d);
+
+		return item;
+	}
+
 	public JTextField getTfBuscador() {
 		return tfBuscador;
 	}
@@ -716,6 +938,21 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 
 	public JButton getBtnCerrar() {
 		return btnCerrar;
+	}
+
+	private MaskFormatter formatoFecha;
+
+	private MaskFormatter getFormatoFecha() {
+		try {
+			if (formatoFecha == null) {
+				formatoFecha = new MaskFormatter("##/##/####");
+				formatoFecha.setPlaceholderCharacter('_');
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
+		return formatoFecha;
 	}
 
 	public void setProductForm(Producto product) {
@@ -759,6 +996,20 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			// chEsPromo.setSelected(product.getEsPromo() == 1 ? true : false);
 			chServicio.setSelected(product.getEsServicio() == 1 ? true : false);
 			chkLote.setSelected(product.getEsLote() == 1 ? true : false);
+			if (product.getEsLote()==1) {
+				tabbedPane.remove(pnlInfo);
+	        	tabbedPane.addTab("Lotes", pnlLotes);
+	        	tabbedPane.addTab("Info", pnlInfo);
+			}else {
+				tabbedPane.remove(pnlLotes);
+			}
+				
+			pnlLotes.setVisible(false);
+			if(chkLote.isSelected()) {
+				getLotes();
+				pnlLotes.setVisible(true);
+			}
+				
 			tfDesFiscal.setText(product.getDescripcionFiscal());
 
 			chActivo.setSelected(product.getActivo() == 1 ? true : false);
@@ -777,10 +1028,11 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 	public Producto getProductForm() {
 		try {
 			Producto product = new Producto();
-
+			tfVencimiento.setText("");
 			if (!tfProductoId.getText().isEmpty()) {
 				product.setId(Long.parseLong(tfProductoId.getText()));
 				product.setReferencia(tfProductoId.getText());
+
 			}
 			if (!tfDep01.getText().isEmpty()) {
 				Double cantidad = FormatearValor.stringADouble(tfDep01.getText());
@@ -795,7 +1047,9 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 
 			product.setEsServicio(chServicio.isSelected() ? 1 : 0);
 			product.setEsLote(chkLote.isSelected() ? 1 : 0);
+
 			product.setActivo(chActivo.isSelected() ? 1 : 0);
+
 			product.setImagenUrl(imagenUrl);
 			product.setDescripcionFiscal(tfDesFiscal.getText());
 			product.setPrecioCosto(FormatearValor.stringADouble(tfPrecioCompra.getText()));
@@ -810,7 +1064,15 @@ public class ProductoPanel extends JDialog implements MarcaInterfaz {
 			product.setTamanho(tamanhoComboBoxModel.getSelectedItem());
 			product.setColor(colorComboBoxModel.getSelectedItem());
 			// product.setEsFraccionado(cbEsFraccionado.getSelectedIndex() == 0 ? 0 : 1);
-			product.setCodigoBarra(new BigInteger(tfCodigoBarra.getText()));
+			try {
+				if (!tfCodigoBarra.getText().isEmpty())
+					product.setCodigoBarra(BigInteger.valueOf(Long.valueOf(tfCodigoBarra.getText().toString())));
+				else
+					product.setCodigoBarra(null);
+			} catch (Exception e) {
+				product.setCodigoBarra(null);
+				// TODO: handle exception
+			}
 			product.setPrincipioActivo(tfPrincipioActivo.getText());
 
 			product.setPrecioVentaA(

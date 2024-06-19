@@ -2825,8 +2825,8 @@ public class VentaPanel extends JFrame
 			Optional<Producto> producto = null;
 			producto = productoService.findById(Long.valueOf(id.trim()));
 			if (!producto.isPresent()) {
-				if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
-					producto = productoService.findByReferencia(id);
+				//if (conf != null && conf.getPermiteVentaPorReferencia() == 1)
+					producto = productoService.findByCodigoBarra(id);
 			}
 
 			if (producto.isPresent()) {

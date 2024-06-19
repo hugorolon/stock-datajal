@@ -15,6 +15,7 @@ import py.com.prestosoftware.domain.services.CuentaARecibirService;
 import py.com.prestosoftware.domain.services.DepositoService;
 import py.com.prestosoftware.domain.services.ItemCuentaAPagarService;
 import py.com.prestosoftware.domain.services.ItemCuentaARecibirService;
+import py.com.prestosoftware.domain.services.LoteService;
 import py.com.prestosoftware.domain.services.MovimientoCajaService;
 import py.com.prestosoftware.domain.services.MovimientoEgresoService;
 import py.com.prestosoftware.domain.services.MovimientoIngresoService;
@@ -352,6 +353,8 @@ public class MainController extends AbstractFrameController {
 	private ItemCuentaAPagarService itemCuentaAPagarService;
 	@Autowired
 	private ProductoController productoController;
+	@Autowired
+	private  LoteService loteService;
 
 
 	public MainController() {
@@ -805,7 +808,7 @@ public class MainController extends AbstractFrameController {
 				compraService, proveedorService, compraValidator, productoService, 
 				 condicionPagoDialog, condicionPagoService, configService, movCajaService, cajaService, pagoService, 
 				 	movimientoIngresoService,	movimientoItemIngresoService, movimientoEgresoService, movimientoItemEgresoService, procesoPagoComprasService,
-					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoController);
+					procesoPagoProveedoresService, cuentaAPagarService, itemCuentaAPagarService, productoController,  loteService);
 		compraLocalPanel.getConfig();
 		compraLocalPanel.clearForm();
 		compraLocalPanel.newCompra();

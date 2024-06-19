@@ -22,6 +22,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	List<Producto> findByGrupo(Grupo grupo); 
 	
 	Optional<Producto> findByReferencia(String referencia);
+	Optional<Producto> findByCodigoBarra(String codigobarra);
 	//p.id = :filter OR
 	@Query(value = "SELECT * FROM productos p WHERE upper(p.descripcion) LIKE %:filter% OR upper(p.referencia) LIKE %:filter% ORDER BY p.id", nativeQuery = true)
 	List<Producto> findProductsByFilter(String filter);
@@ -32,6 +33,9 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	@Query(name = "SELECT dep01, dep02, dep03, dep04, dep05 FROM productos WHERE producto_id = ?1", nativeQuery = true)
 	Producto getStockById(Long productoId);
 
+	@Query(name = "SELECT * FROM productos WHERE p.codigo_barra = ?1", nativeQuery= true)
+	Optional<Producto> getProductoByCodigoBarra(Long codigoBarra);
+	
 	@Query(name = "SELECT precio_a, precio_b, precio_c, precio_d, precio_e FROM productos WHERE producto_id = ?1", nativeQuery = true)
 	Producto getPrecioById(Long productoId);
 	
@@ -40,5 +44,8 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 	
 	@Query(value = "SELECT * FROM productos p WHERE p.id =:filter OR p.descripcion =:filter OR p.referencia =:filter LIMIT 1", nativeQuery = true)
 	Optional<Producto> findByProductByFilter(String filter);
+	
+	@Query(value = "SELECT * FROM productos p WHERE p.codigo_barra =:filter  LIMIT 1", nativeQuery = true)
+	Optional<Producto> findByProductByCodigo(Long filter);
 
 }

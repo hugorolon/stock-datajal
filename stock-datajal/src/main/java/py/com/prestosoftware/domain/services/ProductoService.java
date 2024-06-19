@@ -49,6 +49,10 @@ public class ProductoService {
     	return repository.findByReferencia(referencia);
     }
     
+    public Optional<Producto> findByCodigoBarra(String codigobarra) {
+    	return repository.findByProductByCodigo(Long.valueOf(codigobarra));
+    }
+    
     public Optional<Producto> findById(Long id) {
     	return repository.findById(id);
     }
