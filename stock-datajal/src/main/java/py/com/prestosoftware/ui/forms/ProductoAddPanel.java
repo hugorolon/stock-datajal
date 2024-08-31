@@ -431,10 +431,10 @@ public class ProductoAddPanel extends JDialog {
 		dispose();
 	}
 
-	public void addNewProducto() {
-		long Id = productoService.addNewProduct();
-		this.setNewProducto(Id + 1);
-	}
+//	public void addNewProducto() {
+//		long Id = productoService.addNewProduct();
+//		this.setNewProducto(Id + 1);
+//	}
 
 	public void clearForm() {
 		tfProductoId.setText("");

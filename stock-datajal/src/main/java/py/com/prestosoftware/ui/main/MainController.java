@@ -669,7 +669,7 @@ public class MainController extends AbstractFrameController {
 	}
 
 	private void openMercaderia() {
-		productController.addNewProduct();
+		//productController.addNewProduct();
 		productController.prepareAndOpenFrame();
 		productController.setOrigen("MENU");
 	}

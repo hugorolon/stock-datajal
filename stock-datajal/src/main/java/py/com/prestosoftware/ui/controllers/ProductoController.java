@@ -341,10 +341,10 @@ public class ProductoController extends AbstractFrameController {
         tamanhoComboBoxModel.addElements(tamanhos);
     }
     
-    public void addNewProduct() {
-    	long id = productService.addNewProduct();
-    	productoPanel.setNewProducto(id + 1);
-    }
+//    public void addNewProduct() {
+//    	long id = productService.addNewProduct();
+//    	productoPanel.setNewProducto(id + 1);
+//    }
     
     private void findByName(String name) {
     	try {

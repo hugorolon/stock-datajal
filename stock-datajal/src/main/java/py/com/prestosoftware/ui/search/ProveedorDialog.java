@@ -4,17 +4,28 @@ import javax.swing.JDialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableRowSorter;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
+import py.com.prestosoftware.ui.shared.DefaultTableModel;
 import py.com.prestosoftware.ui.table.ProveedorTableModel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -50,6 +61,8 @@ public class ProveedorDialog extends JDialog {
 		this.setSize(600, 300);
 		
 		getContentPane().setLayout(new BorderLayout());
+		setModal(true);
+		//getContentPane().setLayout(null);
 		
 		JPanel pnlBuscador = new JPanel();
 		getContentPane().add(pnlBuscador, BorderLayout.NORTH);
@@ -70,6 +83,17 @@ public class ProveedorDialog extends JDialog {
 			    if(e.getKeyCode()==KeyEvent.VK_DOWN){
 			    	table.requestFocus();
 			    }
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				JTextField textField = (JTextField) e.getSource();
+				String text = textField.getText();
+				textField.setText(text.toUpperCase());
+				DefaultTableModel table1 = (DefaultTableModel) table.getModel();
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(table1);
+				table.setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter("(?i)" + textField.getText()));
 			}
 		});
 		pnlBuscador.add(tfBuscador);
@@ -96,6 +120,11 @@ public class ProveedorDialog extends JDialog {
 		
 		table = new JTable(tableModel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent event) {
+                loadData(); 
+            }
+        });
 		table.setDefaultRenderer(Object.class, new CellRendererOperaciones());
 		table.addKeyListener(new KeyAdapter() {
 			@Override
@@ -163,6 +192,20 @@ public class ProveedorDialog extends JDialog {
         tableModel.addEntities(proveedores);
     }
 	
+	private void loadData() {
+		int selectedRow = table.getSelectedRow();
+        
+		if (selectedRow != -1) {
+			Long proveedorId = tableModel.getEntityByRow(selectedRow).getId();
+			Optional<Proveedor> p = service.findById(proveedorId);
+			
+			if (p.get() != null) {
+//				getStockProductosByDeposito(p);
+//				getPreciosByProducto(p);
+			}
+	    }
+	}
+	
 	public ProveedorInterfaz getInterfaz() {
 		return interfaz;
 	}
@@ -171,11 +214,45 @@ public class ProveedorDialog extends JDialog {
 		this.interfaz = interfaz;
 	}
 	
+//	private void aceptar() {
+//		for (Integer c : table.getSelectedRows()) {
+//			interfaz.getEntity(proveedores.get(c));         
+//	    }
+//		dispose();
+//	}
+	
 	private void aceptar() {
-		for (Integer c : table.getSelectedRows()) {
-			interfaz.getEntity(proveedores.get(c));         
-	    }
+		try {
+			int[] selectedRow = table.getSelectedRows();
+			Long selectedId = (Long) table.getValueAt(selectedRow[0], 0);
+
+			Proveedor proveedor= proveedores.stream().filter(p -> p.getId().equals(selectedId.longValue()))
+					  .findAny()
+					  .orElse(null);
+			if(proveedor!=null) {
+				interfaz.getEntity(proveedor);
+			}else {
+				Optional<Proveedor> p = service.findById(selectedId);
+				interfaz.getEntity(p.get());
+			}			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}		
 		dispose();
 	}
 
+	private Proveedor getProveedor() {
+		return proveedores.get(table.getSelectedRow());         
+	}
+	
+	public Long getProveedorId() {
+		return proveedores.get(table.getSelectedRow()).getId();         
+	}
+
+	public void getProveedores() {
+		loadEntities("");
+	}
+	public void inicializaProveedores() {
+		proveedores=new ArrayList<Proveedor>();
+	}
 }

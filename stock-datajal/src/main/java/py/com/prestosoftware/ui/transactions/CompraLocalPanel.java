@@ -1672,7 +1672,7 @@ public class CompraLocalPanel extends JFrame
 			break;
 		case PRODUCTO_ADD_CODE:
 			productoController.setInterfaz(this);
-			productoController.addNewProduct();
+			//productoController.addNewProduct();
 			productoController.prepareAndOpenFrame();
 			productoController.setOrigen("PRODUCTO");
 

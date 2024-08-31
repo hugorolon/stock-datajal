@@ -877,6 +877,7 @@ public class CobroClientePanel extends JDialog implements CobroClienteInterfaz, 
 				SimpleDateFormat sd = new SimpleDateFormat("dd/MM/yyyy");
 				tfFecha.setText(sd.format(cobroCliente.getFecha()));
 				tfDocumento.setText("" + cobroCliente.getCclDocumento());
+				// el id del cliente
 				tfEntidad.setText(cobroCliente.getCclEntidad().toString());
 				Optional<Cliente> cliente = null;
 				cliente = clienteService.findById(Long.valueOf(cobroCliente.getCclEntidad()));

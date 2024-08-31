@@ -42,6 +42,7 @@ import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.TransformacionProductoService;
 import py.com.prestosoftware.domain.validations.TransformacionProductoValidator;
 import py.com.prestosoftware.domain.validations.ValidationError;
+import py.com.prestosoftware.ui.controllers.ProductoController;
 import py.com.prestosoftware.ui.helpers.CellRendererOperaciones;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
 import py.com.prestosoftware.ui.helpers.GlobalVars;
@@ -65,6 +66,7 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 	private static final int PRODUCTO_CODE_ORIGEN = 2;
 	private static final int PRODUCTO_CODE_DESTINO = 3;
 	private static final int TRANSFORMACION_CODE = 4;
+	private static final int PRODUCTO_ADD_CODE = 8;
 
 	private JTextField tfNombreOrigen;
 	private JTextField tfDescripcion;
@@ -93,13 +95,14 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 	private TransformacionProductoValidator tValidator;
 	private Producto productoOrigen;
 	private Producto productoDestino;
+	private ProductoController productoController;
 	private int origen;
 	private TransformacionProducto transformacionProductoSeleccionado;
 
 	@Autowired
 	public TransformacionPanel(TransformacionTableModel itemTableModel, DepositoDialog depositoDialog,
 			ProductoDialog productoDialog, DepositoService depositoService, TransformacionProductoValidator tValidator,
-			ProductoService productoService, TransformacionProductoDialog transformacionProductoDialog, TransformacionProductoService tService) {
+			ProductoService productoService, TransformacionProductoDialog transformacionProductoDialog, TransformacionProductoService tService, ProductoController productoController) {
 		this.itemTableModel = itemTableModel;
 		this.depositoDialog = depositoDialog;
 		this.productoDialog = productoDialog;
@@ -108,8 +111,9 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		this.tValidator = tValidator;
 		this.productoService = productoService;
 		this.tService = tService;
+		this.productoController= productoController;
 
-		setSize(750, 481);
+		setSize(758, 481);
 		setTitle("TRANSFORMACION DE PRODUCTO");
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -210,7 +214,7 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		panel_1.add(lblCdigoOrigen);
 
 		panel_2 = new JPanel();
-		panel_2.setBounds(6, 132, 717, 141);
+		panel_2.setBounds(6, 132, 727, 141);
 		pnlProducto.add(panel_2);
 		panel_2.setLayout(null);
 
@@ -219,11 +223,11 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		panel_2.add(lblCodigo);
 
 		JLabel lblDescripcion = new JLabel("DESCRIPCIÓN");
-		lblDescripcion.setBounds(77, 0, 364, 30);
+		lblDescripcion.setBounds(122, 0, 364, 30);
 		panel_2.add(lblDescripcion);
 
 		tfProductoID = new JTextField();
-		tfProductoID.setBounds(10, 26, 63, 30);
+		tfProductoID.setBounds(10, 26, 60, 30);
 		panel_2.add(tfProductoID);
 		tfProductoID.addFocusListener(new FocusAdapter() {
 			@Override
@@ -269,29 +273,29 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		tfProductoID.setColumns(10);
 
 		tfDescripcion = new JTextField();
-		tfDescripcion.setBounds(77, 26, 367, 30);
+		tfDescripcion.setBounds(122, 26, 367, 30);
 		panel_2.add(tfDescripcion);
 		tfDescripcion.setEditable(false);
 		tfDescripcion.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfDescripcion.setColumns(10);
 
 		JLabel lblStockDestino = new JLabel("STOCK");
-		lblStockDestino.setBounds(446, 0, 63, 30);
+		lblStockDestino.setBounds(492, 0, 63, 30);
 		panel_2.add(lblStockDestino);
 
 		JLabel lblCantidad = new JLabel("CANTIDAD");
-		lblCantidad.setBounds(519, 0, 63, 30);
+		lblCantidad.setBounds(558, 0, 63, 30);
 		panel_2.add(lblCantidad);
 
 		tfStockDestino = new JTextField();
 		tfStockDestino.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfStockDestino.setBounds(446, 26, 63, 30);
+		tfStockDestino.setBounds(492, 26, 63, 30);
 		panel_2.add(tfStockDestino);
 		tfStockDestino.setFont(new Font("Arial", Font.PLAIN, 14));
 		tfStockDestino.setColumns(10);
 		tfCantidad = new JTextField();
 		tfCantidad.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfCantidad.setBounds(519, 26, 63, 30);
+		tfCantidad.setBounds(558, 26, 63, 30);
 		panel_2.add(tfCantidad);
 		tfCantidad.addFocusListener(new FocusAdapter() {
 			@Override
@@ -366,12 +370,12 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		scrollProducto.setViewportView(tbProductos);
 
 		lblPrecio = new JLabel("PRECIO");
-		lblPrecio.setBounds(592, 0, 63, 30);
+		lblPrecio.setBounds(631, 0, 63, 30);
 		panel_2.add(lblPrecio);
 
 		tfPrecio = new JTextField();
 		tfPrecio.setHorizontalAlignment(SwingConstants.RIGHT);
-		tfPrecio.setBounds(592, 26, 86, 30);
+		tfPrecio.setBounds(631, 26, 86, 30);
 		panel_2.add(tfPrecio);
 		tfPrecio.setColumns(10);
 
@@ -404,6 +408,15 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 		
 		//
 		btnAdd.setFont(new Font("Dialog", Font.BOLD, 18));
+		
+		JButton btnNewProducto = new JButton("+");
+		btnNewProducto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				showDialog(PRODUCTO_ADD_CODE);
+			}
+		});
+		btnNewProducto.setBounds(75, 26, 44, 30);
+		panel_2.add(btnNewProducto);
 		btnAdd.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -937,6 +950,13 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 			transformacionProductoDialog.loadTransformacionProductos("");
 			transformacionProductoDialog.setVisible(true);
 			break;	
+		case PRODUCTO_ADD_CODE:
+			productoController.setInterfaz(this);
+			setOrigen(PRODUCTO_CODE_DESTINO);
+			//productoController.addNewProduct();
+			productoController.prepareAndOpenFrame();
+			productoController.setOrigen("TRANSFORMACION");
+			break;
 		default:
 			break;
 		}
@@ -1126,13 +1146,23 @@ public class TransformacionPanel extends JDialog implements DepositoInterfaz, Tr
 				tfCantidadOrigen.requestFocus();
 				setProductoOrigen(producto);
 			}else {
-				tfProductoID.setText(String.valueOf(producto.getId()));
-				tfDescripcion.setText(producto.getDescripcion());
-				tfCantidad.setText(String.valueOf(1));
-				tfStockDestino.setText(producto.getDepO1().toString());
-				tfPrecio.setText(FormatearValor.doubleAString(producto.getPrecioVentaA()));
-				tfCantidad.requestFocus();
-				setProductoDestino(producto);
+				if(origen==3) {
+					tfProductoID.setText(String.valueOf(producto.getId()));
+					tfDescripcion.setText(producto.getDescripcion());
+					tfCantidad.setText("1");
+					tfStockDestino.setText(FormatearValor.doubleAString(producto.getDepO1()));
+					tfPrecio.setText(FormatearValor.doubleAString(producto.getPrecioVentaA()));
+					setProductoDestino(producto);
+					tfCantidad.requestFocus();
+				}else {
+					tfProductoID.setText(String.valueOf(producto.getId()));
+					tfDescripcion.setText(producto.getDescripcion());
+					tfCantidad.setText(String.valueOf(1));
+					tfStockDestino.setText(producto.getDepO1().toString());
+					tfPrecio.setText(FormatearValor.doubleAString(producto.getPrecioVentaA()));
+					tfCantidad.requestFocus();
+					setProductoDestino(producto);
+				}
 			}
 		}
 	}

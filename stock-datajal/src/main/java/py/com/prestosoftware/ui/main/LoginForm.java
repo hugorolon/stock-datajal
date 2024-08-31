@@ -206,16 +206,19 @@ public class LoginForm extends JFrame {
 	
 	private void showMenu() {
 		dispose();
-		mainMenuFrame.getMnuCompra().setEnabled(false);
-		mainMenuFrame.getBtnCompras().setEnabled(false);
-		mainMenuFrame.getMnuVenta().setEnabled(false);
-		mainMenuFrame.getBtnVentas().setEnabled(false);
-		mainMenuFrame.getMnuMercaderia().setEnabled(false);
-		mainMenuFrame.getMnuMovCuentaARecibirCobroCliente().setEnabled(false);
-		mainMenuFrame.getMnuMovCuentaAPagarPagoProveedor().setEnabled(false);
-		mainMenuFrame.getMnuMovCajaIngreso().setVisible(false);
-		mainMenuFrame.getMnuMovCajaEgreso().setVisible(false);
-		mainMenuFrame.getMnuRelatorios().setVisible(false);
+		if (usuarioRolService!=null&& !usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "GERENTE")) {
+			mainMenuFrame.getMnuCompra().setEnabled(false);
+			mainMenuFrame.getBtnCompras().setEnabled(false);
+			mainMenuFrame.getMnuVenta().setEnabled(false);
+			mainMenuFrame.getBtnVentas().setEnabled(false);
+			mainMenuFrame.getMnuMercaderia().setEnabled(false);
+			mainMenuFrame.getMnuMovCuentaARecibirCobroCliente().setEnabled(false);
+			mainMenuFrame.getMnuMovCuentaAPagarPagoProveedor().setEnabled(false);
+			mainMenuFrame.getMnuMovCajaIngreso().setVisible(false);
+			mainMenuFrame.getMnuMovCajaEgreso().setVisible(false);
+			mainMenuFrame.getMnuRelatorios().setVisible(false);
+		}
+
 		if (usuarioRolService!=null&&usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "VENTAS")) {
 			mainMenuFrame.getMnuVenta().setEnabled(true);
 			mainMenuFrame.getBtnVentas().setEnabled(true);

@@ -48,11 +48,13 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.swing.JRViewer;
+import py.com.prestosoftware.data.models.Cliente;
 import py.com.prestosoftware.data.models.Producto;
 import py.com.prestosoftware.data.models.Proveedor;
 import py.com.prestosoftware.domain.services.ProductoService;
 import py.com.prestosoftware.domain.services.ProveedorService;
 import py.com.prestosoftware.ui.helpers.FormatearValor;
+import py.com.prestosoftware.ui.helpers.Util;
 import py.com.prestosoftware.ui.table.ProductoComboBoxModel;
 import py.com.prestosoftware.ui.table.ProveedorComboBoxModel;
 import py.com.prestosoftware.util.ConnectionUtils;
@@ -62,13 +64,15 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 @Component
-public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
+public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz, ProveedorInterfaz {
 
 	private static final long serialVersionUID = 1L;
 	private static final int PRODUCTO_CODE = 1;
+	private static final int PROVEEDOR_CODE = 2;
 	private JButton btnPrevisualizar;
 	private JButton btnCancelar;
 	private ProductoVistaDialog productoDialog;
+	private ProveedorDialog proveedorDialog;
 	private JXDatePicker tfFechaInicial;
 	private JXDatePicker tfFechaFinal;
 	private JComboBox<String> cbPeriodo;
@@ -87,17 +91,20 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 	private ProveedorService proveedorService;
 	private JTextField tfProductoId;
 	private JTextField tfDescripcion;
+	private JTextField tfNombreProveedor;
+	private JTextField tfCodigoProveedor;
 
 	@Autowired
 	public HistoricoCompraDialog(ProveedorComboBoxModel proveedorComboBoxModel,
 			ProductoComboBoxModel productoComboBoxModel, ProductoService productoService,
-			ProveedorService proveedorService,  ProductoVistaDialog productoDialog) {
+			ProveedorService proveedorService,  ProductoVistaDialog productoDialog, ProveedorDialog proveedorDialog) {
 		this.proveedorComboBoxModel = proveedorComboBoxModel;
 		this.productoComboBoxModel = productoComboBoxModel;
 		this.productoService = productoService;
 		this.proveedorService = proveedorService;
 		this.productoDialog= productoDialog;
-		this.setSize(832, 249);
+		this.proveedorDialog= proveedorDialog;
+		this.setSize(832, 298);
 		this.setModal(true);
 		this.setTitle("Historico de compras de productos");
 
@@ -111,7 +118,7 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 		// pnlBuscador.add(tfFechaInicial);
 
 		JPanel pnlBotonera = new JPanel();
-		pnlBotonera.setBounds(551, 10, 250, 178);
+		pnlBotonera.setBounds(551, 10, 250, 238);
 		pnlBuscador.add(pnlBotonera);
 		pnlBotonera.setLayout(null);
 
@@ -178,7 +185,7 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 		pnlBuscador.add(cbProveedor);
 
 		lblProducto = new JLabel("Producto");
-		lblProducto.setBounds(20, 34, 55, 13);
+		lblProducto.setBounds(21, 67, 55, 13);
 		pnlBuscador.add(lblProducto);
 		
 		tfProductoId = new JTextField();
@@ -189,7 +196,7 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 				tfProductoId.selectAll();
 			}
 		});
-		tfProductoId.setBounds(112, 30, 45, 21);
+		tfProductoId.setBounds(113, 63, 45, 21);
 		tfProductoId.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -214,17 +221,17 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 		
 		tfDescripcion = new JTextField();
 		tfDescripcion.setText("");
-		tfDescripcion.setBounds(167, 30, 319, 21);
+		tfDescripcion.setBounds(168, 63, 319, 21);
 		pnlBuscador.add(tfDescripcion);
 		tfDescripcion.setColumns(10);
 
 		lblNewLabel = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblNewLabel.text")); //$NON-NLS-1$
 		pnlBuscador.add(lblNewLabel);
-		lblNewLabel.setBounds(20, 64, 78, 13);
+		lblNewLabel.setBounds(21, 97, 78, 13);
 
 		cbPeriodo = new JComboBox<String>();
-		cbPeriodo.setBounds(112, 61, 103, 19);
+		cbPeriodo.setBounds(113, 94, 103, 19);
 		cbPeriodo.setModel(new DefaultComboBoxModel(new String[] { "Hoy", "Este mes", "Este año" }));
 		cbPeriodo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -263,11 +270,11 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 
 		lblOrdenadoPor = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblOrdenadoPor.text")); //$NON-NLS-1$
-		lblOrdenadoPor.setBounds(20, 155, 84, 21);
+		lblOrdenadoPor.setBounds(21, 188, 84, 21);
 		pnlBuscador.add(lblOrdenadoPor);
 
 		cbOrden = new JComboBox<String>();
-		cbOrden.setBounds(112, 155, 105, 21);
+		cbOrden.setBounds(113, 188, 105, 21);
 		cbOrden.setModel(new DefaultComboBoxModel(new String[] { "Codigo", "Nombre" }));
 		cbOrden.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -282,22 +289,22 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 
 		lblFechaInicio = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblNewLabel_1.text")); //$NON-NLS-1$
-		lblFechaInicio.setBounds(20, 90, 78, 21);
+		lblFechaInicio.setBounds(21, 123, 78, 21);
 				pnlBuscador.add(lblFechaInicio);
 
 		tfFechaInicial = new JXDatePicker();
 		tfFechaInicial.setFormats("dd/MM/yyyy");
 		pnlBuscador.add(tfFechaInicial);
-		tfFechaInicial.setBounds(112, 90, 105, 21);
+		tfFechaInicial.setBounds(113, 123, 105, 21);
 		tfFechaInicial.setDate(new Date());
 
 		lblFechaFin = new JLabel(ResourceBundle.getBundle("py.com.prestosoftware.ui.search.messages") //$NON-NLS-1$
 				.getString("CuentaRecibirDialog.lblFechaFin.text")); //$NON-NLS-1$
-		lblFechaFin.setBounds(20, 124, 78, 21);
+		lblFechaFin.setBounds(21, 157, 78, 21);
 		pnlBuscador.add(lblFechaFin);
 
 		tfFechaFinal = new JXDatePicker();
-		tfFechaFinal.setBounds(110, 124, 105, 21);
+		tfFechaFinal.setBounds(111, 157, 105, 21);
 		tfFechaFinal.setFormats("dd/MM/yyyy");
 		pnlBuscador.add(tfFechaFinal);
 		tfFechaFinal.setDate(new Date());
@@ -308,6 +315,51 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 		loadProductos();
 		loadProveedores();
 		AutoCompleteDecorator.decorate(cbProveedor);
+		
+		tfNombreProveedor = new JTextField();
+		tfNombreProveedor.setBounds(168, 30, 319, 20);
+		pnlBuscador.add(tfNombreProveedor);
+		tfNombreProveedor.setColumns(10);
+		
+		tfCodigoProveedor = new JTextField();
+		tfCodigoProveedor.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				tfCodigoProveedor.selectAll();
+			}
+		});
+		tfCodigoProveedor.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_F4) {
+					showDialog(PROVEEDOR_CODE);
+				} else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					if (!tfCodigoProveedor.getText().isEmpty()) {
+						findProveedorById(Long.parseLong(tfCodigoProveedor.getText()));
+						tfProductoId.requestFocus();
+					} else {
+						showDialog(PROVEEDOR_CODE);
+					}
+				} else if (e.getKeyCode() == KeyEvent.VK_F11) {
+					showDialog(PROVEEDOR_CODE);
+				} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+					dispose();
+				}
+			}
+
+			@Override
+			public void keyTyped(KeyEvent e) {
+				Util.validateNumero(e);
+			}
+		});
+		tfCodigoProveedor.setText("");
+		tfCodigoProveedor.setBounds(113, 30, 45, 20);
+		pnlBuscador.add(tfCodigoProveedor);
+		tfCodigoProveedor.setColumns(10);
+		
+		JLabel lblProveedores = new JLabel("Proveedor"); //$NON-NLS-1$ //$NON-NLS-2$
+		lblProveedores.setBounds(21, 33, 78, 14);
+		pnlBuscador.add(lblProveedores);
 	}
 
 	private void preview() {
@@ -319,10 +371,14 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 				+ "FROM		productos pro, compras com, compra_detalles ico , proveedores p "
 				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO' or com.situacion = '1') AND  com.ID = ico.compra_id "
 				+ "AND pro.id = ico.producto_id and com.proveedor_id = p.id ";
-		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
-			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
-			proveedor = p.getId() + " - " + p.getNombre();
-			sql += " and com.proveedor_id = " + p.getId();
+//		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
+//			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
+//			proveedor = p.getId() + " - " + p.getNombre();
+//			sql += " and com.proveedor_id = " + p.getId();
+//		}
+		if (tfCodigoProveedor.getText() != null && tfCodigoProveedor.getText().toString().length() > 0) {
+			sql += " and com.proveedor_id = " + tfCodigoProveedor.getText();
+			proveedor = tfNombreProveedor.getText();
 		}
 		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
 			sql += " and ico.producto_id = " + tfProductoId.getText();
@@ -375,11 +431,16 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 				+ "FROM		productos pro, compras com, compra_detalles ico  "
 				+ "WHERE	(com.situacion = 'PAGADO' or com.situacion = 'PROCESADO'  or com.situacion = '1') AND  com.ID = ico.compra_id "
 				+ "AND pro.id = ico.producto_id  ";
-		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
-			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
-			proveedor = p.getId() + " - " + p.getNombre();
-			sql += " and com.proveedor_id = " + p.getId();
+//		if (cbProveedor.getSelectedItem() != null && cbProveedor.getSelectedItem().toString().length() > 0) {
+//			Proveedor p = (Proveedor) cbProveedor.getSelectedItem();
+//			proveedor = p.getId() + " - " + p.getNombre();
+//			sql += " and com.proveedor_id = " + p.getId();
+//		}
+		if (tfCodigoProveedor.getText() != null && tfCodigoProveedor.getText().toString().length() > 0) {
+			sql += " and com.proveedor_id = " + tfCodigoProveedor.getText();
+			proveedor = tfNombreProveedor.getText();
 		}
+
 		if (tfProductoId.getText() != null && tfProductoId.getText().toString().length() > 0) {
 			sql += " and ico.producto_id = " + tfProductoId.getText();
 		}
@@ -463,10 +524,42 @@ public class HistoricoCompraDialog extends JDialog implements ProductoInterfaz {
 			productoDialog.limpiaDatosComplementarios();
 			productoDialog.setVisible(true);
 			break;
-
-
+		case PROVEEDOR_CODE:
+			proveedorDialog.setInterfaz(this);
+			proveedorDialog.getProveedores();
+			//proveedorDialog.limpiaDatosComplementarios();
+			proveedorDialog.setVisible(true);
 		default:
 			break;
+		}
+	}
+	
+	
+
+	@Override
+	public void getEntity(Proveedor proveedor) {
+		try {
+			if(proveedor!=null) {
+				tfCodigoProveedor.setText(proveedor.getId().toString());
+				tfNombreProveedor.setText(proveedor.getRazonSocial());
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Hubo problemas con el proveedor seleccionado, intente nuevamente!");
+			// TODO: handle exception
+		}
+	}
+	
+	private void findProveedorById(Long id) {
+		try {
+			Optional<Proveedor> proveedor = proveedorService.findById(id);
+			if (proveedor.isPresent()) {
+				tfCodigoProveedor.setText(proveedor.get().getId().toString());
+				tfNombreProveedor.setText(proveedor.get().getRazonSocial());
+			} else {
+				Notifications.showAlert("No existe Proveedor con el codigo informado.!");
+			}
+		} catch (Exception e) {
+			Notifications.showAlert("Problemas en la busqueda, intente nuevamente!");
 		}
 	}
 	

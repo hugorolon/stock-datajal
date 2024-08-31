@@ -81,9 +81,9 @@ public class ProductoService {
         repository.delete(producto);
     }
 
-	public long addNewProduct() {
-		return repository.getMaxId();
-	}
+//	public long addNewProduct() {
+//		return repository.getMaxId();
+//	}
 
 	@Transactional
 	public void updateStock(List<Producto> productos) {
