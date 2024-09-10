@@ -138,6 +138,7 @@ public class MainFrame extends JFrame {
 	private JMenu mnuInfProductosVendidos;
 	private JMenuItem mnuVentasPorDeposito;
 	private JLabel lblVersion;
+	private JLabel lblespacio;
 
 	/**
 	 * Create the frame.
@@ -591,7 +592,7 @@ public class MainFrame extends JFrame {
 		panel.add(label);
 		
 		lblUsuarioNombre = new JLabel("USUARIO NOMBRE");
-		lblUsuarioNombre.setFont(new Font("Sylfaen", Font.PLAIN, 14));
+		lblUsuarioNombre.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panel.add(lblUsuarioNombre);
 		
 		label_1 = new JLabel(" - ");
@@ -600,6 +601,9 @@ public class MainFrame extends JFrame {
 		lblFechaSistema = new JLabel("FECHA SISTEMA");
 		lblFechaSistema.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 		panel.add(lblFechaSistema);
+		
+		lblespacio = new JLabel("   -   ");
+		panel.add(lblespacio);
 		
 		lblVersion = new JLabel("Ver. 09092024");
 		panel.add(lblVersion);
