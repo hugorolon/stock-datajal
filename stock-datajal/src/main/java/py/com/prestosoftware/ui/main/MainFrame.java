@@ -137,6 +137,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem mnuComprasPorDeposito;
 	private JMenu mnuInfProductosVendidos;
 	private JMenuItem mnuVentasPorDeposito;
+	private JLabel lblVersion;
 
 	/**
 	 * Create the frame.
@@ -599,6 +600,9 @@ public class MainFrame extends JFrame {
 		lblFechaSistema = new JLabel("FECHA SISTEMA");
 		lblFechaSistema.setFont(new Font("Lucida Grande", Font.BOLD, 16));
 		panel.add(lblFechaSistema);
+		
+		lblVersion = new JLabel("Ver. 09092024");
+		panel.add(lblVersion);
 		
 		panel_1 = new JPanel();
 		contentPane.add(panel_1, BorderLayout.EAST);

@@ -96,7 +96,7 @@ public class ProductoVistaDialog extends JDialog {
 		this.configService=configService;
 		this.usuarioRolService=usuarioRolService;
 		setTitle("LISTA DE STOCK");
-		setSize(1000, 603);
+		setSize(1055, 603);
 		setModal(true);
 		getContentPane().setLayout(null);
 		
@@ -287,14 +287,14 @@ public class ProductoVistaDialog extends JDialog {
 		
 		pnlDatosComplementarios = new JPanel();
 		pnlDatosComplementarios.setBackground(Color.WHITE);
-		pnlDatosComplementarios.setBounds(541, 45, 435, 466);
+		pnlDatosComplementarios.setBounds(541, 45, 488, 466);
 		pnlDatosComplementarios.setBorder(new TitledBorder(null, "DATOS COMPLEMENTARIOS DEL PRODUCTO", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		getContentPane().add(pnlDatosComplementarios, "cell 1 0 1 3,grow");
 		pnlDatosComplementarios.setLayout(null);
 		
 		JLabel lblCodigoDC = new JLabel("Código");
 		lblCodigoDC.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCodigoDC.setBounds(10, 21, 45, 13);
+		lblCodigoDC.setBounds(10, 21, 45, 18);
 		pnlDatosComplementarios.add(lblCodigoDC);
 		
 		JLabel lblEAN = new JLabel("EAN");
@@ -309,7 +309,7 @@ public class ProductoVistaDialog extends JDialog {
 		
 		JLabel lblDosPuntos1 = new JLabel(":");
 		lblDosPuntos1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos1.setBounds(105, 21, 10, 13);
+		lblDosPuntos1.setBounds(105, 21, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos1);
 		
 		JLabel lblDosPuntos2 = new JLabel(":");
@@ -324,102 +324,102 @@ public class ProductoVistaDialog extends JDialog {
 		
 		JLabel lblNewLabel = new JLabel("---------------------------------------------------------------------------------------");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel.setBounds(10, 85, 484, 13);
+		lblNewLabel.setBounds(10, 91, 468, 13);
 		pnlDatosComplementarios.add(lblNewLabel);
 		
 		JLabel lblNombreDC = new JLabel("Nombre");
 		lblNombreDC.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNombreDC.setBounds(10, 98, 79, 13);
+		lblNombreDC.setBounds(10, 104, 79, 18);
 		pnlDatosComplementarios.add(lblNombreDC);
 		
 		JLabel lblAplicacionDC = new JLabel("Aplicación");
 		lblAplicacionDC.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAplicacionDC.setBounds(10, 121, 79, 13);
+		lblAplicacionDC.setBounds(10, 127, 79, 18);
 		pnlDatosComplementarios.add(lblAplicacionDC);
 		
 		JLabel lblDosPuntos1_1 = new JLabel(":");
 		lblDosPuntos1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos1_1.setBounds(105, 98, 10, 13);
+		lblDosPuntos1_1.setBounds(105, 104, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos1_1);
 		
 		JLabel lblDosPuntos2_1 = new JLabel(":");
 		lblDosPuntos2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos2_1.setBounds(105, 121, 10, 13);
+		lblDosPuntos2_1.setBounds(105, 127, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos2_1);
 		
 		JLabel lblNewLabel_1 = new JLabel("---------------------------------------------------------------------------------------");
 		lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_1.setBounds(10, 138, 484, 13);
+		lblNewLabel_1.setBounds(10, 154, 468, 13);
 		pnlDatosComplementarios.add(lblNewLabel_1);
 		
 		JLabel lblAgrupacion = new JLabel("Agrupación");
 		lblAgrupacion.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAgrupacion.setBounds(10, 157, 79, 13);
+		lblAgrupacion.setBounds(10, 173, 79, 18);
 		pnlDatosComplementarios.add(lblAgrupacion);
 		
 		JLabel lblDosPuntos1_2 = new JLabel(":");
 		lblDosPuntos1_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos1_2.setBounds(105, 157, 10, 13);
+		lblDosPuntos1_2.setBounds(105, 173, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos1_2);
 		
 		JLabel lblFabricante = new JLabel("Fabricante");
 		lblFabricante.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblFabricante.setBounds(10, 180, 79, 13);
+		lblFabricante.setBounds(10, 196, 79, 18);
 		pnlDatosComplementarios.add(lblFabricante);
 		
 		JLabel lblDosPuntos2_2 = new JLabel(":");
 		lblDosPuntos2_2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos2_2.setBounds(105, 180, 10, 13);
+		lblDosPuntos2_2.setBounds(105, 196, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos2_2);
 		
 		JLabel lblMagnitud = new JLabel("Magnitud");
 		lblMagnitud.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMagnitud.setBounds(10, 203, 79, 13);
+		lblMagnitud.setBounds(10, 219, 79, 18);
 		pnlDatosComplementarios.add(lblMagnitud);
 		
 		JLabel lblDosPuntos3_1 = new JLabel(":");
 		lblDosPuntos3_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos3_1.setBounds(105, 203, 10, 13);
+		lblDosPuntos3_1.setBounds(105, 219, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos3_1);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("---------------------------------------------------------------------------------------");
 		lblNewLabel_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNewLabel_1_1.setBounds(10, 214, 484, 13);
+		lblNewLabel_1_1.setBounds(10, 248, 468, 13);
 		pnlDatosComplementarios.add(lblNewLabel_1_1);
 		
 		JLabel lblPrecioVenta = new JLabel("Precio Venta");
 		lblPrecioVenta.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecioVenta.setBounds(10, 283, 91, 13);
+		lblPrecioVenta.setBounds(10, 311, 91, 18);
 		pnlDatosComplementarios.add(lblPrecioVenta);
 		
 		JLabel lblDosPuntos3_1_1 = new JLabel(":");
 		lblDosPuntos3_1_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos3_1_1.setBounds(105, 283, 10, 13);
+		lblDosPuntos3_1_1.setBounds(105, 311, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos3_1_1);
 		
 		JLabel lblDosPuntos2_2_1 = new JLabel(":");
 		lblDosPuntos2_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos2_2_1.setBounds(105, 260, 10, 13);
+		lblDosPuntos2_2_1.setBounds(105, 288, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos2_2_1);
 		
 		JLabel lblPrecioCompra = new JLabel("Precio Compra");
 		lblPrecioCompra.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecioCompra.setBounds(10, 260, 91, 13);
+		lblPrecioCompra.setBounds(10, 288, 91, 18);
 		pnlDatosComplementarios.add(lblPrecioCompra);
 		
 		JLabel lblStock = new JLabel("Stock");
 		lblStock.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblStock.setBounds(10, 237, 56, 13);
+		lblStock.setBounds(10, 265, 56, 18);
 		pnlDatosComplementarios.add(lblStock);
 		
 		JLabel lblDosPuntos1_2_1 = new JLabel(":");
 		lblDosPuntos1_2_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDosPuntos1_2_1.setBounds(105, 237, 10, 13);
+		lblDosPuntos1_2_1.setBounds(105, 265, 10, 18);
 		pnlDatosComplementarios.add(lblDosPuntos1_2_1);
 		
 		lblCodigoValor = new JLabel("");
 		lblCodigoValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCodigoValor.setBounds(114, 21, 169, 13);
+		lblCodigoValor.setBounds(114, 21, 169, 18);
 		pnlDatosComplementarios.add(lblCodigoValor);
 		
 		lblReferenciaValor = new JLabel("");
@@ -434,42 +434,42 @@ public class ProductoVistaDialog extends JDialog {
 		
 		lblNombreValor = new JLabel("");
 		lblNombreValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNombreValor.setBounds(114, 98, 380, 13);
+		lblNombreValor.setBounds(114, 104, 364, 18);
 		pnlDatosComplementarios.add(lblNombreValor);
 		
 		lblAplicacionValor = new JLabel("");
 		lblAplicacionValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAplicacionValor.setBounds(114, 121, 380, 13);
+		lblAplicacionValor.setBounds(114, 127, 364, 18);
 		pnlDatosComplementarios.add(lblAplicacionValor);
 		
 		lblAgrupacionValor = new JLabel("");
 		lblAgrupacionValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblAgrupacionValor.setBounds(114, 157, 380, 13);
+		lblAgrupacionValor.setBounds(114, 173, 364, 18);
 		pnlDatosComplementarios.add(lblAgrupacionValor);
 		
 		lblFabricanteValor = new JLabel("");
 		lblFabricanteValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblFabricanteValor.setBounds(114, 180, 380, 13);
+		lblFabricanteValor.setBounds(114, 196, 364, 18);
 		pnlDatosComplementarios.add(lblFabricanteValor);
 		
 		lblMagnitudValor = new JLabel("");
 		lblMagnitudValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblMagnitudValor.setBounds(114, 203, 380, 13);
+		lblMagnitudValor.setBounds(114, 219, 364, 18);
 		pnlDatosComplementarios.add(lblMagnitudValor);
 		
 		lblStockValor = new JLabel("");
 		lblStockValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblStockValor.setBounds(114, 237, 380, 13);
+		lblStockValor.setBounds(114, 265, 364, 18);
 		pnlDatosComplementarios.add(lblStockValor);
 		
 		lblPrecioCompraValor = new JLabel("");
 		lblPrecioCompraValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecioCompraValor.setBounds(114, 260, 380, 13);
+		lblPrecioCompraValor.setBounds(114, 288, 364, 18);
 		pnlDatosComplementarios.add(lblPrecioCompraValor);
 		
 		lblPrecioVentaValor = new JLabel("");
 		lblPrecioVentaValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblPrecioVentaValor.setBounds(114, 283, 380, 13);
+		lblPrecioVentaValor.setBounds(114, 311, 364, 18);
 		pnlDatosComplementarios.add(lblPrecioVentaValor);
 		
 		Util.setupScreen(this);
