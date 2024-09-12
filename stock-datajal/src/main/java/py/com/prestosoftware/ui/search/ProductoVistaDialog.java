@@ -647,12 +647,12 @@ public class ProductoVistaDialog extends JDialog {
 	}
 
 	private void getDatosComplementarios(Producto p) {
-		lblEanValor.setText(p.getReferencia().toString());
-		lblReferenciaValor.setText(p.getSubreferencia());
 		try {
+			lblEanValor.setText(p.getReferencia()!= null?p.getReferencia().toString():"");
+			lblReferenciaValor.setText(p.getSubreferencia()!=null?p.getSubreferencia():"");
 			lblStockValor.setText(FormatearValor.doubleAString(p.getDepO1()));			
 		} catch (Exception e) {
-			System.out.println("error deposito"+p.getDepO1());
+			System.out.println("error de referencia o deposito"+p.getDepO1());
 			// TODO: handle exception
 		}
 		if (usuarioRolService!=null&&usuarioRolService.hasRole(Long.valueOf(GlobalVars.USER_ID), "PUEDE VER PRECIO DE COMPRAS")) {
@@ -682,12 +682,16 @@ public class ProductoVistaDialog extends JDialog {
 			System.out.println("error precio Venta");
 			lblPrecioVentaValor.setText("0");
 		}
-		
-		lblCodigoValor.setText(p.getId().toString());
-		lblNombreValor.setText(p.getDescripcion());
-		lblMagnitudValor.setText("1- UNIDAD");
-		lblAgrupacionValor.setText("1- "+p.getGrupo().toString());
-		lblFabricanteValor.setText(p.getMarca().getId()+"- "+p.getMarca().getNombre());
+		try {
+			lblCodigoValor.setText(p.getId().toString());
+			lblNombreValor.setText(p.getDescripcion()!=null?p.getDescripcion():"");
+			lblMagnitudValor.setText("1- UNIDAD");
+			lblAgrupacionValor.setText("1- "+p.getGrupo()!=null?p.getGrupo().toString():"");
+			lblFabricanteValor.setText(p.getMarca()!=null?(p.getMarca().getId()+"- "+p.getMarca().getNombre()):"");			
+		} catch (Exception e) {
+			System.out.println("error precio Venta");
+			lblPrecioVentaValor.setText("0");
+		}		
 	}
 	
 	public void limpiaDatosComplementarios() {
