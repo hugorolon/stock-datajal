@@ -100,7 +100,7 @@ public class CompraService {
     public Compra save(int lanzamientoCaja, Compra compra, String condicion) {
     	Compra c = new Compra();
     	if(compra.getId()==999999)
-    		compra.setId(getRowCount()+1);
+    		compra.setId(null);
     	c= repository.save(compra);
     	if (lanzamientoCaja == 0) {
 			updateStockProduct(c.getItems(),lanzamientoCaja,1);

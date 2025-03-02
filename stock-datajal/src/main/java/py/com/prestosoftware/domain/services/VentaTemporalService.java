@@ -60,6 +60,23 @@ public class VentaTemporalService {
 		VentaTemporal v = repository.save(venta);
 		return v;
 	}
+	
+	@Transactional(rollbackFor = RuntimeException.class)
+	public void saveTimbrado(String ventaId,  String nroTimbrado) throws RuntimeException{
+		try {
+			Long venta= Long.valueOf(ventaId);
+			long timbrado =Long.valueOf(nroTimbrado);
+			repository.saveTimbrado(venta, timbrado);
+			repository.flush();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	public Long getNroTimbrado() {
+		return repository.getMaxNroTimbrado();
+	}
+	
 
 	public void remove(VentaTemporal venta) {
 		repository.delete(venta);
@@ -76,7 +93,7 @@ public class VentaTemporalService {
 	public long getRowCount() {
 		return repository.getMaxId();
 	}
-
+	
 	public List<VentaTemporal> findByClienteId(Long id) {
 		return repository.findByCliente(new Cliente(id));
 	}

@@ -3,6 +3,7 @@ package py.com.prestosoftware.data.models;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -59,6 +60,9 @@ public class VentaTemporal {
 	
 	@Column(name = "total_item")
 	private Double cantItem;
+	
+	@Column(name = "timbrado")
+	private Long timbrado;
 	
 	private String situacion;
 	
@@ -188,5 +192,15 @@ public class VentaTemporal {
 	public void setTotalPagado(Double totalPagado) {
 		this.totalPagado = totalPagado;
 	}
+
+	public Long getTimbrado() {
+		return timbrado;
+	}
+
+	public void setTimbrado(Long timbrado) {
+		this.timbrado = timbrado;
+	}
+	
+	
 	
 }

@@ -168,7 +168,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performFactura(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion, boolean impresora) {
+			String condicion, String vendedor, String  total, List<VentaDetalle> items, Date fechaImpresion, boolean impresora, boolean timbrado, String numeroTimbrado) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalle vd : items) {
@@ -205,13 +205,14 @@ public class ImpresionUtil {
 		String fecha= sd.format(fechaImpresion);
 		parametros.put("fecha", fecha.toUpperCase());
 		int totalInt= Integer.valueOf(FormatearValor.sinSeparadorDeMiles(total));
-		String p=MontoEnLetras.convertir("18000",",","",true);
 		parametros.put("montoEnLetras", MontoEnLetras.convertir(String.valueOf(totalInt),",","",true));
 		parametros.put("clienteNombre", cliente);
 	    parametros.put("clienteRucDv", ruc);
 	    parametros.put("clienteCelular", telefono);
 	    parametros.put("clienteDireccion", direccion);
 	    parametros.put("comprobante", nroVenta);
+	    parametros.put("numeroTimbrado", numeroTimbrado);
+	   // System.out.println(numeroTimbrado);
 	    
 	    String condicionValue = "";
 	    
@@ -243,7 +244,7 @@ public class ImpresionUtil {
 	}
 	
 	public static void performFacturaTemporal(String cliente, String ruc, String telefono, String direccion, String nroVenta,
-			String condicion, String vendedor, String  total, List<VentaDetalleTemporal> items, Date fechaImpresion, boolean impresora) {
+			String condicion, String vendedor, String  total, List<VentaDetalleTemporal> items, Date fechaImpresion, boolean impresora, boolean timbrado, String numeroTimbrado) {
 		Double totalIva5=0d; Double totalIva10=0d;Double totalExenta=0d; Double subTotalIva5=0d;Double subTotalIva10=0d;
 		try {
 			for (VentaDetalleTemporal vd : items) {

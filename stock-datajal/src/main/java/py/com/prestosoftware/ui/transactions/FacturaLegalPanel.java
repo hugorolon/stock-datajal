@@ -136,6 +136,7 @@ public class FacturaLegalPanel extends JFrame
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
 	private Date fechaImpresion;
+	private int nroTimbrado;
 	private int cant;
 
 	public FacturaLegalPanel(VentaItemTemporalTableModel itemTableModel, ConsultaCliente clientDialog,
@@ -1360,10 +1361,12 @@ public class FacturaLegalPanel extends JFrame
 	private ImpresionPanel panel = null;
 
 	private void imprimirDialogo() {
+		Long nro=ventaService.getNroTimbrado()+1;
 		if (this.panel == null) {
 			panel = new ImpresionPanel();
 			panel.setPanelInterfaz(this);
 		}
+		panel.getTfNumeroTimbrado().setText(nro+"");
 
 		panel.setVisible(true);
 	}
@@ -1372,11 +1375,12 @@ public class FacturaLegalPanel extends JFrame
 	private JLabel lblDescripcionFiscal;
 
 	private void imprimirDialogoReimpresion() {
+		Long nro=ventaService.getNroTimbrado()+1;
 		if (this.panelReImpresion == null) {
 			panelReImpresion = new ReImpresionPanel();
 			panelReImpresion.setPanelInterfaz(this);
 		}
-
+		panel.getTfNumeroTimbrado().setText(nro+"");
 		panelReImpresion.setVisible(true);
 	}
 
@@ -1847,13 +1851,14 @@ public class FacturaLegalPanel extends JFrame
 
 
 	@Override
-	public void imprimirFactura(boolean impresora) {
+	public void imprimirFactura(boolean impresora, boolean timbrado, String nroTimbrado) {
 
 		ImpresionUtil.performFacturaTemporal(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				GlobalVars.USER , tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion, false);
+				itemTableModel.getEntities(), this.fechaImpresion, false, timbrado, nroTimbrado);
+		ventaService.saveTimbrado(tfVentaId.getText(), nroTimbrado);
 		clearForm();
 	}
 
@@ -1875,6 +1880,15 @@ public class FacturaLegalPanel extends JFrame
 		this.setFechaImpresion(fecha);
 	}
 
+	public int getNroTimbrado() {
+		return nroTimbrado;
+	}
+
+	public void setNroTimbrado(int nroTimbrado) {
+		this.nroTimbrado = nroTimbrado;
+	}
+
+	
 	public int getCant() {
 		return cant;
 	}
@@ -1934,4 +1948,10 @@ public class FacturaLegalPanel extends JFrame
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void cargaNumeroTimbrado(int numeroTimbrado) {
+		setNroTimbrado(numeroTimbrado);
+	}
+	
 }

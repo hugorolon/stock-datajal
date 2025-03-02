@@ -1206,7 +1206,7 @@ public class CompraLocalPanel extends JFrame
 								imprimirFactura(false);
 							}
 						}catch (Exception e) {
-							Notifications.showAlert("Ocurrió un error en Venta!, intente nuevamente");
+							Notifications.showAlert("Ocurrió un error en compra!, intente nuevamente");
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}

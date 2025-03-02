@@ -1,5 +1,6 @@
 package py.com.prestosoftware.domain.services;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -172,6 +173,15 @@ public class VentaService {
 		}
 		return v;
 	}
+
+	@Transactional(rollbackFor = RuntimeException.class)
+	public void saveTimbrado(String ventaId,  String nroTimbrado) throws RuntimeException{
+		Long venta= Long.valueOf(ventaId);
+		long timbrado =Long.valueOf(nroTimbrado);
+		repository.saveTimbrado(venta, timbrado);
+		repository.flush();
+	}
+	
 	
 	public Venta save(Venta venta) {
 		Venta v = repository.save(venta);
@@ -259,6 +269,10 @@ public class VentaService {
 		return repository.getMaxId();
 	}
 
+	public Long getNroTimbrado() {
+		return repository.getMaxNroTimbrado();
+	}
+	
 	public List<Venta> findByClienteId(Long id) {
 		return repository.findByCliente(new Cliente(id));
 	}

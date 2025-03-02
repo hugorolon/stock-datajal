@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -116,7 +116,6 @@ import py.com.prestosoftware.ui.search.VendedorInterfaz;
 import py.com.prestosoftware.ui.search.VentaInterfaz;
 import py.com.prestosoftware.ui.table.VentaItemTableModel;
 import py.com.prestosoftware.util.Notifications;
-import javax.swing.JFormattedTextField;
 
 @Component
 public class VentaPanel extends JFrame
@@ -203,6 +202,7 @@ public class VentaPanel extends JFrame
 	private Cliente clienteSeleccionado;
 	private Double precioInicial;
 	private Date fechaImpresion;
+	private int nroTimbrado; 
 	private int cant;
 
 	public VentaPanel(VentaItemTableModel itemTableModel, ConsultaCliente clientDialog, VendedorDialog vendedorDialog,
@@ -2228,8 +2228,11 @@ public class VentaPanel extends JFrame
 					}
 					
 
-					if (print == 0)
+					if (print == 0) {
 						imprimirDialogo();
+						
+					}
+					
 					// else
 					newVenta();
 					productoDialog.inicializaProductos();
@@ -2479,11 +2482,12 @@ public class VentaPanel extends JFrame
 	private ImpresionPanel panel = null;
 
 	private void imprimirDialogo() {
+		Long nro=ventaService.getNroTimbrado()+1;
 		if (this.panel == null) {
 			panel = new ImpresionPanel();
 			panel.setPanelInterfaz(this);
 		}
-
+		panel.getTfNumeroTimbrado().setText(""+nro);
 		panel.setVisible(true);
 	}
 
@@ -2491,11 +2495,12 @@ public class VentaPanel extends JFrame
 	private JLabel lblDescripcionFiscal;
 
 	private void imprimirDialogoReimpresion() {
+		Long nro=ventaService.getNroTimbrado()+1;
 		if (this.panelReImpresion == null) {
 			panelReImpresion = new ReImpresionPanel();
 			panelReImpresion.setPanelInterfaz(this);
 		}
-
+		panelReImpresion.getTfNumeroTimbrado().setText(""+nro);
 		panelReImpresion.setVisible(true);
 	}
 
@@ -3172,19 +3177,33 @@ public class VentaPanel extends JFrame
 	}
 
 	@Override
-	public void imprimirFactura(boolean impresora) {
+	public void imprimirFactura(boolean impresora, boolean timbrado, String nroTimbrado) {
 
 		ImpresionUtil.performFactura(tfClienteNombre.getText(), tfClienteRuc.getText() + "-" + tfDvRuc.getText(),
 				"(0983) 518 217", tfClienteDireccion.getText(), tfVentaId.getText(),
 				tfCondicionPago.getSelectedItem().toString(),
 				tfVendedor.getText().isEmpty() ? GlobalVars.USER : tfVendedor.getText(), tfTotal.getText(),
-				itemTableModel.getEntities(), this.fechaImpresion, impresora);
+				itemTableModel.getEntities(), this.fechaImpresion, impresora, timbrado, nroTimbrado);
+		ventaService.saveTimbrado(tfVentaId.getText(), nroTimbrado);
 		clearForm();
 	}
 
 	@Override
 	public void cancelarImpresion() {
 		clearForm();
+	}
+	
+	@Override
+	public void cargaNumeroTimbrado(int numeroTimbrado) {
+		setNroTimbrado(numeroTimbrado);
+	}
+	
+	public int getNroTimbrado() {
+		return nroTimbrado;
+	}
+
+	public void setNroTimbrado(int nroTimbrado) {
+		this.nroTimbrado = nroTimbrado;
 	}
 
 	public Date getFechaImpresion() {

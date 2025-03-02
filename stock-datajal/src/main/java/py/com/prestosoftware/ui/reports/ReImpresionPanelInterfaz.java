@@ -8,8 +8,10 @@ public interface ReImpresionPanelInterfaz {
 	
 	void imprimirNota(boolean impresora);
 	
-	void imprimirFactura(boolean impresora);
+	void imprimirFactura(boolean impresora, boolean timbrado, String nroTimbrado);
 	
 	void cancelarImpresion();
+	
+	void cargaNumeroTimbrado(int numeroTimbrado);
 
 }

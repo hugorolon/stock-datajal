@@ -1,12 +1,15 @@
 package py.com.prestosoftware.data.repository;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import py.com.prestosoftware.data.models.Caja;
 import py.com.prestosoftware.data.models.Cliente;
@@ -40,6 +43,10 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 	@Query("SELECT coalesce(max(id), 0) FROM Venta e")
 	Long getMaxId();
 	
+	
+	@Query(value="SELECT GREATEST((SELECT MAX(timbrado) FROM Ventas_Temporales),(SELECT MAX(timbrado) FROM Ventas)) AS mayor", nativeQuery = true)
+	Long getMaxNroTimbrado();
+	
 	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, vd.precio"
 			+ " FROM ventas v JOIN venta_detalles vd ON v.id = vd.venta_id WHERE vd.producto_id = ?1 ORDER BY v.fecha DESC", nativeQuery = true)
 	List<ConsultaNota> getVentasByProductoId(Long productoId);
@@ -47,6 +54,11 @@ public interface VentaRepository extends JpaRepository<Venta, Long> {
 	@Query(value =  "SELECT v.operacion, v.id, v.fecha, v.cliente_id, v.cliente_nombre, v.vendedor_id, v.deposito_id, 0 AS precio"
 			+ " FROM ventas v WHERE v.fecha = ?1 ORDER BY v.id ASC", nativeQuery = true)
 	List<ConsultaNota> getVentasDelDia(Date fecha);
+	
+	@Modifying
+	@Transactional
+	@Query(value =  "update ventas v set timbrado=?2, comprobante=?2 WHERE v.id = ?1", nativeQuery = true)
+	void saveTimbrado(Long ventaId, Long nroTimbrado);
 	
 	@Query(value =  "SELECT * "
 			+ " FROM ventas v WHERE v.fecha between ?1 and ?2 and v.situacion= ?3 and condicion= ?4 ORDER BY v.id ASC", nativeQuery = true)
