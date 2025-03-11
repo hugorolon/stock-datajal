@@ -18,7 +18,7 @@ public interface CobroClienteRepository extends JpaRepository<CobroCliente, Inte
 	@Query("SELECT coalesce(max(id), 0) FROM CobroCliente e")
 	Integer getMaxId();
 	
-	@Query(value =  "SELECT car_numero , car.car_fecha as car_fecha1, car.car_boleta, car.car_entidad, cli.nombre,  car.car_monto as car_monto1, \n"
+	@Query(value =  "SELECT car_numero , car.car_fecha as car_fecha1, v.comprobante as car_boleta, car.car_entidad, cli.nombre,  car.car_monto as car_monto1, \n"
 			+ "car_proceso, ica_vencimiento as ica_vencimiento1, \n"
 			+ "ica_monto as ica_monto1, ica_documento \n"
 			+ ",coalesce((select SUM(icl_monto) FROM item_cobro_clientes where icl_secuencia_cuenta = icr.ica_secuencia), 0) AS pagado,\n"
