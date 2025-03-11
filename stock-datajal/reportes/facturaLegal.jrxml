@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaLegal" pageWidth="623" pageHeight="432" columnWidth="623" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="com.numero.MontoEnLetras" whenResourceMissingType="Empty" uuid="928dcb1a-5e67-4b4a-ad43-b6984179efcc">
 	<property name="com.jasperassistant.designer.Grid" value="false"/>
 	<property name="com.jasperassistant.designer.SnapToGrid" value="false"/>
@@ -36,6 +36,7 @@
 	<parameter name="totalGeneral" class="java.lang.String"/>
 	<parameter name="montoEnLetras" class="java.lang.String" isForPrompting="false"/>
 	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="numeroTimbrado" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -132,6 +133,10 @@
 					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="50" width="100" height="20" uuid="3484509c-dbbe-4484-a1b1-468ab4c3b789"/>
+				<textFieldExpression><![CDATA[$P{numeroTimbrado}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -251,11 +256,11 @@
 				<textFieldExpression><![CDATA[$V{VTotalIva5}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Page">
-				<reportElement x="57" y="20" width="393" height="16" uuid="376a18e0-1d51-43b9-a21a-92e5e947be95">
+				<reportElement x="57" y="20" width="393" height="26" uuid="376a18e0-1d51-43b9-a21a-92e5e947be95">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement>
-					<font fontName="Arial Narrow" size="8"/>
+					<font fontName="Arial Narrow" size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{Scriptlet_1_SCRIPTLET}.convertir($V{totalInt}.toString(),".","",true)]]></textFieldExpression>
 			</textField>
