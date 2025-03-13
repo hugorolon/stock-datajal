@@ -120,7 +120,7 @@ public class VentaService {
 				venta.setCliente(n);
 			}
 			try {
-				v = repository.save(venta);	
+				v = repository.save(venta);			;
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
@@ -143,6 +143,7 @@ public class VentaService {
 					openMovimientoEgreso(cuentaARecibir);
 				}
 			}
+			repository.flush();
 			return v;
 	}
 
@@ -488,6 +489,7 @@ public class VentaService {
 			movCaja.setSituacion("PROCESADO");
 		} 
 		repositoryPago.save(movCaja);
+		repositoryPago.flush();
 	}
 	
 	private void movimientoIngresoProcesoCobroVenta(Venta venta) {
@@ -508,6 +510,7 @@ public class VentaService {
 		m.setMinTipoEntidad(tipoEntidadCliente);
 		m.setMinSituacion(0);
 		m = repositoryMovimientoIngreso.save(m);
+		repositoryMovimientoIngreso.flush();
 
 		MovimientoItemIngreso mii = new MovimientoItemIngreso();
 		mii.setMiiNumero(m.getMinNumero());
@@ -521,6 +524,8 @@ public class VentaService {
 		miiva.setMiiIngreso(11);
 		miiva.setMiiMonto(venta.getTotalGeneral() - monto);
 		repositoryMovimientoItemIngreso.save(miiva);
+		repositoryMovimientoIngreso.flush();
+		repositoryMovimientoItemIngreso.flush();
 
 		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
 		pcv.setPveVenta(venta.getId().intValue());
@@ -529,6 +534,7 @@ public class VentaService {
 		pcv.setPveProceso(m.getMinNumero());
 		pcv.setPveFlag(1);
 		repositoryProcesoCobroVentas.save(pcv);
+		repositoryProcesoCobroVentas.flush();
 	}
 	
 	private CuentaARecibir cuentaARecibirProcesoCobroVenta(Venta venta, String condicion) {
@@ -543,6 +549,7 @@ public class VentaService {
 		cuentaARecibir.setCarProceso(venta.getId().intValue());
 		cuentaARecibir.setCarSituacion(0);
 		cuentaARecibir = repositoryCuentaARecibir.save(cuentaARecibir);
+		
 
 		List<ItemCuentaARecibir> listaItemCuentaARecibir = new ArrayList<ItemCuentaARecibir>();
 
@@ -572,6 +579,7 @@ public class VentaService {
 			listaItemCuentaARecibir.add(itemCuentaARecibir);
 		}
 		repositoryItemCuentaARecibir.saveAll(listaItemCuentaARecibir);
+		repositoryItemCuentaARecibir.flush();
 		// Proceso Cobro ventas
 		ProcesoCobroVentas pcv = new ProcesoCobroVentas();
 		pcv.setPveVenta(venta.getId().intValue());
@@ -580,6 +588,8 @@ public class VentaService {
 		pcv.setPveProceso(cuentaARecibir.getCarNumero());
 		pcv.setPveFlag(1);
 		repositoryProcesoCobroVentas.save(pcv);
+		repositoryCuentaARecibir.flush();
+		repositoryProcesoCobroVentas.flush();
 
 		return cuentaARecibir;
 	}
@@ -600,5 +610,7 @@ public class VentaService {
 		movItemEgreso.setMieMonto(c.getMonto());
 		movItemEgreso.setMieDescripcion("Egreso de efectivo - Venta Crédito");
 		repositoryMovimientoItemEgreso.save(movItemEgreso);
+		repositoryMovimientoEgreso.flush();
+		repositoryMovimientoItemEgreso.flush();
 	}
 }

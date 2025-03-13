@@ -1380,7 +1380,7 @@ public class FacturaLegalPanel extends JFrame
 			panelReImpresion = new ReImpresionPanel();
 			panelReImpresion.setPanelInterfaz(this);
 		}
-		panel.getTfNumeroTimbrado().setText(nro+"");
+		panelReImpresion.getTfNumeroTimbrado().setText(nro+"");
 		panelReImpresion.setVisible(true);
 	}
 

@@ -102,6 +102,7 @@ public class CompraService {
     	if(compra.getId()==999999)
     		compra.setId(null);
     	c= repository.save(compra);
+    	repository.flush();
     	if (lanzamientoCaja == 0) {
 			updateStockProduct(c.getItems(),lanzamientoCaja,1);
 			openMovCaja(c, condicion);
@@ -237,6 +238,7 @@ public class CompraService {
 			movCaja.setSituacion("PROCESADO");
 		}
 		repositoryPago.save(movCaja);
+		repositoryPago.flush();
 	}
 	
 	
@@ -267,6 +269,10 @@ public class CompraService {
 		ppc.setPcoProceso(m.getMinNumero());
 		ppc.setPcoFlag(1);
 		repositoryProcesoPagoCompras.save(ppc);
+		repositoryMovimientoIngreso.flush();
+		repositoryMovimientoItemIngreso.flush();
+		repositoryProcesoPagoCompras.flush();
+		
 	}
 
 	private CuentaAPagar cuentaAPagarProcesoPagoCompras(Compra compra, String condicion) {
@@ -318,6 +324,9 @@ public class CompraService {
 		ppc.setPcoProceso(cuentaAPagar.getCapNumero());
 		ppc.setPcoFlag(1);
 		repositoryProcesoPagoCompras.save(ppc);
+		repositoryCuentaAPagar.flush();
+		repositoryItemCuentaAPagar.flush();
+		repositoryProcesoPagoCompras.flush();
 
 		return cuentaAPagar;
 	}
@@ -355,5 +364,10 @@ public class CompraService {
 		ppc.setPcoProceso(movEgreso.getMegNumero());
 		ppc.setPcoFlag(1);
 		repositoryProcesoPagoCompras.save(ppc);
+		
+		repositoryMovimientoEgreso.flush();
+		repositoryMovimientoItemEgreso.flush();
+		repositoryProcesoPagoCompras.flush();
+		
 	}
 }
