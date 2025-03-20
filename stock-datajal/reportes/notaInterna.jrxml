@@ -57,7 +57,8 @@
 	<group name="dummy">
 		<groupExpression><![CDATA["dummy"]]></groupExpression>
 		<groupHeader>
-			<band height="42">
+			<band height="40">
+				<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				<staticText>
 					<reportElement x="74" y="14" width="200" height="15" uuid="639070fa-1790-468b-b658-de47898c659a">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
@@ -98,7 +99,7 @@
 					<text><![CDATA[SUB TOTAL]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="24" y="28" width="565" height="14" uuid="4f01cb67-fec4-4eb3-8fdb-748817e10961">
+					<reportElement x="24" y="26" width="565" height="14" uuid="4f01cb67-fec4-4eb3-8fdb-748817e10961">
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
 					<textElement textAlignment="Justified" verticalAlignment="Middle">
@@ -119,7 +120,8 @@
 		</groupHeader>
 	</group>
 	<pageHeader>
-		<band height="109">
+		<band height="107">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
 				<reportElement x="498" y="50" width="63" height="15" uuid="b0310445-b188-47b7-8f50-0ca245b6ce0f">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
@@ -326,15 +328,16 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="57">
+		<band height="56">
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="397" y="7" width="93" height="15" uuid="878c1de3-f038-482a-9e58-2cbe29a61b2e">
+				<reportElement x="397" y="3" width="93" height="15" uuid="878c1de3-f038-482a-9e58-2cbe29a61b2e">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
-				<text><![CDATA[TOTAL GENERAL]]></text>
+				<text><![CDATA[TOTAL GENERAL:]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="25" y="39" width="553" height="15" uuid="a1adfc56-7442-41be-be0b-fe90cee6658f">
@@ -346,7 +349,7 @@
 				<text><![CDATA[Nota para simples control de stock, carece de valor fiscal. Agradecemos su preferencia.]]></text>
 			</staticText>
 			<textField pattern="#,##0.###;(#,##0.###-)">
-				<reportElement x="490" y="4" width="88" height="21" uuid="6cbd0452-4026-46dc-bbfd-46b668bbbf89"/>
+				<reportElement x="490" y="0" width="88" height="21" uuid="6cbd0452-4026-46dc-bbfd-46b668bbbf89"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="11" isBold="true"/>
 				</textElement>
